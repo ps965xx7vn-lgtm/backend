@@ -44,7 +44,7 @@ class Command(BaseCommand):
         existing_count = 0
 
         with transaction.atomic():
-            for name, description, help_text in roles_data:
+            for name, description, _ in roles_data:
                 role, created = Role.objects.get_or_create(
                     name=name,
                     defaults={

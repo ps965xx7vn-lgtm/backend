@@ -14,7 +14,7 @@ Auth Forms - Django формы для регистрации и аутентиф
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from django import forms
 from django.contrib.auth import authenticate, get_user_model
@@ -200,7 +200,7 @@ class UserRegisterForm(forms.ModelForm):
             )
         return agree_to_terms
 
-    def clean(self) -> Dict[str, Any]:
+    def clean(self) -> dict[str, Any]:
         """
         Выполняет общую валидацию взаимодействия полей.
 
@@ -294,12 +294,12 @@ class UserLoginForm(forms.Form):
         initial=False,
     )
 
-    def clean(self) -> Dict[str, Any]:
+    def clean(self) -> dict[str, Any]:
         """
         Проверяет email и пароль через Django authenticate().
 
         Returns:
-            Dict с валидированными данными (email, password)
+            dict с валидированными данными (email, password)
 
         Raises:
             ValidationError: Если email не найден или пароль неверный
@@ -460,6 +460,6 @@ class SetPasswordForm(DjangoSetPasswordForm):
                         # Если ошибка уже переведена или неизвестна, оставляем как есть
                         translated_errors.append(err)
 
-                raise ValidationError(translated_errors)
+                raise ValidationError(translated_errors) from err
 
         return password2

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import timedelta
-from typing import Any, Dict, Optional
+from typing import Any
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
@@ -24,7 +24,7 @@ from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-def get_default_student_role() -> Optional[int]:
+def get_default_student_role() -> int | None:
     """
     Получить ID дефолтной роли 'student' для новых пользователей.
 
@@ -52,9 +52,7 @@ class CustomUserManager(BaseUserManager):
     с использованием email как основного идентификатора.
     """
 
-    def create_user(
-        self, email: str, password: Optional[str] = None, **extra_fields: Any
-    ) -> "User":
+    def create_user(self, email: str, password: str | None = None, **extra_fields: Any) -> User:
         """
         Создаёт и сохраняет пользователя с указанным email и паролем.
 
@@ -80,7 +78,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> "User":
+    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> User:
         """
         Создаёт суперпользователя с правами администратора.
 
@@ -120,10 +118,10 @@ class User(AbstractUser):
         Каждый пользователь имеет одну роль, определяемую через FK Role.
     """
 
-    username: Optional[str] = models.CharField(max_length=150, blank=True, null=True)
+    username: str | None = models.CharField(max_length=150, blank=True, null=True)
     email: str = models.EmailField(unique=True)
     email_is_verified: bool = models.BooleanField(default=False)
-    role: Optional["Role"] = models.ForeignKey(
+    role: Role | None = models.ForeignKey(
         "Role",
         on_delete=models.SET_NULL,
         null=True,
@@ -147,7 +145,7 @@ class User(AbstractUser):
         return self.email
 
     @property
-    def role_name(self) -> Optional[str]:
+    def role_name(self) -> str | None:
         """
         Получить название роли пользователя.
 
@@ -232,7 +230,7 @@ class Role(models.Model):
         return self.get_name_display()
 
     @classmethod
-    def get_default_roles(cls) -> Dict[str, str]:
+    def get_default_roles(cls) -> dict[str, str]:
         """
         Возвращает словарь с дефолтными ролями и их описаниями.
 
@@ -345,8 +343,8 @@ class Student(models.Model):
     )
 
     # Персональные данные
-    phone: Optional[str] = PhoneNumberField(blank=True, null=True, help_text="Основной телефон")
-    birthday: Optional[Any] = models.DateField(null=True, blank=True, help_text="Дата рождения")
+    phone: str | None = PhoneNumberField(blank=True, null=True, help_text="Основной телефон")
+    birthday: Any | None = models.DateField(null=True, blank=True, help_text="Дата рождения")
     gender: str = models.CharField(
         max_length=10,
         choices=[("male", "Мужской"), ("female", "Женский"), ("other", "Другой")],
@@ -356,8 +354,8 @@ class Student(models.Model):
     country: str = CountryField(blank=True, help_text="Страна")
     city: str = models.CharField(max_length=100, blank=True, help_text="Город")
     address: str = models.TextField(blank=True, help_text="Адрес")
-    bio: Optional[str] = models.TextField(blank=True, null=True, help_text="О себе")
-    avatar: Optional[Any] = models.ImageField(
+    bio: str | None = models.TextField(blank=True, null=True, help_text="О себе")
+    avatar: Any | None = models.ImageField(
         upload_to="avatars/", blank=True, null=True, help_text="Аватар"
     )
 
@@ -556,7 +554,7 @@ class Reviewer(models.Model):
 
         return LessonSubmission.objects.filter(review__reviewer=self, status="pending").count()
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Получить детальную статистику ревьюера за последние 30 дней.
 

@@ -15,7 +15,6 @@ Pydantic схемы для Authentication API.
 
 from datetime import date, datetime
 from enum import Enum
-from typing import Optional
 
 from ninja import Field, Schema
 from pydantic import EmailStr, field_validator, model_validator
@@ -42,7 +41,7 @@ class ErrorSchema(Schema):
     """Схема ответа при ошибке."""
 
     detail: str = Field(..., description="Описание ошибки")
-    code: Optional[str] = Field(None, description="Код ошибки")
+    code: str | None = Field(None, description="Код ошибки")
 
 
 class MessageSchema(Schema):
@@ -55,7 +54,7 @@ class SuccessSchema(Schema):
     """Схема успешного ответа."""
 
     success: bool = Field(True, description="Статус операции")
-    message: Optional[str] = Field(None, description="Дополнительное сообщение")
+    message: str | None = Field(None, description="Дополнительное сообщение")
 
 
 # ============================================================================
@@ -72,19 +71,19 @@ class UserOut(Schema):
     last_name: str = Field(..., description="Фамилия")
     is_active: bool = Field(..., description="Активен ли пользователь")
     date_joined: datetime = Field(..., description="Дата регистрации")
-    role: Optional[str] = Field(None, description="Роль пользователя")
+    role: str | None = Field(None, description="Роль пользователя")
 
 
 class ProfileOut(Schema):
     """Схема вывода профиля."""
 
-    phone: Optional[str] = Field(None, description="Телефон")
-    country: Optional[str] = Field(None, description="Страна")
-    city: Optional[str] = Field(None, description="Город")
-    bio: Optional[str] = Field(None, description="О себе")
-    avatar: Optional[str] = Field(None, description="URL аватара")
-    birthday: Optional[str] = Field(None, description="Дата рождения")
-    gender: Optional[str] = Field(None, description="Пол")
+    phone: str | None = Field(None, description="Телефон")
+    country: str | None = Field(None, description="Страна")
+    city: str | None = Field(None, description="Город")
+    bio: str | None = Field(None, description="О себе")
+    avatar: str | None = Field(None, description="URL аватара")
+    birthday: str | None = Field(None, description="Дата рождения")
+    gender: str | None = Field(None, description="Пол")
 
 
 # ============================================================================
@@ -102,7 +101,7 @@ class RegisterIn(Schema):
     )
     first_name: str = Field(..., min_length=1, max_length=150, description="Имя")
     last_name: str = Field(..., min_length=1, max_length=150, description="Фамилия")
-    role: Optional[str] = Field(
+    role: str | None = Field(
         default="student", description="Роль: student, mentor, reviewer, manager, admin, support"
     )
 
@@ -226,24 +225,24 @@ class EmailUpdateIn(Schema):
 class ProfileUpdateIn(Schema):
     """Схема обновления профиля (частичное обновление)."""
 
-    first_name: Optional[str] = Field(None, min_length=1, max_length=150, description="Имя")
-    last_name: Optional[str] = Field(None, min_length=1, max_length=150, description="Фамилия")
-    phone: Optional[str] = Field(None, max_length=20, description="Телефон")
-    country: Optional[str] = Field(None, max_length=2, description="Код страны (ISO)")
-    city: Optional[str] = Field(None, max_length=100, description="Город")
-    bio: Optional[str] = Field(None, max_length=500, description="О себе")
-    birthday: Optional[date] = Field(None, description="Дата рождения")
-    gender: Optional[Gender] = Field(None, description="Пол")
+    first_name: str | None = Field(None, min_length=1, max_length=150, description="Имя")
+    last_name: str | None = Field(None, min_length=1, max_length=150, description="Фамилия")
+    phone: str | None = Field(None, max_length=20, description="Телефон")
+    country: str | None = Field(None, max_length=2, description="Код страны (ISO)")
+    city: str | None = Field(None, max_length=100, description="Город")
+    bio: str | None = Field(None, max_length=500, description="О себе")
+    birthday: date | None = Field(None, description="Дата рождения")
+    gender: Gender | None = Field(None, description="Пол")
 
     @field_validator("first_name", "last_name")
     @classmethod
-    def capitalize_name(cls, v: Optional[str]) -> Optional[str]:
+    def capitalize_name(cls, v: str | None) -> str | None:
         """Приведение имени к Title Case."""
         return v.strip().title() if v else None
 
     @field_validator("country")
     @classmethod
-    def uppercase_country(cls, v: Optional[str]) -> Optional[str]:
+    def uppercase_country(cls, v: str | None) -> str | None:
         """Приведение кода страны к верхнему регистру."""
         return v.upper() if v else None
 

@@ -17,7 +17,6 @@ Account Tasks Module - Асинхронные задачи Celery для отп�
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from celery import shared_task
 from django.conf import settings
@@ -29,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 def send_verification_email_sync(
     user_id: int, activation_url: str, subject: str, template_name: str
-) -> Optional[int]:
+) -> int | None:
     """
     Синхронная отправка email с подтверждением регистрации (fallback без Celery).
 
