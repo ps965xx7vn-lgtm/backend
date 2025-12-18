@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import logging
 from math import ceil
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -238,7 +238,7 @@ def get_pagination_meta(
         raise
     except Exception as e:
         logger.error(f"Ошибка пагинации: {e}")
-        raise HttpError(500, "Ошибка при обработке пагинации")
+        raise HttpError(500, "Ошибка при обработке пагинации") from e
 
 
 def serialize_author(user: User, include_article_count: bool = False) -> dict[str, Any]:
@@ -281,7 +281,7 @@ def serialize_author(user: User, include_article_count: bool = False) -> dict[st
         }
 
 
-def serialize_category(category: Optional[Category]) -> Optional[dict[str, Any]]:
+def serialize_category(category: Category | None) -> dict[str, Any] | None:
     """
     Сериализация категории в словарь.
 
@@ -339,7 +339,7 @@ def serialize_tags(tags: QuerySet) -> list[dict[str, Any]]:
     return result
 
 
-def serialize_series(series: Optional[Series]) -> Optional[dict[str, Any]]:
+def serialize_series(series: Series | None) -> dict[str, Any] | None:
     """
     Сериализация серии в словарь.
 
@@ -369,7 +369,7 @@ def serialize_series(series: Optional[Series]) -> Optional[dict[str, Any]]:
         return None
 
 
-def serialize_article_list(article: Article, user: Optional[User] = None) -> dict[str, Any]:
+def serialize_article_list(article: Article, user: User | None = None) -> dict[str, Any]:
     """
     Сериализация статьи для списка (краткая информация).
 
@@ -406,7 +406,7 @@ def serialize_article_list(article: Article, user: Optional[User] = None) -> dic
         raise
 
 
-def serialize_article_detail(article: Article, user: Optional[User] = None) -> dict[str, Any]:
+def serialize_article_detail(article: Article, user: User | None = None) -> dict[str, Any]:
     """
     Сериализация статьи с полной информацией.
 
@@ -471,17 +471,17 @@ def serialize_article_detail(article: Article, user: Optional[User] = None) -> d
 )
 def list_articles(
     request,
-    category: Optional[str] = None,
-    category_id: Optional[int] = None,
-    tag: Optional[str] = None,
-    tag_ids: Optional[str] = None,
-    author: Optional[str] = None,
-    author_id: Optional[int] = None,
-    series_id: Optional[int] = None,
-    difficulty: Optional[str] = None,
+    category: str | None = None,
+    category_id: int | None = None,
+    tag: str | None = None,
+    tag_ids: str | None = None,
+    author: str | None = None,
+    author_id: int | None = None,
+    series_id: int | None = None,
+    difficulty: str | None = None,
     status: str = "published",
-    is_featured: Optional[bool] = None,
-    search: Optional[str] = None,
+    is_featured: bool | None = None,
+    search: str | None = None,
     sort_by: str = "published_at",
     order: str = "desc",
     page: int = 1,
@@ -560,8 +560,8 @@ def list_articles(
             try:
                 tag_id_list = [int(tid.strip()) for tid in tag_ids.split(",")]
                 queryset = queryset.filter(tags__id__in=tag_id_list).distinct()
-            except ValueError:
-                raise HttpError(400, "Неверный формат tag_ids")
+            except ValueError as e:
+                raise HttpError(400, "Неверный формат tag_ids") from e
 
         # Фильтр по автору (поддержка username и id)
         if author:
@@ -635,7 +635,7 @@ def list_articles(
         raise
     except Exception as e:
         logger.error(f"Ошибка получения списка статей: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении списка статей")
+        raise HttpError(500, "Ошибка при получении списка статей") from e
 
 
 @router.get(
@@ -679,7 +679,7 @@ def featured_articles(request, limit: int = 10) -> list[ArticleListOut]:
         raise
     except Exception as e:
         logger.error(f"Ошибка получения избранных статей: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении избранных статей")
+        raise HttpError(500, "Ошибка при получении избранных статей") from e
 
 
 @router.get(
@@ -726,7 +726,7 @@ def popular_articles(request, limit: int = 10) -> list[ArticleListOut]:
         raise
     except Exception as e:
         logger.error(f"Ошибка получения популярных статей: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении популярных статей")
+        raise HttpError(500, "Ошибка при получении популярных статей") from e
 
 
 @router.get(
@@ -780,7 +780,7 @@ def get_article(request, slug: str) -> ArticleDetailOut:
         raise
     except Exception as e:
         logger.error(f"Ошибка получения статьи {slug}: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении статьи")
+        raise HttpError(500, "Ошибка при получении статьи") from e
 
 
 @router.get(
@@ -811,7 +811,7 @@ def list_categories(request) -> list[CategoryOut]:
 
     except Exception as e:
         logger.error(f"Ошибка получения категорий: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении категорий")
+        raise HttpError(500, "Ошибка при получении категорий") from e
 
 
 @router.get(
@@ -861,7 +861,7 @@ def get_category(request, slug: str) -> CategoryOut:
         raise
     except Exception as e:
         logger.error(f"Ошибка получения категории {slug}: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении категории")
+        raise HttpError(500, "Ошибка при получении категории") from e
 
 
 @router.get(
@@ -871,7 +871,7 @@ def get_category(request, slug: str) -> CategoryOut:
     description="Получение списка всех тегов",
     auth=None,  # Публичный эндпоинт
 )
-def list_tags(request, limit: Optional[int] = None) -> list[TagOut]:
+def list_tags(request, limit: int | None = None) -> list[TagOut]:
     """
     Получение списка тегов.
 
@@ -898,7 +898,7 @@ def list_tags(request, limit: Optional[int] = None) -> list[TagOut]:
 
     except Exception as e:
         logger.error(f"Ошибка получения тегов: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении тегов")
+        raise HttpError(500, "Ошибка при получении тегов") from e
 
 
 @router.get(
@@ -929,7 +929,7 @@ def list_series(request) -> list[SeriesOut]:
 
     except Exception as e:
         logger.error(f"Ошибка получения серий: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении серий")
+        raise HttpError(500, "Ошибка при получении серий") from e
 
 
 @router.get(
@@ -982,7 +982,7 @@ def get_series(request, slug: str) -> SeriesDetailOut:
         raise
     except Exception as e:
         logger.error(f"Ошибка получения серии {slug}: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении серии")
+        raise HttpError(500, "Ошибка при получении серии") from e
 
 
 @router.get(
@@ -1019,7 +1019,7 @@ def list_authors(request) -> list[AuthorOut]:
 
     except Exception as e:
         logger.error(f"Ошибка получения авторов: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении авторов")
+        raise HttpError(500, "Ошибка при получении авторов") from e
 
 
 @router.get(
@@ -1050,7 +1050,7 @@ def get_blog_stats(request) -> BlogStatsOut:
 
     except Exception as e:
         logger.error(f"Ошибка получения статистики: {e}", exc_info=True)
-        raise HttpError(500, "Ошибка при получении статистики")
+        raise HttpError(500, "Ошибка при получении статистики") from e
 
 
 # ============================================================================
