@@ -26,7 +26,7 @@ class Command(BaseCommand):
         try:
             site = Site.objects.get_current()
             domain = f"https://{site.domain}"
-        except:
+        except Exception:
             domain = "https://pyschool.ge"
             self.stdout.write(self.style.WARNING(f"Site not configured, using default: {domain}"))
 
@@ -112,10 +112,10 @@ class Command(BaseCommand):
 
         for url in urls:
             xml.append("  <url>")
-            xml.append(f'    <loc>{url["loc"]}</loc>')
-            xml.append(f'    <lastmod>{url["lastmod"]}</lastmod>')
-            xml.append(f'    <changefreq>{url["changefreq"]}</changefreq>')
-            xml.append(f'    <priority>{url["priority"]}</priority>')
+            xml.append(f"    <loc>{url['loc']}</loc>")
+            xml.append(f"    <lastmod>{url['lastmod']}</lastmod>")
+            xml.append(f"    <changefreq>{url['changefreq']}</changefreq>")
+            xml.append(f"    <priority>{url['priority']}</priority>")
             xml.append("  </url>")
 
         xml.append("</urlset>")

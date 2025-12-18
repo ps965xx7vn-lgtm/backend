@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -893,12 +893,12 @@ class Series(models.Model):
         )
 
     @property
-    def image_url(self) -> Optional[str]:
+    def image_url(self) -> str | None:
         """
         Безопасно возвращает URL обложки серии.
 
         Returns:
-            Optional[str]: URL изображения или None если обложки нет
+            str | None: URL изображения или None если обложки нет
         """
         try:
             if self.cover_image:
@@ -1488,12 +1488,12 @@ class Author(models.Model):
         return getattr(self, "_followers_count_cache", 0)
 
     @property
-    def last_published_at(self) -> Optional[Any]:
+    def last_published_at(self) -> Any | None:
         """
         Дата последней опубликованной статьи автора.
 
         Returns:
-            Optional[datetime]: Дата публикации последней статьи или None
+            datetime | None: Дата публикации последней статьи или None
         """
         try:
             latest = (

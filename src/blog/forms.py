@@ -165,10 +165,10 @@ class CommentForm(forms.ModelForm):
                     raise ValidationError(
                         "Нельзя отвечать на неодобренные комментарии.", code="invalid_parent"
                     )
-            except Comment.DoesNotExist:
+            except Comment.DoesNotExist as err:
                 logger.error(f"Попытка ответить на несуществующий комментарий {parent_id}")
                 raise ValidationError(
                     "Родительский комментарий не найден.", code="parent_not_found"
-                )
+                ) from err
 
         return cleaned_data

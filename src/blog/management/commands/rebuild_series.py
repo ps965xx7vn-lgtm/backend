@@ -120,4 +120,4 @@ class Command(BaseCommand):
                 except Article.DoesNotExist:
                     self.stdout.write(f"  Article not found: {t}")
 
-    self.stdout.write(self.style.SUCCESS("Rebuild series finished"))
+        self.stdout.write(self.style.SUCCESS("Rebuild series finished"))

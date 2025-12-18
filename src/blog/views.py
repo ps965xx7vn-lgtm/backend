@@ -630,7 +630,7 @@ class ArticleDetailView(DetailView):
                 logger.warning(
                     f"Ошибка валидации комментария от {request.user.username}: {form.errors}"
                 )
-                for field, errors in form.errors.items():
+                for _field, errors in form.errors.items():
                     for error in errors:
                         messages.error(request, error)
                 # Редирект к секции комментариев с якорем
@@ -1194,9 +1194,9 @@ class TagDetailView(TemplateView):
                     # Если не нашли по slug, ищем по имени
                     tag = Tag.objects.get(name=tag_name)
                     logger.info(f"Тег найден по имени: '{tag.name}' (ID: {tag.id})")
-                except Tag.DoesNotExist:
+                except Tag.DoesNotExist as err:
                     logger.warning(f"Тег не найден: slug='{tag_slug}', имя='{tag_name}'")
-                    raise Http404("Тег не найден")
+                    raise Http404("Тег не найден") from err
 
             # Получаем и валидируем параметр сортировки
             sort_by = self.request.GET.get("sort", "new")
@@ -2302,7 +2302,7 @@ class SeriesListView(ListView):
 
                             completed_count += in_progress_count
                             series.completion_percentage = int(
-                                (completed_count / total_articles * 100)
+                                completed_count / total_articles * 100
                             )
                         else:
                             series.completion_percentage = 0
@@ -2417,7 +2417,7 @@ class SeriesDetailView(DetailView):
             # Добавляем в контекст и к объекту серии для совместимости с шаблонами
             context["published_articles"] = published_articles
             try:
-                setattr(series, "published_articles", published_articles)
+                series.published_articles = published_articles
             except Exception as e:
                 logger.warning(f"Не удалось добавить published_articles к объекту серии: {e}")
 
@@ -2471,9 +2471,7 @@ class SeriesDetailView(DetailView):
 
                     completed_articles += in_progress_completed
                     completion_percentage = (
-                        int((completed_articles / total_articles * 100))
-                        if total_articles > 0
-                        else 0
+                        int(completed_articles / total_articles * 100) if total_articles > 0 else 0
                     )
 
                     logger.info(

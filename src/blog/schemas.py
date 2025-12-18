@@ -15,7 +15,6 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from ninja import Field, Schema
 from pydantic import field_validator
@@ -79,7 +78,7 @@ class ErrorSchema(Schema):
     """Схема ответа при ошибке."""
 
     detail: str = Field(..., description="Описание ошибки")
-    code: Optional[str] = Field(None, description="Код ошибки")
+    code: str | None = Field(None, description="Код ошибки")
 
 
 class MessageSchema(Schema):
@@ -109,7 +108,7 @@ class CategoryBase(Schema):
 
     name: str = Field(..., min_length=1, max_length=100, description="Название категории")
     slug: str = Field(..., min_length=1, max_length=100, description="URL slug")
-    description: Optional[str] = Field(None, description="Описание категории")
+    description: str | None = Field(None, description="Описание категории")
     icon: str = Field(default="📝", max_length=50, description="Иконка категории")
     color: str = Field(default="#3498db", max_length=7, description="Цвет в формате HEX")
 
@@ -121,14 +120,14 @@ class CategoryOut(CategoryBase):
     article_count: int = Field(..., ge=0, description="Количество статей")
     created_at: datetime = Field(..., description="Дата создания")
     updated_at: datetime = Field(..., description="Дата обновления")
-    articles: Optional[list] = Field(None, description="Список статей категории")
+    articles: list | None = Field(None, description="Список статей категории")
 
 
 class CategoryDetailOut(CategoryOut):
     """Детальная схема категории с дополнительной информацией."""
 
-    tag_keywords: Optional[str] = Field(None, description="Ключевые слова для тегов")
-    badge: Optional[str] = Field(None, description="Бейдж категории")
+    tag_keywords: str | None = Field(None, description="Ключевые слова для тегов")
+    badge: str | None = Field(None, description="Бейдж категории")
     order: int = Field(default=0, description="Порядок отображения")
 
 
@@ -136,11 +135,11 @@ class CategoryIn(Schema):
     """Схема создания категории."""
 
     name: str = Field(..., min_length=1, max_length=100, description="Название категории")
-    description: Optional[str] = Field(None, description="Описание категории")
+    description: str | None = Field(None, description="Описание категории")
     icon: str = Field(default="📝", max_length=50, description="Иконка категории")
     color: str = Field(default="#3498db", max_length=7, description="Цвет в формате HEX")
-    tag_keywords: Optional[str] = Field(None, description="Ключевые слова для тегов")
-    badge: Optional[str] = Field(None, description="Бейдж категории")
+    tag_keywords: str | None = Field(None, description="Ключевые слова для тегов")
+    badge: str | None = Field(None, description="Бейдж категории")
 
     @field_validator("color")
     @classmethod
@@ -150,21 +149,21 @@ class CategoryIn(Schema):
             raise ValueError("Color must be in HEX format (#RRGGBB)")
         try:
             int(v[1:], 16)
-        except ValueError:
-            raise ValueError("Invalid HEX color")
+        except ValueError as e:
+            raise ValueError("Invalid HEX color") from e
         return v.lower()
 
 
 class CategoryUpdate(Schema):
     """Схема обновления категории."""
 
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    description: Optional[str] = None
-    icon: Optional[str] = Field(None, max_length=50)
-    color: Optional[str] = Field(None, max_length=7)
-    tag_keywords: Optional[str] = None
-    badge: Optional[str] = None
-    order: Optional[int] = Field(None, ge=0)
+    name: str | None = Field(None, min_length=1, max_length=100)
+    description: str | None = None
+    icon: str | None = Field(None, max_length=50)
+    color: str | None = Field(None, max_length=7)
+    tag_keywords: str | None = None
+    badge: str | None = None
+    order: int | None = Field(None, ge=0)
 
 
 # ============================================================================
@@ -184,7 +183,7 @@ class TagOut(Schema):
 class TagDetailOut(TagOut):
     """Детальная схема тега."""
 
-    description: Optional[str] = Field(None, description="Описание тега")
+    description: str | None = Field(None, description="Описание тега")
 
 
 # ============================================================================
@@ -200,9 +199,9 @@ class AuthorOut(Schema):
     first_name: str = Field(..., description="Имя")
     last_name: str = Field(..., description="Фамилия")
     full_name: str = Field(..., description="Полное имя")
-    avatar_url: Optional[str] = Field(None, description="URL аватара")
-    bio: Optional[str] = Field(None, description="Биография")
-    article_count: Optional[int] = Field(None, ge=0, description="Количество статей")
+    avatar_url: str | None = Field(None, description="URL аватара")
+    bio: str | None = Field(None, description="Биография")
+    article_count: int | None = Field(None, ge=0, description="Количество статей")
 
 
 class AuthorDetailOut(AuthorOut):
@@ -224,7 +223,7 @@ class SeriesOut(Schema):
     id: int = Field(..., description="ID серии")
     title: str = Field(..., description="Название серии")
     slug: str = Field(..., description="URL slug")
-    description: Optional[str] = Field(None, description="Описание серии")
+    description: str | None = Field(None, description="Описание серии")
     article_count: int = Field(..., ge=0, description="Количество статей")
     total_reading_time: int = Field(..., ge=0, description="Общее время чтения")
     created_at: datetime = Field(..., description="Дата создания")
@@ -234,23 +233,23 @@ class SeriesDetailOut(SeriesOut):
     """Детальная схема серии с статьями."""
 
     is_completed: bool = Field(..., description="Серия завершена")
-    articles: Optional[list] = Field(None, description="Список статей серии")
+    articles: list | None = Field(None, description="Список статей серии")
 
 
 class SeriesIn(Schema):
     """Схема создания серии."""
 
     title: str = Field(..., min_length=1, max_length=200, description="Название серии")
-    description: Optional[str] = Field(None, description="Описание серии")
+    description: str | None = Field(None, description="Описание серии")
     is_completed: bool = Field(default=False, description="Серия завершена")
 
 
 class SeriesUpdate(Schema):
     """Схема обновления серии."""
 
-    title: Optional[str] = Field(None, min_length=1, max_length=200)
-    description: Optional[str] = None
-    is_completed: Optional[bool] = None
+    title: str | None = Field(None, min_length=1, max_length=200)
+    description: str | None = None
+    is_completed: bool | None = None
 
 
 # ============================================================================
@@ -265,18 +264,18 @@ class ArticleListOut(Schema):
     title: str = Field(..., description="Заголовок")
     slug: str = Field(..., description="URL slug")
     excerpt: str = Field(..., description="Краткое описание")
-    featured_image: Optional[str] = Field(None, description="URL главного изображения")
-    category: Optional[CategoryOut] = Field(None, description="Категория")
+    featured_image: str | None = Field(None, description="URL главного изображения")
+    category: CategoryOut | None = Field(None, description="Категория")
     author: AuthorOut = Field(..., description="Автор")
     tags: list[TagOut] = Field(default_factory=list, description="Теги")
     status: ArticleStatus = Field(..., description="Статус публикации")
-    difficulty: Optional[DifficultyLevel] = Field(None, description="Уровень сложности")
+    difficulty: DifficultyLevel | None = Field(None, description="Уровень сложности")
     reading_time: int = Field(..., ge=0, description="Время чтения (минуты)")
     views: int = Field(..., ge=0, description="Количество просмотров")
     likes: int = Field(..., ge=0, description="Количество лайков")
     comments_count: int = Field(..., ge=0, description="Количество комментариев")
     is_featured: bool = Field(..., description="Избранная статья")
-    published_at: Optional[datetime] = Field(None, description="Дата публикации")
+    published_at: datetime | None = Field(None, description="Дата публикации")
     created_at: datetime = Field(..., description="Дата создания")
     updated_at: datetime = Field(..., description="Дата обновления")
 
@@ -285,17 +284,15 @@ class ArticleDetailOut(ArticleListOut):
     """Детальная схема статьи."""
 
     content: str = Field(..., description="Полный контент статьи")
-    meta_description: Optional[str] = Field(None, description="META описание")
-    meta_keywords: Optional[str] = Field(None, description="META ключевые слова")
-    series: Optional[SeriesOut] = Field(None, description="Серия статей")
-    series_order: Optional[int] = Field(None, description="Порядок в серии")
+    meta_description: str | None = Field(None, description="META описание")
+    meta_keywords: str | None = Field(None, description="META ключевые слова")
+    series: SeriesOut | None = Field(None, description="Серия статей")
+    series_order: int | None = Field(None, description="Порядок в серии")
     is_featured: bool = Field(..., description="Избранная статья")
     allow_comments: bool = Field(..., description="Комментарии разрешены")
-    user_has_liked: Optional[bool] = Field(None, description="Лайкнул ли текущий пользователь")
-    user_has_bookmarked: Optional[bool] = Field(None, description="Добавил ли в закладки")
-    user_reading_progress: Optional[int] = Field(
-        None, ge=0, le=100, description="Прогресс чтения %"
-    )
+    user_has_liked: bool | None = Field(None, description="Лайкнул ли текущий пользователь")
+    user_has_bookmarked: bool | None = Field(None, description="Добавил ли в закладки")
+    user_reading_progress: int | None = Field(None, ge=0, le=100, description="Прогресс чтения %")
 
 
 class ArticleIn(Schema):
@@ -303,15 +300,15 @@ class ArticleIn(Schema):
 
     title: str = Field(..., min_length=1, max_length=200, description="Заголовок")
     content: str = Field(..., min_length=10, description="Контент статьи")
-    excerpt: Optional[str] = Field(None, max_length=500, description="Краткое описание")
-    category_id: Optional[int] = Field(None, description="ID категории")
+    excerpt: str | None = Field(None, max_length=500, description="Краткое описание")
+    category_id: int | None = Field(None, description="ID категории")
     tag_ids: list[int] = Field(default_factory=list, description="ID тегов")
-    series_id: Optional[int] = Field(None, description="ID серии")
-    series_order: Optional[int] = Field(None, ge=1, description="Порядок в серии")
-    difficulty: Optional[DifficultyLevel] = Field(None, description="Уровень сложности")
-    featured_image: Optional[str] = Field(None, description="URL изображения")
-    meta_description: Optional[str] = Field(None, max_length=160, description="META описание")
-    meta_keywords: Optional[str] = Field(None, description="META ключевые слова")
+    series_id: int | None = Field(None, description="ID серии")
+    series_order: int | None = Field(None, ge=1, description="Порядок в серии")
+    difficulty: DifficultyLevel | None = Field(None, description="Уровень сложности")
+    featured_image: str | None = Field(None, description="URL изображения")
+    meta_description: str | None = Field(None, max_length=160, description="META описание")
+    meta_keywords: str | None = Field(None, description="META ключевые слова")
     is_featured: bool = Field(default=False, description="Избранная статья")
     allow_comments: bool = Field(default=True, description="Разрешить комментарии")
     status: ArticleStatus = Field(default=ArticleStatus.DRAFT, description="Статус публикации")
@@ -320,35 +317,33 @@ class ArticleIn(Schema):
 class ArticleUpdate(Schema):
     """Схема обновления статьи."""
 
-    title: Optional[str] = Field(None, min_length=1, max_length=200)
-    content: Optional[str] = Field(None, min_length=10)
-    excerpt: Optional[str] = Field(None, max_length=500)
-    category_id: Optional[int] = None
-    tag_ids: Optional[list[int]] = None
-    series_id: Optional[int] = None
-    series_order: Optional[int] = Field(None, ge=1)
-    difficulty: Optional[DifficultyLevel] = None
-    featured_image: Optional[str] = None
-    meta_description: Optional[str] = Field(None, max_length=160)
-    meta_keywords: Optional[str] = None
-    is_featured: Optional[bool] = None
-    allow_comments: Optional[bool] = None
-    status: Optional[ArticleStatus] = None
+    title: str | None = Field(None, min_length=1, max_length=200)
+    content: str | None = Field(None, min_length=10)
+    excerpt: str | None = Field(None, max_length=500)
+    category_id: int | None = None
+    tag_ids: list[int] | None = None
+    series_id: int | None = None
+    series_order: int | None = Field(None, ge=1)
+    difficulty: DifficultyLevel | None = None
+    featured_image: str | None = None
+    meta_description: str | None = Field(None, max_length=160)
+    meta_keywords: str | None = None
+    is_featured: bool | None = None
+    allow_comments: bool | None = None
+    status: ArticleStatus | None = None
 
 
 class ArticleFilter(Schema):
     """Схема фильтрации статей."""
 
-    category_id: Optional[int] = Field(None, description="Фильтр по категории")
-    tag_ids: Optional[list[int]] = Field(None, description="Фильтр по тегам")
-    author_id: Optional[int] = Field(None, description="Фильтр по автору")
-    series_id: Optional[int] = Field(None, description="Фильтр по серии")
-    difficulty: Optional[DifficultyLevel] = Field(None, description="Фильтр по сложности")
-    status: Optional[ArticleStatus] = Field(None, description="Фильтр по статусу")
-    is_featured: Optional[bool] = Field(None, description="Только избранные")
-    search: Optional[str] = Field(
-        None, min_length=2, max_length=100, description="Поисковый запрос"
-    )
+    category_id: int | None = Field(None, description="Фильтр по категории")
+    tag_ids: list[int] | None = Field(None, description="Фильтр по тегам")
+    author_id: int | None = Field(None, description="Фильтр по автору")
+    series_id: int | None = Field(None, description="Фильтр по серии")
+    difficulty: DifficultyLevel | None = Field(None, description="Фильтр по сложности")
+    status: ArticleStatus | None = Field(None, description="Фильтр по статусу")
+    is_featured: bool | None = Field(None, description="Только избранные")
+    search: str | None = Field(None, min_length=2, max_length=100, description="Поисковый запрос")
     sort_by: ArticleSortBy = Field(
         default=ArticleSortBy.PUBLISHED, description="Сортировка по полю"
     )
@@ -368,7 +363,7 @@ class CommentOut(Schema):
     id: int = Field(..., description="ID комментария")
     author: AuthorOut = Field(..., description="Автор комментария")
     content: str = Field(..., description="Текст комментария")
-    parent_id: Optional[int] = Field(None, description="ID родительского комментария")
+    parent_id: int | None = Field(None, description="ID родительского комментария")
     replies_count: int = Field(..., ge=0, description="Количество ответов")
     likes: int = Field(..., ge=0, description="Количество лайков")
     is_edited: bool = Field(..., description="Был ли отредактирован")
@@ -381,7 +376,7 @@ class CommentIn(Schema):
 
     article_slug: str = Field(..., min_length=1, description="Slug статьи")
     content: str = Field(..., min_length=2, max_length=1000, description="Текст комментария")
-    parent_id: Optional[int] = Field(None, description="ID родительского комментария")
+    parent_id: int | None = Field(None, description="ID родительского комментария")
 
 
 class CommentUpdate(Schema):
@@ -408,7 +403,7 @@ class ReactionOut(Schema):
     article_slug: str = Field(..., description="Slug статьи")
     reactions: dict[str, int] = Field(..., description="Количество каждого типа реакции")
     total: int = Field(..., ge=0, description="Всего реакций")
-    user_reaction: Optional[ReactionType] = Field(None, description="Реакция текущего пользователя")
+    user_reaction: ReactionType | None = Field(None, description="Реакция текущего пользователя")
 
 
 # ============================================================================
