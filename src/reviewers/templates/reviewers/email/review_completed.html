@@ -1,0 +1,146 @@
+{% load i18n %}
+<div style="background-color: #f7f7f7; padding: 40px 0; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div style="background-color: {{ header_color }}; border-radius: 10px 10px 0 0; color: #ffffff; padding: 30px; margin: 0 auto; max-width: 600px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="color: white;">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-size: 24px; font-weight: bold;">PyLand</span>
+    </div>
+    <h2 style="margin: 0; font-size: 28px;">{{ status_emoji }} {% trans "Ваша работа проверена" %}</h2>
+  </div>
+
+  <div style="margin: 0 auto; padding: 40px; background-color: #ffffff; max-width: 600px; text-align: left; border-radius: 0 0 10px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    {% if student_email %}
+    <div style="background-color: #f1f5f9; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; border-left: 3px solid #64748b;">
+      <p style="font-size: 12px; color: #64748b; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+        📧 {% trans "Кому" %}
+      </p>
+      <p style="font-size: 14px; color: #334155; margin: 0; font-weight: 500;">
+        {{ student_email }}
+      </p>
+    </div>
+    {% endif %}
+    
+    <p style="font-size: 18px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+      {% trans "Привет" %}, <strong>{{ student_name }}</strong>!
+    </p>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #555; margin-bottom: 30px;">
+      {% trans "Ваша работа по уроку проверена. Результаты проверки доступны ниже." %}
+    </p>
+
+    <!-- Статус карточка -->
+    <div style="background-color: {{ status_bg_color }}; padding: 24px; border-radius: 8px; border-left: 4px solid {{ status_border_color }}; margin: 30px 0;">
+      <div style="margin-bottom: 16px;">
+        <p style="font-size: 12px; color: {{ status_text_color }}; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">
+          {% trans "Статус" %}
+        </p>
+        <p style="font-size: 20px; font-weight: 700; color: {{ status_title_color }}; margin: 0;">
+          {{ status_emoji }} {{ status_text }}
+        </p>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <p style="font-size: 12px; color: {{ status_text_color }}; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">
+          {% trans "Курс" %}
+        </p>
+        <p style="font-size: 16px; font-weight: 600; color: #1e293b; margin: 0;">
+          📚 {{ course_name }}
+        </p>
+      </div>
+
+      <div>
+        <p style="font-size: 12px; color: {{ status_text_color }}; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">
+          {% trans "Урок" %}
+        </p>
+        <p style="font-size: 16px; font-weight: 600; color: #1e293b; margin: 0;">
+          📖 {{ lesson_name }}
+        </p>
+      </div>
+    </div>
+
+    {% if comments %}
+    <!-- Комментарии ревьюера -->
+    <div style="background-color: #f8fafc; padding: 24px; border-radius: 8px; margin: 30px 0;">
+      <p style="font-size: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0; font-weight: 600;">
+        💬 {% trans "Комментарий ревьюера" %}
+      </p>
+      <div style="background-color: #ffffff; padding: 16px; border-radius: 6px; border: 1px solid #e2e8f0;">
+        <p style="font-size: 15px; line-height: 1.7; color: #1e293b; margin: 0; white-space: pre-wrap;">{{ comments }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if improvements %}
+    <!-- Рекомендации по улучшению -->
+    <div style="background-color: #fffbeb; padding: 24px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 30px 0;">
+      <p style="font-size: 14px; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0; font-weight: 600;">
+        🎯 {% trans "Рекомендации по улучшению" %}
+      </p>
+      <ul style="margin: 0; padding-left: 20px; color: #78350f;">
+        {% for improvement in improvements %}
+        <li style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">{{ improvement }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <!-- Кнопка действия -->
+    <div style="text-align: center; margin: 40px 0;">
+      <a href="{{ submission_url }}" 
+         style="display: inline-block; 
+                padding: 16px 32px; 
+                background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+                color: #ffffff; 
+                text-decoration: none; 
+                font-weight: 600; 
+                font-size: 16px; 
+                border-radius: 8px; 
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+                transition: all 0.2s ease;">
+        {% trans "Посмотреть детали" %} →
+      </a>
+    </div>
+
+    {% if status == 'needs_work' %}
+    <!-- Информация о доработке -->
+    <div style="background-color: #fef2f2; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444; margin: 30px 0;">
+      <p style="font-size: 14px; line-height: 1.5; color: #991b1b; margin-bottom: 10px; font-weight: 600;">
+        📝 {% trans "Что дальше?" %}
+      </p>
+      <p style="font-size: 14px; line-height: 1.5; color: #7f1d1d; margin: 0;">
+        {% trans "Внесите необходимые изменения в вашу работу согласно комментариям ревьюера и отправьте её на повторную проверку." %}
+      </p>
+    </div>
+    {% elif status == 'approved' %}
+    <!-- Поздравление -->
+    <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; margin: 30px 0;">
+      <p style="font-size: 14px; line-height: 1.5; color: #065f46; margin-bottom: 10px; font-weight: 600;">
+        🎉 {% trans "Поздравляем!" %}
+      </p>
+      <p style="font-size: 14px; line-height: 1.5; color: #047857; margin: 0;">
+        {% trans "Отличная работа! Вы можете переходить к следующему уроку." %}
+      </p>
+    </div>
+    {% endif %}
+
+    <hr style="border: none; height: 1px; background-color: #e2e8f0; margin: 30px 0;">
+
+    <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 10px;">
+      {% trans "Если у вас есть вопросы по проверке, вы можете задать их ревьюеру через платформу." %}
+    </p>
+    
+    <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 0;">
+      {% trans "С уважением," %}<br>
+      <strong>{% trans "Команда PyLand" %}</strong>
+    </p>
+  </div>
+
+  <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+    <p>
+      {% trans "Это автоматическое письмо, пожалуйста, не отвечайте на него." %}<br>
+      {% trans "Если у вас есть вопросы, свяжитесь с нами через форму обратной связи на сайте." %}
+    </p>
+  </div>
+</div>

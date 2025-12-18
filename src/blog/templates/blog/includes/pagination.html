@@ -1,0 +1,46 @@
+{% load i18n static %}
+<link rel="stylesheet" href="{% static 'css/blog/pagination.css' %}">
+
+{% if page_obj.has_other_pages %}
+<div class="pagination-revolutionary animate-fade-in delay-5">
+    {% if page_obj.has_previous %}
+        <a href="?page=1{% if query_params %}{{ query_params }}{% endif %}" class="pagination-btn pagination-first">
+            <span>⏮️</span>
+            <span class="btn-text">{% trans "Первая" %}</span>
+        </a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if query_params %}{{ query_params }}{% endif %}" class="pagination-btn pagination-prev">
+            <span>◀️</span>
+            <span class="btn-text">{% trans "Предыдущая" %}</span>
+        </a>
+    {% endif %}
+    
+    <div class="pagination-numbers">
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="pagination-btn pagination-current">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}{% if query_params %}{{ query_params }}{% endif %}" class="pagination-btn">{{ num }}</a>
+            {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                <a href="?page={{ num }}{% if query_params %}{{ query_params }}{% endif %}" class="pagination-btn">{{ num }}</a>
+            {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                <span class="pagination-dots">...</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    <div class="pagination-info">
+        <span>{% trans "Страница" %} {{ page_obj.number }} {% trans "из" %} {{ page_obj.paginator.num_pages }}</span>
+    </div>
+    
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if query_params %}{{ query_params }}{% endif %}" class="pagination-btn pagination-next">
+            <span class="btn-text">{% trans "Следующая" %}</span>
+            <span>▶️</span>
+        </a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if query_params %}{{ query_params }}{% endif %}" class="pagination-btn pagination-last">
+            <span class="btn-text">{% trans "Последняя" %}</span>
+            <span>⏭️</span>
+        </a>
+    {% endif %}
+</div>
+{% endif %}

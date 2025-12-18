@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markdown_filters %}
+
+{% block title %}{{ series.title }} - {% trans "Серия" %} - PyLand{% endblock %}
+{% block description %}{{ series.description|truncatechars:160 }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/series-detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/utils.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Series Hero -->
+<section class="revolutionary-hero-home">
+	<div class="hero-particles">
+		<div class="particle particle-1"></div>
+		<div class="particle particle-2"></div>
+		<div class="particle particle-3"></div>
+		<div class="particle particle-4"></div>
+		<div class="particle particle-5"></div>
+	</div>
+	
+	<div class="container">
+		<div class="hero-main-content">
+			<div class="hero-badge-revolutionary animate-fade-in">
+				<span>📚</span>
+				<span>{% trans "Серия статей" %}</span>
+			</div>
+
+			<h1 class="hero-title-revolutionary animate-fade-in delay-1">
+				{{ series.title }}
+			</h1>
+			
+			<p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+				{{ series.description|default:_('Серия обучающих статей по теме') }}
+			</p>
+
+			<div class="hero-stats-revolutionary animate-fade-in delay-3">
+				<div class="stat-card-revolutionary">
+					<span class="stat-number-revolutionary">{{ total_articles|default:0 }}</span>
+					<span class="stat-label-revolutionary">{% trans "Статей" %}</span>
+				</div>
+				<div class="stat-card-revolutionary">
+					<span class="stat-number-revolutionary">{{ total_views|default:'0' }}</span>
+					<span class="stat-label-revolutionary">{% trans "Просмотров" %}</span>
+				</div>
+				<div class="stat-card-revolutionary">
+					<span class="stat-number-revolutionary">{{ total_reading_time|default:'0' }}</span>
+					<span class="stat-label-revolutionary">{% trans "Минут чтения" %}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Progress Indicator -->
+<section class="courses-revolutionary series-section-top">
+	<div class="container">
+		<div class="series-progress-indicator animate-fade-in">
+			<div class="progress-header">
+				<span class="progress-title">📊 {% trans "Прогресс изучения" %}</span>
+				<span class="progress-percentage">{{ completion_percentage|default:0 }}%</span>
+			</div>
+			<div class="progress-bar-container">
+				<div class="progress-bar-fill" style="width: {{ completion_percentage|default:0 }}%;"></div>
+			</div>
+			<div class="progress-stats">
+				<span>{% trans "Статей в серии:" %} {{ total_articles|default:0 }}</span>
+				<span>{% trans "Общее время чтения:" %} {{ total_reading_time|default:'0' }} {% trans "мин" %}</span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Articles Timeline -->
+<section class="courses-revolutionary series-section-articles">
+	<div class="container">
+		<div class="section-header-revolutionary">
+			<div class="section-badge animate-fade-in">
+				<span>📖</span>
+				<span>{% trans "Материалы серии" %}</span>
+			</div>
+			<h2 class="section-title-revolutionary animate-fade-in delay-1">
+				{% trans "Изучайте по порядку" %}
+			</h2>
+			<p class="section-subtitle-revolutionary animate-fade-in delay-2">
+				{% trans "Следуйте рекомендуемой последовательности для лучшего понимания" %}
+			</p>
+		</div>
+
+		{% if series.published_articles %}
+		<div class="series-timeline">
+			{% for article in series.published_articles %}
+			<div class="timeline-item animate-fade-in delay-{{ forloop.counter }}">
+				<div class="timeline-marker {% if forloop.first %}current{% elif forloop.counter0 < series.completed_articles %}completed{% endif %}">
+					{{ forloop.counter }}
+				</div>
+				<a href="{{ article.get_absolute_url }}" class="timeline-link">
+					<div class="timeline-content">
+						<h3 class="timeline-title">{{ article.title }}</h3>
+						<div class="timeline-meta">
+							<span>🏷️ {{ article.category.name|default:_('Статья') }}</span>
+							<span>⏱ {{ article.reading_time|default:'5' }} {% trans "мин" %}</span>
+							<span>📅 {{ article.published_at|date:"d.m.Y" }}</span>
+						</div>
+						<p class="timeline-description">
+							{{ article.excerpt|default:article.content|smart_excerpt:25 }}
+						</p>
+					</div>
+				</a>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div class="empty-state-revolutionary">
+			<div class="empty-icon">📝</div>
+			<h3>{% trans "Пока нет материалов" %}</h3>
+			<p>{% trans "В серии пока нет опубликованных статей" %}</p>
+		</div>
+		{% endif %}
+
+		<div class="courses-footer-revolutionary animate-fade-in delay-2 series-footer">
+			<a href="{% url 'blog:series_list' %}" class="btn-revolutionary-hero btn-secondary-hero">
+				<span>←</span>
+				<span>{% trans "Все серии" %}</span>
+			</a>
+		</div>
+	</div>
+</section>
+
+<!-- Related Series -->
+{% if related_series %}
+<section class="features-revolutionary">
+	<div class="container">
+		<div class="section-header-revolutionary">
+			<div class="section-badge animate-fade-in">
+				<span>📚</span>
+				<span>{% trans "Похожие серии" %}</span>
+			</div>
+			<h3 class="section-title-revolutionary animate-fade-in delay-1">{% trans "Похожие серии" %}</h3>
+			<p class="section-subtitle-revolutionary animate-fade-in delay-2">{% trans "Другие серии, которые могут вас заинтересовать" %}</p>
+		</div>
+		<div class="features-grid-revolutionary">
+			{% for rs in related_series %}
+			<a href="{% url 'blog:series_detail' rs.slug %}" class="related-series-link">
+				<div class="feature-card-revolutionary animate-fade-in delay-{{ forloop.counter }}">
+					<div class="feature-icon-revolutionary">
+						{% if rs.cover_image %}
+							<img src="{{ rs.cover_image.url }}" alt="{{ rs.title }}" class="series-cover-image">
+						{% else %}
+							📚
+						{% endif %}
+					</div>
+					<h4 class="feature-title-revolutionary">{{ rs.title }}</h4>
+					<p class="feature-description-revolutionary">{{ rs.description|truncatewords:12 }}</p>
+				</div>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+{% endif %}
+
+{% endblock %}
+

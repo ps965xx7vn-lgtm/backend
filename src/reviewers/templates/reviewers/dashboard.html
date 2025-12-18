@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Панель ревьюера" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviewers/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Mobile sidebar toggle button -->
+<button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+    <svg class="icon-menu" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <!-- Пустой блок для отступа на мобильных -->
+        <div class="sidebar-spacer"></div>
+        
+        <!-- User Info -->
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {% if request.user.student.avatar %}
+                    <img src="{{ request.user.student.avatar.url }}" alt="{{ request.user.email }}">
+                {% else %}
+                    {{ request.user.email|first|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>{{ request.user.first_name|default:request.user.email }}</h3>
+                <p class="dashboard-user-role">{% trans "Ревьюер" %}</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="dashboard-nav">
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:dashboard' %}" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        {% trans "Главная" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:submissions' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        {% trans "Работы" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:history' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {% trans "История" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:statistics' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        {% trans "Статистика" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:settings' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {% trans "Настройки" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Панель ревьюера" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <span>{% trans "Главная" %}</span>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Дашборд" %}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card warning">
+                <div class="stat-header">
+                    <div class="stat-icon warning">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ stats.pending_count|default:0 }}</h3>
+                <p class="stat-label">{% trans "Ожидают проверки" %}</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ stats.total_reviews|default:0 }}</h3>
+                <p class="stat-label">{% trans "Всего проверок" %}</p>
+            </div>
+
+            <div class="stat-card success">
+                <div class="stat-header">
+                    <div class="stat-icon success">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ stats.approved_count|default:0 }}</h3>
+                <p class="stat-label">{% trans "Одобрено" %}</p>
+            </div>
+
+            <div class="stat-card info">
+                <div class="stat-header">
+                    <div class="stat-icon info">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ stats.needs_work_count|default:0 }}</h3>
+                <p class="stat-label">{% trans "Нужны правки" %}</p>
+            </div>
+        </div>
+
+        <!-- Charts Container -->
+        <div class="charts-container">
+            <!-- Activity Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <h3 class="chart-title">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            {% trans "Активность за неделю" %}
+                        </h3>
+                        <span class="chart-subtitle">{% trans "Статистика проверок" %}</span>
+                    </div>
+                    <a href="{% url 'reviewers:history' %}" class="chart-link">
+                        {% trans "История" %}
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="chart-content">
+                    {% if activity_by_day %}
+                        <div class="activity-chart-modern">
+                            <div class="activity-bars-modern">
+                                {% for day in activity_by_day %}
+                                <div class="activity-day-group">
+                                    <div class="activity-day-bars">
+                                        <!-- Одобрено -->
+                                        <div class="activity-bar-modern success" 
+                                             style="height: {% if day.approved > 0 %}{% widthratio day.approved 8 100 %}%{% else %}4px{% endif %};"
+                                             data-tooltip="Одобрено: {{ day.approved }}">
+                                            {% if day.approved > 0 %}
+                                            <span class="bar-value">{{ day.approved }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <!-- На правку -->
+                                        <div class="activity-bar-modern info" 
+                                             style="height: {% if day.needs_work > 0 %}{% widthratio day.needs_work 8 100 %}%{% else %}4px{% endif %};"
+                                             data-tooltip="На правку: {{ day.needs_work }}">
+                                            {% if day.needs_work > 0 %}
+                                            <span class="bar-value">{{ day.needs_work }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="activity-day-label {% if day.is_today %}today{% endif %}">
+                                        <span class="day-name">{{ day.day_name }}</span>
+                                        <span class="day-number">{{ day.day_number }}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="activity-legend-modern">
+                                <div class="legend-item-modern">
+                                    <div class="legend-bar success"></div>
+                                    <span class="legend-text">{% trans "Одобрено" %}</span>
+                                </div>
+                                <div class="legend-item-modern">
+                                    <div class="legend-bar info"></div>
+                                    <span class="legend-text">{% trans "На правку" %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                </svg>
+                            </div>
+                            <h3 class="empty-title">{% trans "Нет данных" %}</h3>
+                            <p class="empty-message">{% trans "Статистика активности появится после проверок" %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Reviews -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <h3 class="chart-title">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {% trans "Недавние проверки" %}
+                        </h3>
+                        <span class="chart-subtitle">{% trans "Последние 5 работ" %}</span>
+                    </div>
+                    <a href="{% url 'reviewers:history' %}" class="chart-link">
+                        {% trans "Посмотреть все" %}
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="chart-content">
+                    {% if recent_reviews %}
+                        <div class="reviews-modern-list">
+                            {% for review in recent_reviews|slice:":5" %}
+                            <a href="{% url 'reviewers:submission_detail' review.lesson_submission.id %}" class="review-modern-item">
+                                <div class="review-modern-left">
+                                    <div class="review-modern-avatar">
+                                        {{ review.lesson_submission.student.user.first_name|first|default:"S"|upper }}
+                                    </div>
+                                    <div class="review-modern-info">
+                                        <p class="review-modern-student">{{ review.lesson_submission.student.user.get_full_name|default:review.lesson_submission.student.user.email|truncatechars:25 }}</p>
+                                        <p class="review-modern-lesson">{{ review.lesson_submission.lesson.name|truncatechars:35 }}</p>
+                                        <div class="review-modern-meta">
+                                            <span class="review-modern-time">
+                                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                {{ review.reviewed_at|timesince }} назад
+                                            </span>
+                                            <span class="review-modern-course">{{ review.lesson_submission.lesson.course.name|truncatechars:20 }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="review-modern-right">
+                                    {% if review.status == 'approved' %}
+                                        <span class="badge badge-success">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            {% trans "Принято" %}
+                                        </span>
+                                    {% elif review.status == 'needs_work' %}
+                                        <span class="badge badge-info">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
+                                            {% trans "Правки" %}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-danger">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            {% trans "Отклонено" %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state-small">
+                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <p>{% trans "Нет недавних проверок" %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Work to Review -->
+        {% if pending_submissions %}
+        <div class="chart-card" style="margin-top: 2rem;">
+            <div class="chart-header">
+                <h3 class="chart-title">{% trans "Работы на проверку" %}</h3>
+                <a href="{% url 'reviewers:submissions' %}" class="chart-link">{% trans "Посмотреть все" %}</a>
+            </div>
+            <div class="chart-content">
+                <div class="submissions-grid-compact">
+                    {% for submission in pending_submissions|slice:":4" %}
+                    <a href="{% url 'reviewers:submission_review' submission.id %}" class="submission-card-compact">
+                        <div class="submission-header-compact">
+                            <div class="submission-avatar-compact">
+                                {{ submission.student.user.first_name|first|default:"S"|upper }}
+                            </div>
+                            <div class="submission-info-compact">
+                                <p class="submission-student-compact">{{ submission.student.user.get_full_name|default:submission.student.user.email }}</p>
+                                <p class="submission-course-compact">{{ submission.lesson.course.name }}</p>
+                            </div>
+                        </div>
+                        <p class="submission-lesson-compact">{{ submission.lesson.name }}</p>
+                        <span class="submission-time-compact">{{ submission.submitted_at|timesince }} {% trans "назад" %}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reviewers/dashboard-mobile.js' %}"></script>
+{% endblock %}

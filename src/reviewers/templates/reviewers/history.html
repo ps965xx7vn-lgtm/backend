@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "История проверок" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviewers/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+    <svg class="icon-menu" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+        
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {% if request.user.student.avatar %}
+                    <img src="{{ request.user.student.avatar.url }}" alt="{{ request.user.email }}">
+                {% else %}
+                    {{ request.user.email|first|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>{{ request.user.first_name|default:request.user.email }}</h3>
+                <p class="dashboard-user-role">{% trans "Ревьюер" %}</p>
+            </div>
+        </div>
+
+        <nav class="dashboard-nav">
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:dashboard' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        {% trans "Главная" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:submissions' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        {% trans "Работы" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:history' %}" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {% trans "История" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:statistics' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        {% trans "Статистика" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:settings' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {% trans "Настройки" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "История проверок" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <span>{% trans "Главная" %}</span>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "История" %}</span>
+                </div>
+            </div>
+            <div class="view-toggle">
+                <button class="view-toggle-btn active" data-view="grid" title="{% trans 'Сетка' %}">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                    </svg>
+                </button>
+                <button class="view-toggle-btn" data-view="list" title="{% trans 'Список' %}">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Reviews List -->
+        {% if reviews %}
+        <div class="reviews-container" data-view="grid">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-card-header">
+                    <div class="review-status-badge {% if review.status == 'approved' %}success{% elif review.status == 'needs_work' %}warning{% else %}danger{% endif %}">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {% if review.status == 'approved' %}
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            {% elif review.status == 'needs_work' %}
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            {% else %}
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            {% endif %}
+                        </svg>
+                    </div>
+                    <div class="review-card-status">
+                        {% if review.status == 'approved' %}
+                            <span class="badge badge-success">{% trans "Одобрено" %}</span>
+                        {% elif review.status == 'needs_work' %}
+                            <span class="badge badge-warning">{% trans "Нужны правки" %}</span>
+                        {% else %}
+                            <span class="badge badge-danger">{% trans "Отклонено" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="review-card-body">
+                    <h4 class="review-lesson-name">{{ review.lesson_submission.lesson.name }}</h4>
+                    <p class="review-course-info">
+                        <span class="review-student">{{ review.lesson_submission.student.user.email }}</span>
+                        <span class="review-separator">•</span>
+                        <span class="review-course">{{ review.lesson_submission.lesson.course.name }}</span>
+                    </p>
+                    
+                    {% if review.comments %}
+                    <div class="review-comments-box">
+                        <p class="review-comments-text">{{ review.comments }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="review-card-footer">
+                    <div class="review-meta">
+                        <span class="review-date">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            {{ review.reviewed_at|date:"d M Y, H:i" }}
+                        </span>
+                        {% if review.time_spent and review.time_spent != 10 %}
+                        <span class="review-time">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Проверка {{ review.time_spent }} мин
+                        </span>
+                        {% endif %}
+                        {% if review.wait_time_display %}
+                        <span class="review-wait">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Ожидал {{ review.wait_time_display }}
+                        </span>
+                        {% endif %}
+                        {% if review.time_ago_display %}
+                        <span class="review-wait">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Проверил {{ review.time_ago_display }} назад
+                        </span>
+                        {% endif %}
+                        {% with improvements=review.improvements.all %}
+                        {% if improvements %}
+                        <span class="review-improvements">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
+                            {% if improvements.count == 1 %}
+                                {{ improvements.count }} улучшение
+                            {% elif improvements.count >= 2 and improvements.count <= 4 %}
+                                {{ improvements.count }} улучшения
+                            {% else %}
+                                {{ improvements.count }} улучшений
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                    <a href="{% url 'reviewers:submission_detail' review.lesson_submission.id %}" class="btn btn-secondary btn-sm">
+                        {% trans "Подробнее" %}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-wrapper">
+            <div class="pagination-info">
+                {% trans "Показано" %} {{ reviews|length }} {% trans "из" %} {{ page_obj.paginator.count }} {% trans "проверок" %}
+            </div>
+            <div class="pagination-controls">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="pagination-btn" title="{% trans 'Первая страница' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn" title="{% trans 'Предыдущая' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                {% else %}
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                        </svg>
+                    </span>
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </span>
+                {% endif %}
+                
+                <span class="pagination-current">
+                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn" title="{% trans 'Следующая' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-btn" title="{% trans 'Последняя страница' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                {% else %}
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="empty-state" style="margin-top: 3rem;">
+            <div class="empty-icon">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h3 class="empty-title">{% trans "Нет проверок" %}</h3>
+            <p class="empty-message">{% trans "Вы ещё не проверяли работы" %}</p>
+            <a href="{% url 'reviewers:submissions' %}" class="btn btn-primary">{% trans "К работам" %}</a>
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reviewers/dashboard.js' %}"></script>
+<script src="{% static 'js/reviewers/dashboard-mobile.js' %}"></script>
+{% endblock %}

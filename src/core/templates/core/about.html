@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "О нас" %} - PyLand{% endblock %}
+{% block description %}{% trans "PyLand - революционная IT-школа будущего. Изучайте программирование с лучшими менторами и современными технологиями." %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/core/code-blocks.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="revolutionary-hero-home">
+        <div class="hero-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-main-content">
+                <div class="hero-badge-revolutionary animate-fade-in">
+                    <span>🚀</span>
+                    <span>{% trans "IT-Школа Будущего" %}</span>
+                </div>
+                
+                <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Превращаем мечты" %}
+                    <br>{% trans "в реальный код" %}
+                </h1>
+                
+                <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "PyLand - это не просто школа программирования. Это революционная экосистема, где рождаются IT-профессионалы будущего. Мы используем инновационный подход к обучению, объединяя передовые технологии с практикой реальных проектов." %}
+                </p>
+                
+                <div class="hero-actions-revolutionary animate-fade-in delay-3">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
+                            <span>✨</span>
+                            <span>{% trans "Начать обучение" %}</span>
+                        </a>
+                        <a href="{% url 'courses:courses' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                            <span>📚</span>
+                            <span>{% trans "Изучить курсы" %}</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'core:dashboard' %}" class="btn-revolutionary-hero btn-primary-hero">
+                            <span>🎯</span>
+                            <span>{% trans "Мой дашборд" %}</span>
+                        </a>
+                        <a href="{% url 'courses:courses' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                            <span>📚</span>
+                            <span>{% trans "Все курсы" %}</span>
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <div class="hero-stats-revolutionary animate-fade-in delay-4">
+                    <div class="stat-card-revolutionary">
+                        <span class="stat-number-revolutionary">10K+</span>
+                        <span class="stat-label-revolutionary">{% trans "Выпускников" %}</span>
+                    </div>
+                    <div class="stat-card-revolutionary">
+                        <span class="stat-number-revolutionary">95%</span>
+                        <span class="stat-label-revolutionary">{% trans "Трудоустроено" %}</span>
+                    </div>
+                    <div class="stat-card-revolutionary">
+                        <span class="stat-number-revolutionary">4.9/5</span>
+                        <span class="stat-label-revolutionary">{% trans "Рейтинг" %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- О платформе -->
+    <section class="features-revolutionary">
+        <div class="container">
+            <div class="section-header-revolutionary">
+                <div class="section-badge animate-fade-in">
+                    <span>💡</span>
+                    <span>{% trans "Преимущества" %}</span>
+                </div>
+                <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Что мы предлагаем нашим студентам?" %}
+                </h2>
+                <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Современная платформа для эффективного обучения программированию" %}
+                </p>
+            </div>
+            
+            <div class="features-grid-revolutionary">
+                <div class="feature-card-revolutionary animate-fade-in delay-3">
+                    <div class="feature-icon-revolutionary">📚</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Структурированные курсы" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Все материалы организованы по уровням сложности - от основ до продвинутых тем" %}
+                    </p>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-4">
+                    <div class="feature-icon-revolutionary">💻</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Практические задания" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Закрепляйте знания на реальных примерах и проектах после каждого урока" %}
+                    </p>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-5">
+                    <div class="feature-icon-revolutionary">📊</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Отслеживание прогресса" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Следите за своими достижениями и видите, как растут ваши навыки" %}
+                    </p>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-6">
+                    <div class="feature-icon-revolutionary">🌐</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Обучение онлайн" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Учитесь в удобное время из любой точки мира в своём темпе" %}
+                    </p>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-3">
+                    <div class="feature-icon-revolutionary">👨‍🏫</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Опытные преподаватели" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Курсы создают практикующие разработчики с реальным опытом работы" %}
+                    </p>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-4">
+                    <div class="feature-icon-revolutionary">🎓</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Сертификаты" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Получайте сертификаты о прохождении курсов для вашего портфолио" %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Примеры кода -->
+    <section class="code-examples-section">
+        <div class="container">
+            <div class="code-section-header">
+                <div class="code-section-badge">
+                    <span>💻</span>
+                    <span>{% trans "Примеры из курсов" %}</span>
+                </div>
+                <h2 class="code-section-title">
+                    {% trans "Изучайте на реальных примерах" %}
+                </h2>
+                <p class="code-section-subtitle">
+                    {% trans "Посмотрите, какой код вы будете писать в наших курсах" %}
+                </p>
+            </div>
+            
+            <div class="code-examples-grid">
+                <!-- Python Example -->
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <div class="code-window-controls">
+                            <div class="code-window-btn close"></div>
+                            <div class="code-window-btn minimize"></div>
+                            <div class="code-window-btn maximize"></div>
+                        </div>
+                        <div class="code-filename">example.py</div>
+                    </div>
+                    <div class="code-block-content">
+                        <div class="code-line"><span class="code-comment"># Создаем класс для студента</span></div>
+                        <div class="code-line"><span class="code-keyword">class</span> <span class="code-function">Student</span>:</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-special">self</span>, <span class="code-param">name</span>):</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">self</span>.name = <span class="code-param">name</span></div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">self</span>.courses = []</div>
+                        <div class="code-line"></div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">enroll</span>(<span class="code-special">self</span>, <span class="code-param">course</span>):</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">self</span>.courses.<span class="code-function">append</span>(<span class="code-param">course</span>)</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">print</span>(<span class="code-string">f"<span class="code-special">{self.name}</span> записан на <span class="code-special">{course}</span>"</span>)<span class="code-cursor"></span></div>
+                    </div>
+                </div>
+
+                <!-- JavaScript Example -->
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <div class="code-window-controls">
+                            <div class="code-window-btn close"></div>
+                            <div class="code-window-btn minimize"></div>
+                            <div class="code-window-btn maximize"></div>
+                        </div>
+                        <div class="code-filename">app.js</div>
+                    </div>
+                    <div class="code-block-content">
+                        <div class="code-line"><span class="code-comment">// Создаем интерактивное приложение</span></div>
+                        <div class="code-line"><span class="code-keyword">const</span> <span class="code-variable">createApp</span> = () =&gt; {</div>
+                        <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-variable">app</span> = {</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;name: <span class="code-string">'PyLand'</span>,</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;students: [],</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">addStudent</span>(<span class="code-param">student</span>) {</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">this</span>.students.<span class="code-function">push</span>(<span class="code-param">student</span>);</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+                        <div class="code-line">&nbsp;&nbsp;};</div>
+                        <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">return</span> app;</div>
+                        <div class="code-line">};<span class="code-cursor"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Наша миссия и статистика -->
+    <section class="features-revolutionary">
+        <div class="container">
+            <div class="section-header-revolutionary">
+                <div class="section-badge animate-fade-in">
+                    <span>🎯</span>
+                    <span>{% trans "О нас" %}</span>
+                </div>
+                <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Мы создаём качественное IT-образование" %}
+                </h2>
+                <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Помогаем начинающим разработчикам освоить программирование и найти свой путь в IT" %}
+                </p>
+            </div>
+            
+            <div class="features-grid-revolutionary">
+                <div class="feature-card-revolutionary animate-fade-in delay-3">
+                    <div class="feature-icon-revolutionary">📚</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Качественный контент" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Все материалы проверены экспертами и регулярно обновляются" %}
+                    </p>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-4">
+                    <div class="feature-icon-revolutionary">🎨</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Современный подход" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Используем новейшие методики обучения и актуальные технологии" %}
+                    </p>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-5">
+                    <div class="feature-icon-revolutionary">💪</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Практический опыт" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Фокусируемся на практике - делаем реальные проекты" %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-revolutionary">
+        <div class="container">
+            <div class="cta-content-revolutionary">
+                <h2 class="cta-title-revolutionary animate-fade-in">
+                    {% trans "Готовы начать свой путь в IT?" %}
+                </h2>
+                <p class="cta-description-revolutionary animate-fade-in delay-1">
+                    {% trans "Присоединяйтесь к тысячам студентов, которые уже изменили свою жизнь с PyLand. Начните своё путешествие в мир программирования прямо сейчас!" %}
+                </p>
+                <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
+                            <span>🚀</span>
+                            <span>{% trans "Начать обучение бесплатно" %}</span>
+                        </a>
+                        <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                            <span>💬</span>
+                            <span>{% trans "Связаться с нами" %}</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'core:dashboard' %}" class="btn-revolutionary-hero btn-primary-hero">
+                            <span>📊</span>
+                            <span>{% trans "Перейти в дашборд" %}</span>
+                        </a>
+                        <a href="{% url 'courses:courses' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                            <span>📚</span>
+                            <span>{% trans "Посмотреть все курсы" %}</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+ 

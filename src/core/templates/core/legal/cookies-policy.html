@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}PyLand - {% trans "Политика использования cookie" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core/legal-pages.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="legal-page">
+	<div class="legal-container">
+		<nav class="legal-toc">
+			<h3 class="legal-toc-title">{% trans "Содержание" %}</h3>
+			<ul class="legal-toc-list">
+				<li><a href="#intro" class="legal-toc-link">{% trans "1. Общие положения" %}</a></li>
+				<li><a href="#types" class="legal-toc-link">{% trans "2. Типы cookie" %}</a></li>
+				<li><a href="#usage" class="legal-toc-link">{% trans "3. Как мы используем cookie" %}</a></li>
+				<li><a href="#manage" class="legal-toc-link">{% trans "4. Управление cookie" %}</a></li>
+				<li><a href="#third-party" class="legal-toc-link">{% trans "5. Сторонние cookie" %}</a></li>
+				<li><a href="#contact" class="legal-toc-link">{% trans "6. Контакты" %}</a></li>
+			</ul>
+		</nav>
+		<main class="legal-content">
+			<header class="legal-header">
+				<h1 class="legal-title">{% trans "Политика использования cookie" %}</h1>
+				<div class="legal-meta">
+					<span class="legal-meta-item"><span class="legal-meta-icon">📅</span> {% trans "Обновлено: 12 декабря 2025" %}</span>
+				</div>
+			</header>
+			<section id="intro" class="legal-section">
+				<h2 class="legal-section-title">{% trans "1. Общие положения" %}</h2>
+				<p>{% trans "PyLand использует cookie для улучшения работы сайта и персонализации контента." %}</p>
+			</section>
+			<section id="types" class="legal-section">
+				<h2 class="legal-section-title">{% trans "2. Типы cookie" %}</h2>
+				<ul>
+					<li><strong>{% trans "Необходимые" %}</strong> — {% trans "обеспечивают работу сайта" %}</li>
+					<li><strong>{% trans "Функциональные" %}</strong> — {% trans "запоминают ваши предпочтения" %}</li>
+					<li><strong>{% trans "Аналитические" %}</strong> — {% trans "помогают анализировать использование сайта" %}</li>
+				</ul>
+			</section>
+			<section id="usage" class="legal-section">
+				<h2 class="legal-section-title">{% trans "3. Как мы используем cookie" %}</h2>
+				<ul>
+					<li><strong>{% trans "Аутентификация:" %}</strong> {% trans "Сессионные cookies для входа в систему (действуют 2 недели)" %}</li>
+					<li><strong>{% trans "Безопасность:" %}</strong> {% trans "CSRF-токены для защиты от атак" %}</li>
+					<li><strong>{% trans "Настройки:" %}</strong> {% trans "Сохранение языка интерфейса и темы оформления" %}</li>
+					<li><strong>{% trans "Прогресс обучения:" %}</strong> {% trans "Отслеживание вашего прогресса по курсам" %}</li>
+				</ul>
+				<div class="legal-note">
+					<p><strong>{% trans "Технические детали:" %}</strong></p>
+					<ul>
+						<li>{% trans "Session cookies: срок жизни 2 недели" %}</li>
+						<li>{% trans "CSRF cookies: защита от межсайтовых атак" %}</li>
+						<li>{% trans "Все cookies передаются только по HTTPS в продакшене" %}</li>
+						<li>{% trans "HttpOnly флаг: защита от XSS атак" %}</li>
+					</ul>
+				</div>
+			</section>
+			<section id="manage" class="legal-section">
+				<h2 class="legal-section-title">{% trans "4. Управление cookie" %}</h2>
+				<p>{% trans "Вы можете отключить cookie в настройках браузера. Это может повлиять на работу сайта." %}</p>
+			</section>
+			<section id="third-party" class="legal-section">
+				<h2 class="legal-section-title">{% trans "5. Сторонние cookie" %}</h2>
+				<p>{% trans "В настоящее время платформа не использует сторонние аналитические сервисы (Google Analytics, Яндекс.Метрика). Вся аналитика ведется внутри платформы." %}</p>
+				<p>{% trans "При интеграции сторонних сервисов в будущем вы будете уведомлены заранее, и данная политика будет обновлена." %}</p>
+			</section>
+			<section id="contact" class="legal-section">
+				<h2 class="legal-section-title">{% trans "6. Контакты" %}</h2>
+				<ul>
+					<li><strong>Email:</strong> pyland-school@yandex.com</li>
+				</ul>
+			</section>
+		</main>
+	</div>
+</div>
+{% endblock %}

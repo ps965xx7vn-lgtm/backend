@@ -1,0 +1,521 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Дашборд" %} - {{ profile.user.email }} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/students/dashboard.css' %}?v=20251212-fixed">
+{% endblock %}
+
+
+
+{% block content %}
+<!-- Mobile sidebar toggle button -->
+<button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+    <svg class="icon-menu" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <!-- Пустой блок для отступа на мобильных -->
+        <div class="sidebar-spacer"></div>
+        
+        <!-- User Info -->
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="{{ profile.user.email }}">
+                {% else %}
+                    {{ profile.user.email|first|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>
+                    {% if profile.user.first_name %}
+                        {{ profile.user.first_name }} {{ profile.user.last_name }}
+                    {% else %}
+                        {{ profile.user.email|truncatechars:20 }}
+                    {% endif %}
+                </h3>
+                <p class="dashboard-user-role">
+                    {{ profile.role.name|default:"Студент" }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="dashboard-nav">
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:account_dashboard' profile.id %}" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        {% trans "Дашборд" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:account_courses' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        {% trans "Мои курсы" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:account_settings' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {% trans "Настройки" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">
+                    {% if profile.user.first_name %}
+                        {% trans "Добро пожаловать" %}, {{ profile.user.first_name }}!
+                    {% else %}
+                        {% trans "Добро пожаловать в дашборд!" %}
+                    {% endif %}
+                </h1>
+                <div class="dashboard-breadcrumb">
+                    <span>{% trans "Главная" %}</span>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Дашборд" %}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ overall_stats.total_courses }}</h3>
+                <p class="stat-label">{% trans "Активных курсов" %}</p>
+            </div>
+
+            <div class="stat-card success">
+                <div class="stat-header">
+                    <div class="stat-icon success">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ overall_stats.completed_steps }}</h3>
+                <p class="stat-label">{% trans "Выполнено шагов" %}</p>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-header">
+                    <div class="stat-icon warning">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ overall_stats.completion_percentage }}%</h3>
+                <p class="stat-label">{% trans "Общий прогресс" %}</p>
+            </div>
+
+            <div class="stat-card danger">
+                <div class="stat-header">
+                    <div class="stat-icon danger">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ recent_progress|length }}</h3>
+                <p class="stat-label">{% trans "Активность за неделю" %}</p>
+            </div>
+        </div>
+
+        <!-- Charts Container -->
+        <div class="charts-container">
+            <!-- Activity Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">{% trans "Активность за неделю" %}</h3>
+                </div>
+                <div class="chart-content" id="activity-chart"></div>
+            </div>
+
+            <!-- Progress Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">{% trans "Прогресс по курсам" %}</h3>
+                </div>
+                <div class="chart-content" id="progress-chart"></div>
+            </div>
+        </div>
+
+        <!-- Course Progress -->
+        {% if all_course_stats %}
+        <div class="progress-container">
+            <div class="progress-header">
+                <h3 class="progress-title">{% trans "Прогресс по курсам" %}</h3>
+            </div>
+            {% for course_stat in all_course_stats %}
+            <div class="progress-item">
+                <div class="progress-info">
+                    <span class="progress-name">{{ course_stat.course.name }}</span>
+                    <span class="progress-percentage">{{ course_stat.completion_percentage }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill {% if course_stat.completion_percentage == 100 %}success{% elif course_stat.completion_percentage >= 75 %}warning{% endif %}" 
+                         style="width: {{ course_stat.completion_percentage }}%"></div>
+                </div>
+                <div class="progress-stats">
+                    {{ course_stat.completed_lessons }}/{{ course_stat.total_lessons }} {% trans "уроков" %} • 
+                    {{ course_stat.completed_steps }}/{{ course_stat.total_steps }} {% trans "шагов" %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recent Courses Grid -->
+        {% if course_stats %}
+        <div class="courses-grid">
+            {% for course_stat in course_stats|slice:":4" %}
+            <div class="course-card">
+                {% if course_stat.course.image %}
+                <div class="course-image">
+                    <img src="{{ course_stat.course.image.url }}" alt="{{ course_stat.course.name }}">
+                    <div class="course-badge">
+                        {% if course_stat.is_completed %}
+                            {% trans "Завершен" %}
+                        {% elif course_stat.completion_percentage >= 50 %}
+                            {% trans "В процессе" %}
+                        {% else %}
+                            {% trans "Начат" %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="course-content">
+                    <h4 class="course-title">{{ course_stat.course.name }}</h4>
+                    <p class="course-description">{{ course_stat.course.short_description|default:course_stat.course.description|truncatechars:100 }}</p>
+                    
+                    <div class="course-progress">
+                        <div class="progress-info">
+                            <span class="progress-name">{% trans "Прогресс" %}</span>
+                            <span class="progress-percentage">{{ course_stat.completion_percentage }}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill {% if course_stat.completion_percentage == 100 %}success{% elif course_stat.completion_percentage >= 75 %}warning{% endif %}" 
+                                 style="width: {{ course_stat.completion_percentage }}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="course-stats">
+                        <span>{{ course_stat.completed_lessons }}/{{ course_stat.total_lessons }} {% trans "уроков" %}</span>
+                        <span>{{ course_stat.completed_steps }}/{{ course_stat.total_steps }} {% trans "шагов" %}</span>
+                    </div>
+
+                    <div class="course-actions">
+                        <a href="{% url 'students:account_course_detail' course_stat.course.slug %}" class="btn btn-primary btn-sm">
+                            {% if course_stat.completion_percentage == 0 %}
+                                {% trans "Начать" %}
+                            {% else %}
+                                {% trans "Продолжить" %}
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'courses:course_detail' course_stat.course.slug %}" class="btn btn-outline-secondary btn-sm">
+                            {% trans "Подробнее" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Bookmarked Articles Section -->
+        {% if bookmarked_articles %}
+        <div class="progress-container">
+            <div class="progress-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bookmark" style="color: #f59e0b;"></i>
+                    {% trans "Избранные статьи" %}
+                    <span class="badge badge-primary">{{ bookmarked_articles.count }}</span>
+                </h2>
+            </div>
+            <div class="bookmarked-articles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                {% for bookmark in bookmarked_articles %}
+                <div class="bookmarked-article-card" style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'" onclick="window.location.href='{{ bookmark.article.get_absolute_url }}'">
+                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color);">
+                        {{ bookmark.article.title }}
+                    </h3>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ bookmark.article.description|truncatewords:15 }}
+                    </p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted);">
+                        <span>
+                            <i class="far fa-user"></i> {{ bookmark.article.author.username }}
+                        </span>
+                        <span>
+                            <i class="far fa-clock"></i> {{ bookmark.created_at|timesince }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- My Submissions Section -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <h3 class="progress-title">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    {% trans "Мои работы" %}
+                </h3>
+                <span class="badge badge-primary">{{ submissions_count.total }}</span>
+            </div>
+            
+            <!-- Submissions Stats -->
+            <div class="stats-grid">
+                <div class="stat-card warning">
+                    <h3 class="stat-value">{{ submissions_count.pending }}</h3>
+                    <p class="stat-label">⏳ {% trans "Ожидают проверки" %}</p>
+                </div>
+                
+                <div class="stat-card danger">
+                    <h3 class="stat-value">{{ submissions_count.changes_requested }}</h3>
+                    <p class="stat-label">✏️ {% trans "Требуют доработки" %}</p>
+                </div>
+                
+                <div class="stat-card success">
+                    <h3 class="stat-value">{{ submissions_count.approved }}</h3>
+                    <p class="stat-label">✅ {% trans "Одобрено" %}</p>
+                </div>
+            </div>
+
+            <!-- Tabs for filtering submissions -->
+            <div class="submissions-tabs">
+                <button class="tab-button active" data-tab="changes-requested">
+                    ✏️ {% trans "Требуют доработки" %} ({{ submissions_count.changes_requested }})
+                </button>
+                <button class="tab-button" data-tab="pending">
+                    ⏳ {% trans "Ожидают" %} ({{ submissions_count.pending }})
+                </button>
+                <button class="tab-button" data-tab="approved">
+                    ✅ {% trans "Одобрено" %} ({{ submissions_count.approved }})
+                </button>
+            </div>
+
+            <!-- Changes Requested Tab -->
+            <div class="tab-content" id="changes-requested-tab">
+                {% if submissions_by_status.changes_requested %}
+                    {% for submission in submissions_by_status.changes_requested|slice:":5" %}
+                    <div class="submission-item danger">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0; font-size: 1.1rem;">
+                                    {{ submission.get_status_icon }} {{ submission.lesson.name }}
+                                </h4>
+                                <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">
+                                    {% trans "Курс:" %} {{ submission.lesson.course.name }}
+                                </p>
+                            </div>
+                            <span class="badge" style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">
+                                {{ submission.get_status_display }}
+                            </span>
+                        </div>
+                        
+                        {% if submission.mentor_comment %}
+                        <div style="background: white; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
+                            <strong style="color: #ef4444;">{% trans "Комментарий ментора:" %}</strong>
+                            <p style="margin: 0.5rem 0 0 0; color: #374151;">{{ submission.mentor_comment }}</p>
+                            {% if submission.mentor %}
+                            <p style="margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.875rem;">
+                                — {{ submission.mentor.user.get_full_name|default:submission.mentor.user.email }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: #6b7280;">
+                            <span>{% trans "Попытка:" %} {{ submission.revision_count|add:1 }}</span>
+                            <a href="{% url 'students:account_lesson_detail' submission.lesson.course.slug submission.lesson.slug %}" 
+                               class="btn btn-danger btn-sm">
+                                ✏️ {% trans "Исправить работу" %}
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: #6b7280; padding: 2rem;">
+                        {% trans "Нет работ, требующих доработки" %} ✨
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Pending Tab -->
+            <div class="tab-content" id="pending-tab" style="display: none;">
+                {% if submissions_by_status.pending %}
+                    {% for submission in submissions_by_status.pending|slice:":5" %}
+                    <div class="submission-item warning">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0;">
+                                    {{ submission.get_status_icon }} {{ submission.lesson.name }}
+                                </h4>
+                                <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">
+                                    {{ submission.lesson.course.name }}
+                                </p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #6b7280;">
+                                    {% trans "Отправлено:" %} {{ submission.submitted_at|date:"d.m.Y H:i" }}
+                                </p>
+                            </div>
+                            <span class="badge" style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px;">
+                                {{ submission.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: #6b7280; padding: 2rem;">
+                        {% trans "Нет работ, ожидающих проверки" %}
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Approved Tab -->
+            <div class="tab-content" id="approved-tab" style="display: none;">
+                {% if submissions_by_status.approved %}
+                    {% for submission in submissions_by_status.approved|slice:":5" %}
+                    <div class="submission-item success">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0;">
+                                    {{ submission.get_status_icon }} {{ submission.lesson.name }}
+                                </h4>
+                                <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">
+                                    {{ submission.lesson.course.name }}
+                                </p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #10b981;">
+                                    ✅ {% trans "Одобрено" %} {{ submission.reviewed_at|date:"d.m.Y" }}
+                                </p>
+                            </div>
+                            <span class="badge" style="background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 12px;">
+                                {{ submission.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: #6b7280; padding: 2rem;">
+                        {% trans "Пока нет одобренных работ" %}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        {% if achievements %}
+        <div class="progress-container">
+            <div class="progress-header">
+                <h3 class="progress-title">{% trans "Достижения" %}</h3>
+            </div>
+            <div class="achievements-grid">
+                {% for achievement in achievements %}
+                <div class="achievement-card">
+                    <div class="achievement-icon {{ achievement.color }}">
+                        {% if achievement.color == 'success' %}
+                            🌟
+                        {% elif achievement.color == 'primary' %}
+                            🎖️
+                        {% elif achievement.color == 'warning' %}
+                            👑
+                        {% else %}
+                            🏆
+                        {% endif %}
+                    </div>
+                    <h4 class="achievement-title">{{ achievement.title }}</h4>
+                    <p class="achievement-description">{{ achievement.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent Activity -->
+        {% if recent_progress %}
+        <div class="activity-feed">
+            <div class="activity-header">
+                <h3 class="activity-title">{% trans "Последняя активность" %}</h3>
+            </div>
+            <div class="activity-list">
+                {% for progress in recent_progress|slice:":10" %}
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text">
+                            {% trans "Выполнен шаг" %} <strong>{{ progress.step.name }}</strong> 
+                            {% trans "в уроке" %} <strong>{{ progress.step.lesson.name }}</strong>
+                        </p>
+                        <span class="activity-time">{{ progress.completed_at|timesince }} {% trans "назад" %}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+<!-- Data for JavaScript -->
+<script>
+window.dashboardData = {
+    dailyActivity: {{ daily_activity|safe }},
+    courseProgress: [
+        {% for course_stat in course_stats %}
+        {
+            name: "{{ course_stat.course.name|escapejs }}",
+            progress: {{ course_stat.completion_percentage }},
+            color: "{% if course_stat.completion_percentage == 100 %}#10b981{% elif course_stat.completion_percentage >= 75 %}#f59e0b{% elif course_stat.completion_percentage >= 50 %}#3b82f6{% else %}#ef4444{% endif %}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]
+};
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/students/dashboard.js' %}"></script>
+<script src="{% static 'js/students/dashboard-mobile.js' %}"></script>
+<script src="{% static 'js/students/code-copy.js' %}"></script>
+{% endblock %}

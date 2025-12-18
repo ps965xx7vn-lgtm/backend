@@ -1,0 +1,1789 @@
+/* ==================================
+   Statistics Charts - Ultra Modern Unique Design
+   Уникальный ультрасовременный дизайн графиков
+   ================================== */
+
+/* Специфичные селекторы для перекрытия базовых стилей */
+.charts-section {
+    display: grid;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+/* УНИКАЛЬНЫЙ ДИЗАЙН КАРТОЧЕК - Glassmorphism + Neon */
+.charts-section .chart-card,
+.two-column-section .chart-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border-radius: 28px !important;
+    padding: 0 !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Неоновая анимированная рамка */
+.charts-section .chart-card::before,
+.two-column-section .chart-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    background: linear-gradient(
+        45deg,
+        #3b82f6,
+        #8b5cf6,
+        #ec4899,
+        #f59e0b,
+        #10b981,
+        #3b82f6
+    ) !important;
+    background-size: 400% 400% !important;
+    border-radius: 28px !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    transition: opacity 0.5s ease !important;
+    animation: gradientFlow 8s ease infinite !important;
+}
+
+@keyframes gradientFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.charts-section .chart-card:hover::before,
+.two-column-section .chart-card:hover::before {
+    opacity: 0.6 !important;
+}
+
+/* Голографический эффект */
+.charts-section .chart-card::after,
+.two-column-section .chart-card::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    ) !important;
+    transition: left 0.7s ease !important;
+    pointer-events: none !important;
+}
+
+.charts-section .chart-card:hover::after,
+.two-column-section .chart-card:hover::after {
+    left: 100% !important;
+}
+
+.charts-section .chart-card:hover,
+.two-column-section .chart-card:hover {
+    transform: translateY(-12px) scale(1.02) !important;
+    box-shadow: 
+        0 20px 60px rgba(59, 130, 246, 0.25),
+        0 8px 24px rgba(139, 92, 246, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+[data-theme="dark"] .charts-section .chart-card,
+[data-theme="dark"] .two-column-section .chart-card {
+    background: rgba(26, 31, 46, 0.6) !important;
+    backdrop-filter: blur(24px) saturate(200%) !important;
+    border-color: rgba(139, 92, 246, 0.3) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .charts-section .chart-card:hover,
+[data-theme="dark"] .two-column-section .chart-card:hover {
+    box-shadow: 
+        0 20px 60px rgba(139, 92, 246, 0.35),
+        0 8px 24px rgba(59, 130, 246, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(139, 92, 246, 0.6) !important;
+}
+
+/* УНИКАЛЬНЫЙ ХЕДЕР С 3D ЭФФЕКТОМ */
+.charts-section .chart-header,
+.two-column-section .chart-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    padding: 2.5rem 2.5rem 2rem 2.5rem !important;
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.08) 0%,
+        rgba(139, 92, 246, 0.05) 50%,
+        rgba(236, 72, 153, 0.08) 100%
+    ) !important;
+    border-bottom: none !important;
+    position: relative !important;
+    margin-bottom: 0 !important;
+}
+
+/* 3D разделитель */
+.charts-section .chart-header::after,
+.two-column-section .chart-header::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 2.5rem !important;
+    right: 2.5rem !important;
+    height: 3px !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(59, 130, 246, 0.6) 20%,
+        rgba(139, 92, 246, 0.8) 50%,
+        rgba(236, 72, 153, 0.6) 80%,
+        transparent 100%
+    ) !important;
+    border-radius: 3px !important;
+    box-shadow: 
+        0 2px 12px rgba(59, 130, 246, 0.4),
+        0 -1px 4px rgba(139, 92, 246, 0.3) !important;
+    opacity: 1 !important;
+    transform: scaleX(0) !important;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.charts-section .chart-card:hover .chart-header::after,
+.two-column-section .chart-card:hover .chart-header::after {
+    transform: scaleX(1) !important;
+}
+
+[data-theme="dark"] .charts-section .chart-header,
+[data-theme="dark"] .two-column-section .chart-header {
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.12) 0%,
+        rgba(139, 92, 246, 0.08) 50%,
+        rgba(236, 72, 153, 0.12) 100%
+    ) !important;
+}
+
+/* УНИКАЛЬНЫЙ ЗАГОЛОВОК С ИКОНКОЙ */
+.charts-section .chart-title,
+.two-column-section .chart-title {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    background: linear-gradient(
+        135deg,
+        #3b82f6 0%,
+        #8b5cf6 50%,
+        #ec4899 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.03em !important;
+    filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.2)) !important;
+}
+
+.charts-section .chart-title::before,
+.two-column-section .chart-title::before {
+    content: '📊' !important;
+    font-size: 2rem !important;
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.4)) !important;
+    animation: iconFloat 3s ease-in-out infinite !important;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+[data-theme="dark"] .charts-section .chart-title,
+[data-theme="dark"] .two-column-section .chart-title {
+    background: linear-gradient(
+        135deg,
+        #60a5fa 0%,
+        #a78bfa 50%,
+        #f472b6 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.4)) !important;
+}
+
+/* УНИКАЛЬНАЯ ЛЕГЕНДА С PILL ДИЗАЙНОМ */
+.charts-section .chart-legend,
+.two-column-section .chart-legend {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+    align-items: center !important;
+}
+
+.charts-section .legend-item,
+.two-column-section .legend-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.625rem !important;
+    font-size: 0.9375rem !important;
+    font-weight: 600 !important;
+    color: var(--text-color, #1f2937) !important;
+    padding: 0.625rem 1.125rem !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 50px !important;
+    border: 2px solid rgba(59, 130, 246, 0.2) !important;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.charts-section .legend-item:hover,
+.two-column-section .legend-item:hover {
+    transform: translateY(-4px) scale(1.08) !important;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25) !important;
+    border-color: rgba(59, 130, 246, 0.5) !important;
+    background: rgba(255, 255, 255, 1) !important;
+}
+
+[data-theme="dark"] .charts-section .legend-item,
+[data-theme="dark"] .two-column-section .legend-item {
+    background: rgba(30, 35, 50, 0.8) !important;
+    border-color: rgba(139, 92, 246, 0.3) !important;
+    color: var(--text-color, #f3f4f6) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .charts-section .legend-item:hover,
+[data-theme="dark"] .two-column-section .legend-item:hover {
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4) !important;
+    border-color: rgba(139, 92, 246, 0.6) !important;
+    background: rgba(30, 35, 50, 1) !important;
+}
+
+.charts-section .legend-color,
+.two-column-section .legend-color {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+    position: relative !important;
+    animation: pulse 2s ease-in-out infinite !important;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+    50% { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
+}
+
+.charts-section .legend-color::after,
+.two-column-section .legend-color::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 3px !important;
+    left: 3px !important;
+    right: 3px !important;
+    bottom: 3px !important;
+    border-radius: 7px !important;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        transparent 60%
+    ) !important;
+}
+
+.charts-section .legend-color.approved,
+.two-column-section .legend-color.approved {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5) !important;
+}
+
+.charts-section .legend-color.needs-work,
+.two-column-section .legend-color.needs-work {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5) !important;
+}
+
+.charts-section .legend-color.rejected,
+.two-column-section .legend-color.rejected {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5) !important;
+}
+
+.charts-section .legend-label,
+.two-column-section .legend-label {
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* УНИКАЛЬНЫЙ КОНТЕНТ КАРТОЧКИ */
+.charts-section .chart-content,
+.two-column-section .chart-content {
+    padding: 2.5rem !important;
+    position: relative !important;
+    min-height: 340px !important;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    ) !important;
+}
+
+[data-theme="dark"] .charts-section .chart-content,
+[data-theme="dark"] .two-column-section .chart-content {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.01) 100%
+    ) !important;
+}
+
+/* УНИКАЛЬНЫЙ LINE CHART КОНТЕЙНЕР */
+.charts-section .line-chart-container,
+.two-column-section .line-chart-container {
+    position: relative !important;
+    width: 100% !important;
+    height: 340px !important;
+    padding: 1.5rem !important;
+    background: 
+        linear-gradient(
+            135deg,
+            rgba(59, 130, 246, 0.04) 0%,
+            rgba(139, 92, 246, 0.03) 50%,
+            rgba(236, 72, 153, 0.04) 100%
+        ) !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    border: 2px solid rgba(59, 130, 246, 0.15) !important;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.charts-section .line-chart-container::before,
+.two-column-section .line-chart-container::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 60px,
+            rgba(59, 130, 246, 0.05) 60px,
+            rgba(59, 130, 246, 0.05) 61px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 80px,
+            rgba(139, 92, 246, 0.04) 80px,
+            rgba(139, 92, 246, 0.04) 81px
+        ) !important;
+    pointer-events: none !important;
+}
+
+[data-theme="dark"] .charts-section .line-chart-container,
+[data-theme="dark"] .two-column-section .line-chart-container {
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.08) 0%,
+        rgba(139, 92, 246, 0.06) 50%,
+        rgba(236, 72, 153, 0.08) 100%
+    ) !important;
+    border-color: rgba(139, 92, 246, 0.25) !important;
+}
+
+[data-theme="dark"] .charts-section .line-chart-container::before,
+[data-theme="dark"] .two-column-section .line-chart-container::before {
+    background: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 60px,
+            rgba(59, 130, 246, 0.12) 60px,
+            rgba(59, 130, 246, 0.12) 61px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 80px,
+            rgba(139, 92, 246, 0.1) 80px,
+            rgba(139, 92, 246, 0.1) 81px
+        ) !important;
+}
+
+.charts-section #dailyCanvas,
+.two-column-section #dailyCanvas {
+    position: relative !important;
+    z-index: 1 !important;
+    filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.15)) !important;
+}
+
+/* УНИКАЛЬНЫЙ EMPTY STATE */
+.charts-section .empty-state,
+.two-column-section .empty-state {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 300px !important;
+    padding: 3rem 2rem !important;
+    text-align: center !important;
+}
+
+.charts-section .empty-icon,
+.two-column-section .empty-icon {
+    width: 100px !important;
+    height: 100px !important;
+    margin-bottom: 2rem !important;
+    padding: 2rem !important;
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.15) 0%,
+        rgba(139, 92, 246, 0.1) 50%,
+        rgba(236, 72, 153, 0.15) 100%
+    ) !important;
+    border-radius: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    border: 3px solid rgba(59, 130, 246, 0.3) !important;
+    box-shadow: 
+        0 8px 32px rgba(59, 130, 246, 0.2),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3) !important;
+}
+
+.charts-section .empty-icon::before,
+.two-column-section .empty-icon::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: -6px !important;
+    background: linear-gradient(
+        45deg,
+        #3b82f6,
+        #8b5cf6,
+        #ec4899,
+        #f59e0b
+    ) !important;
+    background-size: 300% 300% !important;
+    border-radius: 32px !important;
+    opacity: 0.3 !important;
+    animation: gradientRotate 6s ease-in-out infinite !important;
+    filter: blur(8px) !important;
+    z-index: -1 !important;
+}
+
+@keyframes gradientRotate {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.charts-section .empty-icon svg,
+.two-column-section .empty-icon svg {
+    color: var(--primary-500, #3b82f6) !important;
+    filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.4)) !important;
+    animation: iconPulse 2s ease-in-out infinite !important;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+[data-theme="dark"] .charts-section .empty-icon,
+[data-theme="dark"] .two-column-section .empty-icon {
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.2) 0%,
+        rgba(139, 92, 246, 0.15) 50%,
+        rgba(236, 72, 153, 0.2) 100%
+    ) !important;
+    border-color: rgba(139, 92, 246, 0.4) !important;
+}
+
+.charts-section .empty-message,
+.two-column-section .empty-message {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    background: linear-gradient(
+        135deg,
+        #6b7280 0%,
+        #9ca3af 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    margin: 0 !important;
+    letter-spacing: 0.02em !important;
+}
+
+[data-theme="dark"] .charts-section .empty-message,
+[data-theme="dark"] .two-column-section .empty-message {
+    background: linear-gradient(
+        135deg,
+        #9ca3af 0%,
+        #d1d5db 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* УНИКАЛЬНЫЕ MONTHLY BARS - 3D Столбцы */
+.charts-section .monthly-bars,
+.two-column-section .monthly-bars {
+    display: flex !important;
+    gap: 1.5rem !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    padding: 2.5rem 1.5rem 1.5rem !important;
+    min-height: 300px !important;
+    position: relative !important;
+    perspective: 1000px !important;
+}
+
+.charts-section .monthly-bars::before,
+.two-column-section .monthly-bars::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 70px !important;
+    left: 1.5rem !important;
+    right: 1.5rem !important;
+    height: 3px !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(59, 130, 246, 0.3) 5%,
+        rgba(139, 92, 246, 0.4) 50%,
+        rgba(236, 72, 153, 0.3) 95%,
+        transparent 100%
+    ) !important;
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.3) !important;
+    border-radius: 3px !important;
+}
+
+[data-theme="dark"] .charts-section .monthly-bars::before,
+[data-theme="dark"] .two-column-section .monthly-bars::before {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(59, 130, 246, 0.5) 5%,
+        rgba(139, 92, 246, 0.6) 50%,
+        rgba(236, 72, 153, 0.5) 95%,
+        transparent 100%
+    ) !important;
+    box-shadow: 0 2px 16px rgba(139, 92, 246, 0.4) !important;
+}
+
+.charts-section .month-bar-group,
+.two-column-section .month-bar-group {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    transform-style: preserve-3d !important;
+}
+
+.charts-section .month-bars-container,
+.two-column-section .month-bars-container {
+    display: flex !important;
+    gap: 0.5rem !important;
+    align-items: flex-end !important;
+    height: 220px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    transform-style: preserve-3d !important;
+}
+
+.charts-section .month-bar,
+.two-column-section .month-bar {
+    position: relative !important;
+    flex: 1 !important;
+    max-width: 28px !important;
+    min-height: 25px !important;
+    border-radius: 12px 12px 6px 6px !important;
+    cursor: pointer !important;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    overflow: visible !important;
+    transform-style: preserve-3d !important;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.15),
+        inset 0 2px 8px rgba(255, 255, 255, 0.2) !important;
+}
+
+.charts-section .month-bar::before,
+.two-column-section .month-bar::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 50% !important;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 100%
+    ) !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.charts-section .month-bar::after,
+.two-column-section .month-bar::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -4px !important;
+    left: 4px !important;
+    right: 4px !important;
+    height: 8px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    filter: blur(6px) !important;
+    border-radius: 50% !important;
+    opacity: 0.6 !important;
+    transition: all 0.5s ease !important;
+}
+
+.charts-section .month-bar:hover,
+.two-column-section .month-bar:hover {
+    transform: translateY(-12px) scale(1.1) rotateX(5deg) !important;
+    filter: brightness(1.15) saturate(1.2) !important;
+    box-shadow: 
+        0 12px 32px rgba(0, 0, 0, 0.25),
+        inset 0 2px 12px rgba(255, 255, 255, 0.3) !important;
+    z-index: 10 !important;
+}
+
+.charts-section .month-bar:hover::after,
+.two-column-section .month-bar:hover::after {
+    transform: scale(1.3) !important;
+    opacity: 0.8 !important;
+}
+
+.charts-section .month-bar.approved,
+.two-column-section .month-bar.approved {
+    background: linear-gradient(180deg, #34d399 0%, #10b981 50%, #059669 100%) !important;
+    box-shadow: 
+        0 4px 20px rgba(16, 185, 129, 0.4),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3) !important;
+}
+
+.charts-section .month-bar.needs-work,
+.two-column-section .month-bar.needs-work {
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%) !important;
+    box-shadow: 
+        0 4px 20px rgba(59, 130, 246, 0.4),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3) !important;
+}
+
+.charts-section .month-bar.rejected,
+.two-column-section .month-bar.rejected {
+    background: linear-gradient(180deg, #f87171 0%, #ef4444 50%, #dc2626 100%) !important;
+    box-shadow: 
+        0 4px 20px rgba(239, 68, 68, 0.4),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3) !important;
+}
+
+.charts-section .bar-value,
+.two-column-section .bar-value {
+    position: absolute !important;
+    top: -32px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    font-size: 0.8125rem !important;
+    font-weight: 800 !important;
+    color: var(--text-color, #111827) !important;
+    opacity: 0 !important;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    white-space: nowrap !important;
+    padding: 0.375rem 0.75rem !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 12px !important;
+    border: 2px solid rgba(59, 130, 246, 0.3) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.charts-section .month-bar:hover .bar-value,
+.two-column-section .month-bar:hover .bar-value {
+    opacity: 1 !important;
+    transform: translateX(-50%) translateY(-8px) !important;
+}
+
+[data-theme="dark"] .charts-section .bar-value,
+[data-theme="dark"] .two-column-section .bar-value {
+    color: var(--text-color, #f9fafb) !important;
+    background: rgba(30, 35, 50, 0.95) !important;
+    border-color: rgba(139, 92, 246, 0.4) !important;
+}
+
+.charts-section .month-label,
+.two-column-section .month-label {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.charts-section .month-name,
+.two-column-section .month-name {
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+    background: linear-gradient(
+        135deg,
+        #3b82f6 0%,
+        #8b5cf6 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    letter-spacing: 0.03em !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.charts-section .month-total,
+.two-column-section .month-total {
+    font-size: 0.8125rem !important;
+    font-weight: 800 !important;
+    color: white !important;
+    padding: 0.375rem 0.875rem !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+    border-radius: 50px !important;
+    box-shadow: 
+        0 4px 12px rgba(59, 130, 246, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .charts-section .month-name,
+[data-theme="dark"] .two-column-section .month-name {
+    background: linear-gradient(
+        135deg,
+        #60a5fa 0%,
+        #a78bfa 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+[data-theme="dark"] .charts-section .month-total,
+[data-theme="dark"] .two-column-section .month-total {
+    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%) !important;
+    box-shadow: 
+        0 4px 12px rgba(139, 92, 246, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Two Column Section - Улучшенная сетка */
+.two-column-section {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)) !important;
+    gap: 2.5rem !important;
+    margin-bottom: 2rem !important;
+}
+
+/* УНИКАЛЬНЫЕ COURSE STATS - Neon Cards */
+.charts-section .course-stats-list,
+.two-column-section .course-stats-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+}
+
+.charts-section .course-stat-item,
+.two-column-section .course-stat-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    padding: 1.75rem !important;
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.05) 0%,
+        rgba(139, 92, 246, 0.03) 50%,
+        rgba(236, 72, 153, 0.05) 100%
+    ) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 20px !important;
+    border: 2px solid transparent !important;
+    background-clip: padding-box !important;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.charts-section .course-stat-item::before,
+.two-column-section .course-stat-item::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    background: linear-gradient(
+        135deg,
+        #3b82f6,
+        #8b5cf6,
+        #ec4899
+    ) !important;
+    background-size: 200% 200% !important;
+    border-radius: 20px !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    transition: opacity 0.5s ease !important;
+    animation: gradientShift 4s ease infinite !important;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.charts-section .course-stat-item:hover::before,
+.two-column-section .course-stat-item:hover::before {
+    opacity: 1 !important;
+}
+
+.charts-section .course-stat-item:hover,
+.two-column-section .course-stat-item:hover {
+    transform: translateX(12px) scale(1.03) !important;
+    box-shadow: 
+        0 8px 32px rgba(59, 130, 246, 0.25),
+        0 4px 16px rgba(139, 92, 246, 0.15) !important;
+}
+
+[data-theme="dark"] .charts-section .course-stat-item,
+[data-theme="dark"] .two-column-section .course-stat-item {
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.1) 0%,
+        rgba(139, 92, 246, 0.06) 50%,
+        rgba(236, 72, 153, 0.1) 100%
+    ) !important;
+}
+
+[data-theme="dark"] .charts-section .course-stat-item:hover,
+[data-theme="dark"] .two-column-section .course-stat-item:hover {
+    box-shadow: 
+        0 8px 32px rgba(139, 92, 246, 0.35),
+        0 4px 16px rgba(59, 130, 246, 0.25) !important;
+}
+
+.charts-section .course-info,
+.two-column-section .course-info {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+}
+
+.charts-section .course-name,
+.two-column-section .course-name {
+    font-weight: 700 !important;
+    font-size: 1.0625rem !important;
+    background: linear-gradient(
+        135deg,
+        #1f2937 0%,
+        #374151 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    letter-spacing: 0.02em !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) !important;
+}
+
+[data-theme="dark"] .charts-section .course-name,
+[data-theme="dark"] .two-column-section .course-name {
+    background: linear-gradient(
+        135deg,
+        #f9fafb 0%,
+        #e5e7eb 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+.charts-section .course-count,
+.two-column-section .course-count {
+    font-size: 0.9375rem !important;
+    font-weight: 800 !important;
+    color: white !important;
+    padding: 0.5rem 1.125rem !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+    border-radius: 50px !important;
+    white-space: nowrap !important;
+    box-shadow: 
+        0 4px 16px rgba(59, 130, 246, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .charts-section .course-count,
+[data-theme="dark"] .two-column-section .course-count {
+    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%) !important;
+    box-shadow: 
+        0 4px 16px rgba(139, 92, 246, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
+}
+
+.charts-section .course-progress,
+.two-column-section .course-progress {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+}
+
+.charts-section .course-progress-bar,
+.two-column-section .course-progress-bar {
+    flex: 1 !important;
+    height: 16px !important;
+    background: rgba(59, 130, 246, 0.12) !important;
+    border-radius: 50px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    box-shadow: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.1),
+        0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    border: 2px solid rgba(59, 130, 246, 0.15) !important;
+}
+
+[data-theme="dark"] .charts-section .course-progress-bar,
+[data-theme="dark"] .two-column-section .course-progress-bar {
+    background: rgba(59, 130, 246, 0.2) !important;
+    border-color: rgba(139, 92, 246, 0.25) !important;
+}
+
+.charts-section .course-progress-fill,
+.two-column-section .course-progress-fill {
+    height: 100% !important;
+    background: linear-gradient(
+        90deg,
+        #3b82f6 0%,
+        #8b5cf6 50%,
+        #ec4899 100%
+    ) !important;
+    background-size: 200% 100% !important;
+    border-radius: 50px !important;
+    transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    position: relative !important;
+    box-shadow: 
+        0 2px 12px rgba(59, 130, 246, 0.5),
+        inset 0 1px 3px rgba(255, 255, 255, 0.4) !important;
+    animation: progressGradient 3s ease infinite !important;
+}
+
+@keyframes progressGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.charts-section .course-progress-fill::after,
+.two-column-section .course-progress-fill::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100px !important;
+    width: 100px !important;
+    height: 100% !important;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+    ) !important;
+    animation: progressSlide 2.5s ease-in-out infinite !important;
+}
+
+@keyframes progressSlide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(600%); }
+}
+
+.charts-section .course-percentage,
+.two-column-section .course-percentage {
+    font-weight: 900 !important;
+    font-size: 1rem !important;
+    background: linear-gradient(
+        135deg,
+        #3b82f6 0%,
+        #8b5cf6 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    min-width: 56px !important;
+    text-align: right !important;
+    filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3)) !important;
+}
+
+[data-theme="dark"] .charts-section .course-percentage,
+[data-theme="dark"] .two-column-section .course-percentage {
+    background: linear-gradient(
+        135deg,
+        #60a5fa 0%,
+        #a78bfa 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* УНИКАЛЬНЫЕ WEEKLY SPEED BARS - Cyber Style */
+.charts-section .weekly-speed-list,
+.two-column-section .weekly-speed-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+}
+
+.charts-section .weekly-speed-item,
+.two-column-section .weekly-speed-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    padding: 1.25rem !important;
+    background: linear-gradient(
+        90deg,
+        rgba(59, 130, 246, 0.06) 0%,
+        rgba(139, 92, 246, 0.03) 50%,
+        transparent 100%
+    ) !important;
+    border-radius: 18px !important;
+    border: 2px solid rgba(59, 130, 246, 0.12) !important;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.charts-section .weekly-speed-item::before,
+.two-column-section .weekly-speed-item::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 5px !important;
+    background: linear-gradient(
+        180deg,
+        #3b82f6 0%,
+        #8b5cf6 50%,
+        #ec4899 100%
+    ) !important;
+    opacity: 0 !important;
+    transition: opacity 0.5s ease !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6) !important;
+}
+
+.charts-section .weekly-speed-item:hover::before,
+.two-column-section .weekly-speed-item:hover::before {
+    opacity: 1 !important;
+}
+
+.charts-section .weekly-speed-item:hover,
+.two-column-section .weekly-speed-item:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(59, 130, 246, 0.1) 0%,
+        rgba(139, 92, 246, 0.06) 50%,
+        transparent 100%
+    ) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    transform: translateX(8px) scale(1.02) !important;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2) !important;
+}
+
+[data-theme="dark"] .charts-section .weekly-speed-item,
+[data-theme="dark"] .two-column-section .weekly-speed-item {
+    background: linear-gradient(
+        90deg,
+        rgba(59, 130, 246, 0.12) 0%,
+        rgba(139, 92, 246, 0.06) 50%,
+        transparent 100%
+    ) !important;
+    border-color: rgba(139, 92, 246, 0.2) !important;
+}
+
+[data-theme="dark"] .charts-section .weekly-speed-item:hover,
+[data-theme="dark"] .two-column-section .weekly-speed-item:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(59, 130, 246, 0.18) 0%,
+        rgba(139, 92, 246, 0.12) 50%,
+        transparent 100%
+    ) !important;
+    border-color: rgba(139, 92, 246, 0.4) !important;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3) !important;
+}
+
+.charts-section .week-label,
+.two-column-section .week-label {
+    font-weight: 800 !important;
+    font-size: 0.9375rem !important;
+    background: linear-gradient(
+        135deg,
+        #1f2937 0%,
+        #374151 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    min-width: 110px !important;
+    letter-spacing: 0.02em !important;
+}
+
+[data-theme="dark"] .charts-section .week-label,
+[data-theme="dark"] .two-column-section .week-label {
+    background: linear-gradient(
+        135deg,
+        #f9fafb 0%,
+        #e5e7eb 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+.charts-section .week-bar-container,
+.two-column-section .week-bar-container {
+    flex: 1 !important;
+    height: 42px !important;
+    background: rgba(59, 130, 246, 0.1) !important;
+    border-radius: 50px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    border: 2px solid rgba(59, 130, 246, 0.15) !important;
+}
+
+[data-theme="dark"] .charts-section .week-bar-container,
+[data-theme="dark"] .two-column-section .week-bar-container {
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: rgba(139, 92, 246, 0.25) !important;
+}
+
+.charts-section .week-bar,
+.two-column-section .week-bar {
+    height: 100% !important;
+    background: linear-gradient(
+        90deg,
+        #3b82f6 0%,
+        #8b5cf6 50%,
+        #ec4899 100%
+    ) !important;
+    background-size: 200% 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 0 1.25rem !important;
+    border-radius: 50px !important;
+    transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 
+        0 4px 16px rgba(59, 130, 246, 0.4),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3) !important;
+    animation: weekBarGradient 4s ease infinite !important;
+}
+
+@keyframes weekBarGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.charts-section .week-bar::before,
+.two-column-section .week-bar::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%
+    ) !important;
+    animation: weekBarShine 3s ease-in-out infinite !important;
+}
+
+@keyframes weekBarShine {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(200%); }
+}
+
+.charts-section .week-value,
+.two-column-section .week-value {
+    font-weight: 900 !important;
+    font-size: 0.9375rem !important;
+    color: white !important;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    position: relative !important;
+    z-index: 1 !important;
+    letter-spacing: 0.05em !important;
+}
+
+.charts-section .week-count,
+.two-column-section .week-count {
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+    background: linear-gradient(
+        135deg,
+        #6b7280 0%,
+        #9ca3af 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    min-width: 110px !important;
+    text-align: right !important;
+}
+
+[data-theme="dark"] .charts-section .week-count,
+[data-theme="dark"] .two-column-section .week-count {
+    background: linear-gradient(
+        135deg,
+        #9ca3af 0%,
+        #d1d5db 100%
+    ) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - Адаптивность
+   ======================================== */
+
+@media (max-width: 1200px) {
+    .two-column-section {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .charts-section .chart-card,
+    .two-column-section .chart-card {
+        border-radius: 24px !important;
+    }
+
+    .charts-section .chart-header,
+    .two-column-section .chart-header {
+        padding: 2rem 2rem 1.75rem 2rem !important;
+    }
+
+    .charts-section .chart-content,
+    .two-column-section .chart-content {
+        padding: 2rem !important;
+        min-height: 300px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .charts-section {
+        gap: 2rem !important;
+    }
+
+    .two-column-section {
+        gap: 2rem !important;
+    }
+
+    .charts-section .chart-card,
+    .two-column-section .chart-card {
+        border-radius: 20px !important;
+    }
+
+    .charts-section .chart-header,
+    .two-column-section .chart-header {
+        flex-direction: column !important;
+        gap: 1.25rem !important;
+        padding: 1.75rem 1.75rem 1.5rem 1.75rem !important;
+    }
+
+    .charts-section .chart-legend,
+    .two-column-section .chart-legend {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        gap: 0.875rem !important;
+    }
+
+    .charts-section .chart-title,
+    .two-column-section .chart-title {
+        font-size: 1.3125rem !important;
+    }
+
+    .charts-section .chart-title::before,
+    .two-column-section .chart-title::before {
+        font-size: 1.75rem !important;
+    }
+
+    .charts-section .chart-content,
+    .two-column-section .chart-content {
+        padding: 1.75rem !important;
+        min-height: 280px !important;
+    }
+
+    .charts-section .line-chart-container,
+    .two-column-section .line-chart-container {
+        height: 300px !important;
+        padding: 1.25rem !important;
+    }
+
+    .charts-section .monthly-bars,
+    .two-column-section .monthly-bars {
+        gap: 1.25rem !important;
+        padding: 2rem 1rem 1rem !important;
+        min-height: 260px !important;
+    }
+
+    .charts-section .month-bars-container,
+    .two-column-section .month-bars-container {
+        height: 180px !important;
+        gap: 0.375rem !important;
+    }
+
+    .charts-section .month-bar,
+    .two-column-section .month-bar {
+        max-width: 22px !important;
+        min-height: 20px !important;
+    }
+
+    .charts-section .month-name,
+    .two-column-section .month-name {
+        font-size: 0.8125rem !important;
+    }
+
+    .charts-section .month-total,
+    .two-column-section .month-total {
+        font-size: 0.6875rem !important;
+        padding: 0.25rem 0.625rem !important;
+    }
+
+    .charts-section .course-stat-item,
+    .two-column-section .course-stat-item {
+        padding: 1.5rem !important;
+        gap: 0.875rem !important;
+    }
+
+    .charts-section .course-name,
+    .two-column-section .course-name {
+        font-size: 1rem !important;
+    }
+
+    .charts-section .course-count,
+    .two-column-section .course-count {
+        font-size: 0.875rem !important;
+        padding: 0.4375rem 1rem !important;
+    }
+
+    .charts-section .course-progress-bar,
+    .two-column-section .course-progress-bar {
+        height: 14px !important;
+    }
+
+    .charts-section .weekly-speed-item,
+    .two-column-section .weekly-speed-item {
+        padding: 1.125rem !important;
+        gap: 1rem !important;
+    }
+
+    .charts-section .week-bar-container,
+    .two-column-section .week-bar-container {
+        height: 38px !important;
+    }
+
+    .charts-section .week-label,
+    .two-column-section .week-label {
+        min-width: 100px !important;
+        font-size: 0.875rem !important;
+    }
+
+    .charts-section .week-count,
+    .two-column-section .week-count {
+        min-width: 100px !important;
+        font-size: 0.875rem !important;
+    }
+
+    .charts-section .empty-icon,
+    .two-column-section .empty-icon {
+        width: 90px !important;
+        height: 90px !important;
+        padding: 1.75rem !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .charts-section {
+        gap: 1.75rem !important;
+    }
+
+    .two-column-section {
+        gap: 1.75rem !important;
+    }
+
+    .charts-section .chart-header,
+    .two-column-section .chart-header {
+        padding: 1.5rem 1.5rem 1.25rem 1.5rem !important;
+    }
+
+    .charts-section .chart-content,
+    .two-column-section .chart-content {
+        padding: 1.5rem !important;
+    }
+
+    .charts-section .chart-title,
+    .two-column-section .chart-title {
+        font-size: 1.1875rem !important;
+        gap: 0.875rem !important;
+    }
+
+    .charts-section .chart-title::before,
+    .two-column-section .chart-title::before {
+        font-size: 1.5rem !important;
+    }
+
+    .charts-section .chart-legend,
+    .two-column-section .chart-legend {
+        gap: 0.75rem !important;
+    }
+
+    .charts-section .legend-item,
+    .two-column-section .legend-item {
+        font-size: 0.8125rem !important;
+        padding: 0.5rem 0.875rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .charts-section .legend-color,
+    .two-column-section .legend-color {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .charts-section .line-chart-container,
+    .two-column-section .line-chart-container {
+        height: 280px !important;
+        padding: 1rem !important;
+    }
+
+    .charts-section .monthly-bars,
+    .two-column-section .monthly-bars {
+        gap: 1rem !important;
+        padding: 1.75rem 0.75rem 0.75rem !important;
+        min-height: 240px !important;
+    }
+
+    .charts-section .month-bars-container,
+    .two-column-section .month-bars-container {
+        height: 160px !important;
+        gap: 0.3125rem !important;
+    }
+
+    .charts-section .month-bar,
+    .two-column-section .month-bar {
+        max-width: 18px !important;
+        border-radius: 10px 10px 5px 5px !important;
+    }
+
+    .charts-section .bar-value,
+    .two-column-section .bar-value {
+        font-size: 0.75rem !important;
+        padding: 0.3125rem 0.625rem !important;
+    }
+
+    .charts-section .month-name,
+    .two-column-section .month-name {
+        font-size: 0.75rem !important;
+    }
+
+    .charts-section .month-total,
+    .two-column-section .month-total {
+        font-size: 0.625rem !important;
+        padding: 0.1875rem 0.5rem !important;
+    }
+
+    .charts-section .course-stat-item,
+    .two-column-section .course-stat-item {
+        padding: 1.25rem !important;
+        border-radius: 18px !important;
+    }
+
+    .charts-section .course-name,
+    .two-column-section .course-name {
+        font-size: 0.9375rem !important;
+    }
+
+    .charts-section .course-count,
+    .two-column-section .course-count {
+        font-size: 0.8125rem !important;
+        padding: 0.375rem 0.875rem !important;
+    }
+
+    .charts-section .course-progress-bar,
+    .two-column-section .course-progress-bar {
+        height: 13px !important;
+    }
+
+    .charts-section .course-percentage,
+    .two-column-section .course-percentage {
+        font-size: 0.9375rem !important;
+        min-width: 52px !important;
+    }
+
+    .charts-section .weekly-speed-item,
+    .two-column-section .weekly-speed-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.875rem !important;
+        padding: 1rem !important;
+        border-radius: 16px !important;
+    }
+
+    .charts-section .week-label,
+    .two-column-section .week-label,
+    .charts-section .week-count,
+    .two-column-section .week-count {
+        min-width: auto !important;
+        width: 100% !important;
+        font-size: 0.8125rem !important;
+    }
+
+    .charts-section .week-bar-container,
+    .two-column-section .week-bar-container {
+        width: 100% !important;
+        height: 36px !important;
+    }
+
+    .charts-section .week-value,
+    .two-column-section .week-value {
+        font-size: 0.875rem !important;
+    }
+
+    .charts-section .empty-icon,
+    .two-column-section .empty-icon {
+        width: 80px !important;
+        height: 80px !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .charts-section .empty-message,
+    .two-column-section .empty-message {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .charts-section {
+        gap: 1.5rem !important;
+    }
+
+    .two-column-section {
+        gap: 1.5rem !important;
+    }
+
+    .charts-section .chart-card,
+    .two-column-section .chart-card {
+        border-radius: 18px !important;
+    }
+
+    .charts-section .chart-header,
+    .two-column-section .chart-header {
+        padding: 1.25rem 1.25rem 1rem 1.25rem !important;
+    }
+
+    .charts-section .chart-content,
+    .two-column-section .chart-content {
+        padding: 1.25rem !important;
+        min-height: 240px !important;
+    }
+
+    .charts-section .chart-title,
+    .two-column-section .chart-title {
+        font-size: 1.0625rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .charts-section .chart-title::before,
+    .two-column-section .chart-title::before {
+        font-size: 1.25rem !important;
+    }
+
+    .charts-section .legend-item,
+    .two-column-section .legend-item {
+        font-size: 0.75rem !important;
+        padding: 0.4375rem 0.75rem !important;
+    }
+
+    .charts-section .legend-color,
+    .two-column-section .legend-color {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .charts-section .line-chart-container,
+    .two-column-section .line-chart-container {
+        height: 260px !important;
+        padding: 0.875rem !important;
+    }
+
+    .charts-section .monthly-bars,
+    .two-column-section .monthly-bars {
+        gap: 0.875rem !important;
+        padding: 1.5rem 0.5rem 0.5rem !important;
+        min-height: 220px !important;
+    }
+
+    .charts-section .month-bars-container,
+    .two-column-section .month-bars-container {
+        height: 140px !important;
+        gap: 0.25rem !important;
+    }
+
+    .charts-section .month-bar,
+    .two-column-section .month-bar {
+        max-width: 16px !important;
+        border-radius: 8px 8px 4px 4px !important;
+    }
+
+    .charts-section .course-stat-item,
+    .two-column-section .course-stat-item {
+        padding: 1.125rem !important;
+        border-radius: 16px !important;
+        gap: 0.75rem !important;
+    }
+
+    .charts-section .course-info,
+    .two-column-section .course-info {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+
+    .charts-section .course-name,
+    .two-column-section .course-name {
+        font-size: 0.875rem !important;
+    }
+
+    .charts-section .course-count,
+    .two-column-section .course-count {
+        font-size: 0.75rem !important;
+        padding: 0.3125rem 0.75rem !important;
+    }
+
+    .charts-section .course-progress-bar,
+    .two-column-section .course-progress-bar {
+        height: 12px !important;
+    }
+
+    .charts-section .course-percentage,
+    .two-column-section .course-percentage {
+        font-size: 0.875rem !important;
+        min-width: 48px !important;
+    }
+
+    .charts-section .weekly-speed-item,
+    .two-column-section .weekly-speed-item {
+        padding: 0.875rem !important;
+    }
+
+    .charts-section .week-bar-container,
+    .two-column-section .week-bar-container {
+        height: 32px !important;
+    }
+
+    .charts-section .week-bar,
+    .two-column-section .week-bar {
+        padding: 0 1rem !important;
+    }
+
+    .charts-section .week-value,
+    .two-column-section .week-value {
+        font-size: 0.8125rem !important;
+    }
+
+    .charts-section .empty-icon,
+    .two-column-section .empty-icon {
+        width: 70px !important;
+        height: 70px !important;
+        padding: 1.25rem !important;
+        margin-bottom: 1.25rem !important;
+        border-radius: 24px !important;
+    }
+
+    .charts-section .empty-message,
+    .two-column-section .empty-message {
+        font-size: 0.9375rem !important;
+    }
+}
+
+/* Performance оптимизация для анимаций на мобильных */
+@media (max-width: 768px) {
+    .charts-section .chart-card,
+    .two-column-section .chart-card {
+        transition: all 0.3s ease !important;
+    }
+
+    .charts-section .chart-card::before,
+    .two-column-section .chart-card::before,
+    .charts-section .chart-card::after,
+    .two-column-section .chart-card::after {
+        display: none !important;
+    }
+
+    .charts-section .month-bar::after,
+    .two-column-section .month-bar::after {
+        display: none !important;
+    }
+}
+
+/* Печать */
+@media print {
+    .charts-section .chart-card,
+    .two-column-section .chart-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid !important;
+    }
+
+    .charts-section .chart-card::before,
+    .two-column-section .chart-card::before,
+    .charts-section .chart-card::after,
+    .two-column-section .chart-card::after {
+        display: none !important;
+    }
+}

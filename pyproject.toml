@@ -1,0 +1,169 @@
+[project]
+name = "pyland"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "masliaevdmitrii@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "Django==5.2.3",
+    "environs==14.2.0",
+    "dj-database-url==3.0.1",
+    "Pillow==11.2.1",
+    "django-ninja (==1.4.3)",
+    "django-ninja-jwt (==5.3.7)",
+    "pydantic[email]~=2.11.7",
+    "django-countries==7.6.1",
+    "django-phonenumber-field==8.1.0",
+    "phonenumbers==9.0.7",
+    "django-cors-headers==4.7.0",
+    "django-debug-toolbar==5.2.0",
+    "celery~=5.5.3",
+    "loguru",
+    "social_auth_app_django~=5.5.1",
+    "redis (>=6.4.0,<7.0.0)",
+    "markdown (>=3.9,<4.0)",
+    "markdownify (>=1.2.0,<2.0.0)",
+    "django-markdownify (>=0.9.5,<0.10.0)",
+    "faker (>=37.12.0,<38.0.0)",
+    "django-taggit (>=6.1.0,<7.0.0)",
+    "djangorestframework (>=3.16.1,<4.0.0)",
+    "sentry-sdk[django] (>=2.43.0,<3.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.0,<10.0.0)",
+    "pytest-django (>=4.11.1,<5.0.0)",
+    "factory-boy (>=3.3.3,<4.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)",
+    "pytest-xdist (>=3.8.0,<4.0.0)",
+    "faker (>=37.12.0,<38.0.0)",
+    "freezegun (>=1.5.5,<2.0.0)",
+    "ruff (>=0.9.0,<1.0.0)",
+    "mypy (>=1.13.0,<2.0.0)",
+    "black (>=24.0.0,<25.0.0)",
+    "isort (>=5.13.0,<6.0.0)",
+    "safety (>=3.0.0,<4.0.0)",
+    "bandit[toml] (>=1.8.0,<2.0.0)",
+    "radon (>=6.0.0,<7.0.0)"
+]
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "env",
+    "__pycache__",
+    "migrations",
+    "staticfiles",
+    "media",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # unused imports in __init__.py
+"settings.py" = ["F405", "F403"]  # star imports
+"**/tests/**" = ["F401", "F811"]  # test files
+
+[tool.black]
+line-length = 100
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | venv
+  | env
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_glob = ["**/migrations/*.py", "venv/*", "env/*", ".venv/*"]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+plugins = ["mypy_django_plugin.main"]
+exclude = [
+    "migrations/",
+    "venv/",
+    "env/",
+    ".venv/",
+]
+
+[tool.django-stubs]
+django_settings_module = "pyland.settings"
+
+[tool.bandit]
+exclude_dirs = ["/tests/", "/migrations/", "/venv/", "/env/", "/.venv/"]
+skips = ["B101", "B601"]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/venv/*",
+    "*/env/*",
+    "*/.venv/*",
+    "manage.py",
+    "*/wsgi.py",
+    "*/asgi.py",
+    "*/settings.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

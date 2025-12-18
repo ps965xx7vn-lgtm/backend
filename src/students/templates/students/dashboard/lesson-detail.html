@@ -1,0 +1,719 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markdownify %}
+{% load markdown_filters %}
+
+{% block title %}{{ lesson.name }} - {{ course.name }} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/students/dashboard.css' %}?v=20251212-progress">
+<link rel="stylesheet" href="{% static 'css/students/course-list.css' %}?v=20251212-progress">
+<link rel="stylesheet" href="{% static 'css/students/markdown.css' %}">
+<link rel="stylesheet" href="{% static 'css/students/code-blocks.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Mobile sidebar toggle button -->
+<button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+    <svg class="icon-menu" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <!-- Пустой блок для отступа на мобильных -->
+        <div class="sidebar-spacer"></div>
+        
+        <!-- User Info -->
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {% if request.user.student.avatar %}
+                    <img src="{{ request.user.student.avatar.url }}" alt="{{ request.user.email }}">
+                {% else %}
+                    {{ request.user.email|first|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>
+                    {% if request.user.first_name %}
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+                    {% else %}
+                        {{ request.user.email|truncatechars:20 }}
+                    {% endif %}
+                </h3>
+                <p class="dashboard-user-role">
+                    {{ request.user.role.name|default:"Студент" }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Course Navigation -->
+        <nav class="dashboard-nav">
+            <div class="course-nav-header">
+                <h4 class="course-nav-title">{% trans "Навигация по курсу" %}</h4>
+                <div class="course-nav-subtitle">{{ course.name }}</div>
+            </div>
+            
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:account_dashboard' request.user.student.id %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"/>
+                        </svg>
+                        {% trans "Дашборд" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:account_courses' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        {% trans "Все курсы" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:account_course_detail' course.slug %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        {% trans "Обратно к курсу" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="#" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        {{ lesson.name }}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{{ lesson.name }}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'students:account_courses' %}" class="breadcrumb-link">{% trans "Курсы" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <a href="{% url 'students:account_course_detail' course.slug %}" class="breadcrumb-link">{{ course.name }}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{{ lesson.name }}</span>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <!-- Lesson Navigation -->
+                {% if prev_lesson %}
+                <a href="{% url 'students:account_lesson_detail' course.slug prev_lesson.slug %}" class="btn btn-outline-secondary">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    {% trans "Предыдущий урок" %}
+                </a>
+                {% endif %}
+                {% if next_lesson %}
+                <a href="{% url 'students:account_lesson_detail' course.slug next_lesson.slug %}" class="btn btn-primary">
+                    {% trans "Следующий урок" %}
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Lesson Progress -->
+        <div class="progress-container progress-container-spaced">
+            <div class="progress-header">
+                <h3 class="progress-title">{% trans "Прогресс урока" %}</h3>
+                <span class="progress-percentage">{{ lesson_progress.completion_percentage }}%</span>
+            </div>
+            <div class="progress-bar progress-bar-large">
+                <div class="progress-fill lesson-progress-fill {% if lesson_progress.completion_percentage == 100 %}success{% elif lesson_progress.completion_percentage >= 50 %}warning{% endif %}" 
+                     style="width: {{ lesson_progress.completion_percentage }}%"></div>
+            </div>
+            <div class="progress-stats">
+                <span><span class="lesson-completed-steps">{{ lesson_progress.completed_steps }}</span> {% trans "из" %} <span class="lesson-total-steps">{{ lesson_progress.total_steps }}</span> {% trans "шагов выполнено" %}</span>
+                <span>{% trans "Урок" %} {{ lesson.lesson_number }} {% trans "из" %} {{ total_lessons }}</span>
+            </div>
+        </div>
+
+        <!-- Lesson Info -->
+        {% if lesson.image or lesson.short_description %}
+        <div class="course-card course-card-spaced">
+            {% if lesson.image %}
+            <div class="course-image course-image-medium">
+                <img src="{{ lesson.image.url }}" alt="{{ lesson.name }}">
+            </div>
+            {% endif %}
+            <div class="course-content">
+                {% if lesson.short_description %}
+                <p class="course-description">{{ lesson.short_description }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Steps List -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <h3 class="progress-title">{% trans "Шаги урока" %}</h3>
+                <div class="progress-actions">
+                    <button class="btn btn-outline-secondary btn-sm" id="expand-all-steps">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                        {% trans "Развернуть все" %}
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" id="collapse-all-steps">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                        </svg>
+                        {% trans "Свернуть все" %}
+                    </button>
+                </div>
+            </div>
+
+            <div class="steps-container">
+                {% for step_data in steps %}
+                <div class="step-card {% if step_data.is_completed %}completed{% endif %}" data-step-id="{{ step_data.step.id }}">
+                    <div class="step-header">
+                        <div class="step-checkbox-container" onclick="event.stopPropagation()">
+                            <input type="checkbox" 
+                                   class="step-checkbox" 
+                                   {% if step_data.is_completed %}checked{% endif %}
+                                   data-step-id="{{ step_data.step.id }}"
+                                   data-course-slug="{{ course.slug }}"
+                                   data-lesson-slug="{{ lesson.slug }}">
+                            <div class="step-checkbox-custom">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="step-info">
+                            <h4 class="step-title">{{ forloop.counter }}. {{ step_data.step.name }}</h4>
+                            {% if step_data.step.description %}
+                            <p class="step-description">{{ step_data.step.description|truncatewords:20 }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="step-actions">
+                            {% if step_data.is_completed %}
+                            <div class="step-badge completed">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>{% trans "Выполнено" %}</span>
+                            </div>
+                            {% else %}
+                            <div class="step-badge not-completed">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>{% trans "Не выполнено" %}</span>
+                            </div>
+                            {% endif %}
+                            <svg class="step-toggle-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="step-content">
+                        <!-- Repair Description (Шаг на доработке) - ВСЕГДА ВВЕРХУ -->
+                        {% if step_data.step.repair_description %}
+                        <div class="step-body step-repair-warning">
+                            <div class="step-repair-warning-content">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="step-repair-warning-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                                <div class="step-repair-warning-text">
+                                    <h5 class="step-repair-warning-title">
+                                        {% trans "Шаг на доработке" %}
+                                    </h5>
+                                    <div class="step-repair-warning-description">
+                                        {{ step_data.step.repair_description }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if step_data.step.description %}
+                        <div class="step-body">
+                            <h5 class="step-section-title">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {% trans "Описание" %}
+                            </h5>
+                            <div class="step-section-content markdown-content">
+                                {{ step_data.step.description|markdownify }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if step_data.step.actions %}
+                        <div class="step-body" style="margin-top: 1rem;">
+                            <h5 class="step-section-title">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                </svg>
+                                {% trans "Действия" %}
+                            </h5>
+                            <div class="step-section-content markdown-content">
+                                {{ step_data.step.actions|markdownify }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if step_data.step.self_check %}
+                        <div class="step-body step-self-check">
+                            <h5 class="step-section-title">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {% trans "Проверь себя" %}
+                            </h5>
+                            <div class="step-section-content markdown-content">
+                                {{ step_data.step.self_check|markdownify }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Step Image -->
+                        {% if step_data.step.image %}
+                        <div class="step-body step-image-wrapper">
+                            <img src="{{ step_data.step.image.url }}" 
+                                 alt="{{ step_data.step.name }}" 
+                                 class="step-image">
+                        </div>
+                        {% endif %}
+
+                        {% if not step_data.step.description and not step_data.step.actions and not step_data.step.self_check %}
+                        <div class="step-body">
+                            <p style="color: var(--text-secondary); font-style: italic; text-align: center; padding: 1rem 0;">
+                                <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block; margin: 0 auto 0.5rem; opacity: 0.5;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                {% trans "Материалы для этого шага будут добавлены позже." %}
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Tips (Советы) - Вложенные аккордеоны -->
+                        {% if step_data.step.tips.exists %}
+                        <div class="step-tips-section" style="margin-top: 1rem;">
+                            <h5 class="step-section-title" style="color: var(--primary-700); margin-bottom: 0.75rem;">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                </svg>
+                                {% trans "Полезные советы" %}
+                                <span class="accordion-count" style="color: var(--primary-600);">({{ step_data.step.tips.count }})</span>
+                            </h5>
+                            {% for tip in step_data.step.tips.all %}
+                            <div class="step-accordion-item step-tip-accordion" data-accordion-step="{{ step_data.step.id }}-tip-{{ tip.id }}">
+                                <div class="step-accordion-header">
+                                    <h5>
+                                        💡 {{ tip.title }}
+                                    </h5>
+                                    <svg class="accordion-toggle-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                                <div class="step-accordion-content">
+                                    <p class="step-tip-description">{{ tip.description }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Extra Sources (Дополнительные материалы) - Аккордеон -->
+                        {% if step_data.step.extra_sources.exists %}
+                        <div class="step-accordion-item" data-accordion-step="{{ step_data.step.id }}-sources">
+                            <div class="step-accordion-header">
+                                <h5>
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                    </svg>
+                                    {% trans "Дополнительные материалы" %}
+                                    <span class="accordion-count">({{ step_data.step.extra_sources.count }})</span>
+                                </h5>
+                                <svg class="accordion-toggle-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                            <div class="step-accordion-content">
+                                <ul class="step-sources-list">
+                                    {% for source in step_data.step.extra_sources.all %}
+                                    <li class="step-source-item">
+                                        <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer" class="step-source-link">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                            </svg>
+                                            {{ source.name }}
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="step-source-external-icon">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if step_data.is_completed and step_data.completed_at %}
+                        <div class="step-footer">
+                            <small class="step-completion-time">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {% trans "Выполнено" %} {{ step_data.completed_at|timesince }} {% trans "назад" %}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <!-- Шаги доработки от ментора -->
+                {% if existing_submission and existing_submission.improvements.exists %}
+                {% for improvement in existing_submission.improvements.all %}
+                <div class="step-card {% if improvement.is_completed %}completed{% else %}step-needs-reviewer-improvement{% endif %}" data-step-id="improvement-{{ improvement.id }}">
+                    <div class="step-header">
+                        {% if improvement.is_completed %}
+                        <div class="step-checkbox-container">
+                            <input type="checkbox" class="step-checkbox" checked disabled>
+                            <div class="step-checkbox-custom" style="background: var(--success-500); border-color: var(--success-500); color: white;">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 1;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="step-checkbox-container" onclick="event.stopPropagation()">
+                            <input type="checkbox" 
+                                   class="step-checkbox improvement-step-checkbox" 
+                                   data-improvement-id="{{ improvement.id }}"
+                                   id="improvement-step-{{ improvement.id }}">
+                            <div class="step-checkbox-custom">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="step-info">
+                            <h4 class="step-title">{{ steps|length|add:forloop.counter }}. {% if improvement.title %}{{ improvement.title }}{% else %}Улучшение #{{ improvement.improvement_number }}{% endif %}</h4>
+                            <p class="step-description">
+                                {{ improvement.improvement_text|truncatewords:15 }}
+                            </p>
+                        </div>
+                        <div class="step-actions">
+                            {% if improvement.is_completed %}
+                            <div class="step-badge completed">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>{% trans "Доработано" %}</span>
+                            </div>
+                            {% endif %}
+                            <svg class="step-toggle-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="step-content">
+                        <div class="step-body">
+                            <h5 class="step-section-title">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {% trans "Описание" %}
+                            </h5>
+                            <div class="step-section-content markdown-content">
+                                {{ improvement.improvement_text|markdownify }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Lesson Submission Form -->
+        {% if existing_submission %}
+        <div class="progress-container progress-container-top-spaced">
+            <div class="progress-header">
+                <h3 class="progress-title">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    {% trans "Статус работы" %}
+                </h3>
+                <span class="badge" style="
+                    {% if existing_submission.status == 'approved' %}background: #10b981;
+                    {% elif existing_submission.status == 'changes_requested' %}background: #ef4444;
+                    {% else %}background: #f59e0b;{% endif %}
+                    color: white; padding: 0.5rem 1rem; border-radius: 16px; font-size: 0.875rem;">
+                    {{ existing_submission.get_status_icon }} {{ existing_submission.get_status_display }}
+                </span>
+            </div>
+            
+            {% if existing_submission.status == 'approved' %}
+            <!-- Approved -->
+            <div class="submission-success submission-approved">
+                <div class="success-icon">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h4>✅ {% trans "Работа одобрена!" %}</h4>
+                <p class="submission-link-text">
+                    {% trans "Ссылка:" %} 
+                    <a href="{{ existing_submission.lesson_url }}" target="_blank" rel="noopener" class="submission-link">
+                        {{ existing_submission.lesson_url }}
+                    </a>
+                </p>
+                {% if existing_submission.mentor %}
+                <p class="submission-mentor">{% trans "Проверил:" %} {{ existing_submission.mentor.user.get_full_name|default:existing_submission.mentor.user.email }}</p>
+                {% endif %}
+                <p class="submission-time">{% trans "Одобрено:" %} {{ existing_submission.reviewed_at|date:"d.m.Y H:i" }}</p>
+                
+                {% if existing_submission.review and existing_submission.review.comments %}
+                <div class="submission-comment-box" style="margin-top: 1rem; text-align: left;">
+                    <strong class="submission-comment-title">{% trans "Комментарий проверяющего:" %}</strong>
+                    <div class="submission-comment-text" style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">{{ existing_submission.review.comments }}</div>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% elif existing_submission.status == 'changes_requested' %}
+            <!-- Changes Requested -->
+            <div class="submission-warning submission-changes-requested">
+                <h4 class="submission-warning-title">✏️ {% trans "Требуются доработки" %}</h4>
+                
+                {% if existing_submission.mentor_comment %}
+                <div class="submission-comment-box">
+                    <strong class="submission-comment-title">{% trans "Комментарий ментора:" %}</strong>
+                    <div class="submission-comment-text" style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">{{ existing_submission.mentor_comment|markdownify }}</div>
+                    {% if existing_submission.mentor %}
+                    <p class="submission-comment-author">— {{ existing_submission.mentor.user.get_full_name|default:existing_submission.mentor.user.email }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if existing_submission.mentor %}
+                <p class="submission-info-text">
+                    <strong>{% trans "Проверил:" %}</strong> {{ existing_submission.mentor.user.get_full_name|default:existing_submission.mentor.user.email }}
+                </p>
+                {% endif %}
+                {% if existing_submission.reviewed_at %}
+                <p class="submission-info-text">
+                    <strong>{% trans "Дата проверки:" %}</strong> {{ existing_submission.reviewed_at|date:"d.m.Y H:i" }}
+                </p>
+                {% endif %}
+                
+                {% if existing_submission.improvement_steps_list.exists %}
+                <div class="submission-steps-notice">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <span>{% trans "Ментор добавил шаги для доработки в раздел шагов урока выше (красные блоки)" %}</span>
+                </div>
+                {% endif %}
+                
+                <p class="submission-info-text">
+                    <strong>{% trans "Текущая ссылка:" %}</strong> 
+                    <a href="{{ existing_submission.lesson_url }}" target="_blank" class="submission-link">{{ existing_submission.lesson_url }}</a>
+                </p>
+                <p class="submission-info-text">
+                    <strong>{% trans "Попытка:" %}</strong> {{ existing_submission.revision_count|add:1 }}
+                </p>
+                
+                {% if existing_submission.improvement_steps_list.exists %}
+                <div class="improvement-progress-notice">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span id="improvement-progress-text">{% trans "Отметьте все шаги доработки выше, чтобы отправить работу" %} <strong>(0/{{ incomplete_improvements_count }})</strong></span>
+                </div>
+                {% endif %}
+
+                <!-- Resubmit Form -->
+                <form id="lesson-resubmit-form" class="submission-resubmit-form"
+                      data-submit-url="{% url 'students:account_lesson_submit' course_slug=lesson.course.slug lesson_slug=lesson.slug %}"
+                      data-improvement-steps="{{ incomplete_improvements_count }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_resubmit_url">{% trans "Новая ссылка на исправленную работу" %}</label>
+                        <input type="url" name="lesson_url" id="id_resubmit_url" class="form-control" 
+                               value="{{ existing_submission.lesson_url }}"
+                               placeholder="https://github.com/username/repository" required>
+                        <div id="resubmission-errors" class="form-errors"></div>
+                    </div>
+                    <button type="submit" class="btn btn-danger" id="resubmit-work-btn" {% if incomplete_improvements_count > 0 %}disabled{% endif %}>
+                        {% trans "Отправить исправленную работу" %}
+                    </button>
+                </form>
+            </div>
+            
+            {% else %}
+            <!-- Pending -->
+            <div class="submission-success">
+                <div class="success-icon">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h4>{% trans "Работа отправлена на проверку!" %}</h4>
+                <p>{% trans "Ссылка на GitHub:" %} <a href="{{ existing_submission.lesson_url }}" target="_blank" rel="noopener">{{ existing_submission.lesson_url }}</a></p>
+                <p class="submission-time">{% trans "Отправлено:" %} {{ existing_submission.submitted_at|date:"d.m.Y H:i" }}</p>
+                
+                <!-- Edit button -->
+                <button type="button" class="btn btn-secondary btn-edit-submission" data-form-id="edit-form-pending">
+                    ✏️ {% trans "Изменить ссылку" %}
+                </button>
+                
+                <!-- Hidden edit form -->
+                <form id="edit-form-pending" class="submission-resubmit-form" style="display: none;"
+                      data-submit-url="{% url 'students:account_lesson_submit' course_slug=lesson.course.slug lesson_slug=lesson.slug %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_edit_url_pending">{% trans "Новая ссылка" %}</label>
+                        <input type="url" name="lesson_url" id="id_edit_url_pending" class="form-control" 
+                               value="{{ existing_submission.lesson_url }}" placeholder="https://github.com/username/repository" required>
+                        <div id="edit-errors-pending" class="form-errors"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        {% trans "Сохранить изменения" %}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        {% elif submission_form %}
+        <div class="progress-container progress-container-top-spaced">
+            <div class="progress-header">
+                <h3 class="progress-title">{% trans "Отправить выполненную работу" %}</h3>
+            </div>
+            
+            <form id="lesson-submission-form" class="lesson-submission-form">
+                {% csrf_token %}
+                
+                <div class="form-group form-group-spaced">
+                    <label for="id_lesson_url" class="form-label">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                        {{ submission_form.lesson_url.label }}
+                    </label>
+                    <input type="url" 
+                           name="lesson_url" 
+                           id="id_lesson_url"
+                           class="form-control" 
+                           placeholder="https://github.com/username/repository"
+                           pattern="https://github\.com/.*"
+                           title="Введите ссылку на GitHub репозиторий"
+                           required>
+                    <small class="form-help">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Укажите ссылку на ваш GitHub репозиторий с выполненным заданием
+                    </small>
+                    <div id="submission-errors" class="form-errors"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submit-work-btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                        <span>{% trans "Отправить работу" %}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Lesson Statistics -->
+        <div class="stats-grid stats-grid-spaced">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ lesson_progress.total_steps }}</h3>
+                <p class="stat-label">{% trans "Всего шагов" %}</p>
+            </div>
+
+            <div class="stat-card success">
+                <div class="stat-header">
+                    <div class="stat-icon success">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ lesson_progress.completed_steps }}</h3>
+                <p class="stat-label">{% trans "Выполнено" %}</p>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-header">
+                    <div class="stat-icon warning">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ lesson_progress.completion_percentage }}%</h3>
+                <p class="stat-label">{% trans "Прогресс" %}</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ estimated_time|floatformat:0 }}</h3>
+                <p class="stat-label">{% trans "Мин на изучение" %}</p>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/students/dashboard.js' %}"></script>
+<script src="{% static 'js/students/dashboard-mobile.js' %}"></script>
+<script src="{% static 'js/students/lesson.js' %}"></script>
+<script src="{% static 'js/students/code-copy.js' %}"></script>
+<script src="{% static 'js/students/lesson-detail.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}PyLand - {% trans "Условия использования" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core/legal-pages.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="legal-page">
+    <div class="legal-container">
+        <nav class="legal-toc">
+            <h3 class="legal-toc-title">{% trans "Содержание" %}</h3>
+            <ul class="legal-toc-list">
+                <li class="legal-toc-item">
+                    <a href="#general" class="legal-toc-link">{% trans "1. Общие положения" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#registration" class="legal-toc-link">{% trans "2. Регистрация" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#services" class="legal-toc-link">{% trans "3. Использование услуг" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#intellectual-property" class="legal-toc-link">{% trans "4. Интеллектуальная собственность" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#user-content" class="legal-toc-link">{% trans "5. Пользовательский контент" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#payments" class="legal-toc-link">{% trans "6. Платежи и возвраты" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#liability" class="legal-toc-link">{% trans "7. Ограничение ответственности" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#changes" class="legal-toc-link">{% trans "8. Изменения" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#termination" class="legal-toc-link">{% trans "9. Прекращение" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#law" class="legal-toc-link">{% trans "10. Применимое право" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#contact" class="legal-toc-link">{% trans "11. Контакты" %}</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="legal-content">
+            <header class="legal-header">
+                <h1 class="legal-title">{% trans "Условия использования" %}</h1>
+                <div class="legal-meta">
+                    <span class="legal-meta-item">
+                        <span class="legal-meta-icon">📅</span>
+                        {% trans "Обновлено: 12 декабря 2025" %}
+                    </span>
+                    <span class="legal-meta-item">
+                        <span class="legal-meta-icon">📝</span>
+                        {% trans "Версия: 2.0" %}
+                    </span>
+                </div>
+            </header>
+
+            <section id="general" class="legal-section">
+                <h2 class="legal-section-title">{% trans "1. Общие положения" %}</h2>
+                <p>{% trans "Настоящие Условия использования регулируют использование веб-сайта PyLand и предоставляемых услуг." %}</p>
+                <div class="legal-highlight">
+                    <p><strong>{% trans "Важно!" %}</strong> {% trans "Используя наш сайт, вы соглашаетесь с этими условиями." %}</p>
+                </div>
+            </section>
+
+            <section id="registration" class="legal-section">
+                <h2 class="legal-section-title">{% trans "2. Регистрация и учетная запись" %}</h2>
+                <p>{% trans "При регистрации вы обязуетесь:" %}</p>
+                <ul>
+                    <li>{% trans "Предоставить точную информацию" %}</li>
+                    <li>{% trans "Поддерживать безопасность аккаунта" %}</li>
+                    <li>{% trans "Уведомлять о несанкционированном использовании" %}</li>
+                </ul>
+                
+                <h3 class="legal-subsection-title">{% trans "Способы регистрации:" %}</h3>
+                <ul>
+                    <li><strong>{% trans "Email и пароль:" %}</strong> {% trans "Стандартная регистрация с подтверждением email" %}</li>
+                    <li><strong>Google OAuth:</strong> {% trans "Регистрация через аккаунт Google (требуется email)" %}</li>
+                    <li><strong>GitHub OAuth:</strong> {% trans "Регистрация через аккаунт GitHub (требуется email)" %}</li>
+                </ul>
+                
+                <div class="legal-highlight">
+                    <p><strong>{% trans "Важно!" %}</strong> {% trans "При использовании OAuth (Google/GitHub) мы получаем только базовую информацию профиля. Мы НЕ получаем доступ к вашим репозиториям, письмам или другим приватным данным." %}</p>
+                </div>
+            </section>
+
+            <section id="services" class="legal-section">
+                <h2 class="legal-section-title">{% trans "3. Использование услуг" %}</h2>
+                <p>{% trans "Вы получаете лицензию на использование наших услуг для личных образовательных целей." %}</p>
+                <h3 class="legal-subsection-title">{% trans "Запрещено:" %}</h3>
+                <ul>
+                    <li>{% trans "Нарушать законы" %}</li>
+                    <li>{% trans "Копировать материалы без разрешения" %}</li>
+                    <li>{% trans "Использовать автоматизированные средства" %}</li>
+                </ul>
+            </section>
+
+            <section id="intellectual-property" class="legal-section">
+                <h2 class="legal-section-title">{% trans "4. Интеллектуальная собственность" %}</h2>
+                <p>{% trans "Все материалы защищены авторским правом." %}</p>
+                <div class="legal-highlight">
+                    <p><strong>© 2025 PyLand.</strong> {% trans "Все права защищены." %}</p>
+                </div>
+            </section>
+
+            <section id="user-content" class="legal-section">
+                <h2 class="legal-section-title">{% trans "5. Пользовательский контент" %}</h2>
+                <p>{% trans "Размещая контент, вы предоставляете нам лицензию на его использование." %}</p>
+            </section>
+
+            <section id="payments" class="legal-section">
+                <h2 class="legal-section-title">{% trans "6. Платежи и возвраты" %}</h2>
+                <div class="legal-highlight">
+                    <p><strong>{% trans "Статус:" %}</strong> {% trans "Система автоматической оплаты находится в разработке." %}</p>
+                </div>
+                <p>{% trans "В настоящее время оплата курсов производится по договоренности с администрацией. После запуска автоматической системы оплаты возврат будет возможен в течение 14 дней согласно Политике возвратов." %}</p>
+                <p>{% trans "За подробной информацией обращайтесь:" %}</p>
+                <div class="legal-code">pyland-school@yandex.com</div>
+            </section>
+
+            <section id="liability" class="legal-section">
+                <h2 class="legal-section-title">{% trans "7. Ограничение ответственности" %}</h2>
+                <p>{% trans "Услуги предоставляются 'как есть' без гарантий." %}</p>
+            </section>
+
+            <section id="changes" class="legal-section">
+                <h2 class="legal-section-title">{% trans "8. Изменения в условиях" %}</h2>
+                <p>{% trans "Мы можем изменять условия с уведомлением." %}</p>
+            </section>
+
+            <section id="termination" class="legal-section">
+                <h2 class="legal-section-title">{% trans "9. Прекращение действия" %}</h2>
+                <p>{% trans "Мы можем приостановить или прекратить ваш доступ к платформе при нарушении условий использования." %}</p>
+                <h3 class="legal-subsection-title">{% trans "Основания для прекращения:" %}</h3>
+                <ul>
+                    <li>{% trans "Нарушение настоящих Условий использования" %}</li>
+                    <li>{% trans "Незаконные действия или попытки мошенничества" %}</li>
+                    <li>{% trans "Распространение вредоносного контента" %}</li>
+                    <li>{% trans "Многократные жалобы от других пользователей" %}</li>
+                    <li>{% trans "Неоплата услуг в установленные сроки" %}</li>
+                </ul>
+                <p>{% trans "При прекращении доступа вы теряете право использовать все материалы платформы. Оплаченные курсы могут быть возвращены согласно Политике возвратов." %}</p>
+            </section>
+
+            <section id="law" class="legal-section">
+                <h2 class="legal-section-title">{% trans "10. Применимое право и разрешение споров" %}</h2>
+                <p>{% trans "Настоящие Условия использования регулируются и толкуются в соответствии с законодательством Грузии." %}</p>
+                
+                <h3 class="legal-subsection-title">{% trans "Разрешение споров:" %}</h3>
+                <ol>
+                    <li>{% trans "Все споры решаются путем переговоров в течение 30 дней" %}</li>
+                    <li>{% trans "При невозможности урегулирования спор передается в суд по месту нахождения PyLand (г. Кутаиси, Грузия)" %}</li>
+                    <li>{% trans "Претензии направляются на email: pyland-school@yandex.com" %}</li>
+                </ol>
+
+                <div class="legal-highlight">
+                    <p><strong>{% trans "Применимое законодательство:" %}</strong></p>
+                    <ul>
+                        <li>{% trans "Закон Грузии 'О защите персональных данных'" %}</li>
+                        <li>{% trans "Закон Грузии 'О защите прав потребителей'" %}</li>
+                        <li>{% trans "Закон Грузии 'Об электронной коммерции'" %}</li>
+                        <li>{% trans "Гражданский кодекс Грузии" %}</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="contact" class="legal-section">
+                <h2 class="legal-section-title">{% trans "11. Контактная информация" %}</h2>
+                <div class="legal-table-wrapper">
+                    <table class="legal-table">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Тип" %}</th>
+                                <th>{% trans "Контакт" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{% trans "Email" %}</td>
+                                <td><code>pyland-school@yandex.com</code></td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Телефон" %}</td>
+                                <td><code>+995 551 00 62 54</code></td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Адрес" %}</td>
+                                <td><code>Грузия, г. Кутаиси, ул. Абашидзе 8, офис 83</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer class="legal-footer">
+                <p class="legal-footer-text">{% trans "Дата вступления в силу: 12 декабря 2025" %}</p>
+            </footer>
+        </main>
+    </div>
+
+    <button class="legal-back-to-top" aria-label="{% trans 'Наверх' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/core/legal-pages.js' %}" defer></script>
+{% endblock %}

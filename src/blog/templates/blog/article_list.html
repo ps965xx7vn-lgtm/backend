@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markdown_filters %}
+
+{% block title %}{% trans "Блог" %} - PyLand{% endblock %}
+{% block description %}{% trans "Образовательные статьи, туториалы и практические руководства по программированию от экспертов PyLand" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/utils.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section (используем классы из home.html) -->
+    <section class="revolutionary-hero-home">
+        <div class="hero-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-main-content">
+                <div class="hero-badge-revolutionary animate-fade-in">
+                    <span>📚</span>
+                    <span>{% trans "Блог PyLand" %}</span>
+                </div>
+                
+                <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Изучайте программирование с нашими статьями" %}
+                </h1>
+                
+                <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Практические туториалы, глубокие разборы технологий и актуальные тренды в мире разработки от экспертов индустрии." %}
+                </p>
+                
+                <div class="hero-actions-revolutionary animate-fade-in delay-3">
+                    <a href="#articles" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>🎯</span>
+                        <span>{% trans "Читать статьи" %}</span>
+                    </a>
+                    <a href="#categories" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>📂</span>
+                        <span>{% trans "Категории" %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Navigation -->
+    <section class="features-revolutionary section-pad-60 section-bg-secondary" id="categories">
+        <div class="container">
+            <div class="section-header-revolutionary">
+                <div class="section-badge animate-fade-in">
+                    <span>📂</span>
+                    <span>{% trans "Все категории" %}</span>
+                </div>
+                <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Выберите направление" %}
+                </h2>
+                <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Каждая категория содержит тщательно отобранные материалы от экспертов" %}
+                </p>
+            </div>
+            
+            <div class="features-grid-revolutionary">
+                {% for category in categories %}
+                <div class="feature-card-revolutionary animate-fade-in delay-{{ forloop.counter }}">
+                    <div class="feature-icon-revolutionary">
+                        {{ category.icon|default:"📂" }}
+                    </div>
+                    <h3 class="feature-title-revolutionary">
+                        <a href="{% url 'blog:category_detail' category.slug %}">{{ category.name }}</a>
+                    </h3>
+                    <p class="feature-description-revolutionary">
+                        {{ category.description|default:"Изучайте материалы по этой теме"|truncatewords:15 }}
+                    </p>
+                    <div class="feature-stats-revolutionary">
+                        <span class="stat">📚 {{ category.published_count|default:"0" }} {% trans "статей" %}</span>
+                        <span class="stat">{% if category.color %}⭐ {% trans "Популярно" %}{% else %}🔥 {% trans "Актуально" %}{% endif %}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section class="courses-revolutionary" id="articles">
+        <div class="container">
+            <div class="section-header-revolutionary">
+                <div class="section-badge animate-fade-in">
+                    <span>✨</span>
+                    <span>{% trans "Новые статьи" %}</span>
+                </div>
+                <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Свежий контент" %}
+                </h2>
+                <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Самые актуальные материалы от наших экспертов" %}
+                </p>
+            </div>
+
+            {% if articles %}
+                <div class="courses-grid-revolutionary">
+                    {% for article in articles %}
+                        <a href="{% url 'blog:article_detail' article.slug %}" class="course-card-revolutionary animate-fade-in link-plain">
+                            <div class="course-image-revolutionary">
+                                {% if article.featured_image %}
+                                    <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-cover" loading="lazy">
+                                {% else %}
+                                    <div class="article-placeholder">
+                                        {{ article.category.icon|default:"📝" }}
+                                    </div>
+                                {% endif %}
+                                <div class="course-badge-revolutionary">
+                                    {% if article.is_featured %}🔥 {% trans "Рекомендуем" %}
+                                    {% elif article.created_at|timesince|slice:":1" == "0" %}✨ {% trans "Новое" %}
+                                    {% else %}📚 {{ article.category.name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="course-content-revolutionary">
+                                <h3 class="course-title-revolutionary">{{ article.title }}</h3>
+                                <p class="course-description-revolutionary">
+                                    {{ article.excerpt|default:article.content|smart_excerpt:15 }}
+                                </p>
+                                <div class="course-meta-revolutionary">
+                                    <div class="course-duration-revolutionary">
+                                        🏷️ {{ article.category.name|default:"Общее" }}
+                                    </div>
+                                    <div class="course-lessons-revolutionary">
+                                        👁️ {{ article.views_count|default:"0" }} {% trans "просмотров" %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                {% if is_paginated %}
+                    <div class="pagination-revolutionary">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1" class="pagination-btn pagination-first">
+                                <span>⏮️</span>
+                                <span class="btn-text">{% trans "Первая" %}</span>
+                            </a>
+                            <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn pagination-prev">
+                                <span>◀️</span>
+                                <span class="btn-text">{% trans "Предыдущая" %}</span>
+                            </a>
+                        {% endif %}
+                        
+                        <!-- Page Numbers -->
+                        <div class="pagination-numbers">
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <span class="pagination-btn pagination-current">{{ num }}</span>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <a href="?page={{ num }}" class="pagination-btn">{{ num }}</a>
+                                {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                    <a href="?page={{ num }}" class="pagination-btn">{{ num }}</a>
+                                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                                    <span class="pagination-dots">...</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn pagination-next">
+                                <span class="btn-text">{% trans "Следующая" %}</span>
+                                <span>▶️</span>
+                            </a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-btn pagination-last">
+                                <span class="btn-text">{% trans "Последняя" %}</span>
+                                <span>⏭️</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state-revolutionary">
+                    <div class="empty-icon">📝</div>
+                    <h3>{% trans "Статей пока нет" %}</h3>
+                    <p>{% trans "Мы работаем над новым контентом. Загляните позже!" %}</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-revolutionary">
+        <div class="container">
+            <div class="cta-content-revolutionary">
+                <div class="cta-badge-revolutionary animate-fade-in">
+                    <span>✍️</span>
+                    <span>{% trans "Присоединяйтесь" %}</span>
+                </div>
+                
+                <h2 class="cta-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Хотите поделиться знаниями?" %}
+                </h2>
+                
+                <p class="cta-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Станьте автором в нашем блоге и помогите другим разработчикам изучать новые технологии" %}
+                </p>
+                
+                <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                    <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>✍️</span>
+                        <span>{% trans "Предложить статью" %}</span>
+                    </a>
+                    <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>💬</span>
+                        <span>{% trans "Связаться с нами" %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/blog/blog.js' %}"></script>
+{% endblock %}

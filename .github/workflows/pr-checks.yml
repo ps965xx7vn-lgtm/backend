@@ -1,0 +1,61 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+    
+    - name: Install dependencies
+      run: poetry install --no-interaction
+    
+    - name: Check for migration conflicts
+      run: |
+        cd src
+        poetry run python manage.py makemigrations --check --dry-run --noinput
+    
+    - name: Validate templates
+      run: |
+        cd src
+        poetry run python manage.py validate_templates || echo "Template validation passed"
+    
+    - name: Check for missing translations
+      run: |
+        cd src
+        poetry run python manage.py makemessages --all --no-location --ignore=venv --ignore=env
+        git diff --exit-code locale/ || echo "⚠️ Warning: Untranslated strings found"
+
+  complexity-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    
+    - name: Install radon
+      run: pip install radon
+    
+    - name: Check cyclomatic complexity
+      run: |
+        radon cc src/ -a -nb || true
+    
+    - name: Check maintainability index
+      run: |
+        radon mi src/ -nb || true

@@ -1,0 +1,121 @@
+{% load i18n %}
+<div style="background-color: #f7f7f7; padding: 40px 0; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div style="background-color: #3b82f6; border-radius: 10px 10px 0 0; color: #ffffff; padding: 30px; margin: 0 auto; max-width: 600px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="color: white;">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-size: 24px; font-weight: bold;">PyLand</span>
+    </div>
+    <h2 style="margin: 0; font-size: 28px;">📝 {% trans "Новая работа на проверку" %}</h2>
+  </div>
+
+  <div style="margin: 0 auto; padding: 40px; background-color: #ffffff; max-width: 600px; text-align: left; border-radius: 0 0 10px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    {% if reviewer_email %}
+    <div style="background-color: #f1f5f9; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; border-left: 3px solid #64748b;">
+      <p style="font-size: 12px; color: #64748b; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+        📧 {% trans "Кому" %}
+      </p>
+      <p style="font-size: 14px; color: #334155; margin: 0; font-weight: 500;">
+        {{ reviewer_email }}
+      </p>
+    </div>
+    {% endif %}
+    
+    <p style="font-size: 18px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+      {% trans "Здравствуйте" %}!
+    </p>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #555; margin-bottom: 30px;">
+      {% trans "Студент отправил новую работу на проверку. Вы можете приступить к проверке прямо сейчас." %}
+    </p>
+
+    <!-- Карточка работы -->
+    <div style="background-color: #f8fafc; padding: 24px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 30px 0;">
+      <div style="margin-bottom: 16px;">
+        <p style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">
+          {% trans "Студент" %}
+        </p>
+        <p style="font-size: 16px; font-weight: 600; color: #1e293b; margin: 0;">
+          👤 {{ student_name }}
+        </p>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <p style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">
+          {% trans "Курс" %}
+        </p>
+        <p style="font-size: 16px; font-weight: 600; color: #1e293b; margin: 0;">
+          📚 {{ course_name }}
+        </p>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <p style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">
+          {% trans "Урок" %}
+        </p>
+        <p style="font-size: 16px; font-weight: 600; color: #1e293b; margin: 0;">
+          📖 {{ lesson_name }}
+        </p>
+      </div>
+
+      <div>
+        <p style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">
+          {% trans "Ссылка на работу" %}
+        </p>
+        <a href="{{ lesson_url }}" 
+           style="font-size: 14px; color: #3b82f6; text-decoration: none; word-wrap: break-word; display: inline-block;">
+          🔗 {{ lesson_url }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Кнопка действия -->
+    <div style="text-align: center; margin: 40px 0;">
+      <a href="{{ site_url }}/reviewers/submissions/" 
+         style="display: inline-block; 
+                padding: 16px 32px; 
+                background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+                color: #ffffff; 
+                text-decoration: none; 
+                font-weight: 600; 
+                font-size: 16px; 
+                border-radius: 8px; 
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+                transition: all 0.2s ease;">
+        {% trans "Перейти к проверке" %} →
+      </a>
+    </div>
+
+    <!-- Информационная панель -->
+    <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; margin: 30px 0;">
+      <p style="font-size: 14px; line-height: 1.5; color: #065f46; margin-bottom: 10px; font-weight: 600;">
+        💡 {% trans "Совет" %}
+      </p>
+      <p style="font-size: 14px; line-height: 1.5; color: #047857; margin: 0;">
+        {% trans "Постарайтесь проверить работу в течение 24 часов. Студенты очень ценят быструю обратную связь!" %}
+      </p>
+    </div>
+
+    <hr style="border: none; height: 1px; background-color: #e2e8f0; margin: 30px 0;">
+
+    <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 10px;">
+      {% trans "Если вы хотите отключить уведомления о новых работах, вы можете сделать это в" %} 
+      <a href="{{ site_url }}/reviewers/settings/" style="color: #3b82f6; text-decoration: none;">
+        {% trans "настройках профиля" %}
+      </a>.
+    </p>
+    
+    <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 0;">
+      {% trans "С уважением," %}<br>
+      <strong>{% trans "Команда PyLand" %}</strong>
+    </p>
+  </div>
+
+  <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+    <p>
+      {% trans "Это автоматическое письмо, пожалуйста, не отвечайте на него." %}<br>
+      {% trans "Если у вас есть вопросы, свяжитесь с нами через форму обратной связи на сайте." %}
+    </p>
+  </div>
+</div>

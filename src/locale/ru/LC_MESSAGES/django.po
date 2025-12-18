@@ -1,0 +1,1310 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-24 18:31+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: src/account/admin.py:25
+msgid "Personal info"
+msgstr ""
+
+#: src/account/admin.py:26
+msgid "Permissions"
+msgstr ""
+
+#: src/account/admin.py:27
+msgid "Important dates"
+msgstr ""
+
+#: src/account/forms.py:37 src/core/forms.py:10 src/core/forms.py:12
+msgid "Имя"
+msgstr ""
+
+#: src/account/forms.py:39
+msgid "Введите ваше имя"
+msgstr ""
+
+#: src/account/forms.py:43 src/core/forms.py:14
+msgid "Имя обязательно для заполнения."
+msgstr ""
+
+#: src/account/forms.py:44
+msgid "Имя не может превышать 30 символов."
+msgstr ""
+
+#: src/account/forms.py:48 src/core/templates/core/contacts.html:108
+#: src/core/templates/core/contacts.html:330
+#: src/core/templates/shared/_footer.html:154
+msgid "Телефон"
+msgstr ""
+
+#: src/account/forms.py:52
+msgid "Введите номер телефона с кодом страны"
+msgstr ""
+
+#: src/account/forms.py:56
+msgid "Телефон обязателен для заполнения."
+msgstr ""
+
+#: src/account/forms.py:57
+msgid "Введите корректный номер телефона."
+msgstr ""
+
+#: src/account/forms.py:61 src/account/forms.py:162 src/account/forms.py:164
+#: src/account/forms.py:198 src/core/templates/core/contacts.html:115
+msgid "Email"
+msgstr ""
+
+#: src/account/forms.py:63
+msgid "Введите ваш Email"
+msgstr ""
+
+#: src/account/forms.py:66 src/core/forms.py:34
+msgid "Email обязателен для заполнения."
+msgstr ""
+
+#: src/account/forms.py:67 src/core/forms.py:35 src/core/forms.py:76
+msgid "Введите корректный email адрес."
+msgstr ""
+
+#: src/account/forms.py:71 src/account/forms.py:172 src/account/forms.py:174
+#: src/core/templates/demo.html:176
+msgid "Пароль"
+msgstr ""
+
+#: src/account/forms.py:73 src/core/templates/demo.html:177
+msgid "Введите пароль"
+msgstr ""
+
+#: src/account/forms.py:75
+msgid "Пароль обязателен для заполнения."
+msgstr ""
+
+#: src/account/forms.py:78 src/account/forms.py:80
+msgid "Подтвердите пароль"
+msgstr ""
+
+#: src/account/forms.py:82
+msgid "Подтверждение пароля обязательно."
+msgstr ""
+
+#: src/account/forms.py:93
+msgid "Этот адрес электронной почты уже используется."
+msgstr ""
+
+#: src/account/forms.py:113
+msgid "Пароли не совпадают."
+msgstr ""
+
+#: src/account/forms.py:126
+msgid "Пароль не должен содержать ваш номер телефона."
+msgstr ""
+
+#: src/account/forms.py:131
+msgid "Пароль не должен содержать ваш адрес электронной почты."
+msgstr ""
+
+#: src/account/forms.py:138
+msgid "Пароль должен содержать не менее 8 символов."
+msgstr ""
+
+#: src/account/forms.py:140
+msgid "Пароль не может состоять только из цифр."
+msgstr ""
+
+#: src/account/forms.py:142
+msgid "Пароль не может состоять только из букв."
+msgstr ""
+
+#: src/account/forms.py:147
+msgid "Номер телефона должен начинаться с символа \"+\"."
+msgstr ""
+
+#: src/account/forms.py:153
+msgid "Неверный формат номера телефона."
+msgstr ""
+
+#: src/account/forms.py:167 src/account/forms.py:203
+msgid "Пожалуйста, введите ваш email."
+msgstr ""
+
+#: src/account/forms.py:168 src/account/forms.py:204
+msgid "Пожалуйста, введите корректный email адрес."
+msgstr ""
+
+#: src/account/forms.py:176
+msgid "Пожалуйста, введите ваш пароль."
+msgstr ""
+
+#: src/account/forms.py:188
+msgid "Неверный email или пароль."
+msgstr ""
+
+#: src/account/forms.py:200 src/core/templates/shared/_footer.html:22
+msgid "Введите ваш email"
+msgstr ""
+
+#: src/account/forms.py:212 src/account/views.py:174 src/account/views.py:243
+msgid "Пользователь с таким email не найден."
+msgstr ""
+
+#: src/account/views.py:59
+#, python-brace-format
+msgid ""
+"Ваш email не подтвержден. <a href=\"{url}\">Отправить письмо повторно</a>"
+msgstr ""
+
+#: src/account/views.py:64
+msgid "Email или пароль введен неверно."
+msgstr ""
+
+#: src/account/views.py:100 src/account/views.py:232
+msgid "Активируйте ваш аккаунт."
+msgstr ""
+
+#: src/account/views.py:106
+msgid "Пожалуйста, подтвердите ваш email для завершения регистрации."
+msgstr ""
+
+#: src/account/views.py:132
+msgid "Ваш email успешно подтвержден. Вы можете войти в систему."
+msgstr ""
+
+#: src/account/views.py:136
+msgid "Ссылка недействительна."
+msgstr ""
+
+#: src/account/views.py:166
+msgid "Инструкция по сбросу пароля"
+msgstr ""
+
+#: src/account/views.py:171
+msgid "Инструкции по сбросу пароля отправлены на ваш email."
+msgstr ""
+
+#: src/account/views.py:200
+msgid "Пароль успешно изменен."
+msgstr ""
+
+#: src/account/views.py:210
+msgid "Ссылка для сброса пароля недействительна."
+msgstr ""
+
+#: src/account/views.py:238
+msgid "Мы отправили повторное письмо для подтверждения вашего email."
+msgstr ""
+
+#: src/account/views.py:241
+msgid "Ваш email уже подтвержден."
+msgstr ""
+
+#: src/core/forms.py:15
+msgid "Имя не может превышать 100 символов."
+msgstr ""
+
+#: src/core/forms.py:20 src/core/forms.py:22
+#: src/core/templates/core/contacts.html:182
+msgid "Номер телефона"
+msgstr ""
+
+#: src/core/forms.py:24
+msgid "Номер телефона обязателен для заполнения."
+msgstr ""
+
+#: src/core/forms.py:25
+msgid "Номер телефона не может превышать 20 символов."
+msgstr ""
+
+#: src/core/forms.py:30 src/core/forms.py:32
+#: src/core/templates/core/contacts.html:202
+msgid "Email адрес"
+msgstr ""
+
+#: src/core/forms.py:40 src/core/forms.py:43
+msgid "Напишите свое сообщение"
+msgstr ""
+
+#: src/core/forms.py:47
+msgid "Сообщение обязательно для заполнения."
+msgstr ""
+
+#: src/core/forms.py:52
+msgid "Я согласен с Условиями обслуживания и Политикой конфиденциальности"
+msgstr ""
+
+#: src/core/forms.py:55
+msgid ""
+"Вы должны согласиться с Условиями обслуживания и Политикой "
+"конфиденциальности."
+msgstr ""
+
+#: src/core/forms.py:63
+msgid "Номер телефона не должен содержать буквы"
+msgstr ""
+
+#: src/core/forms.py:66
+msgid "Номер телефона должен начинаться с символа \"+\""
+msgstr ""
+
+#: src/core/forms.py:69
+msgid "Неверный формат номера телефона. Введите номер в формате +1234567890."
+msgstr ""
+
+#: src/core/forms.py:82
+msgid "Имя не должно содержать цифры."
+msgstr ""
+
+#: src/core/templates/base.html:9
+msgid "Онлайн школа программирования"
+msgstr ""
+
+#: src/core/templates/base.html:12
+msgid ""
+"PyLand - современная онлайн школа программирования с лучшими курсами Python, "
+"JavaScript, и других технологий"
+msgstr ""
+
+#: src/core/templates/base.html:13
+msgid ""
+"программирование, Python, JavaScript, курсы, онлайн обучение, веб-разработка"
+msgstr ""
+
+#: src/core/templates/base.html:37
+msgid "Загрузка..."
+msgstr ""
+
+#: src/core/templates/base.html:59
+msgid "Вернуться наверх"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:5
+#: src/core/templates/shared/_footer.html:92
+#: src/core/templates/shared/_header.html:159
+#: src/core/templates/shared/_header.html:281
+msgid "Контакты"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:25
+#: src/core/templates/core/home.html:492
+msgid "Связаться с нами"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:28
+msgid "Давайте"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:28
+msgid "обсудим"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:29
+msgid "ваше будущее в IT"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:32
+msgid ""
+"Готовы ответить на любые вопросы и помочь выбрать идеальный путь обучения "
+"именно для вас"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:47
+msgid "Мгновенная связь"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:48
+msgid "Чат-бот и онлайн консультация"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:51
+msgid "Начать чат"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:68
+msgid "Личная консультация"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:69
+msgid "Персональный звонок от ментора"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:72
+msgid "Заказать звонок"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:90
+msgid "Офис PyLand"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:91
+msgid "Приходите к нам в гости"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:94
+msgid "Адрес и карта"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:122
+#: src/core/templates/core/contacts.html:318
+msgid "Время работы"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:123
+msgid "ПН-ПТ 9:00-21:00"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:145
+msgid "Напишите нам"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:145
+msgid "прямо сейчас"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:148
+msgid "Ответим в течение 15 минут в рабочее время"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:163
+msgid "Ваше имя"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:221
+msgid "Ваше сообщение"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:245
+msgid "Я соглашаюсь с"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:245
+msgid "политикой конфиденциальности"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:259
+msgid "Отправить сообщение"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:274
+msgid "Сообщение отправлено!"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:275
+msgid "Мы свяжемся с вами в ближайшее время"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:289
+msgid "Наш офис"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:289
+msgid "в Москве"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:292
+msgid "Приходите к нам в гости - расскажем обо всем лично"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:305
+#: src/core/templates/shared/_footer.html:142
+msgid "Адрес"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:306
+msgid "г. Москва, ул. Тверская, д. 15, оф. 501"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:319
+msgid "Пн-Пт: 9:00-21:00, Сб-Вс: 10:00-18:00"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:345
+msgid "Интерактивная карта"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:346
+msgid "Открыть в картах"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:358
+msgid "Частые"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:358
+msgid "вопросы"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:361
+msgid "Ответы на самые популярные вопросы о наших курсах"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:367
+msgid "Сколько длится обучение?"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:368
+msgid ""
+"Продолжительность курсов от 3 до 12 месяцев в зависимости от программы и "
+"интенсивности обучения."
+msgstr ""
+
+#: src/core/templates/core/contacts.html:371
+msgid "Есть ли рассрочка?"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:372
+msgid ""
+"Да, мы предоставляем беспроцентную рассрочку до 12 месяцев на все курсы."
+msgstr ""
+
+#: src/core/templates/core/contacts.html:375
+#, fuzzy
+#| msgid "Школа программирования"
+msgid "Нужен ли опыт программирования?"
+msgstr "Школа программирования"
+
+#: src/core/templates/core/contacts.html:376
+msgid ""
+"Нет, наши курсы рассчитаны на людей без опыта. Мы обучаем с самых основ."
+msgstr ""
+
+#: src/core/templates/core/contacts.html:379
+msgid "Помогаете ли с трудоустройством?"
+msgstr ""
+
+#: src/core/templates/core/contacts.html:380
+#, python-format
+msgid ""
+"Да, у нас 98%% выпускников трудоустраиваются в первые 3 месяца после "
+"окончания курса."
+msgstr ""
+
+msgid "Звонок с нашим экспертом"
+msgstr ""
+
+msgid "Позвонить"
+msgstr ""
+
+msgid "Приходите к нам"
+msgstr ""
+
+msgid "Офис в центре Тбилиси"
+msgstr ""
+
+msgid "Как добраться"
+msgstr ""
+
+msgid "Отправьте нам сообщение"
+msgstr ""
+
+msgid "Мы ответим в течение 30 минут"
+msgstr ""
+
+msgid "Введите имя"
+msgstr ""
+
+msgid "Интересующий курс"
+msgstr ""
+
+msgid "Выберите курс"
+msgstr ""
+
+msgid "Нужна консультация"
+msgstr ""
+
+msgid "Расскажите о ваших целях и вопросах..."
+msgstr ""
+
+msgid "Прямой звонок"
+msgstr ""
+
+msgid "9:00-21:00 ежедневно"
+msgstr ""
+
+msgid "Ответ в течение часа"
+msgstr ""
+
+msgid "ул. Руставели 42"
+msgstr ""
+
+msgid "Тбилиси, IT Hub"
+msgstr ""
+
+msgid "Почему стоит связаться прямо сейчас?"
+msgstr ""
+
+msgid "Быстрый ответ"
+msgstr ""
+
+msgid "Отвечаем на все вопросы в течение 30 минут"
+msgstr ""
+
+msgid "Персональный план"
+msgstr ""
+
+msgid "Составим индивидуальную программу обучения"
+msgstr ""
+
+msgid "Специальное предложение"
+msgstr ""
+
+#, python-format
+msgid "Скидка 20%% при записи в день обращения"
+msgstr ""
+
+msgid "Пробный урок"
+msgstr ""
+
+msgid "Бесплатный первый урок для новых студентов"
+msgstr ""
+
+msgid "Следите за нами"
+msgstr ""
+
+msgid "Найти нас легко"
+msgstr ""
+
+msgid "Мы находимся в самом сердце IT-района Тбилиси"
+msgstr ""
+
+msgid "ул. Руставели 42, IT Hub"
+msgstr ""
+
+msgid "Открыть в Google Maps"
+msgstr ""
+
+msgid "Метро"
+msgstr ""
+
+msgid "Станция 'Руставели' - 2 минуты пешком"
+msgstr ""
+
+msgid "Автобус"
+msgstr ""
+
+msgid "Остановки: 37, 61, 102"
+msgstr ""
+
+msgid "Парковка"
+msgstr ""
+
+msgid "Бесплатная парковка для студентов"
+msgstr ""
+
+msgid "Пн-Пт"
+msgstr ""
+
+msgid "Суббота"
+msgstr ""
+
+msgid "Воскресенье"
+msgstr ""
+
+msgid "Частые вопросы"
+msgstr ""
+
+msgid "Возможно, ответ уже здесь"
+msgstr ""
+
+msgid "Как записаться на курс?"
+msgstr ""
+
+msgid ""
+"Заполните форму выше или позвоните нам. Мы проведем бесплатную консультацию "
+"и поможем выбрать курс."
+msgstr ""
+
+msgid ""
+"Да, мы предлагаем беспроцентную рассрочку до 12 месяцев для всех курсов."
+msgstr ""
+
+msgid ""
+"Нет, у нас есть курсы для начинающих с нуля. Мы научим всему необходимому."
+msgstr ""
+
+#: src/core/templates/core/home.html:5
+msgid "Главная страница"
+msgstr "Главная страница"
+
+#: src/core/templates/core/home.html:40
+msgid "Освойте"
+msgstr ""
+
+#: src/core/templates/core/home.html:41
+msgid "будущее"
+msgstr ""
+
+#: src/core/templates/core/home.html:42
+msgid "вместе с"
+msgstr ""
+
+#: src/core/templates/core/home.html:50
+msgid "Революционная платформа обучения программированию"
+msgstr ""
+
+#: src/core/templates/core/home.html:64
+#: src/core/templates/shared/_footer.html:71
+msgid "Студентов"
+msgstr ""
+
+#: src/core/templates/core/home.html:69
+#, python-format
+msgid "%% Успеха"
+msgstr ""
+
+#: src/core/templates/core/home.html:74 src/core/templates/core/home.html:390
+msgid "Компаний-партнеров"
+msgstr ""
+
+#: src/core/templates/core/home.html:81
+msgid "Начать путешествие"
+msgstr ""
+
+#: src/core/templates/core/home.html:88
+msgid "Смотреть демо"
+msgstr ""
+
+#: src/core/templates/core/home.html:103
+msgid "Новичок"
+msgstr ""
+
+#: src/core/templates/core/home.html:104
+msgid "Эксперт"
+msgstr ""
+
+#: src/core/templates/core/home.html:107
+msgid "Ваш путь к экспертизе начинается здесь"
+msgstr ""
+
+#: src/core/templates/core/home.html:116
+msgid "Почему выбирают PyLand?"
+msgstr ""
+
+#: src/core/templates/core/home.html:119
+msgid ""
+"Мы предлагаем уникальный подход к обучению программированию с современными "
+"технологиями и персональной поддержкой"
+msgstr ""
+
+#: src/core/templates/core/home.html:128
+msgid "Опытные менторы"
+msgstr ""
+
+#: src/core/templates/core/home.html:129
+msgid ""
+"Обучение с персональными менторами, которые имеют реальный опыт работы в IT "
+"и помогут вам на каждом шаге вашего пути"
+msgstr ""
+
+#: src/core/templates/core/home.html:136
+msgid "Практические проекты"
+msgstr ""
+
+#: src/core/templates/core/home.html:137
+msgid ""
+"Реальные проекты для портфолио, основанные на актуальных задачах из "
+"индустрии, которые помогут найти работу мечты"
+msgstr ""
+
+#: src/core/templates/core/home.html:144
+msgid "Сертификация"
+msgstr ""
+
+#: src/core/templates/core/home.html:145
+msgid ""
+"Получите международно признанные сертификаты после завершения курсов, "
+"которые высоко ценятся работодателями"
+msgstr ""
+
+#: src/core/templates/core/home.html:152
+msgid "Международное сообщество"
+msgstr ""
+
+#: src/core/templates/core/home.html:153
+msgid ""
+"Присоединяйтесь к глобальному сообществу разработчиков, найдите "
+"единомышленников и партнеров для проектов"
+msgstr ""
+
+#: src/core/templates/core/home.html:160
+msgid "Гибкий график"
+msgstr ""
+
+#: src/core/templates/core/home.html:161
+msgid ""
+"Учитесь в удобное время, в своем темпе, совмещая обучение с работой или "
+"учебой"
+msgstr ""
+
+#: src/core/templates/core/home.html:168
+msgid "Помощь с трудоустройством"
+msgstr ""
+
+#: src/core/templates/core/home.html:169
+msgid ""
+"Комплексная поддержка в поиске работы: от составления резюме до подготовки к "
+"собеседованиям"
+msgstr ""
+
+#: src/core/templates/core/home.html:176
+msgid "Индивидуальный подход"
+msgstr "Индивидуальный подход"
+
+#: src/core/templates/core/home.html:177
+msgid ""
+"Персонализированная программа обучения, адаптированная под ваши цели и "
+"уровень подготовки"
+msgstr ""
+
+#: src/core/templates/core/home.html:184
+msgid "Современные инструменты"
+msgstr "Современные инструменты"
+
+#: src/core/templates/core/home.html:185
+msgid ""
+"Работа с актуальными технологиями и инструментами, которые используют в "
+"топовых компаниях"
+msgstr ""
+
+#: src/core/templates/core/home.html:194
+#: src/core/templates/shared/_footer.html:101
+msgid "Популярные курсы"
+msgstr ""
+
+#: src/core/templates/core/home.html:197
+msgid ""
+"Выберите направление и начните свой путь в IT с нашими тщательно "
+"разработанными курсами"
+msgstr ""
+
+#: src/core/templates/core/home.html:210
+msgid "Бестселлер"
+msgstr ""
+
+#: src/core/templates/core/home.html:215 src/core/templates/demo.html:149
+#: src/core/templates/shared/_footer.html:105
+#: src/core/templates/shared/_header.html:123
+#: src/core/templates/shared/_header.html:274
+msgid "Python для начинающих"
+msgstr ""
+
+#: src/core/templates/core/home.html:217 src/core/templates/demo.html:151
+msgid ""
+"Изучите основы программирования на Python с нуля до продвинутого уровня."
+msgstr ""
+
+#: src/core/templates/core/home.html:236
+msgid "Популярный"
+msgstr ""
+
+#: src/core/templates/core/home.html:241
+#: src/core/templates/shared/_footer.html:109
+#: src/core/templates/shared/_header.html:127
+#: src/core/templates/shared/_header.html:275
+msgid "Web-разработка"
+msgstr ""
+
+#: src/core/templates/core/home.html:243
+msgid "HTML, CSS, JavaScript и React для создания современных веб-приложений."
+msgstr ""
+
+#: src/core/templates/core/home.html:262
+msgid "Новый"
+msgstr ""
+
+#: src/core/templates/core/home.html:267
+#: src/core/templates/shared/_footer.html:117
+#: src/core/templates/shared/_header.html:138
+#: src/core/templates/shared/_header.html:277
+msgid "Машинное обучение"
+msgstr ""
+
+#: src/core/templates/core/home.html:269
+msgid "AI и машинное обучение с Python, TensorFlow и Keras."
+msgstr ""
+
+#: src/core/templates/core/home.html:283
+msgid "Посмотреть все курсы"
+msgstr ""
+
+#: src/core/templates/core/home.html:306
+msgid "Наши достижения"
+msgstr ""
+
+#: src/core/templates/core/home.html:309
+msgid "PyLand"
+msgstr ""
+
+#: src/core/templates/core/home.html:309
+msgid "в цифрах"
+msgstr ""
+
+#: src/core/templates/core/home.html:312
+msgid ""
+"Результаты, которые говорят сами за себя. Каждая цифра — это история успеха "
+"наших студентов"
+msgstr ""
+
+#: src/core/templates/core/home.html:332
+msgid "Активных студентов"
+msgstr ""
+
+#: src/core/templates/core/home.html:333
+msgid "Обучаются прямо сейчас"
+msgstr ""
+
+#: src/core/templates/core/home.html:360
+#, python-format
+msgid "%% Успешности"
+msgstr ""
+
+#: src/core/templates/core/home.html:361
+msgid "Завершают курсы"
+msgstr ""
+
+#: src/core/templates/core/home.html:391
+msgid "Трудоустраивают выпускников"
+msgstr ""
+
+#: src/core/templates/core/home.html:419
+msgid "Часа поддержки"
+msgstr ""
+
+#: src/core/templates/core/home.html:420
+msgid "7 дней в неделю"
+msgstr ""
+
+#: src/core/templates/core/home.html:439
+msgid "Лучшая IT-школа 2024"
+msgstr ""
+
+#: src/core/templates/core/home.html:443
+msgid "Рейтинг 4.9/5"
+msgstr ""
+
+#: src/core/templates/core/home.html:447
+#, python-format
+msgid "95%% трудоустройство"
+msgstr ""
+
+#: src/core/templates/core/home.html:479
+msgid "Готовы начать свое путешествие в программирование?"
+msgstr ""
+
+#: src/core/templates/core/home.html:482
+msgid ""
+"Присоединяйтесь к тысячам студентов, которые уже изменили свою жизнь с "
+"PyLand. Начните бесплатно и откройте для себя мир безграничных возможностей "
+"в IT."
+msgstr ""
+
+#: src/core/templates/core/home.html:486
+msgid "Начать бесплатно"
+msgstr ""
+
+#: src/core/templates/demo.html:5
+msgid "PyLand - Демонстрация стилей"
+msgstr ""
+
+#: src/core/templates/demo.html:55
+msgid "Добро пожаловать в"
+msgstr "Добро пожаловать в"
+
+#: src/core/templates/demo.html:58
+msgid "Современная онлайн школа программирования с передовыми технологиями"
+msgstr ""
+
+#: src/core/templates/demo.html:67
+msgid "Начать обучение"
+msgstr ""
+
+#: src/core/templates/demo.html:70
+msgid "Узнать больше"
+msgstr ""
+
+#: src/core/templates/demo.html:79
+msgid "Кнопки"
+msgstr ""
+
+#: src/core/templates/demo.html:98
+msgid "Карточки"
+msgstr ""
+
+#: src/core/templates/demo.html:102
+msgid "Обычная карточка"
+msgstr ""
+
+#: src/core/templates/demo.html:105
+msgid "Пример обычной карточки с базовыми стилями и hover эффектом."
+msgstr ""
+
+#: src/core/templates/demo.html:108 src/core/templates/demo.html:120
+#: src/core/templates/demo.html:132
+msgid "Действие"
+msgstr ""
+
+#: src/core/templates/demo.html:114
+msgid "Градиентная карточка"
+msgstr ""
+
+#: src/core/templates/demo.html:117
+msgid "Карточка с красивым градиентным фоном."
+msgstr ""
+
+#: src/core/templates/demo.html:126
+msgid "Стеклянная карточка"
+msgstr ""
+
+#: src/core/templates/demo.html:129
+msgid "Карточка с эффектом матового стекла и размытием."
+msgstr ""
+
+#: src/core/templates/demo.html:144
+msgid "Популярный курс"
+msgstr ""
+
+#: src/core/templates/demo.html:166
+msgid "Формы"
+msgstr ""
+
+#: src/core/templates/demo.html:182
+msgid "Сообщение"
+msgstr ""
+
+#: src/core/templates/demo.html:183
+msgid "Ваше сообщение..."
+msgstr ""
+
+#: src/core/templates/demo.html:184
+msgid "Минимум 10 символов"
+msgstr ""
+
+#: src/core/templates/demo.html:191
+msgid "Я соглашаюсь с условиями использования"
+msgstr ""
+
+#: src/core/templates/demo.html:197
+msgid "Отправить"
+msgstr ""
+
+#: src/core/templates/demo.html:206
+msgid "Бейджи и уведомления"
+msgstr ""
+
+#: src/core/templates/demo.html:209
+msgid "Бейджи"
+msgstr ""
+
+#: src/core/templates/demo.html:220
+msgid "Алерты"
+msgstr ""
+
+#: src/core/templates/demo.html:223
+msgid "Успех!"
+msgstr ""
+
+#: src/core/templates/demo.html:224
+msgid "Операция выполнена успешно."
+msgstr ""
+
+#: src/core/templates/demo.html:227
+msgid "Внимание!"
+msgstr ""
+
+#: src/core/templates/demo.html:228
+msgid "Проверьте введенные данные."
+msgstr ""
+
+#: src/core/templates/demo.html:231
+msgid "Ошибка!"
+msgstr ""
+
+#: src/core/templates/demo.html:232
+msgid "Что-то пошло не так."
+msgstr ""
+
+#: src/core/templates/demo.html:235
+msgid "Информация"
+msgstr ""
+
+#: src/core/templates/demo.html:236
+msgid "Полезная информация для пользователя."
+msgstr ""
+
+#: src/core/templates/demo.html:242
+msgid "Уведомления"
+msgstr ""
+
+#: src/core/templates/demo.html:254
+msgid "Прогресс бары"
+msgstr ""
+
+#: src/core/templates/demo.html:290
+msgid "Анимации и эффекты"
+msgstr ""
+
+#: src/core/templates/demo.html:299
+msgid "Пульсирующая анимация"
+msgstr ""
+
+#: src/core/templates/demo.html:309
+msgid "Подпрыгивающая анимация"
+msgstr ""
+
+#: src/core/templates/demo.html:319
+msgid "Вращающаяся анимация"
+msgstr ""
+
+#: src/core/templates/demo.html:329
+msgid "Плавающая анимация"
+msgstr ""
+
+#: src/core/templates/demo.html:339
+msgid "Эффект блеска"
+msgstr ""
+
+#: src/core/templates/demo.html:349
+msgid "Стеклянный эффект"
+msgstr ""
+
+#: src/core/templates/demo.html:356
+msgid "Адаптивные сетки"
+msgstr ""
+
+#: src/core/templates/demo.html:359
+msgid "Flexbox сетка"
+msgstr ""
+
+#: src/core/templates/demo.html:368
+msgid "CSS Grid"
+msgstr ""
+
+#: src/core/templates/demo.html:386
+msgid "Операция выполнена успешно!"
+msgstr ""
+
+#: src/core/templates/demo.html:387
+msgid "Внимание! Проверьте данные."
+msgstr ""
+
+#: src/core/templates/demo.html:388
+msgid "Произошла ошибка!"
+msgstr ""
+
+#: src/core/templates/demo.html:389
+msgid "Информационное сообщение."
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:11
+msgid "Подпишитесь на нашу рассылку"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:14
+msgid "Получайте новости о курсах, вебинарах и специальных предложениях"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:27
+msgid "Подписаться"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:61
+#: src/core/templates/shared/_header.html:99
+msgid "Школа программирования"
+msgstr "Школа программирования"
+
+#: src/core/templates/shared/_footer.html:66
+msgid ""
+"Современная онлайн школа программирования с персональным подходом к каждому "
+"студенту. Изучайте Python, JavaScript и другие технологии с лучшими "
+"преподавателями."
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:75
+msgid "Курсов"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:79
+msgid "Менторов"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:86
+msgid "Быстрые ссылки"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:88
+#: src/core/templates/shared/_header.html:108
+#: src/core/templates/shared/_header.html:270
+msgid "Главная"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:89
+#: src/core/templates/shared/_header.html:154
+#: src/core/templates/shared/_header.html:280
+msgid "О нас"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:90
+#: src/core/templates/shared/_header.html:113
+#: src/core/templates/shared/_header.html:273
+msgid "Курсы"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:91
+#: src/core/templates/shared/_header.html:149
+#: src/core/templates/shared/_header.html:279
+msgid "Менторы"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:93
+msgid "Блог"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:94
+msgid "Карьера"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:95
+msgid "Партнерство"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:113
+#: src/core/templates/shared/_header.html:131
+#: src/core/templates/shared/_header.html:276
+msgid "Мобильная разработка"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:121
+#: src/core/templates/shared/_header.html:142
+msgid "Анализ данных"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:125
+msgid "Кибербезопасность"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:132
+msgid "Контактная информация"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:143
+msgid "г. Тбилиси, ул. Руставели 42"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:180
+msgid "Часы работы"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:181
+msgid "Пн-Пт: 9:00-21:00"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:233
+msgid "Все права защищены."
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:235
+msgid "Политика конфиденциальности"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:236
+msgid "Условия использования"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:237
+msgid "Cookie Policy"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:248
+msgid "Сертифицированная школа"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:257
+#, python-format
+msgid "100%% гарантия качества"
+msgstr ""
+
+#: src/core/templates/shared/_footer.html:266
+msgid "Безопасные платежи"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:27
+msgid "Выбрать язык"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:63
+msgid "Переключить тему"
+msgstr "Переключить тему"
+
+#: src/core/templates/shared/_header.html:120
+msgid "Основные курсы"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:135
+msgid "Продвинутые"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:164
+#: src/core/templates/shared/_header.html:282
+msgid "Демо"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:195
+msgid "Профиль"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:201
+msgid "Избранное"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:208
+msgid "Настройки"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:217
+msgid "Выйти"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:223
+#: src/core/templates/shared/_header.html:291
+msgid "Войти"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:226
+#: src/core/templates/shared/_header.html:288
+msgid "Регистрация"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:232
+msgid "Открыть меню"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:297
+msgid "Язык"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:315
+msgid "Тема"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:322
+msgid "Светлая"
+msgstr ""
+
+#: src/core/templates/shared/_header.html:328
+msgid "Темная"
+msgstr ""

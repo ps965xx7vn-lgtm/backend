@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+{% load static %}
+{% load i18n %}
+<html lang="{{ LANGUAGE_CODE|default:'ru' }}" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PyLand - {% trans "Онлайн школа программирования" %}{% endblock %}</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="{% block description %}{% trans 'PyLand - современная онлайн школа программирования с лучшими курсами Python, JavaScript, и других технологий' %}{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}{% trans 'программирование, Python, JavaScript, курсы, онлайн обучение, веб-разработка' %}{% endblock %}">
+    <meta name="author" content="PyLand">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/icons/favicon.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/icons/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/icons/favicon.png' %}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/core/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/animations.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/themes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/desktop-nav.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/mobile-menu.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/messages.css' %}">
+    
+    <!-- Extra CSS for specific pages -->
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>{% trans "Загрузка..." %}</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    {% include 'shared/_header.html' %}
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <!-- Django Messages -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <span class="alert-icon">
+                    {% if message.tags == 'success' %}✅{% elif message.tags == 'error' %}❌{% elif message.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+                </span>
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% include 'shared/_footer.html' %}
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="modal-container"></div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" aria-label="{% trans 'Вернуться наверх' %}">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+        </svg>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/core/loading.js' %}"></script>
+    <script src="{% static 'js/core/main.js' %}" defer></script>
+    <script src="{% static 'js/core/desktop-nav.js' %}" defer></script>
+    <script src="{% static 'js/core/mobile-menu.js' %}" defer></script>
+    <script src="{% static 'js/core/messages.js' %}" defer></script>
+    
+    <!-- Extra JavaScript for specific pages -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

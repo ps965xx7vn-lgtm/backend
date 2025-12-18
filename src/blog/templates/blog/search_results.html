@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markdown_filters %}
+
+{% block title %}{% trans "Результаты поиска" %} - {% trans "Блог PyLand" %}{% endblock %}
+{% block description %}{% trans "Результаты поиска в блоге PyLand" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/utils.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/search-results.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Revolutionary Search Hero -->
+<section class="revolutionary-hero-home">
+    <div class="hero-particles">
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        <div class="particle particle-4"></div>
+        <div class="particle particle-5"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-content-revolutionary">
+            <div class="hero-category-revolutionary animate-fade-in">
+                <span>🔍</span>
+                <span>{% trans "Результаты поиска" %}</span>
+            </div>
+            
+            <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                {% if query %}
+                    {% trans "Поиск:" %} "{{ query }}"
+                {% else %}
+                    {% trans "Поиск по блогу" %}
+                {% endif %}
+            </h1>
+            
+            <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                {% if articles %}
+                    {% trans "Найдено" %} {{ articles.paginator.count }} {% trans "статей по вашему запросу" %}
+                {% else %}
+                    {% trans "К сожалению, по вашему запросу ничего не найдено" %}
+                {% endif %}
+            </p>
+            
+            <div class="hero-stats-revolutionary animate-fade-in delay-3">
+                <div class="stat-item-hero">
+                    <span class="stat-icon">📊</span>
+                    <span class="stat-text">{{ articles.paginator.count|default:"0" }} {% trans "результатов" %}</span>
+                </div>
+                <div class="stat-item-hero">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-text">{% trans "Быстрый поиск" %}</span>
+                </div>
+                <div class="stat-item-hero">
+                    <span class="stat-icon">🎯</span>
+                    <span class="stat-text">{% trans "Точные совпадения" %}</span>
+                </div>
+            </div>
+            
+            <div class="hero-actions-revolutionary animate-fade-in delay-4">
+                <a href="#results" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>📋</span>
+                    <span>{% trans "Смотреть результаты" %}</span>
+                </a>
+                <a href="{% url 'blog:article_list' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                    <span>📚</span>
+                    <span>{% trans "Все статьи" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Form -->
+<section class="courses-revolutionary" id="results" data-search-query="{{ query|escapejs }}">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>🔍</span>
+                <span>{% trans "Поиск" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Уточнить поиск" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Попробуйте другие ключевые слова или фразы" %}
+            </p>
+        </div>
+        
+        <div class="search-box-revolutionary animate-fade-in delay-1">
+            <form method="get" action="{% url 'blog:article_search' %}">
+                <input type="text" name="q" value="{{ query }}" placeholder="{% trans 'Поиск статей...' %}" class="search-input-revolutionary" autofocus>
+                <button type="submit" class="search-btn-revolutionary">
+                    <span>🔍</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Search Results -->
+{% if articles %}
+<section class="courses-revolutionary">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>📝</span>
+                <span>{% trans "Результаты" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Найденные статьи" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Статьи, соответствующие вашему запросу" %} "{{ query }}"
+            </p>
+        </div>
+        
+        <div class="courses-filter-revolutionary animate-fade-in delay-1">
+            <a href="?q={{ query }}&sort=-published_at" class="filter-btn {% if request.GET.sort == '-published_at' or not request.GET.sort %}active{% endif %}">
+                🕒 {% trans "Новые" %}
+            </a>
+            <a href="?q={{ query }}&sort=published_at" class="filter-btn {% if request.GET.sort == 'published_at' %}active{% endif %}">
+                📅 {% trans "Старые" %}
+            </a>
+            <a href="?q={{ query }}&sort=title" class="filter-btn {% if request.GET.sort == 'title' %}active{% endif %}">
+                🔤 {% trans "По алфавиту" %}
+            </a>
+            <a href="?q={{ query }}&sort=-views_count" class="filter-btn {% if request.GET.sort == '-views_count' %}active{% endif %}">
+                👁️ {% trans "Популярные" %}
+            </a>
+        </div>
+        
+        <div class="courses-grid-revolutionary">
+            {% for article in articles %}
+            <a href="{{ article.get_absolute_url }}" class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:2 }}" class="link-plain">
+                <div class="course-image-revolutionary">
+                    {% if article.featured_image %}
+                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-cover">
+                    {% else %}
+                        <div class="article-placeholder">
+                            {{ article.category.icon|default:"🔍" }}
+                        </div>
+                    {% endif %}
+                    <div class="course-badge-revolutionary">
+                        {% if article.difficulty == 'beginner' %}🟢 {% trans "Легко" %}
+                        {% elif article.difficulty == 'intermediate' %}🟡 {% trans "Средне" %}
+                        {% elif article.difficulty == 'advanced' %}🔴 {% trans "Сложно" %}
+                        {% else %}🔍 {% trans "Найдено" %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="course-content-revolutionary">
+                    <h3 class="course-title-revolutionary">{{ article.title }}</h3>
+                                        <p class="course-description-revolutionary">
+                        {{ article.excerpt|default:article.content|smart_excerpt:20 }}
+                    </p>
+                    <div class="course-meta-revolutionary">
+                        <div class="course-duration-revolutionary">
+                            {{ article.category.icon|default:"📂" }} {{ article.category.name|default:"Общее" }}
+                        </div>
+                        <div class="course-lessons-revolutionary">
+                            📅 {{ article.published_at|date:"d.m.Y" }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-revolutionary animate-fade-in delay-5">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-first">
+                    <span>⏮️</span>
+                </a>
+                <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-prev">
+                    <span>◀️</span>
+                </a>
+            {% endif %}
+            
+            <span class="pagination-info">
+                {% trans "Страница" %} {{ page_obj.number }} {% trans "из" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?q={{ query }}&page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-next">
+                    <span>▶️</span>
+                </a>
+                <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-last">
+                    <span>⏭️</span>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% else %}
+<!-- No Results -->
+<section class="courses-revolutionary">
+    <div class="container">
+        <div class="empty-state-revolutionary">
+            <div class="empty-icon">🔍</div>
+            <h3>{% trans "Ничего не найдено" %}</h3>
+            <p>{% trans "Попробуйте изменить поисковой запрос или использовать другие ключевые слова." %}</p>
+            <div class="mt-32">
+                <a href="{% url 'blog:article_list' %}" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>📚</span>
+                    <span>{% trans "Все статьи" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Search Suggestions -->
+<section class="features-revolutionary">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>🔥</span>
+                <span>{% trans "Популярное" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Популярные темы" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Возможно, вас заинтересуют эти направления" %}
+            </p>
+        </div>
+        
+        <div class="features-grid-revolutionary">
+            <div class="feature-card-revolutionary animate-fade-in delay-1">
+                <div class="feature-icon-revolutionary">🐍</div>
+                <h3 class="feature-title-revolutionary">
+                    <a href="?q=python">Python</a>
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Статьи о языке программирования Python" %}
+                </p>
+                <div class="feature-stats-revolutionary">
+                    <span class="stat">📚 32 {% trans "статьи" %}</span>
+                    <span class="stat">🔥 {% trans "Популярно" %}</span>
+                </div>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-2">
+                <div class="feature-icon-revolutionary">⚛️</div>
+                <h3 class="feature-title-revolutionary">
+                    <a href="?q=react">React</a>
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Современные техники разработки с React" %}
+                </p>
+                <div class="feature-stats-revolutionary">
+                    <span class="stat">📚 24 {% trans "статьи" %}</span>
+                    <span class="stat">⭐ {% trans "Рекомендуем" %}</span>
+                </div>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-3">
+                <div class="feature-icon-revolutionary">🤖</div>
+                <h3 class="feature-title-revolutionary">
+                    <a href="?q=machine+learning">Machine Learning</a>
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Машинное обучение и нейронные сети" %}
+                </p>
+                <div class="feature-stats-revolutionary">
+                    <span class="stat">📚 18 {% trans "статей" %}</span>
+                    <span class="stat">📈 {% trans "Растет" %}</span>
+                </div>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-4">
+                <div class="feature-icon-revolutionary">🚀</div>
+                <h3 class="feature-title-revolutionary">
+                    <a href="?q=django">Django</a>
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Веб-разработка с Django framework" %}
+                </p>
+                <div class="feature-stats-revolutionary">
+                    <span class="stat">📚 21 {% trans "статья" %}</span>
+                    <span class="stat">🔧 {% trans "Практично" %}</span>
+                </div>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-5">
+                <div class="feature-icon-revolutionary">💾</div>
+                <h3 class="feature-title-revolutionary">
+                    <a href="?q=database">{% trans "Базы данных" %}</a>
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "PostgreSQL, MongoDB и оптимизация" %}
+                </p>
+                <div class="feature-stats-revolutionary">
+                    <span class="stat">📚 15 {% trans "статей" %}</span>
+                    <span class="stat">💡 {% trans "Полезно" %}</span>
+                </div>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-6">
+                <div class="feature-icon-revolutionary">🔐</div>
+                <h3 class="feature-title-revolutionary">
+                    <a href="?q=security">{% trans "Безопасность" %}</a>
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Кибербезопасность и защита данных" %}
+                </p>
+                <div class="feature-stats-revolutionary">
+                    <span class="stat">📚 12 {% trans "статей" %}</span>
+                    <span class="stat">🛡️ {% trans "Важно" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-revolutionary">
+    <div class="container">
+        <div class="cta-content-revolutionary">
+            <h2 class="cta-title-revolutionary animate-fade-in">
+                {% trans "Не нашли что искали?" %}
+            </h2>
+            <p class="cta-description-revolutionary animate-fade-in delay-1">
+                {% trans "Предложите тему для новой статьи или задайте вопрос сообществу" %}
+            </p>
+            <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>💡</span>
+                    <span>{% trans "Предложить тему" %}</span>
+                </a>
+                <a href="{% url 'blog:tag_list' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                    <span>🏷️</span>
+                    <span>{% trans "Все теги" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/courses/courses.js' %}"></script>
+<script src="{% static 'js/blog/search-highlight.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markdown_filters %}
+
+{% block title %}{{ tag.name }} - {% trans "Блог PyLand" %}{% endblock %}
+{% block description %}{% trans "Статьи с тегом" %} "{{ tag.name }}" {% trans "в блоге PyLand" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/blog/utils.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Revolutionary Tag Hero -->
+<section class="revolutionary-hero-home">
+    <div class="hero-particles">
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        <div class="particle particle-4"></div>
+        <div class="particle particle-5"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-main-content">
+            <div class="hero-badge-revolutionary animate-fade-in">
+                <span>🏷️</span>
+                <span>{% trans "Тег" %}</span>
+            </div>
+            
+            <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                #{{ tag.name }}
+            </h1>
+            
+            <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Изучайте материалы по тегу" %} "{{ tag.name }}" {% trans "от экспертов-практиков. Актуальные статьи и полезные советы для развития." %}
+            </p>
+            
+            <div class="hero-actions-revolutionary animate-fade-in delay-3">
+                <a href="#articles" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>📖</span>
+                    <span>{% trans "Читать статьи" %}</span>
+                </a>
+                <a href="{% url 'blog:tag_list' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                    <span>🏷️</span>
+                    <span>{% trans "Все теги" %}</span>
+                </a>
+            </div>
+            
+            <div class="hero-stats-revolutionary animate-fade-in delay-4">
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">{{ articles.paginator.count }}</span>
+                    <span class="stat-label-revolutionary">{% trans "Статей" %}</span>
+                </div>
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">{{ tag.taggit_taggeditem_items.count|default:"5+" }}</span>
+                    <span class="stat-label-revolutionary">{% trans "Материалов" %}</span>
+                </div>
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">{{ articles.paginator.count|add:"25"|default:"50+" }}</span>
+                    <span class="stat-label-revolutionary">{% trans "Просмотров" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Articles Section -->
+<section class="courses-revolutionary" id="articles">
+    <div class="container">
+        <div class="courses-header-revolutionary animate-fade-in">
+            <h2 class="courses-title-revolutionary">
+                {% trans "Статьи с тегом" %} "#{{ tag.name }}"
+            </h2>
+            <p class="courses-subtitle-revolutionary">
+                {% trans "Все материалы по теме" %} {{ tag.name }}
+            </p>
+        </div>
+        
+        <div class="courses-filter-revolutionary animate-fade-in delay-1">
+            <button onclick="filterArticles('new')" class="filter-btn {% if sort_by == 'new' or not request.GET.sort %}active{% endif %}" data-filter="new">
+                🕒 {% trans "Новые" %}
+            </button>
+            <button onclick="filterArticles('old')" class="filter-btn {% if sort_by == 'old' %}active{% endif %}" data-filter="old">
+                📅 {% trans "Старые" %}
+            </button>
+            <button onclick="filterArticles('alpha')" class="filter-btn {% if sort_by == 'alpha' %}active{% endif %}" data-filter="alpha">
+                🔤 {% trans "По алфавиту" %}
+            </button>
+            <button onclick="filterArticles('popular')" class="filter-btn {% if sort_by == 'popular' %}active{% endif %}" data-filter="popular">
+                👁️ {% trans "Популярные" %}
+            </button>
+        </div>
+        
+        <div class="courses-grid-revolutionary">
+            {% for article in articles %}
+            <a href="{{ article.get_absolute_url }}" class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:2 }}" class="link-plain">
+                <div class="course-image-revolutionary">
+                    {% if article.featured_image %}
+                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-cover">
+                    {% else %}
+                        <div class="article-placeholder">
+                            {{ article.category.icon|default:"📖" }}
+                        </div>
+                    {% endif %}
+                    <div class="course-badge-revolutionary">
+                        {% if article.difficulty == 'beginner' %}🟢 {% trans "Легко" %}
+                        {% elif article.difficulty == 'intermediate' %}🟡 {% trans "Средне" %}
+                        {% elif article.difficulty == 'advanced' %}🔴 {% trans "Сложно" %}
+                        {% else %}📖 {% trans "Статья" %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="course-content-revolutionary">
+                    <h3 class="course-title-revolutionary">{{ article.title }}</h3>
+                    <p class="course-description-revolutionary">
+                        {{ article.excerpt|default:article.content|smart_excerpt:20 }}
+                    </p>
+                    <div class="course-meta-revolutionary">
+                        <div class="course-duration-revolutionary">
+                            {{ article.category.icon|default:"📂" }} {{ article.category.name|default:"Общее" }}
+                        </div>
+                        <div class="course-lessons-revolutionary">
+                            📅 {{ article.published_at|date:"d.m.Y" }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="empty-state-revolutionary">
+                <div class="empty-icon">🏷️</div>
+                <h3>{% trans "Статьи не найдены" %}</h3>
+                <p>{% trans "С этим тегом пока нет опубликованных статей." %}</p>
+                <a href="{% url 'blog:article_list' %}" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>📚</span>
+                    <span>{% trans "Все статьи" %}</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-revolutionary animate-fade-in delay-5">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-first">
+                    <span>⏮️</span>
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-prev">
+                    <span>◀️</span>
+                </a>
+            {% endif %}
+            
+            <span class="pagination-info">
+                {% trans "Страница" %} {{ page_obj.number }} {% trans "из" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-next">
+                    <span>▶️</span>
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-btn pagination-last">
+                    <span>⏭️</span>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Related Tags -->
+<section class="features-revolutionary">
+    <div class="container">
+        <div class="features-header-revolutionary animate-fade-in">
+            <h2 class="features-title-revolutionary">
+                {% trans "Похожие теги" %}
+            </h2>
+            <p class="features-subtitle-revolutionary">
+                {% trans "Изучайте смежные темы" %}
+            </p>
+        </div>
+        
+        <div class="features-grid-revolutionary">
+            {% for related_tag in related_tags %}
+            <div class="feature-card-revolutionary animate-fade-in delay-{{ forloop.counter }}">
+                <div class="feature-icon-revolutionary">🏷️</div>
+                <h3 class="feature-title-revolutionary">
+                    <a href="{% url 'blog:tag_detail' related_tag.slug %}">#{{ related_tag.name }}</a>
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Статьи по теме" %} {{ related_tag.name }}
+                </p>
+                <div class="feature-stats-revolutionary">
+                    <span class="stat">📚 {{ related_tag.article_count }} {% if related_tag.article_count == 1 %}{% trans "статья" %}{% elif related_tag.article_count < 5 %}{% trans "статьи" %}{% else %}{% trans "статей" %}{% endif %}</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="feature-card-revolutionary animate-fade-in delay-1">
+                <div class="feature-icon-revolutionary">🏷️</div>
+                <h3 class="feature-title-revolutionary">
+                    {% trans "Похожих тегов нет" %}
+                </h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Изучайте другие темы в нашем блоге" %}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-revolutionary">
+    <div class="container">
+        <div class="cta-content-revolutionary">
+            <h2 class="cta-title-revolutionary animate-fade-in">
+                {% trans "Ищете больше по теме?" %}
+            </h2>
+            <p class="cta-description-revolutionary animate-fade-in delay-1">
+                {% trans "Изучите все наши материалы или подпишитесь на обновления" %}
+            </p>
+            <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                <a href="{% url 'blog:article_list' %}" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>🔍</span>
+                    <span>{% trans "Найти больше" %}</span>
+                </a>
+                <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                    <span>📧</span>
+                    <span>{% trans "Подписаться" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/courses/courses.js' %}"></script>
+<script src="{% static 'js/blog/tag-filter.js' %}"></script>
+{% endblock %}

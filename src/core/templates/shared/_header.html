@@ -1,0 +1,469 @@
+{% load static %}
+{% load i18n %}
+
+<header class="header" id="header">
+    <!-- Top Bar (Optional) -->
+    <div class="header-top">
+        <div class="container">
+            <div class="header-top-content">
+                <div class="header-contacts">
+                    <a href="mailto:pyland-school@yandex.com" class="contact-link">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        pyland-school@yandex.com
+                    </a>
+                    <a href="tel:+995551006254" class="contact-link">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                        </svg>
+                        +995 551 00 62 54
+                    </a>
+                </div>
+                <div class="header-controls">
+                    <!-- Language Switcher -->
+                    <div class="language-switcher" data-dropdown>
+                        <button class="language-btn" aria-label="{% trans 'Выбрать язык' %}" data-dropdown-trigger>
+                            <span class="flag" data-current-flag>
+                                {% if LANGUAGE_CODE == 'ru' %}🇷🇺
+                                {% elif LANGUAGE_CODE == 'ka' %}🇬🇪
+                                {% else %}🇬🇧{% endif %}
+                            </span>
+                            <span class="language-text" data-current-lang>
+                                {% if LANGUAGE_CODE == 'ru' %}РУ
+                                {% elif LANGUAGE_CODE == 'ka' %}ქარ
+                                {% else %}EN{% endif %}
+                            </span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="m6 9 6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="language-dropdown" data-dropdown-menu>
+                            {% get_available_languages as languages %}
+                            {% get_language_info_list for languages as language_list %}
+                            {% for language in language_list %}
+                                {% language language.code %}
+                                <a href="{% url 'core:home' %}" class="language-option" data-lang="{{ language.code }}"
+                                   {% if language.code == LANGUAGE_CODE %}data-current="true"{% endif %}>
+                                    <span class="flag">
+                                        {% if language.code == 'ru' %}🇷🇺
+                                        {% elif language.code == 'en' %}🇬🇧
+                                        {% elif language.code == 'ka' %}🇬🇪
+                                        {% else %}��{% endif %}
+                                    </span>
+                                    <span class="language-name">{{ language.name_local }}</span>
+                                </a>
+                                {% endlanguage %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Theme Switcher -->
+                    <div class="theme-switcher">
+                        <button class="theme-btn" id="theme-toggle" aria-label="{% trans 'Переключить тему' %}">
+                            <svg class="sun-icon" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="5"/>
+                                <path d="m12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </svg>
+                            <svg class="moon-icon" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <div class="header-main" data-sticky>
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <a href="{% url 'core:home' %}" class="logo">
+                    <div class="logo-icon">
+                        <img src="{% static 'images/icons/favicon.png' %}" alt="PyLand" width="32" height="32">
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-name">PyLand</div>
+                        <div class="logo-tagline">{% trans "Школа программирования" %}</div>
+                    </div>
+                </a>
+
+                <!-- Navigation -->
+                <nav class="main-nav" data-nav>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="{% url 'core:home' %}" class="nav-link">
+                                {% trans "Главная" %}
+                            </a>
+                        </li>
+                        <li class="nav-item nav-dropdown" data-dropdown>
+                            <a href="{% url 'courses:courses' %}" class="nav-link" data-dropdown-trigger>
+                                {% trans "Курсы" %}
+                                <svg class="dropdown-arrow" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="m6 9 6 6 6-6"/>
+                                </svg>
+                            </a>
+                            <div class="nav-dropdown-menu" data-dropdown-menu>
+                                <div class="dropdown-section">
+                                    <h4 class="dropdown-title">{% trans "Все курсы" %}</h4>
+                                    <a href="{% url 'courses:courses' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">💎</span>
+                                        {% trans "Все курсы" %}
+                                    </a>
+                                </div>
+                                {% regroup header_courses by category as courses_by_category %}
+                                {% for category in courses_by_category %}
+                                <div class="dropdown-section">
+                                    <h4 class="dropdown-title">
+                                        {% if category.grouper == 'python' %}Python
+                                        {% elif category.grouper == 'javascript' %}JavaScript
+                                        {% elif category.grouper == 'web' %}{% trans "Веб-разработка" %}
+                                        {% elif category.grouper == 'data-science' %}Data Science
+                                        {% else %}{% trans "Другое" %}{% endif %}
+                                    </h4>
+                                    {% for course in category.list %}
+                                    <a href="{% url 'courses:course_detail' course.slug %}" class="dropdown-link">
+                                        <span class="dropdown-icon">
+                                            {% if course.category == 'python' %}🐍
+                                            {% elif course.category == 'javascript' %}📜
+                                            {% elif course.category == 'web' %}🌐
+                                            {% elif course.category == 'data-science' %}📊
+                                            {% else %}🔧{% endif %}
+                                        </span>
+                                        {{ course.name }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </li>
+                        <li class="nav-item nav-dropdown" data-dropdown>
+                            <a href="{% url 'blog:home' %}" class="nav-link" data-dropdown-trigger>
+                                {% trans "Блог" %}
+                                <svg class="dropdown-arrow" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="m6 9 6 6 6-6"/>
+                                </svg>
+                            </a>
+                            <div class="nav-dropdown-menu" data-dropdown-menu>
+                                <div class="dropdown-section">
+                                    <h4 class="dropdown-title">{% trans "Статьи блога" %}</h4>
+                                    <a href="{% url 'blog:article_list' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">📝</span>
+                                        {% trans "Все статьи" %}
+                                    </a>
+                                    <a href="{% url 'blog:featured' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">⭐</span>
+                                        {% trans "Рекомендуемые" %}
+                                    </a>
+                                      <a href="{% url 'blog:series_list' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">📚</span>
+                                        {% trans "Серии статей" %}
+                                    </a>
+                                    <a href="{% url 'blog:author_list' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">👨‍💻</span>
+                                        {% trans "Авторы" %}
+                                    </a>
+                                </div>
+                                <div class="dropdown-section">
+                                    <h4 class="dropdown-title">{% trans "Навигация" %}</h4>
+                                    <a href="{% url 'blog:category_list' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">📂</span>
+                                        {% trans "Категории" %}
+                                    </a>
+                                    <a href="{% url 'blog:tag_list' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">🏷️</span>
+                                        {% trans "Теги" %}
+                                    </a>
+                                </div>
+                                <div class="dropdown-section">
+                                    <h4 class="dropdown-title">{% trans "По уровню" %}</h4>
+                                    <a href="{% url 'blog:difficulty_list' 'beginner' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">🟢</span>
+                                        {% trans "Новичок" %}
+                                    </a>
+                                    <a href="{% url 'blog:difficulty_list' 'intermediate' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">🟡</span>
+                                        {% trans "Средний" %}
+                                    </a>
+                                    <a href="{% url 'blog:difficulty_list' 'advanced' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">🔴</span>
+                                        {% trans "Продвинутый" %}
+                                    </a>
+                                    <a href="{% url 'blog:difficulty_list' 'expert' %}" class="dropdown-link">
+                                        <span class="dropdown-icon">🟣</span>
+                                        {% trans "Экспертный" %}
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'core:about' %}" class="nav-link">
+                                {% trans "О нас" %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'core:contacts' %}" class="nav-link">
+                                {% trans "Контакты" %}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- User Actions -->
+                <div class="header-actions">
+                    {% if user.is_authenticated %}
+                        <div class="user-account-dropdown" data-dropdown>
+                            <button class="user-account-btn" data-dropdown-trigger>
+                                <div class="user-avatar-small">
+                                    {% if user.student and user.student.avatar %}
+                                        <img src="{{ user.student.avatar.url }}" alt="{{ user.get_full_name|default:user.username }}">
+                                    {% else %}
+                                        {{ user.email.0|upper }}
+                                    {% endif %}
+                                </div>
+                                <span class="user-name-text">{{ user.email }}</span>
+                                <svg class="user-dropdown-arrow" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="m6 9 6 6 6-6"/>
+                                </svg>
+                            </button>
+                            <div class="user-dropdown-menu" data-dropdown-menu>
+                                <div class="user-dropdown-header">
+                                    <div class="user-dropdown-name">{{ user.get_full_name|default:user.username }}</div>
+                                    <div class="user-dropdown-email">{{ user.email }}</div>
+                                </div>
+                                <a href="{% url 'core:dashboard' %}" class="user-dropdown-link">
+                                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                                    </svg>
+                                    <span>{% trans "Дашборд" %}</span>
+                                </a>
+                                <a href="{% url 'students:account_settings' %}" class="user-dropdown-link">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                    </svg>
+                                    <span>{% trans "Настройки" %}</span>
+                                </a>
+                                <div class="user-dropdown-separator"></div>
+                                <a href="{% url 'authentication:logout' %}" class="user-dropdown-link logout">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                                        <path d="M16 17l5-5-5-5m5 5H9"/>
+                                    </svg>
+                                    <span>{% trans "Выйти" %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'authentication:signin' %}" class="btn btn-ghost btn-sm">
+                            {% trans "Войти" %}
+                        </a>
+                        <a href="{% url 'authentication:signup' %}" class="btn btn-primary btn-sm">
+                            {% trans "Регистрация" %}
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" data-mobile-toggle aria-label="{% trans 'Открыть меню' %}">
+                    <span class="menu-bar"></span>
+                    <span class="menu-bar"></span>
+                    <span class="menu-bar"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Menu -->
+    <div class="mobile-sidebar" data-mobile-sidebar>
+        <!-- Overlay -->
+        <div class="mobile-sidebar-overlay" data-mobile-close></div>
+        
+        <!-- Sidebar Panel -->
+        <div class="mobile-sidebar-panel">
+            <!-- Header -->
+            <div class="mobile-sidebar-header">
+                <div class="mobile-sidebar-logo">
+                    <div class="logo-icon">
+                        <img src="{% static 'images/icons/favicon.png' %}" alt="PyLand" width="28" height="28">
+                    </div>
+                    <span>PyLand</span>
+                </div>
+                <button class="mobile-sidebar-close" data-mobile-close-btn aria-label="{% trans 'Закрыть меню' %}">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            {% if user.is_authenticated %}
+            <!-- User Section -->
+            <div class="mobile-sidebar-user">
+                <div class="mobile-user-avatar">
+                    {% if user.student.avatar %}
+                        <img src="{{ user.student.avatar.url }}" alt="{{ user.get_full_name }}">
+                    {% else %}
+                        {{ user.email.0|upper }}
+                    {% endif %}
+                </div>
+                <div class="mobile-user-info">
+                    <div class="mobile-user-email">{{ user.email }}</div>
+                    {% if user.first_name %}<div class="mobile-user-name">{{ user.first_name }}</div>{% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Navigation -->
+            <nav class="mobile-sidebar-nav">
+                <a href="{% url 'core:home' %}" class="mobile-nav-item">
+                    <svg class="mobile-nav-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                        <path d="M9 22V12h6v10"/>
+                    </svg>
+                    <span>{% trans "Главная" %}</span>
+                </a>
+
+                <!-- Expandable Courses -->
+                <div class="mobile-nav-group">
+                    <button class="mobile-nav-item mobile-nav-toggle" data-toggle="courses">
+                        <div class="mobile-nav-item-left">
+                            <svg class="mobile-nav-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2V3z"/>
+                                <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7V3z"/>
+                            </svg>
+                            <span>{% trans "Курсы" %}</span>
+                        </div>
+                        <svg class="mobile-nav-arrow" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="mobile-nav-submenu" data-submenu="courses">
+                        <a href="{% url 'courses:courses' %}" class="mobile-nav-subitem">
+                            <span class="mobile-nav-icon-dot">💎</span>
+                            <span>{% trans "Все курсы" %}</span>
+                        </a>
+                        {% for course in header_courses %}
+                        <a href="{% url 'courses:course_detail' course.slug %}" class="mobile-nav-subitem">
+                            <span class="mobile-nav-icon-dot">
+                                {% if course.category == 'python' %}🐍
+                                {% elif course.category == 'javascript' %}⚡
+                                {% elif course.category == 'web' %}🌐
+                                {% elif course.category == 'git' %}🔧
+                                {% else %}📚{% endif %}
+                            </span>
+                            <span>{{ course.name }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <a href="{% url 'blog:home' %}" class="mobile-nav-item">
+                    <svg class="mobile-nav-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"/>
+                        <path d="M14 2v6h6"/>
+                    </svg>
+                    <span>{% trans "Блог" %}</span>
+                </a>
+
+                <a href="{% url 'core:about' %}" class="mobile-nav-item">
+                    <svg class="mobile-nav-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4m0-4h.01"/>
+                    </svg>
+                    <span>{% trans "О нас" %}</span>
+                </a>
+
+                <a href="{% url 'core:contacts' %}" class="mobile-nav-item">
+                    <svg class="mobile-nav-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
+                    </svg>
+                    <span>{% trans "Контакты" %}</span>
+                </a>
+            </nav>
+
+            <!-- Bottom Section -->
+            <div class="mobile-sidebar-bottom">
+                <!-- Controls -->
+                <div class="mobile-controls-group">
+                    <!-- Theme Switcher -->
+                    <div class="mobile-control">
+                        <div class="mobile-control-label">{% trans "Тема" %}</div>
+                        <div class="mobile-theme-btn">
+                            <button class="mobile-theme-option" data-theme-icon="light" aria-label="{% trans 'Светлая тема' %}">
+                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="5"/>
+                                    <path d="m12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                                </svg>
+                            </button>
+                            <button class="mobile-theme-option" data-theme-icon="dark" aria-label="{% trans 'Темная тема' %}">
+                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Language Switcher -->
+                    <div class="mobile-control">
+                        <div class="mobile-control-label">{% trans "Язык" %}</div>
+                        <div class="mobile-language-btns">
+                            <button class="mobile-lang-btn {% if LANGUAGE_CODE == 'ru' %}active{% endif %}" data-lang="ru" aria-label="Русский">
+                                🇷🇺
+                            </button>
+                            <button class="mobile-lang-btn {% if LANGUAGE_CODE == 'ka' %}active{% endif %}" data-lang="ka" aria-label="ქართული">
+                                🇬🇪
+                            </button>
+                            <button class="mobile-lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}" data-lang="en" aria-label="English">
+                                🇬🇧
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auth Buttons -->
+                <div class="mobile-auth-buttons">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'core:dashboard' %}" class="mobile-btn mobile-btn-primary">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                                <rect x="14" y="14" width="7" height="7" rx="1"/>
+                                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                            </svg>
+                            <span>{% trans "Дашборд" %}</span>
+                        </a>
+                        <a href="{% url 'authentication:logout' %}" class="mobile-btn mobile-btn-outline">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                                <path d="M16 17l5-5-5-5m5 5H9"/>
+                            </svg>
+                            <span>{% trans "Выйти" %}</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'authentication:signup' %}" class="mobile-btn mobile-btn-primary">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                <circle cx="8.5" cy="7" r="4"/>
+                                <path d="M20 8v6m3-3h-6"/>
+                            </svg>
+                            <span>{% trans "Регистрация" %}</span>
+                        </a>
+                        <a href="{% url 'authentication:signin' %}" class="mobile-btn mobile-btn-outline">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
+                                <path d="M10 17l5-5-5-5m5 5H3"/>
+                            </svg>
+                            <span>{% trans "Войти" %}</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

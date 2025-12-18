@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Подтверждение email" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/students/password-reset.css' %}">
+<link rel="stylesheet" href="{% static 'css/students/email-verification.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="modern-auth-section">
+    <div class="auth-container-single">
+        <div class="auth-main">
+            <div class="auth-container">
+                <!-- Header -->
+                                <div class="auth-header">
+                    <div class="auth-logo">
+                        <img src="{% static 'images/icons/favicon.png' %}" alt="PyLand" width="48" height="48">
+                        <span class="auth-logo-text">PyLand</span>
+                    </div>
+                    <h1 class="auth-title" style="color: #22c55e;">{% trans "Email подтвержден!" %}</h1>
+                    <p class="auth-subtitle">{% trans "Ваш email адрес успешно подтвержден. Теперь вы можете войти в систему." %}</p>
+                </div>
+
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                <div class="alert-content">
+                                    {% if message.tags == 'error' or message.tags == 'warning' %}
+                                        <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" stroke="currentColor" stroke-width="2"/>
+                                            <path d="M12 9v4" stroke="currentColor" stroke-width="2"/>
+                                            <path d="m12 17 .01 0" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
+                                            <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                    {% endif %}
+                                    <span class="alert-text">{{ message|safe }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Success Content -->
+                <div class="auth-success-content">
+                    <div class="success-checkmark">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="#22c55e" stroke-width="1.5" fill="#f0f9ff"/>
+                            <path d="m9 12 2 2 4-4" stroke="#22c55e" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="success-message">
+                        <h3>{% trans "Добро пожаловать в PyLand!" %}</h3>
+                        <p>{% trans "Ваша регистрация завершена. Теперь вы можете:" %}</p>
+                        <ul class="benefits-list">
+                            <li>{% trans "Проходить курсы по программированию" %}</li>
+                            <li>{% trans "Отслеживать свой прогресс" %}</li>
+                            <li>{% trans "Получать сертификаты" %}</li>
+                            <li>{% trans "Общаться с наставниками" %}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="auth-actions">
+                    <a href="{% url 'authentication:signin' %}" class="btn btn-primary btn-block">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% trans "Войти в систему" %}
+                    </a>
+                    
+                    <div class="auth-divider">
+                        <span>{% trans "или" %}</span>
+                    </div>
+                    
+                    <a href="{% url 'core:home' %}" class="btn btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        {% trans "На главную" %}
+                    </a>
+                </div>
+
+                <!-- Help -->
+                <div class="auth-help">
+                    <p>{% trans "Нужна помощь?" %} <a href="{% url 'core:contacts' %}">{% trans "Свяжитесь с поддержкой" %}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

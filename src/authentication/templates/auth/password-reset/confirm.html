@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Установить новый пароль" %} - PyLand{% endblock %}
+
+{% block content %}
+<!-- Modern Auth Section -->
+<section class="modern-auth-section">
+    <div class="auth-container">
+        <!-- Left Side - Form -->
+        <div class="auth-form-side">
+            <div class="auth-form-container">
+                <!-- Logo & Welcome -->
+                                <div class="auth-header">
+                    <div class="auth-logo">
+                        <img src="{% static 'images/icons/favicon.png' %}" alt="PyLand" width="48" height="48">
+                        <span class="auth-logo-text">PyLand</span>
+                    </div>
+                    {% if validlink %}
+                        <h1 class="auth-title">{% trans "Создать новый пароль" %}</h1>
+                        <p class="auth-subtitle">{% trans "Введите новый надежный пароль для вашего аккаунта" %}</p>
+                    {% else %}
+                        <h1 class="auth-title">{% trans "Ссылка недействительна" %}</h1>
+                        <p class="auth-subtitle">{% trans "Возможно, вы уже использовали эту ссылку или срок её действия истёк" %}</p>
+                    {% endif %}
+                </div>
+
+                {% if validlink %}
+                    <!-- Django Messages -->
+                    {% if messages %}
+                        <div class="messages-container">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Form -->
+                    <form method="post" class="modern-auth-form" novalidate>
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="form-errors">
+                                {% for error in form.non_field_errors %}
+                                    <div class="form-error visible">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- New Password Field -->
+                        <div class="form-group">
+                            <label for="{{ form.new_password1.id_for_label }}" class="form-label">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                {% trans "Новый пароль" %}
+                            </label>
+                            <div class="password-input-wrapper">
+                                {{ form.new_password1 }}
+                                <button type="button" class="password-toggle" onclick="togglePassword('{{ form.new_password1.id_for_label }}')">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke="currentColor" stroke-width="2"/>
+                                        <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            {% if form.new_password1.errors %}
+                                <div class="form-error visible">
+                                    {% for error in form.new_password1.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="form-group">
+                            <label for="{{ form.new_password2.id_for_label }}" class="form-label">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                {% trans "Подтвердите пароль" %}
+                            </label>
+                            <div class="password-input-wrapper">
+                                {{ form.new_password2 }}
+                                <button type="button" class="password-toggle" onclick="togglePassword('{{ form.new_password2.id_for_label }}')">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke="currentColor" stroke-width="2"/>
+                                        <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            {% if form.new_password2.errors %}
+                                <div class="form-error visible">
+                                    {% for error in form.new_password2.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="auth-submit-btn">
+                            <span class="btn-text">{% trans "Сохранить пароль" %}</span>
+                            <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </form>
+                {% else %}
+                    <!-- Invalid Link Message -->
+                    <div class="alert alert-error">
+                        <p><strong>{% trans "Ссылка для сброса пароля недействительна" %}</strong></p>
+                        <p>{% trans "Возможные причины:" %}</p>
+                        <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                            <li>{% trans "Вы уже использовали эту ссылку" %}</li>
+                            <li>{% trans "Срок действия ссылки истёк" %}</li>
+                            <li>{% trans "Ссылка была введена неправильно" %}</li>
+                        </ul>
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                        <a href="{% url 'authentication:password_reset' %}" class="auth-submit-btn" style="text-decoration: none; text-align: center;">
+                            <span class="btn-text">{% trans "Запросить новую ссылку" %}</span>
+                            <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'authentication:signin' %}" style="text-align: center; color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">
+                            {% trans "Вернуться на страницу входа" %}
+                        </a>
+                    </div>
+                {% endif %}
+
+                <!-- Footer -->
+                <div class="auth-footer" style="margin-top: 2rem;">
+                    <p>{% trans "Вспомнили пароль?" %} 
+                        <a href="{% url 'authentication:signin' %}" class="auth-link">
+                            {% trans "Войти" %}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Visual -->
+        <div class="auth-visual-side">
+            <div class="auth-visual-content">
+                <div class="visual-elements">
+                    <!-- Floating Icons -->
+                    <div class="floating-icon icon-1">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="floating-icon icon-2">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="floating-icon icon-3">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="visual-text">
+                    <h2>{% trans "Безопасность вашего аккаунта" %}</h2>
+                    <p>{% trans "Мы используем современные технологии шифрования для защиты ваших данных. Создайте надежный пароль для максимальной безопасности вашего аккаунта." %}</p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">256-bit</div>
+                            <div class="stat-label">{% trans "Шифрование" %}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">99.9%</div>
+                            <div class="stat-label">{% trans "Надежность" %}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">{% trans "Защита" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'js/students/auth.js' %}"></script>
+{% endblock %}

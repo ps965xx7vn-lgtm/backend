@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Настройки профиля" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviewers/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/reviewers/settings.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <!-- User Info -->
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {% if request.user.student.avatar %}
+                    <img src="{{ request.user.student.avatar.url }}" alt="{{ request.user.email }}">
+                {% elif request.user.first_name %}
+                    {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                {% else %}
+                    {{ request.user.email|first|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>
+                    {% if request.user.first_name %}
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+                    {% else %}
+                        {{ request.user.email|truncatechars:20 }}
+                    {% endif %}
+                </h3>
+                <p class="dashboard-user-role">
+                    {% trans "Ревьюер" %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="dashboard-nav">
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:dashboard' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        {% trans "Главная" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:submissions' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        {% trans "Работы" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:history' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {% trans "История" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:statistics' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        {% trans "Статистика" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:settings' %}" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {% trans "Настройки" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Настройки профиля" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <span>{% trans "Главная" %}</span>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Настройки" %}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="settings-tabs">
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="profile">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    {% trans "Информация о профиле" %}
+                </button>
+                <button class="tab-btn" data-tab="courses">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    {% trans "Назначенные курсы" %}
+                </button>
+                <button class="tab-btn" data-tab="preferences">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                    {% trans "Уведомления" %}
+                </button>
+            </div>
+
+            <!-- Profile Tab -->
+            <div class="tab-content active" data-tab-content="profile">
+                <div class="settings-section">
+                    <div class="section-header">
+                        <h3 class="section-title">{% trans "Основная информация" %}</h3>
+                        <p class="section-description">{% trans "Обновите свою базовую информацию профиля ревьюера" %}</p>
+                    </div>
+
+                    <form class="settings-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="profile_submit" value="1">
+                        
+                        <!-- Avatar Upload -->
+                        <div class="avatar-upload-section">
+                            <div class="current-avatar">
+                                {% if reviewer.user.student.avatar %}
+                                    <img src="{{ reviewer.user.student.avatar.url }}" alt="{% trans 'Текущий аватар' %}" id="avatar-preview">
+                                {% else %}
+                                    <div class="avatar-placeholder" id="avatar-preview">
+                                        {{ request.user.first_name|first|default:request.user.email|first|upper }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="avatar-upload-controls">
+                                <h4>{% trans "Фото профиля" %}</h4>
+                                <p class="text-sm text-gray-600">{% trans "Загрузите фото профиля. Рекомендуемый размер: 400x400px" %}</p>
+                                <div class="avatar-upload-actions">
+                                    <input type="file" id="avatar-input" name="avatar" accept="image/*" style="display: none;">
+                                    <label for="avatar-input" class="btn btn-outline-primary btn-sm">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        {% trans "Выбрать файл" %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    {% trans "Имя" %}
+                                </label>
+                                <input type="text" name="first_name" value="{{ request.user.first_name }}" class="form-input" placeholder="{% trans 'Введите имя' %}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    {% trans "Фамилия" %}
+                                </label>
+                                <input type="text" name="last_name" value="{{ request.user.last_name }}" class="form-input" placeholder="{% trans 'Введите фамилию' %}">
+                            </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">{% trans "Email" %}</label>
+                            <input type="email" id="email" class="form-input" 
+                                   value="{{ request.user.email }}" disabled>
+                            <small class="form-help">{% trans "Email адрес изменить нельзя" %}</small>
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="form-group">
+                            <label for="bio" class="form-label">{% trans "О себе" %}</label>
+                            <textarea id="bio" name="bio" class="form-textarea" rows="4" 
+                                      placeholder="{% trans 'Расскажите о своем опыте в программировании и обучении...' %}">{{ reviewer.bio|default:'' }}</textarea>
+                            <small class="form-help">{% trans "Информация будет видна студентам (максимум 500 символов)" %}</small>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                {% trans "Сохранить изменения" %}
+                            </button>
+                            <a href="{% url 'reviewers:dashboard' %}" class="btn btn-outline-secondary btn-large">
+                                {% trans "Отмена" %}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Courses Tab -->
+            <div class="tab-content" data-tab-content="courses">
+                <div class="settings-section">
+                    <div class="section-header">
+                        <h3 class="section-title">{% trans "Назначенные курсы" %}</h3>
+                        <p class="section-description">{% trans "Курсы, для которых вы проверяете работы студентов" %}</p>
+                    </div>
+
+                    <div class="courses-grid">
+                        {% if reviewer.courses.all %}
+                            {% for course in reviewer.courses.all %}
+                            <div class="course-card-small">
+                                <div class="course-card-header">
+                                    <h4>{{ course.name }}</h4>
+                                    {% if course.status == 'active' %}
+                                        <span class="badge badge-success">Активен</span>
+                                    {% elif course.status == 'draft' %}
+                                        <span class="badge badge-warning">Черновик</span>
+                                    {% elif course.status == 'archived' %}
+                                        <span class="badge badge-secondary">Архив</span>
+                                    {% elif course.status == 'coming_soon' %}
+                                        <span class="badge badge-info">Скоро</span>
+                                    {% endif %}
+                                </div>
+                                <p class="course-description">{{ course.description|truncatewords:15 }}</p>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state-centered">
+                                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <h3>{% trans "Нет назначенных курсов" %}</h3>
+                                <p>{% trans "Вам пока не назначены курсы для проверки работ" %}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferences Tab -->
+            <div class="tab-content" data-tab-content="preferences">
+                <div class="settings-section">
+                    <div class="section-header">
+                        <h3 class="section-title">{% trans "Настройки уведомлений" %}</h3>
+                        <p class="section-description">{% trans "Управляйте тем, как и когда вы получаете уведомления" %}</p>
+                    </div>
+
+                    <form method="post" class="preferences-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="notifications_submit" value="1">
+                        
+                        <div class="preferences-grid">
+                            <div class="preference-card">
+                                <div class="preference-header">
+                                    <div class="preference-icon">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="preference-info">
+                                        <h4>{% trans "Email уведомления о новых работах" %}</h4>
+                                        <p>{% trans "Получать email когда студент отправляет работу на проверку по вашим курсам" %}</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" name="reviewer_new_submissions" {% if reviewer.notify_new_submissions %}checked{% endif %}>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions" style="margin-top: 2rem;">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                {% trans "Сохранить настройки" %}
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="info-banner" style="margin-top: 2rem;">
+                        <div class="info-banner-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="info-banner-content">
+                            <h5>{% trans "Логика отправки уведомлений" %}</h5>
+                            <p>{% trans "Уведомления отправляются автоматически когда студент отправляет работу на проверку по курсам, которые вам назначены. Email приходит только если вы активны и не превысили лимит проверок на сегодня." %}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-banner">
+                        <div class="info-banner-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="info-banner-content">
+                            <h5>{% trans "О рабочей нагрузке" %}</h5>
+                            <p>{% trans "Максимальное количество проверок в день и статус активности управляются администратором. Если вам нужно изменить эти параметры, свяжитесь с администрацией платформы." %}</p>
+                        </div>
+                    </div>
+
+                    <div class="status-overview">
+                        <h4 class="status-title">{% trans "Текущий статус" %}</h4>
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <span class="status-label">{% trans "Максимум проверок в день" %}</span>
+                                <span class="status-value">{{ reviewer.max_reviews_per_day|default:10 }}</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">{% trans "Статус" %}</span>
+                                <span class="status-value">
+                                    {% if reviewer.is_active %}
+                                        <span class="badge badge-success">{% trans "Активен" %}</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">{% trans "Неактивен" %}</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">{% trans "Проверок сегодня" %}</span>
+                                <span class="status-value">{{ stats.reviews_today|default:0 }} / {{ reviewer.max_reviews_per_day|default:10 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reviewers/settings.js' %}"></script>
+{% endblock %}

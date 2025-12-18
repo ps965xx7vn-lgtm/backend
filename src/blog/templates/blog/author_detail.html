@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markdown_filters %}
+
+{% block title %}{{ author.display_name }} - {% trans "Автор" %} - PyLand{% endblock %}
+{% block description %}{{ author.bio|truncatechars:160 }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/blog/utils.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Author Profile Hero -->
+<section class="revolutionary-hero-home">
+	<div class="hero-particles">
+		<div class="particle particle-1"></div>
+		<div class="particle particle-2"></div>
+		<div class="particle particle-3"></div>
+		<div class="particle particle-4"></div>
+		<div class="particle particle-5"></div>
+	</div>
+	
+	<div class="container">
+		<div class="hero-main-content">
+			<!-- Author Avatar -->
+
+			
+			<!-- Author Badge -->
+			<div class="hero-badge-revolutionary animate-fade-in delay-1">
+				<span>✍️</span>
+				<span>{% trans "Автор" %}</span>
+			</div>
+			
+			<!-- Author Name -->
+			<h1 class="hero-title-revolutionary animate-fade-in delay-2">
+				{{ author.display_name }}
+			</h1>
+			
+			<!-- Author Bio -->
+			<p class="hero-subtitle-revolutionary animate-fade-in delay-3">
+				{{ author.bio|default:_('Автор материалов PyLand, делится знаниями и опытом в программировании') }}
+			</p>
+			
+			<!-- Social Links -->
+			{% if social_links %}
+			<div class="hero-actions-revolutionary animate-fade-in delay-4">
+				{% for name, url in social_links.items %}
+					<a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="btn-revolutionary-hero btn-secondary-hero">
+						<span>🔗</span>
+						<span>{{ name }}</span>
+					</a>
+				{% endfor %}
+			</div>
+			{% endif %}
+			
+			<!-- Author Stats -->
+			<div class="hero-stats-revolutionary animate-fade-in delay-5">
+				<div class="stat-card-revolutionary">
+					<span class="stat-number-revolutionary">{{ author.articles_count|default:'0' }}</span>
+					<span class="stat-label-revolutionary">{% trans "Статей" %}</span>
+				</div>
+				<div class="stat-card-revolutionary">
+					<span class="stat-number-revolutionary">{{ total_views|default:'0' }}</span>
+					<span class="stat-label-revolutionary">{% trans "Просмотров" %}</span>
+				</div>
+				<div class="stat-card-revolutionary">
+					<span class="stat-number-revolutionary">{{ total_reactions|default:'0' }}</span>
+					<span class="stat-label-revolutionary">{% trans "Реакций" %}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Author Series -->
+{% if author_series %}
+<section class="courses-revolutionary">
+	<div class="container">
+		<div class="section-header-revolutionary">
+			<div class="section-badge animate-fade-in">
+				<span>📚</span>
+				<span>{% trans "Серии" %}</span>
+			</div>
+			<h2 class="section-title-revolutionary animate-fade-in delay-1">
+				{% trans "Серии автора" %}
+			</h2>
+			<p class="section-subtitle-revolutionary animate-fade-in delay-2">
+				{% trans "Тематические подборки статей от" %} {{ author.display_name }}
+			</p>
+		</div>
+
+		<div class="courses-grid-revolutionary">
+			{% for series in author_series %}
+			<a href="{% url 'blog:series_detail' series.slug %}" class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter }}">
+				<div class="course-image-revolutionary">
+					{% if series.cover_image %}
+						<img src="{{ series.cover_image.url }}" alt="{{ series.title }}" loading="lazy">
+					{% else %}
+						<div class="course-placeholder-image course-placeholder-series">
+							📚
+						</div>
+					{% endif %}
+					<div class="course-badge-revolutionary">
+						{% if series.status == 'completed' %}
+							✅ {% trans "Завершена" %}
+						{% elif series.status == 'active' %}
+							🔥 {% trans "Активна" %}
+						{% else %}
+							⏸️ {% trans "Приостановлена" %}
+						{% endif %}
+					</div>
+				</div>
+				<div class="course-content-revolutionary">
+					<h3 class="course-title-revolutionary">{{ series.title }}</h3>
+					<p class="course-description-revolutionary">{{ series.description|truncatewords:20 }}</p>
+					<div class="course-meta-revolutionary">
+						<div class="course-duration-revolutionary">
+							📖 {{ series.articles_count }} {% if series.articles_count == 1 %}{% trans "статья" %}{% elif series.articles_count < 5 %}{% trans "статьи" %}{% else %}{% trans "статей" %}{% endif %}
+						</div>
+						<div class="course-lessons-revolutionary">
+							📅 {{ series.created_at|date:"d.m.Y" }}
+						</div>
+					</div>
+				</div>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+{% endif %}
+
+<!-- Author Articles -->
+<section class="courses-revolutionary">
+	<div class="container">
+		<div class="section-header-revolutionary">
+			<div class="section-badge animate-fade-in">
+				<span>✍️</span>
+				<span>{% trans "Статьи" %}</span>
+			</div>
+			<h2 class="section-title-revolutionary animate-fade-in delay-1">
+				{% trans "Статьи автора" %}
+			</h2>
+			<p class="section-subtitle-revolutionary animate-fade-in delay-2">
+				{% trans "Все публикации" %} {{ author.display_name }}
+			</p>
+		</div>
+
+		{% if articles %}
+		<div class="courses-grid-revolutionary">
+			{% for article in articles %}
+			<a href="{{ article.get_absolute_url }}" class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter }}">
+				<div class="course-image-revolutionary">
+					{% if article.featured_image %}
+						<img src="{{ article.featured_image.url }}" alt="{{ article.title }}" loading="lazy">
+					{% else %}
+						<div class="course-placeholder-image">
+							{{ article.category.icon|default:"📖" }}
+						</div>
+					{% endif %}
+					{% if article.is_featured %}
+						<div class="course-badge-revolutionary">⭐ {% trans "Рекомендуем" %}</div>
+					{% elif article.category %}
+						<div class="course-badge-revolutionary">{{ article.category.name }}</div>
+					{% endif %}
+				</div>
+				<div class="course-content-revolutionary">
+					<h3 class="course-title-revolutionary">{{ article.title }}</h3>
+					<p class="course-description-revolutionary">{{ article.excerpt|default:article.content|smart_excerpt:20 }}</p>
+					<div class="course-meta-revolutionary">
+						<div class="course-duration-revolutionary">
+							{% if article.difficulty == 'beginner' %}
+								� {% trans "Новичок" %}
+							{% elif article.difficulty == 'intermediate' %}
+								🟡 {% trans "Средний" %}
+							{% elif article.difficulty == 'advanced' %}
+								🔴 {% trans "Эксперт" %}
+							{% else %}
+								📚 {% trans "Статья" %}
+							{% endif %}
+						</div>
+						<div class="course-lessons-revolutionary">
+							📅 {{ article.published_at|date:"d.m.Y" }}
+						</div>
+					</div>
+				</div>
+			</a>
+			{% endfor %}
+		</div>
+
+		<!-- Pagination -->
+		{% if articles.has_other_pages %}
+		<div class="pagination-revolutionary animate-fade-in delay-5">
+			{% if articles.has_previous %}
+				<a href="?page=1" class="pagination-btn pagination-first">
+					<span>⏮️</span>
+					<span class="btn-text">{% trans "Первая" %}</span>
+				</a>
+				<a href="?page={{ articles.previous_page_number }}" class="pagination-btn pagination-prev">
+					<span>◀️</span>
+					<span class="btn-text">{% trans "Предыдущая" %}</span>
+				</a>
+			{% endif %}
+			
+			<!-- Page Numbers -->
+			<div class="pagination-numbers">
+				{% for num in articles.paginator.page_range %}
+					{% if articles.number == num %}
+						<span class="pagination-btn pagination-current">{{ num }}</span>
+					{% elif num > articles.number|add:'-3' and num < articles.number|add:'3' %}
+						<a href="?page={{ num }}" class="pagination-btn">{{ num }}</a>
+					{% elif num == 1 or num == articles.paginator.num_pages %}
+						<a href="?page={{ num }}" class="pagination-btn">{{ num }}</a>
+					{% elif num == articles.number|add:'-3' or num == articles.number|add:'3' %}
+						<span class="pagination-dots">...</span>
+					{% endif %}
+				{% endfor %}
+			</div>
+			
+			{% if articles.has_next %}
+				<a href="?page={{ articles.next_page_number }}" class="pagination-btn pagination-next">
+					<span class="btn-text">{% trans "Следующая" %}</span>
+					<span>▶️</span>
+				</a>
+				<a href="?page={{ articles.paginator.num_pages }}" class="pagination-btn pagination-last">
+					<span class="btn-text">{% trans "Последняя" %}</span>
+					<span>⏭️</span>
+				</a>
+			{% endif %}
+		</div>
+		{% endif %}
+		{% else %}
+		<div class="empty-state-revolutionary">
+			<div class="empty-icon">📝</div>
+			<h3>{% trans "Пока нет статей" %}</h3>
+			<p>{% trans "У автора ещё нет опубликованных статей" %}</p>
+		</div>
+		{% endif %}
+	</div>
+</section>
+
+<!-- Categories Stats -->
+{% if categories_stats %}
+<section class="features-revolutionary">
+	<div class="container">
+		<div class="section-header-revolutionary">
+			<div class="section-badge animate-fade-in">
+				<span>📊</span>
+				<span>{% trans "Статистика" %}</span>
+			</div>
+			<h3 class="section-title-revolutionary animate-fade-in delay-1">{% trans "Статистика по категориям" %}</h3>
+			<p class="section-subtitle-revolutionary animate-fade-in delay-2">{% trans "Распределение статей автора по темам" %}</p>
+		</div>
+		<div class="features-grid-revolutionary">
+			{% for cat in categories_stats %}
+			<div class="feature-card-revolutionary">
+				<div class="feature-icon-revolutionary">{{ cat.category__icon|default:'📂' }}</div>
+				<h4 class="feature-title-revolutionary">{{ cat.category__name }}</h4>
+				<p class="feature-description-revolutionary">{{ cat.count }} {% trans "статей" %}</p>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+{% endif %}
+
+{% endblock %}
+

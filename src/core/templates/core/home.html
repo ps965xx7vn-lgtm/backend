@@ -1,0 +1,495 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}PyLand - {% trans "Главная страница" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/core/phone-input.css' %}">
+<link rel="stylesheet" href="{% static 'css/core/contact-form.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Революционный Hero -->
+<section class="revolutionary-hero-home">
+    <div class="hero-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-main-content">
+            <div class="hero-badge-revolutionary animate-fade-in">
+                <span>🚀</span>
+                <span>{% trans "Революция в IT образовании" %}</span>
+            </div>
+            
+            <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                {% trans "Освойте будущее" %}
+                <br>{% trans "с PyLand" %}
+            </h1>
+            
+            <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Революционная платформа обучения программированию нового поколения. Интерактивные курсы, 3D визуализации, AI-ментор и персональная поддержка 24/7" %}
+            </p>
+            
+            <div class="hero-actions-revolutionary animate-fade-in delay-3">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>✨</span>
+                        <span>{% trans "Начать путешествие" %}</span>
+                    </a>
+                    <a href="{% url 'courses:courses' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>📚</span>
+                        <span>{% trans "Изучить курсы" %}</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'courses:courses' %}" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>🎯</span>
+                        <span>{% trans "Мои курсы" %}</span>
+                    </a>
+                    <a href="{% url 'core:dashboard' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>⚡</span>
+                        <span>{% trans "Личный кабинет" %}</span>
+                    </a>
+                {% endif %}
+            </div>
+            
+            <div class="hero-stats-revolutionary animate-fade-in delay-4">
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">5K+</span>
+                    <span class="stat-label-revolutionary">{% trans "Активных студентов" %}</span>
+                </div>
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">98%</span>
+                    <span class="stat-label-revolutionary">{% trans "Успешных выпускников" %}</span>
+                </div>
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">24/7</span>
+                    <span class="stat-label-revolutionary">{% trans "Поддержка экспертов" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Революционные возможности -->
+<section class="features-revolutionary">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>⚡</span>
+                <span>{% trans "Возможности" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Почему PyLand — это будущее IT образования?" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Мы используем передовые технологии и инновационные методики обучения для максимально эффективного усвоения материала" %}
+            </p>
+        </div>
+        
+        <div class="features-grid-revolutionary">
+            <div class="feature-card-revolutionary animate-fade-in delay-3">
+                <div class="feature-icon-revolutionary">🎯</div>
+                <h3 class="feature-title-revolutionary">{% trans "Практический подход" %}</h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Вы учитесь на реальных примерах и задачах. Каждый урок включает практические упражнения для закрепления материала" %}
+                </p>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-4">
+                <div class="feature-icon-revolutionary">🌐</div>
+                <h3 class="feature-title-revolutionary">{% trans "Живая поддержка менторов" %}</h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Опытные разработчики помогут разобраться с любыми вопросами и дадут обратную связь по вашим проектам" %}
+                </p>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-5">
+                <div class="feature-icon-revolutionary">🚀</div>
+                <h3 class="feature-title-revolutionary">{% trans "Реальные проекты" %}</h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Создавайте настоящие приложения и веб-сайты в процессе обучения. Пополняйте портфолио работами для будущего трудоустройства" %}
+                </p>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-6">
+                <div class="feature-icon-revolutionary">👥</div>
+                <h3 class="feature-title-revolutionary">{% trans "Активное сообщество" %}</h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Общайтесь с единомышленниками, обменивайтесь опытом и находите напарников для совместных проектов" %}
+                </p>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-3">
+                <div class="feature-icon-revolutionary">🎓</div>
+                <h3 class="feature-title-revolutionary">{% trans "Официальные сертификаты" %}</h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Получайте сертификаты о прохождении курсов, которые подтверждают ваши знания и навыки перед работодателями" %}
+                </p>
+            </div>
+            
+            <div class="feature-card-revolutionary animate-fade-in delay-4">
+                <div class="feature-icon-revolutionary">💼</div>
+                <h3 class="feature-title-revolutionary">{% trans "Помощь в трудоустройстве" %}</h3>
+                <p class="feature-description-revolutionary">
+                    {% trans "Консультации по составлению резюме, подготовка к собеседованиям и рекомендации лучшим студентам" %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Революционные курсы -->
+<section class="courses-revolutionary">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>📚</span>
+                <span>{% trans "Курсы" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Наши курсы" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Практические курсы от ведущих экспертов индустрии для достижения ваших целей" %}
+            </p>
+        </div>
+        
+        <div class="courses-grid-revolutionary">
+            {% for course in courses %}
+            <div class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:2 }}">
+                <div class="course-image-revolutionary">
+                    {% if course.image %}
+                        <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-image-img">
+                    {% else %}
+                        <div class="course-placeholder-image {% if course.category == 'python' %}course-placeholder-blue{% elif course.category == 'javascript' %}course-placeholder-pink{% endif %}">
+                            {% if course.category == 'python' %}🐍
+                            {% elif course.category == 'javascript' %}⚡
+                            {% elif course.category == 'web' %}🌐
+                            {% elif course.category == 'data-science' %}📊
+                            {% else %}�
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <div class="course-badge-revolutionary">{% trans "Курс" %}</div>
+                </div>
+                <div class="course-content-revolutionary">
+                    <h3 class="course-title-revolutionary">{{ course.name }}</h3>
+                    <p class="course-description-revolutionary">
+                        {{ course.short_description|default:course.description|truncatewords:20 }}
+                    </p>
+                    <div class="course-meta-revolutionary">
+                        <div class="course-duration-revolutionary">
+                            📚 {{ course.lessons.count|default:"0" }} {% trans "уроков" %}
+                        </div>
+                        <div class="course-lessons-revolutionary">
+                            {% if course.price == 0 or course.price is None %}
+                                <span style="color: #10b981; font-weight: 700;">{% trans "Бесплатно" %}</span>
+                            {% else %}
+                                <span style="font-weight: 700; color: #0ea5e9;">${{ course.price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="{% url 'courses:course_detail' course.slug %}" class="course-btn-revolutionary">
+                        <span>{% trans "Начать изучение" %}</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="course-card-revolutionary animate-fade-in delay-3">
+                <div class="course-image-revolutionary">
+                    <img src="{% static 'images/icons/favicon.png' %}" alt="PyLand" style="width: 80px; height: 80px; object-fit: contain;">
+                    <div class="course-badge-revolutionary">{% trans "Скоро" %}</div>
+                </div>
+                <div class="course-content-revolutionary">
+                    <h3 class="course-title-revolutionary">{% trans "Курсы скоро появятся" %}</h3>
+                    <p class="course-description-revolutionary">
+                        {% trans "Мы работаем над созданием интересных курсов для вас!" %}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- 3D Статистика -->
+<section class="stats-3d-revolutionary">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>📊</span>
+                <span>{% trans "Статистика" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "PyLand в цифрах" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Наши достижения говорят сами за себя" %}
+            </p>
+        </div>
+        
+        <div class="stats-grid-3d">
+            <div class="stat-cube-3d animate-fade-in delay-3">
+                <div class="cube">
+                    <div class="cube-face cube-front">
+                        <div class="cube-number">5000+</div>
+                        <div class="cube-label">{% trans "Студентов" %}</div>
+                    </div>
+                    <div class="cube-face cube-back">
+                        <div class="cube-number">98%</div>
+                        <div class="cube-label">{% trans "Успешность" %}</div>
+                    </div>
+                    <div class="cube-face cube-right">
+                        <div class="cube-number">200+</div>
+                        <div class="cube-label">{% trans "Партнеров" %}</div>
+                    </div>
+                    <div class="cube-face cube-left">
+                        <div class="cube-number">24/7</div>
+                        <div class="cube-label">{% trans "Поддержка" %}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-cube-3d animate-fade-in delay-4">
+                <div class="cube">
+                    <div class="cube-face cube-front">
+                        <div class="cube-number">95%</div>
+                        <div class="cube-label">{% trans "Трудоустройство" %}</div>
+                    </div>
+                    <div class="cube-face cube-back">
+                        <div class="cube-number">150k₽</div>
+                        <div class="cube-label">{% trans "Средняя зарплата" %}</div>
+                    </div>
+                    <div class="cube-face cube-right">
+                        <div class="cube-number">50+</div>
+                        <div class="cube-label">{% trans "Курсов" %}</div>
+                    </div>
+                    <div class="cube-face cube-left">
+                        <div class="cube-number">4.9⭐</div>
+                        <div class="cube-label">{% trans "Рейтинг" %}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-cube-3d animate-fade-in delay-5">
+                <div class="cube">
+                    <div class="cube-face cube-front">
+                        <div class="cube-number">500+</div>
+                        <div class="cube-label">{% trans "Проектов" %}</div>
+                    </div>
+                    <div class="cube-face cube-back">
+                        <div class="cube-number">100%</div>
+                        <div class="cube-label">{% trans "Гарантия" %}</div>
+                    </div>
+                    <div class="cube-face cube-right">
+                        <div class="cube-number">∞</div>
+                        <div class="cube-label">{% trans "Возможности" %}</div>
+                    </div>
+                    <div class="cube-face cube-left">
+                        <div class="cube-number">2025</div>
+                        <div class="cube-label">{% trans "Год будущего" %}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-cube-3d animate-fade-in delay-6">
+                <div class="cube">
+                    <div class="cube-face cube-front">
+                        <div class="cube-number">🚀</div>
+                        <div class="cube-label">{% trans "Инновации" %}</div>
+                    </div>
+                    <div class="cube-face cube-back">
+                        <div class="cube-number">🌍</div>
+                        <div class="cube-label">{% trans "Глобально" %}</div>
+                    </div>
+                    <div class="cube-face cube-right">
+                        <div class="cube-number">💎</div>
+                        <div class="cube-label">{% trans "Премиум" %}</div>
+                    </div>
+                    <div class="cube-face cube-left">
+                        <div class="cube-number">⚡</div>
+                        <div class="cube-label">{% trans "Быстро" %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Революционный CTA -->
+<section class="cta-revolutionary">
+    <div class="container">
+        <div class="cta-content-revolutionary">
+            <h2 class="cta-title-revolutionary animate-fade-in">
+                {% trans "Готовы изменить свою жизнь?" %}
+            </h2>
+            <p class="cta-description-revolutionary animate-fade-in delay-1">
+                {% trans "Присоединяйтесь к нашему сообществу разработчиков. Получите доступ к практическим курсам и начните свой путь в программировании!" %}
+            </p>
+            <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>🎯</span>
+                        <span>{% trans "Начать бесплатно" %}</span>
+                    </a>
+                    <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>💬</span>
+                        <span>{% trans "Связаться с нами" %}</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'courses:courses' %}" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>🚀</span>
+                        <span>{% trans "Продолжить обучение" %}</span>
+                    </a>
+                    <a href="{% url 'blog:home' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>📚</span>
+                        <span>{% trans "Читать блог" %}</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="contact-form-section" id="contact-form">
+    <div class="contact-form-container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>✉️</span>
+                <span>{% trans "Напишите нам" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Остались вопросы?" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Заполните форму, и мы свяжемся с вами в течение 15 минут в рабочее время" %}
+            </p>
+        </div>
+        
+        <div class="contact-form-card">
+            <form method="post" id="homeContactForm" action="{% url 'core:home' %}">
+                {% csrf_token %}
+                
+                <div class="contact-form-grid">
+                    <div class="contact-form-group">
+                        <label class="contact-form-label">
+                            {% trans "Ваше имя" %} <span class="contact-form-required">*</span>
+                        </label>
+                        <input type="text" 
+                               name="first_name" 
+                               class="contact-form-input"
+                               placeholder="{% trans 'Введите ваше имя' %}"
+                               required>
+                    </div>
+                    
+                    <div class="contact-form-group">
+                        <label class="contact-form-label">
+                            {% trans "Номер телефона" %} <span class="contact-form-required">*</span>
+                        </label>
+                        <div class="phone-input-wrapper phone-input-group">
+                            <div class="country-select-wrapper">
+                                <select class="country-select" id="home-country-code" aria-label="{% trans 'Выберите страну' %}">
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                                <svg class="country-select-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                            <input type="tel" 
+                                   name="phone_number" 
+                                   class="phone-number-input"
+                                   placeholder="+7 (___) ___-__-__"
+                                   required
+                                   autocomplete="tel">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form-group contact-form-group-full">
+                    <label class="contact-form-label">
+                        {% trans "Email адрес" %} <span class="contact-form-required">*</span>
+                    </label>
+                    <input type="email" 
+                           name="email" 
+                           class="contact-form-input"
+                           placeholder="{% trans 'example@email.com' %}"
+                           required
+                           autocomplete="email">
+                </div>
+                
+                <div class="contact-form-group contact-form-group-full">
+                    <label class="contact-form-label">
+                        {% trans "Ваше сообщение" %} <span class="contact-form-required">*</span>
+                    </label>
+                    <textarea name="message" 
+                              rows="6" 
+                              class="contact-form-textarea"
+                              placeholder="{% trans 'Расскажите подробнее о вашем вопросе или запросе...' %}"
+                              required></textarea>
+                </div>
+                
+                <div class="contact-form-agreement">
+                    <input type="checkbox" 
+                           name="agree_terms" 
+                           id="home_agree_terms"
+                           class="contact-form-checkbox"
+                           required>
+                    <label for="home_agree_terms" class="contact-form-agreement-text">
+                        {% trans "Я соглашаюсь с" %} 
+                        <a href="{% url 'core:privacy_policy' %}" class="contact-form-agreement-link">{% trans "политикой конфиденциальности" %}</a> 
+                        {% trans "и" %} 
+                        <a href="{% url 'core:data_processing' %}" class="contact-form-agreement-link">{% trans "обработкой персональных данных" %}</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="contact-form-submit">
+                    <svg class="contact-form-submit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                    <span>{% trans "Отправить сообщение" %}</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/core/phone-input.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация телефонного инпута для формы на главной
+    const homePhoneInput = document.querySelector('#homeContactForm .phone-number-input');
+    const homeCountrySelect = document.querySelector('#home-country-code');
+    
+    if (homePhoneInput && homeCountrySelect && typeof phoneInputHandler !== 'undefined') {
+        phoneInputHandler.init(homeCountrySelect, homePhoneInput);
+    }
+    
+    // Обработка отправки формы
+    const homeForm = document.getElementById('homeContactForm');
+    if (homeForm) {
+        homeForm.addEventListener('submit', function(e) {
+            const agreeCheckbox = homeForm.querySelector('#home_agree_terms');
+            if (!agreeCheckbox || !agreeCheckbox.checked) {
+                e.preventDefault();
+                alert('{% trans "Пожалуйста, согласитесь с политикой конфиденциальности" %}');
+                return false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

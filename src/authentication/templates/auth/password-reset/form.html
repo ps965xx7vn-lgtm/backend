@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}PyLand - {% trans "Восстановление пароля" %}{% endblock %}
+
+{% block content %}
+<!-- Modern Auth Section -->
+<section class="modern-auth-section">
+    <div class="auth-container">
+        <!-- Left Side - Form -->
+        <div class="auth-form-side">
+            <div class="auth-form-container">
+                <!-- Logo & Welcome -->
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <img src="{% static 'images/icons/favicon.png' %}" alt="PyLand" width="48" height="48">
+                        <span class="auth-logo-text">PyLand</span>
+                    </div>
+                    <h1 class="auth-title">{% trans "Восстановление пароля" %}</h1>
+                    <p class="auth-subtitle">{% trans "Введите email для получения ссылки сброса пароля" %}</p>
+                </div>
+
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Form -->
+                <form method="post" class="modern-auth-form" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="form-errors">
+                            {% for error in form.non_field_errors %}
+                                <div class="form-error visible">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            {% trans "Email адрес" %}
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="form-error visible">
+                                {% for error in form.email.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="auth-submit-btn">
+                        <span class="btn-text">{% trans "Отправить инструкции" %}</span>
+                        <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </form>
+
+                <!-- Back to Login -->
+                <div class="auth-footer">
+                    <p>{% trans "Вспомнили пароль?" %} 
+                        <a href="{% url 'authentication:signin' %}" class="auth-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right: 0.25rem;">
+                                <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            {% trans "Вернуться к входу" %}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Visual (rich banner like signin/signup) -->
+        <div class="auth-visual-side">
+            <div class="auth-visual-content">
+                <!-- Floating icons (same as signin) -->
+                <div class="visual-elements">
+                    <div class="floating-icon icon-1">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2"/>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2"/>
+                            <path d="M9 14l2 2 4-4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="floating-icon icon-2">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="floating-icon icon-3">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Main visual text and stats (mirrors signin) -->
+                <div class="visual-text">
+                    <h2>{% trans "Восстановите доступ к аккаунту" %}</h2>
+                    <p>{% trans "Мы отправим вам письмо с инструкциями — быстро и безопасно." %}</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">{% trans "Безопасность" %}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">1–2</div>
+                            <div class="stat-label">{% trans "Минуты на почте" %}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">{% trans "Поддержка" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

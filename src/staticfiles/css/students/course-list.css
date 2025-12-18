@@ -1,0 +1,1937 @@
+/* Dashboard Course Detail Styles */
+
+/* Lesson Styles */
+.lesson-item {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+    background: var(--card-bg);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.lesson-item:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.lesson-header {
+    padding: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.2s ease;
+}
+
+.lesson-header:hover {
+    background: var(--bg-secondary);
+}
+
+.lesson-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.lesson-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-100);
+    color: var(--primary-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.lesson-title {
+    margin: 0 0 0.25rem 0;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.lesson-description {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.lesson-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.lesson-progress-info {
+    text-align: right;
+    min-width: 120px;
+}
+
+.lesson-progress-text {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.lesson-progress-percentage {
+    display: block;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--primary-600);
+}
+
+.lesson-progress-bar {
+    width: 100px;
+    height: 6px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.lesson-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.lesson-badge.completed {
+    background: var(--success-100);
+    color: var(--success-600);
+}
+
+.lesson-badge.in-progress {
+    background: var(--warning-100);
+    color: var(--warning-600);
+}
+
+.lesson-badge.not-started {
+    background: var(--gray-100);
+    color: var(--gray-500);
+}
+
+.lesson-toggle-icon {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.lesson-item.expanded .lesson-toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Locked lesson styles */
+.lesson-item.lesson-locked {
+    opacity: 0.6;
+    background: var(--bg-secondary);
+}
+
+.lesson-item.lesson-locked .lesson-header {
+    cursor: not-allowed;
+}
+
+.lesson-item.lesson-locked .lesson-header:hover {
+    background: var(--bg-secondary);
+}
+
+.lesson-item.lesson-locked .lesson-number {
+    background: var(--gray-200);
+    color: var(--gray-500);
+    font-size: 1.25rem;
+}
+
+.lesson-item.lesson-locked .lesson-title {
+    color: var(--text-secondary);
+}
+
+.lesson-locked-message {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.lesson-locked-message svg {
+    margin: 0 auto 1rem;
+    color: var(--gray-400);
+}
+
+.lesson-locked-message h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.lesson-content {
+    padding: 0 1.5rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    display: none;
+}
+
+.lesson-item.expanded .lesson-content {
+    display: block;
+}
+
+.lesson-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+}
+
+.lesson-last-activity {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+}
+
+.steps-preview h5 {
+    margin: 0 0 1rem 0;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    transition: background 0.2s ease;
+}
+
+.step-item:hover {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.step-item.completed {
+    background: var(--success-50);
+}
+
+.step-item.more-steps {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.step-checkbox-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.step-checkbox {
+    opacity: 0;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.step-checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    transition: all 0.2s ease;
+}
+
+.step-checkbox:checked + .step-checkbox-custom {
+    background: var(--success-500);
+    border-color: var(--success-500);
+    color: white;
+}
+
+.step-checkbox:checked + .step-checkbox-custom svg {
+    opacity: 1;
+}
+
+.step-checkbox-custom svg {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.step-name {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+/* Progress actions for buttons */
+.progress-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.step-item.completed .step-name {
+    color: var(--success-700);
+}
+
+/* Account Courses Page Styles */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#course-filter:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Step Accordion Styles */
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.step-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.step-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.step-card.completed {
+    border-color: var(--success-500);
+    background: var(--success-50);
+}
+
+[data-theme="dark"] .step-card.completed {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+/* Step needs improvement - выделение шагов на доработке */
+.step-card.step-needs-improvement {
+    border: 2px solid #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+    position: relative;
+}
+
+[data-theme="dark"] .step-card.step-needs-improvement {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #dc2626;
+}
+
+/* Reviewer improvements - blue styling */
+.step-card.step-needs-reviewer-improvement {
+    border: 2px solid #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+    position: relative;
+}
+
+[data-theme="dark"] .step-card.step-needs-reviewer-improvement {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #2563eb;
+}
+
+/* Ensure improvement step checkboxes are clickable */
+.step-needs-improvement .step-checkbox-container,
+.step-needs-reviewer-improvement .step-checkbox-container {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.step-needs-improvement .step-checkbox,
+.step-needs-reviewer-improvement .step-checkbox {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.step-needs-improvement .step-checkbox-custom,
+.step-needs-reviewer-improvement .step-checkbox-custom {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.step-header:hover {
+    background: var(--bg-secondary);
+}
+
+.step-checkbox-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.step-checkbox {
+    opacity: 0;
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.step-checkbox-custom {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    transition: all 0.2s ease;
+}
+
+.step-checkbox:checked + .step-checkbox-custom {
+    background: var(--success-500);
+    border-color: var(--success-500);
+    color: white;
+}
+
+.step-checkbox:checked + .step-checkbox-custom svg {
+    opacity: 1;
+}
+
+.step-checkbox-custom svg {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.step-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.step-title {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.step-description {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.step-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.step-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 500;
+}
+
+.step-badge svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.step-badge.completed {
+    background: var(--success-100);
+    color: var(--success-700);
+}
+
+.step-badge.completed svg {
+    stroke: var(--success-700);
+}
+
+.step-badge.not-completed {
+    background: var(--gray-100);
+    color: var(--gray-600);
+}
+
+.step-badge.not-completed svg {
+    stroke: var(--gray-600);
+}
+
+[data-theme="dark"] .step-badge.completed {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success-400);
+}
+
+[data-theme="dark"] .step-badge.completed svg {
+    stroke: var(--success-400);
+}
+
+[data-theme="dark"] .step-badge.not-completed {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .step-badge.not-completed svg {
+    stroke: var(--text-secondary);
+}
+
+.step-content {
+    padding: 0 1.5rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: none;
+    min-height: 60px;
+}
+
+.step-card.expanded .step-content {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.step-body {
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    line-height: 1.6;
+}
+
+.step-code {
+    margin-top: 1rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #1e293b;
+}
+
+.code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-size: var(--text-sm);
+    font-weight: 500;
+}
+
+.step-code pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: #1e293b;
+}
+
+.step-code code {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #e2e8f0;
+}
+
+.step-footer {
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.step-completion-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+}
+
+.copy-code {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+
+.step-toggle-icon {
+    transition: transform 0.3s ease;
+    color: var(--text-secondary);
+}
+
+.step-card.expanded .step-toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Course navigation styles */
+.course-nav-header {
+    padding: 0 1rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .course-nav-header {
+    border-bottom-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="light"] .course-nav-header {
+    border-bottom-color: var(--border-color);
+}
+
+.course-nav-title {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.875rem;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+[data-theme="light"] .course-nav-title {
+    color: var(--text-color);
+}
+
+.course-nav-subtitle {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+}
+
+[data-theme="light"] .course-nav-subtitle {
+    color: var(--text-secondary);
+}
+
+/* Breadcrumb styles */
+.breadcrumb-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+    text-decoration: underline;
+}
+
+/* Progress container spacing */
+.progress-container-spaced {
+    margin-bottom: 2rem;
+}
+
+.progress-container-top-spaced {
+    margin-top: 2rem;
+}
+
+/* Новый дизайн прогресс-бара из reviewers */
+.progress-bar {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-full, 9999px);
+    overflow: hidden;
+}
+
+[data-theme="dark"] .progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+    background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+    border-radius: var(--radius-full, 9999px);
+}
+
+.progress-fill.warning {
+    background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.progress-fill.success {
+    background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+}
+
+/* Progress bar height */
+.progress-bar-large {
+    height: 6px;
+}
+
+.progress-bar-large .progress-fill {
+    height: 100%;
+}
+
+/* Progress stats */
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Course card spacing */
+.course-card-spaced {
+    margin-bottom: 2rem;
+}
+
+/* Course image height */
+.course-image-medium {
+    height: 150px;
+}
+
+/* Form group spacing */
+.form-group-spaced {
+    margin-bottom: 1.5rem;
+}
+
+/* Stats grid spacing */
+.stats-grid-spaced {
+    margin-top: 2rem;
+}
+
+/* Lesson submission form styles */
+.lesson-submission-form {
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+}
+
+.lesson-submission-form .form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.lesson-submission-form .form-label svg {
+    color: var(--primary-500);
+}
+
+.lesson-submission-form .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    background: var(--card-bg);
+    transition: all 0.2s ease;
+}
+
+.lesson-submission-form .form-control:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="dark"] .lesson-submission-form .form-control {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .lesson-submission-form .form-control:focus {
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.lesson-submission-form .form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.lesson-submission-form .form-control.error {
+    border-color: var(--danger-500);
+}
+
+.lesson-submission-form .form-help {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.lesson-submission-form .form-help svg {
+    flex-shrink: 0;
+}
+
+.lesson-submission-form .form-errors {
+    margin-top: 0.5rem;
+}
+
+.lesson-submission-form .error-message {
+    padding: 0.75rem;
+    background: var(--danger-50);
+    border: 1px solid var(--danger-200);
+    border-radius: var(--radius-md);
+    color: var(--danger-700);
+    font-size: var(--text-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+[data-theme="dark"] .lesson-submission-form .error-message {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger-500);
+    color: var(--danger-300);
+}
+
+.lesson-submission-form .form-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.lesson-submission-form .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.lesson-submission-form .btn-primary {
+    background: var(--primary-500);
+    color: white;
+}
+
+.lesson-submission-form .btn-primary:hover:not(:disabled) {
+    background: var(--primary-600);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.lesson-submission-form .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.lesson-submission-form .spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Submission success state */
+.submission-success {
+    text-align: center;
+    padding: 2rem;
+}
+
+.submission-success .success-icon {
+    display: inline-flex;
+    width: 64px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
+    background: var(--success-100);
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.submission-success .success-icon svg {
+    color: var(--success-600);
+}
+
+[data-theme="dark"] .submission-success .success-icon {
+    background: rgba(34, 197, 94, 0.1);
+}
+
+[data-theme="dark"] .submission-success .success-icon svg {
+    color: var(--success-400);
+}
+
+.submission-success h4 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.submission-success p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.submission-success a {
+    color: var(--primary-500);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.submission-success a:hover {
+    text-decoration: underline;
+}
+
+.submission-success .submission-time {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    margin-top: 1rem;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Tablets and below (1023px) */
+@media (max-width: 1023px) {
+    /* Lesson items - адаптивный header */
+    .lesson-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .lesson-status {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .lesson-progress-bar {
+        flex: 1;
+        max-width: 150px;
+    }
+    
+    /* Step cards - компактнее */
+    .step-header {
+        padding: 1rem;
+    }
+    
+    .step-content {
+        padding: 0 1rem 1rem;
+    }
+    
+    .step-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
+
+/* === SUBMISSION STATUS STYLES === */
+.submission-success,
+.submission-warning,
+.submission-info {
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Approved - Green */
+.submission-approved {
+    background: #f0fdf4;
+    border-left: 4px solid #10b981;
+}
+
+[data-theme="dark"] .submission-approved {
+    background: #064e3b;
+    border-left-color: #10b981;
+}
+
+.submission-approved h4 {
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.submission-approved .success-icon {
+    display: inline-flex;
+    width: 64px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 50%;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .submission-approved .success-icon {
+    background: rgba(16, 185, 129, 0.2);
+}
+
+.submission-approved .submission-link {
+    color: #10b981;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .submission-approved .submission-link {
+    color: #34d399;
+}
+
+/* Changes Requested - Red */
+.submission-changes-requested {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+}
+
+[data-theme="dark"] .submission-changes-requested {
+    background: #7f1d1d;
+    border-left-color: #ef4444;
+}
+
+.submission-warning-title {
+    color: #ef4444;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+[data-theme="dark"] .submission-warning-title {
+    color: #fca5a5;
+}
+
+.submission-comment-box {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border: 1px solid #fecaca;
+    text-align: left;
+}
+
+[data-theme="dark"] .submission-comment-box {
+    background: var(--bg-secondary);
+    border-color: #991b1b;
+}
+
+.submission-comment-title {
+    color: #ef4444;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .submission-comment-title {
+    color: #fca5a5;
+}
+
+.submission-comment-text {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.submission-comment-text p {
+    margin: 0.5rem 0;
+}
+
+.submission-comment-text ul,
+.submission-comment-text ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.submission-comment-text li {
+    margin: 0.25rem 0;
+}
+
+.submission-comment-text code {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875em;
+}
+
+[data-theme="dark"] .submission-comment-text code {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.submission-comment-text pre {
+    background: var(--bg-secondary);
+    padding: 0.75rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+}
+
+.submission-comment-author {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Improvement steps notice */
+.submission-steps-notice {
+    background: rgba(239, 68, 68, 0.1);
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border: 1px solid #ef4444;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+[data-theme="dark"] .submission-steps-notice {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #dc2626;
+}
+
+.submission-steps-notice svg {
+    flex-shrink: 0;
+    color: #ef4444;
+}
+
+[data-theme="dark"] .submission-steps-notice svg {
+    color: #f87171;
+}
+
+.submission-steps-notice span {
+    color: #dc2626;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .submission-steps-notice span {
+    color: #fca5a5;
+}
+
+/* Improvement progress notice */
+.improvement-progress-notice {
+    background: rgba(59, 130, 246, 0.1);
+    padding: 0.875rem 1.25rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border: 1px solid #3b82f6;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+[data-theme="dark"] .improvement-progress-notice {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: #2563eb;
+}
+
+.improvement-progress-notice svg {
+    flex-shrink: 0;
+    color: #3b82f6;
+}
+
+[data-theme="dark"] .improvement-progress-notice svg {
+    color: #60a5fa;
+}
+
+.improvement-progress-notice span {
+    color: #1e40af;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .improvement-progress-notice span {
+    color: #93c5fd;
+}
+
+.improvement-progress-notice strong {
+    color: #1e3a8a;
+}
+
+[data-theme="dark"] .improvement-progress-notice strong {
+    color: #60a5fa;
+}
+
+/* Improvement steps box */
+.submission-steps-box {
+    background: rgba(239, 68, 68, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border: 2px solid #ef4444;
+    text-align: left;
+}
+
+[data-theme="dark"] .submission-steps-box {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #dc2626;
+}
+
+.submission-steps-title {
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .submission-steps-title {
+    color: #f87171;
+}
+
+.submission-steps-title svg {
+    flex-shrink: 0;
+}
+
+.submission-steps-content {
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.submission-steps-content ul,
+.submission-steps-content ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.submission-steps-content li {
+    margin: 0.5rem 0;
+}
+
+.submission-steps-content p {
+    margin: 0.5rem 0;
+}
+
+.submission-steps-content code {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875em;
+}
+
+[data-theme="dark"] .submission-steps-content code {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* In Review - Blue */
+.submission-in-review {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+}
+
+[data-theme="dark"] .submission-in-review {
+    background: #1e3a8a;
+    border-left-color: #3b82f6;
+}
+
+.submission-info-title {
+    color: #3b82f6;
+    margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .submission-info-title {
+    color: #93c5fd;
+}
+
+/* Common submission styles */
+.submission-info-text,
+.submission-link-text {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+}
+
+.submission-mentor {
+    color: var(--text-secondary);
+    margin: 0.5rem 0;
+}
+
+.submission-link {
+    color: var(--primary-500);
+    text-decoration: underline;
+}
+
+.submission-link:hover {
+    color: var(--primary-600);
+}
+
+.submission-time {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0.5rem 0;
+}
+
+.submission-resubmit-form {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.submission-resubmit-form .form-group {
+    text-align: left;
+}
+
+.submission-resubmit-form button[type="submit"] {
+    display: block;
+    margin: 1rem auto 0;
+}
+
+/* Edit submission button */
+.btn-edit-submission {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.btn-edit-submission:hover {
+    background: var(--bg-secondary);
+    border-color: var(--primary-500);
+    color: var(--primary-500);
+}
+
+[data-theme="dark"] .btn-edit-submission {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn-edit-submission:hover {
+    background: var(--card-bg);
+    border-color: var(--primary-400);
+    color: var(--primary-400);
+}
+
+/* Submission form inputs */
+.submission-resubmit-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.submission-resubmit-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.submission-resubmit-form .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.2s ease;
+}
+
+.submission-resubmit-form .form-control:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="dark"] .submission-resubmit-form .form-control {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .submission-resubmit-form .form-control:focus {
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.submission-resubmit-form .form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+/* Form errors */
+.form-errors {
+    margin-top: 0.5rem;
+}
+
+.form-errors .alert {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.form-errors .alert-danger {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+[data-theme="dark"] .form-errors .alert-danger {
+    background: #7f1d1d;
+    color: #fca5a5;
+    border-color: #991b1b;
+}
+
+/* Mobile phones (768px) */
+@media (max-width: 768px) {
+    /* Lesson info - вертикальный layout */
+    .lesson-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .lesson-number {
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+    }
+    
+    .lesson-title {
+        font-size: 1rem;
+    }
+    
+    .lesson-description {
+        font-size: 0.8125rem;
+    }
+    
+    /* Lesson status - стек */
+    .lesson-status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .lesson-progress-info {
+        text-align: left;
+        width: 100%;
+    }
+    
+    .lesson-progress-bar {
+        width: 100%;
+        max-width: 100%;
+        height: 8px;
+    }
+    
+    /* Step header - упрощенный */
+    .step-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.875rem;
+    }
+    
+    .step-info {
+        width: 100%;
+    }
+    
+    .step-title {
+        font-size: 0.9375rem;
+    }
+    
+    .step-description {
+        font-size: 0.8125rem;
+    }
+    
+    .step-actions {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .step-badge {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+    
+    /* Code blocks - скролл */
+    .step-code pre {
+        padding: 0.75rem;
+        font-size: 0.8125rem;
+    }
+    
+    .code-header {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.8125rem;
+    }
+    
+    /* Form - адаптивный */
+    .lesson-submission-form .form-actions {
+        flex-direction: column;
+    }
+    
+    .lesson-submission-form .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Steps preview - компактнее */
+    .steps-preview {
+        padding: 0.75rem;
+    }
+    
+    .steps-preview h5 {
+        font-size: 0.9375rem;
+    }
+    
+    .step-item {
+        padding: 0.375rem;
+        font-size: 0.8125rem;
+    }
+    
+    /* Lesson actions - стек */
+    .lesson-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .lesson-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Small mobile (480px) */
+@media (max-width: 480px) {
+    .lesson-header {
+        padding: 1rem;
+    }
+    
+    .lesson-content {
+        padding: 0 1rem 1rem;
+    }
+    
+    .step-header {
+        padding: 0.75rem;
+    }
+    
+    .step-content {
+        padding: 0 0.75rem 0.75rem;
+    }
+    
+    .step-title {
+        font-size: 0.875rem;
+    }
+    
+    .step-code pre {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+    
+    .code-header {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .step-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .step-self-check {
+        background: rgba(120, 70, 0, 0.2) !important;
+        border-left-color: #d97706 !important;
+    }
+    
+    .step-self-check h5 {
+        color: #fbbf24 !important;
+    }
+}
+
+[data-theme="dark"] .step-self-check {
+    background: rgba(120, 70, 0, 0.2) !important;
+    border-left-color: #d97706 !important;
+}
+
+[data-theme="dark"] .step-self-check h5 {
+    color: #fbbf24 !important;
+}
+
+/* Step repair warning */
+.step-repair-warning {
+    margin-bottom: 1rem;
+    background: #fff3e0;
+    border: 2px solid #ff9800;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(255, 152, 0, 0.1);
+}
+
+.step-repair-warning-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.step-repair-warning-icon {
+    flex-shrink: 0;
+    color: #f57c00;
+    margin-top: 0.125rem;
+}
+
+.step-repair-warning-text {
+    flex: 1;
+}
+
+.step-repair-warning-title {
+    margin: 0 0 0.5rem 0;
+    color: #e65100;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.step-repair-warning-description {
+    line-height: 1.6;
+    color: #e65100;
+}
+
+/* Step section titles */
+.step-section-title {
+    margin: 0 0 0.75rem 0;
+    color: var(--text-color);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-section-title svg {
+    vertical-align: middle;
+}
+
+.step-section-content {
+    line-height: 1.6;
+}
+
+/* Step self-check specific styles */
+.step-self-check {
+    margin-top: 1rem;
+    background: rgba(255, 243, 224, 0.5);
+    border-left: 3px solid var(--warning-500);
+    border-radius: var(--radius-md);
+}
+
+.step-self-check .step-section-title {
+    color: var(--warning-700);
+}
+
+.step-self-check .step-section-content {
+    color: var(--text-color);
+}
+
+/* Step completion footer */
+.step-footer {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.step-completion-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #059669;
+    font-weight: 500;
+}
+
+/* Step accordion items (Tips, ExtraSources) */
+.step-accordion-item {
+    margin-top: 1rem;
+}
+
+.step-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.step-accordion-header:hover {
+    opacity: 0.9;
+}
+
+.step-accordion-header h5 {
+    margin: 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-accordion-header .accordion-count {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.accordion-toggle-icon {
+    transition: transform 0.2s ease;
+}
+
+.step-accordion-content {
+    display: none;
+    padding: 1rem;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    margin-top: -0.25rem;
+}
+
+/* Tips section */
+.step-tips-section {
+    margin-top: 1rem;
+}
+
+/* Individual tip accordion */
+.step-tip-accordion {
+    margin-top: 0.5rem;
+}
+
+.step-tip-accordion:first-of-type {
+    margin-top: 0;
+}
+
+.step-tip-accordion .step-accordion-header {
+    background: var(--primary-50);
+    border-left: 3px solid var(--primary-500);
+}
+
+.step-tip-accordion .step-accordion-header h5 {
+    color: var(--primary-700);
+    font-size: 0.9375rem;
+}
+
+.step-tip-accordion .step-accordion-header .accordion-toggle-icon {
+    color: var(--primary-600);
+}
+
+.step-tip-accordion .step-accordion-content {
+    background: var(--primary-50);
+    border-left: 3px solid var(--primary-500);
+}
+
+.step-tip-description {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+/* ExtraSources accordion */
+.step-accordion-item[data-accordion-step*="-sources"] .step-accordion-header {
+    background: var(--success-50);
+    border-left: 3px solid var(--success-500);
+}
+
+.step-accordion-item[data-accordion-step*="-sources"] .step-accordion-header h5 {
+    color: var(--success-700);
+}
+
+.step-accordion-item[data-accordion-step*="-sources"] .step-accordion-header .accordion-count {
+    color: var(--success-600);
+}
+
+.step-accordion-item[data-accordion-step*="-sources"] .step-accordion-header .accordion-toggle-icon {
+    color: var(--success-600);
+}
+
+.step-accordion-item[data-accordion-step*="-sources"] .step-accordion-content {
+    background: var(--success-50);
+    border-left: 3px solid var(--success-500);
+}
+
+.step-sources-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    line-height: 1.8;
+    list-style: none;
+}
+
+.step-source-item {
+    margin-bottom: 0.5rem;
+}
+
+.step-source-link {
+    color: var(--success-700);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.step-source-link:hover {
+    color: var(--success-800);
+    text-decoration: underline;
+}
+
+.step-source-external-icon {
+    opacity: 0.7;
+}
+
+/* Step image */
+.step-image-wrapper {
+    margin-top: 1rem;
+    padding: 0;
+    background: transparent;
+}
+
+.step-image {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+/* Print styles */
+@media print {
+    /* Hide elements that shouldn't be printed */
+    .dashboard-sidebar,
+    .dashboard-header,
+    .dashboard-actions,
+    .search-box,
+    .filter-select,
+    .progress-container,
+    .stats-grid,
+    footer,
+    .subscribe-section,
+    .course-badge,
+    .lesson-badge,
+    .lesson-actions,
+    .btn,
+    button,
+    .lesson-toggle-icon,
+    .step-toggle-icon,
+    .accordion-toggle-icon {
+        display: none !important;
+    }
+
+    /* Reset layout for print */
+    .dashboard-layout {
+        display: block;
+        width: 100%;
+    }
+
+    .dashboard-main {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Show all lessons expanded */
+    .lesson-item {
+        page-break-inside: avoid;
+        border: 1px solid #ddd;
+        margin-bottom: 1rem;
+    }
+
+    .lesson-content {
+        display: block !important;
+    }
+
+    .lesson-header {
+        cursor: default;
+        border-bottom: 2px solid #333;
+        padding: 1rem;
+    }
+
+    /* Show all steps in list */
+    .steps-preview {
+        display: block !important;
+    }
+
+    .steps-list {
+        display: block !important;
+    }
+
+    .step-item {
+        display: flex !important;
+        page-break-inside: avoid;
+        margin-bottom: 0.5rem;
+    }
+
+    .step-checkbox-container {
+        display: inline-flex !important;
+    }
+
+    .step-name {
+        display: inline !important;
+    }
+
+    /* Show all steps expanded in lesson detail page */
+    .step-card {
+        page-break-inside: avoid;
+        border: 1px solid #ddd;
+        margin-bottom: 0.5rem;
+    }
+
+    .step-content {
+        display: block !important;
+    }
+
+    /* Simplify colors for print */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .course-card,
+    .lesson-item,
+    .step-card {
+        background: white !important;
+        box-shadow: none !important;
+    }
+
+    /* Keep essential text visible */
+    .course-title,
+    .lesson-title,
+    .step-title {
+        color: black !important;
+        font-weight: bold;
+    }
+
+    .course-description,
+    .lesson-description,
+    .step-section-content {
+        color: #333 !important;
+    }
+
+    /* Print URLs for links */
+    a[href]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+
+    /* Don't print URLs for navigation links */
+    .dashboard-nav a[href]:after,
+    .btn[href]:after {
+        content: "";
+    }
+}
+

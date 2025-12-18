@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}PyLand - {% trans "Повторная отправка письма" %}{% endblock %}
+
+{% block content %}
+<!-- Modern Auth Section -->
+<section class="modern-auth-section">
+    <div class="auth-container">
+        <!-- Left Side - Form -->
+        <div class="auth-form-side">
+            <div class="auth-form-container">
+                <!-- Logo & Welcome -->
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <img src="{% static 'images/icons/favicon.png' %}" alt="PyLand" width="48" height="48">
+                        <span class="auth-logo-text">PyLand</span>
+                    </div>
+                    <h1 class="auth-title">{% trans "Повторная отправка письма" %}</h1>
+                    <p class="auth-subtitle">{% trans "Введите ваш email для повторной отправки письма подтверждения" %}</p>
+                </div>
+
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Form -->
+                <form method="post" class="modern-auth-form" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            {% trans "Email адрес" %}
+                        </label>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            id="email" 
+                            class="form-control"
+                            placeholder="{% trans 'Введите ваш email' %}"
+                            required
+                            autofocus
+                        >
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="auth-submit-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span class="btn-text">{% trans "Отправить письмо повторно" %}</span>
+                    </button>
+
+                    <!-- Info Block -->
+                    <div class="auth-info-block">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <div>
+                            <p style="margin: 0; font-weight: 500;">{% trans "Не получили письмо?" %}</p>
+                            <p style="margin: 4px 0 0 0; font-size: 0.875rem; opacity: 0.8;">
+                                {% trans "Проверьте папку 'Спам' или попробуйте отправить письмо повторно" %}
+                            </p>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Back Link -->
+                <div class="auth-footer">
+                    <p>
+                        <a href="{% url 'authentication:signin' %}" class="auth-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right: 4px;">
+                                <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            {% trans "Вернуться ко входу" %}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Visual -->
+        <div class="auth-visual-side">
+            <div class="auth-visual-content">
+                <div class="auth-visual-icon">
+                    <svg width="120" height="120" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="1.5"/>
+                        <circle cx="18" cy="18" r="4" fill="currentColor" opacity="0.9"/>
+                        <path d="M16.5 18l1 1 2-2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h2>{% trans "Подтвердите ваш email" %}</h2>
+                <p>{% trans "Мы отправим вам письмо с инструкциями для активации вашего аккаунта" %}</p>
+                
+                <div class="auth-visual-features">
+                    <div class="feature-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>{% trans "Быстрая активация" %}</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>{% trans "Безопасная верификация" %}</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>{% trans "Полный доступ" %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.auth-info-block {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.auth-info-block svg {
+    flex-shrink: 0;
+    color: #3b82f6;
+    margin-top: 2px;
+}
+
+.auth-info-block p {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .auth-info-block {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+</style>
+{% endblock %}

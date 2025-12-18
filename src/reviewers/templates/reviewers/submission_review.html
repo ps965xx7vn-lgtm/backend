@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Проверка работы" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviewers/dashboard.css' %}?v=20251212">
+{% endblock %}
+
+{% block content %}
+<button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+    <svg class="icon-menu" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+        
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {% if request.user.student.avatar %}
+                    <img src="{{ request.user.student.avatar.url }}" alt="{{ request.user.email }}">
+                {% else %}
+                    {{ request.user.email|first|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>{{ request.user.first_name|default:request.user.email }}</h3>
+                <p class="dashboard-user-role">{% trans "Ревьюер" %}</p>
+            </div>
+        </div>
+
+        <nav class="dashboard-nav">
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:dashboard' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        {% trans "Главная" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:submissions' %}" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        {% trans "Работы" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:history' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {% trans "История" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:statistics' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        {% trans "Статистика" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'reviewers:settings' %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {% trans "Настройки" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Проверка работы" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'reviewers:dashboard' %}">{% trans "Главная" %}</a> / 
+                    <a href="{% url 'reviewers:submissions' %}">{% trans "Работы" %}</a> / 
+                    <span>{% trans "Проверка" %}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Limit Notification -->
+        <div class="review-limit-notification {% if limit_reached %}limit-reached{% elif reviews_remaining <= 2 %}limit-warning{% else %}limit-ok{% endif %}">
+            <div class="limit-icon">
+                {% if limit_reached %}
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                {% elif reviews_remaining <= 2 %}
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                {% else %}
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                {% endif %}
+            </div>
+            <div class="limit-content">
+                <div class="limit-title">
+                    {% if limit_reached %}
+                        {% trans "Лимит проверок достигнут" %}
+                    {% elif reviews_remaining <= 2 %}
+                        {% trans "Приближаетесь к лимиту" %}
+                    {% else %}
+                        {% trans "Дневной лимит проверок" %}
+                    {% endif %}
+                </div>
+                <div class="limit-text">
+                    <strong>{{ reviews_today }}</strong> из <strong>{{ max_reviews }}</strong> проверок выполнено сегодня
+                    {% if not limit_reached %}
+                        ({% trans "осталось" %}: <strong>{{ reviews_remaining }}</strong>)
+                    {% endif %}
+                </div>
+                {% if limit_reached %}
+                    <div class="limit-warning-text">
+                        🚫 {% trans "Вы достигли дневного лимита проверок. Форма проверки скрыта. Вы можете просмотреть работу и историю улучшений, но не сможете отправить новую проверку до завтра." %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="limit-progress">
+                <div class="limit-progress-bar" style="width: {{ progress_percentage }}%"></div>
+            </div>
+        </div>
+
+        <!-- Submission Info Card -->
+        <div class="review-info-card">
+            <h2>📋 {% trans "Информация о работе" %}</h2>
+            
+            <div class="review-info-grid">
+                <div class="review-info-item">
+                    <div class="review-info-label">{% trans "Курс" %}</div>
+                    <div class="review-info-value">{{ submission.lesson.course.name }}</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="review-info-label">{% trans "Урок" %}</div>
+                    <div class="review-info-value">{{ submission.lesson.name }}</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="review-info-label">{% trans "Студент" %}</div>
+                    <div class="review-info-value">{{ submission.student.user.email }}</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="review-info-label">{% trans "Дата отправки" %}</div>
+                    <div class="review-info-value">{{ submission.submitted_at|date:"d.m.Y H:i" }}</div>
+                </div>
+            </div>
+
+            <div class="review-info-link">
+                <div class="review-info-label">{% trans "Ссылка на работу" %}</div>
+                <a href="{{ submission.lesson_url }}" target="_blank" class="review-link">{{ submission.lesson_url }}</a>
+            </div>
+        </div>
+
+        {% if not limit_reached %}
+        <!-- Review Form (только если лимит НЕ достигнут) -->
+        <form method="post" id="reviewForm" class="review-form-card">
+            {% csrf_token %}
+            
+            {% if form_errors %}
+                <div class="review-error-message">
+                    {{ form_errors }}
+                </div>
+            {% endif %}
+
+            <!-- Status Selection -->
+            <div class="review-form-section">
+                <h2>✅ {% trans "Статус проверки" %}</h2>
+                <div class="review-status-grid">
+                    <div class="review-status-option">
+                        <input type="radio" name="status" value="approved" id="status_approved" required>
+                        <label for="status_approved">
+                            <div class="review-status-icon">✅</div>
+                            <div class="review-status-name">{% trans "Принята" %}</div>
+                            <div class="review-status-desc">{% trans "Работа выполнена отлично" %}</div>
+                        </label>
+                    </div>
+                    <div class="review-status-option">
+                        <input type="radio" name="status" value="changes_requested" id="status_changes">
+                        <label for="status_changes">
+                            <div class="review-status-icon">📝</div>
+                            <div class="review-status-name">{% trans "Требуются доработки" %}</div>
+                            <div class="review-status-desc">{% trans "Нужны улучшения" %}</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="review-form-section">
+                <h2>💬 {% trans "Комментарии" %}</h2>
+                <div class="review-form-group">
+                    <label for="comments" class="review-form-label">
+                        {% trans "Подробные комментарии к работе" %} <span class="review-required">*</span>
+                    </label>
+                    <textarea 
+                        name="comments" 
+                        id="comments" 
+                        class="review-form-textarea"
+                        placeholder="{% trans 'Опишите что сделано хорошо, что нужно улучшить...' %}" 
+                        required 
+                        minlength="20"
+                    ></textarea>
+                    <div class="review-char-counter">
+                        <span id="charCount">0</span> / 20 {% trans "мин" %}
+                    </div>
+                </div>
+                
+                <!-- Hidden field for time tracking -->
+                <input type="hidden" name="review_start_time" id="review_start_time" value="{{ now|date:'U' }}">
+            </div>
+
+            <!-- Improvements (Required for changes_requested) -->
+            <div class="review-form-section" id="improvementsSection">
+                <h2>💡 {% trans "Предложения по улучшению" %} <span class="review-improvements-required review-improvements-required-hidden">{% trans "(обязательно)" %}</span></h2>
+                <p class="review-help-text">{% trans "Добавьте конкретные предложения по улучшению работы (максимум 10 пунктов)" %}</p>
+                
+                <div id="improvementsContainer" class="review-improvements-container">
+                    <!-- Improvements will be added here dynamically -->
+                </div>
+                
+                <button type="button" id="addImprovementBtn" class="btn btn-secondary btn-add-improvement">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    <span>{% trans "Добавить улучшение" %}</span>
+                </button>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="review-form-actions">
+                <a href="{% url 'reviewers:submission_detail' submission.id %}" class="btn btn-outline">
+                    {% trans "Отмена" %}
+                </a>
+                <button type="submit" class="btn btn-success">
+                    {% trans "Отправить проверку" %}
+                </button>
+            </div>
+        </form>
+        {% endif %}
+
+        <!-- История улучшений (всегда показывается вне формы) -->
+        {% if submission.improvements.exists %}
+        <div class="review-info-card improvements-history-section">
+            <div class="improvements-history-header">
+                <div class="history-title-row">
+                    <div class="history-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h2>{% trans "История улучшений" %}</h2>
+                    <span class="history-count">{{ submission.improvements.count }}</span>
+                </div>
+                <p class="history-subtitle">{% trans "Улучшения из предыдущих проверок. Нажмите на улучшение, чтобы развернуть детали." %}</p>
+            </div>
+            
+            <div class="improvements-accordion">
+                    {% for improvement in submission.improvements.all %}
+                    <div class="accordion-item {% if improvement.is_completed %}completed{% endif %}">
+                        <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+                            <div class="accordion-header-content">
+                                <span class="accordion-number">{{ improvement.improvement_number }}</span>
+                                <div class="accordion-title-section">
+                                    <span class="accordion-title">
+                                        {% if improvement.title %}{{ improvement.title }}{% else %}{% trans "Улучшение" %} №{{ improvement.improvement_number }}{% endif %}
+                                    </span>
+                                    <div class="accordion-meta">
+                                        <span class="meta-date">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            {{ improvement.created_at|date:"d.m.Y H:i" }}
+                                        </span>
+                                        {% if improvement.is_completed %}
+                                        <span class="meta-status completed">
+                                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            {% trans "Выполнено" %}
+                                        </span>
+                                        {% else %}
+                                        <span class="meta-status pending">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            {% trans "В работе" %}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <svg class="accordion-chevron" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <div class="improvement-detail">
+                                    <div class="detail-label">{% trans "Описание:" %}</div>
+                                    <div class="detail-text">{{ improvement.improvement_text }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <script>
+            function toggleAccordion(button) {
+                console.log('toggleAccordion called');
+                const item = button.closest('.accordion-item');
+                const content = item.querySelector('.accordion-content');
+                const wasActive = item.classList.contains('active');
+                
+                console.log('Item:', item, 'Was active:', wasActive);
+                
+                // Close all accordion items
+                document.querySelectorAll('.accordion-item.active').forEach(i => {
+                    i.classList.remove('active');
+                    const c = i.querySelector('.accordion-content');
+                    if (c) {
+                        c.style.maxHeight = null;
+                    }
+                });
+                
+                // Open clicked item if it wasn't active
+                if (!wasActive) {
+                    item.classList.add('active');
+                    // Set max-height to scrollHeight for smooth animation
+                    setTimeout(() => {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }, 10);
+                    console.log('Opening item, height:', content.scrollHeight);
+                }
+            }
+            
+            // Auto-adjust content height on window resize
+            window.addEventListener('resize', function() {
+                document.querySelectorAll('.accordion-item.active .accordion-content').forEach(content => {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                });
+            });
+            </script>
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reviewers/common.js' %}"></script>
+{% if not limit_reached %}
+<script src="{% static 'js/reviewers/submission-review.js' %}"></script>
+{% endif %}
+<script src="{% static 'js/reviewers/accordion.js' %}"></script>
+{% endblock %}

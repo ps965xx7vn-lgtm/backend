@@ -1,0 +1,857 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markdownify %}
+{% load markdown_filters %}
+{% load blog_extras %}
+
+{% block title %}{{ article.title }} - {% trans "Блог PyLand" %}{% endblock %}
+{% block description %}{{ meta_description }}{% endblock %}
+{% if meta_keywords %}{% block keywords %}{{ meta_keywords }}{% endblock %}{% endif %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/markdown.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/article.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/utils.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/reactions.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Revolutionary Article Hero -->
+<section class="revolutionary-hero-home">
+    <div class="hero-particles">
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        <div class="particle particle-4"></div>
+        <div class="particle particle-5"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-content-revolutionary">
+            {% if article.category %}
+            <div class="hero-category-revolutionary animate-fade-in">
+                <span>{{ article.category.icon|default:"📖" }}</span>
+                <span>{{ article.category.name }}</span>
+            </div>
+            {% endif %}
+            
+            <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                {{ article.title }}
+            </h1>
+            
+            {% if article.subtitle %}
+            <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                {{ article.subtitle }}
+            </p>
+            {% endif %}
+            
+            <!-- Author Card Enhanced -->
+            <a href="{% if article.blog_author %}{% url 'blog:author_detail' article.blog_author.slug %}{% else %}{% url 'blog:author_list' %}{% endif %}" class="hero-author-card-revolutionary animate-fade-in delay-3 author-card-clickable">
+                <div class="author-main-info">
+                    <div class="author-avatar-hero-large">
+                        {{ article.author.username|safe_first|upper }}
+                    </div>
+                    <div class="author-details-hero">
+                        <div class="author-name-hero-large">
+                            {{ article.author.username }}
+                            <span class="view-profile-arrow">→</span>
+                        </div>
+                        {% if article.blog_author and article.blog_author.bio %}
+                        <div class="author-bio-hero">{{ article.blog_author.bio|truncatewords:20 }}</div>
+                        {% else %}
+                        <div class="author-bio-hero">{% trans "Эксперт по программированию и технологиям" %}</div>
+                        {% endif %}
+                        {% if article.blog_author %}
+                        <div class="author-social-hero">
+                            {% if article.blog_author.github_url %}
+                            <a href="{{ article.blog_author.github_url }}" target="_blank" class="social-link-hero" title="GitHub" rel="noopener">
+                                <span>💻</span>
+                            </a>
+                            {% endif %}
+                            {% if article.blog_author.linkedin_url %}
+                            <a href="{{ article.blog_author.linkedin_url }}" target="_blank" class="social-link-hero" title="LinkedIn" rel="noopener">
+                                <span>💼</span>
+                            </a>
+                            {% endif %}
+                            {% if article.blog_author.twitter_url %}
+                            <a href="{{ article.blog_author.twitter_url }}" target="_blank" class="social-link-hero" title="Twitter" rel="noopener">
+                                <span>🐦</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            
+            <!-- Meta Stats & Difficulty -->
+            <div class="hero-meta-revolutionary animate-fade-in delay-4">
+                <div class="meta-stats-hero-enhanced">
+                    <div class="stat-card-hero">
+                        <div class="stat-icon-hero stat-icon-date">
+                            <span>📅</span>
+                        </div>
+                        <div class="stat-content-hero">
+                            <div class="stat-label-hero">{% trans "Опубликовано" %}</div>
+                            <div class="stat-value-hero">{{ article.published_at|date:"d.m.Y" }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card-hero">
+                        <div class="stat-icon-hero stat-icon-time">
+                            <span>⏱️</span>
+                        </div>
+                        <div class="stat-content-hero">
+                            <div class="stat-label-hero">{% trans "Время чтения" %}</div>
+                            <div class="stat-value-hero">{{ article.reading_time|default:"5" }} {% trans "мин" %}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card-hero">
+                        <div class="stat-icon-hero stat-icon-views">
+                            <span>👁️</span>
+                        </div>
+                        <div class="stat-content-hero">
+                            <div class="stat-label-hero">{% trans "Просмотров" %}</div>
+                            <div class="stat-value-hero">{{ article.views_count|default:"0" }}</div>
+                        </div>
+                    </div>
+                    
+                    {% if article.difficulty %}
+                    <div class="stat-card-hero stat-card-difficulty difficulty-{{ article.difficulty }}">
+                        <div class="stat-icon-hero">
+                            {% if article.difficulty == 'beginner' %}
+                                <span>🌱</span>
+                            {% elif article.difficulty == 'intermediate' %}
+                                <span>🌿</span>
+                            {% elif article.difficulty == 'advanced' %}
+                                <span>🌳</span>
+                            {% else %}
+                                <span>�</span>
+                            {% endif %}
+                        </div>
+                        <div class="stat-content-hero">
+                            <div class="stat-label-hero">{% trans "Уровень" %}</div>
+                            <div class="stat-value-hero">
+                                {% if article.difficulty == 'beginner' %}
+                                    {% trans "Начальный" %}
+                                {% elif article.difficulty == 'intermediate' %}
+                                    {% trans "Средний" %}
+                                {% elif article.difficulty == 'advanced' %}
+                                    {% trans "Продвинутый" %}
+                                {% else %}
+                                    {% trans "Статья" %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Tags Preview -->
+            {% if article.tags.all %}
+            <div class="hero-tags-revolutionary animate-fade-in delay-5">
+                {% for tag in article.tags.all|slice:":5" %}
+                <a href="{% url 'blog:tag_detail' tag.name %}" class="hero-tag-badge">#{{ tag.name }}</a>
+                {% endfor %}
+                {% if article.tags.count > 5 %}
+                <span class="hero-tag-more">+{{ article.tags.count|add:"-5" }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Share Actions -->
+            <div class="hero-share-revolutionary animate-fade-in delay-6">
+                <span class="share-label">{% trans "Поделиться" %}:</span>
+                <a href="https://twitter.com/intent/tweet?text={{ article.title|urlencode }}&url={{ request.build_absolute_uri }}" target="_blank" class="hero-share-btn" title="Twitter" rel="noopener">
+                    <span>🐦</span>
+                </a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri|urlencode }}" target="_blank" class="hero-share-btn" title="LinkedIn" rel="noopener">
+                    <span>💼</span>
+                </a>
+                <a href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}&text={{ article.title|urlencode }}" target="_blank" class="hero-share-btn" title="Telegram" rel="noopener">
+                    <span>✈️</span>
+                </a>
+                <button class="hero-share-btn" title="{% trans 'Копировать ссылку' %}" data-copy-url="{{ request.build_absolute_uri }}">
+                    <span>🔗</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Article Content Section -->
+<section class="article-content-revolutionary">
+    <div class="container">
+        <div class="article-layout-revolutionary">
+            <!-- Main Content -->
+            <main class="article-main-revolutionary">
+                {% if article.featured_image %}
+                <div class="article-image-revolutionary animate-fade-in">
+                    <img src="{{ article.featured_image.url }}" alt="{{ article.featured_image_alt|default:article.title }}" loading="lazy">
+                </div>
+                {% endif %}
+                
+                <div class="article-text-revolutionary markdown-content animate-fade-in delay-1">
+                    {{ article.content|markdownify }}
+                </div>
+            </main>
+            
+            <!-- Revolutionary Sidebar -->
+            <aside class="article-sidebar-revolutionary">
+                <!-- Table of Contents -->
+                <div class="sidebar-card-revolutionary animate-fade-in">
+                    <div class="sidebar-card-header">
+                        <span class="sidebar-icon">📋</span>
+                        <h3 class="sidebar-title-revolutionary">{% trans "Содержание" %}</h3>
+                    </div>
+                    <div class="table-of-contents-revolutionary">
+                        <a href="#introduction" class="toc-link">{% trans "Введение" %}</a>
+                        <a href="#main-content" class="toc-link">{% trans "Основное содержание" %}</a>
+                        <a href="#examples" class="toc-link">{% trans "Примеры кода" %}</a>
+                        <a href="#conclusion" class="toc-link">{% trans "Заключение" %}</a>
+                    </div>
+                </div>
+                
+                <!-- Author Info -->
+                <div class="sidebar-card-revolutionary animate-fade-in delay-1">
+                    <div class="sidebar-card-header">
+                        <span class="sidebar-icon">👨‍💻</span>
+                        <h3 class="sidebar-title-revolutionary">{% trans "Об авторе" %}</h3>
+                    </div>
+                    <a href="{% if article.blog_author %}{% url 'blog:author_detail' article.blog_author.slug %}{% else %}{% url 'blog:author_list' %}{% endif %}" class="author-card-revolutionary author-card-clickable">
+                        <div class="author-avatar-revolutionary">
+                            {{ article.author.username|safe_first|upper }}
+                        </div>
+                        <div class="author-details-revolutionary">
+                            <div class="author-name-revolutionary">
+                                {{ article.author.username }}
+                                <span class="view-profile-arrow-small">→</span>
+                            </div>
+                            <div class="author-role-revolutionary">{% trans "Эксперт по программированию" %}</div>
+                            <div class="author-stats-revolutionary">
+                                <div class="stat">
+                                    <span>📝</span>
+                                    <span>{{ article.author.articles.count|default:"5+" }} {% trans "статей" %}</span>
+                                </div>
+                                <div class="stat">
+                                    <span>⭐</span>
+                                    <span>4.8 {% trans "рейтинг" %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Related Articles -->
+                <div class="sidebar-card-revolutionary animate-fade-in delay-2">
+                    <div class="sidebar-card-header">
+                        <span class="sidebar-icon">📚</span>
+                        <h3 class="sidebar-title-revolutionary">{% trans "Читайте также" %}</h3>
+                    </div>
+                    <div class="related-articles-revolutionary">
+                        {% for similar in similar_articles|slice:":3" %}
+                        <a href="{{ similar.get_absolute_url }}" class="related-article-revolutionary">
+                            <div class="related-article-meta">
+                                <span class="related-category">{{ similar.category.icon|default:"📖" }}</span>
+                                <span class="related-date">{{ similar.published_at|date:"d.m" }}</span>
+                            </div>
+                            <h4 class="related-title">{{ similar.title|truncatechars:50 }}</h4>
+                        </a>
+                        {% empty %}
+                        <div class="related-article-revolutionary">
+                            <p class="text-muted">{% trans "Нет доступных статей" %}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="sidebar-card-revolutionary animate-fade-in delay-3">
+                    <div class="sidebar-card-header">
+                        <span class="sidebar-icon">⚡</span>
+                        <h3 class="sidebar-title-revolutionary">{% trans "Быстрые действия" %}</h3>
+                    </div>
+                        <div class="quick-actions-revolutionary" data-article-id="{{ article.pk }}" data-toggle-bookmark-url="{% url 'blog:toggle_bookmark' %}" data-report-url="{% url 'blog:report_article' %}">
+                            <button type="button" class="action-btn-revolutionary print-action" data-action="print">
+                                <span>🖨️</span>
+                                <span>{% trans "Печать" %}</span>
+                            </button>
+                            <button type="button" class="action-btn-revolutionary bookmark-action" data-action="bookmark">
+                                <span>🔖</span>
+                                <span>{% trans "В закладки" %}</span>
+                            </button>
+                            <button type="button" class="action-btn-revolutionary report-action" data-action="report">
+                                <span>🚩</span>
+                                <span>{% trans "Сообщить" %}</span>
+                            </button>
+                        </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<!-- Article Reactions Section -->
+<section class="reactions-section reactions-section-padded">
+    <div class="container">
+        <div class="article-reactions animate-fade-in" data-article-slug="{{ article.slug }}">
+            <h3>{% trans "Ваша реакция на статью" %}</h3>
+            
+            <div class="reaction-buttons">
+                <button 
+                    type="button" 
+                    class="reaction-button" 
+                    data-reaction-type="like"
+                    aria-label="{% trans 'Нравится' %}"
+                    title="{% trans 'Нравится' %}">
+                    <span class="reaction-icon">👍</span>
+                    <span class="reaction-count" aria-live="polite"></span>
+                    <span class="sr-only">{% trans "Нравится" %}</span>
+                </button>
+                
+                <button 
+                    type="button" 
+                    class="reaction-button" 
+                    data-reaction-type="love"
+                    aria-label="{% trans 'Любовь' %}"
+                    title="{% trans 'Любовь' %}">
+                    <span class="reaction-icon">❤️</span>
+                    <span class="reaction-count" aria-live="polite"></span>
+                    <span class="sr-only">{% trans "Любовь" %}</span>
+                </button>
+                
+                <button 
+                    type="button" 
+                    class="reaction-button" 
+                    data-reaction-type="helpful"
+                    aria-label="{% trans 'Полезно' %}"
+                    title="{% trans 'Полезно' %}">
+                    <span class="reaction-icon">💡</span>
+                    <span class="reaction-count" aria-live="polite"></span>
+                    <span class="sr-only">{% trans "Полезно" %}</span>
+                </button>
+                
+                <button 
+                    type="button" 
+                    class="reaction-button" 
+                    data-reaction-type="insightful"
+                    aria-label="{% trans 'Интересно' %}"
+                    title="{% trans 'Интересно' %}">
+                    <span class="reaction-icon">🤔</span>
+                    <span class="reaction-count" aria-live="polite"></span>
+                    <span class="sr-only">{% trans "Интересно" %}</span>
+                </button>
+                
+                <button 
+                    type="button" 
+                    class="reaction-button" 
+                    data-reaction-type="amazing"
+                    aria-label="{% trans 'Потрясающе' %}"
+                    title="{% trans 'Потрясающе' %}">
+                    <span class="reaction-icon">🤩</span>
+                    <span class="reaction-count" aria-live="polite"></span>
+                    <span class="sr-only">{% trans "Потрясающе" %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Series Navigation (if article belongs to a series) -->
+{% if current_series and series_count > 1 %}
+<section class="series-navigation-revolutionary">
+    <div class="container">
+        <div class="series-nav-header animate-fade-in">
+            <div class="series-pill">
+                <span>📚</span>
+                <span class="series-pill-label">{% trans "Часть серии" %}</span>
+            </div>
+            <h2 class="series-title">
+                <a href="{% url 'blog:series_detail' current_series.slug %}">
+                    {{ current_series.title }}
+                </a>
+            </h2>
+            <p class="series-desc">
+                {{ current_series.description|truncatewords:20 }}
+            </p>
+        </div>
+        
+        <div class="series-navigation-grid">
+            {% if series_prev_article %}
+            <a href="{{ series_prev_article.get_absolute_url }}" class="series-nav-card series-prev animate-fade-in">
+                <div class="series-nav-meta series-prev-meta">
+                    <span class="series-arrow">←</span>
+                    <span>{% trans "Предыдущая в серии" %}</span>
+                </div>
+                <h3 class="series-card-title">{{ series_prev_article.title|truncatechars:50 }}</h3>
+                <div class="series-card-footer">
+                    <span>{{ series_prev_article.category.icon|default:"📖" }}</span>
+                    <span>⏱ {{ series_prev_article.reading_time|default:"5" }} {% trans "мин" %}</span>
+                </div>
+            </a>
+            {% else %}
+            <div class="series-nav-placeholder">{% trans "Первая статья серии" %}</div>
+            {% endif %}
+            
+            {% if series_next_article %}
+            <a href="{{ series_next_article.get_absolute_url }}" class="series-nav-card series-next animate-fade-in delay-1">
+                <div class="series-nav-meta series-next-meta">
+                    <span>{% trans "Следующая в серии" %}</span>
+                    <span class="series-arrow">→</span>
+                </div>
+                <h3 class="series-card-title">{{ series_next_article.title|truncatechars:50 }}</h3>
+                <div class="series-card-footer">
+                    <span>{{ series_next_article.category.icon|default:"📖" }}</span>
+                    <span>⏱ {{ series_next_article.reading_time|default:"5" }} {% trans "мин" %}</span>
+                </div>
+            </a>
+            {% else %}
+            <div class="series-nav-placeholder">{% trans "Последняя статья серии" %} 🎉</div>
+            {% endif %}
+        </div>
+        
+        <div class="series-action">
+            <a href="{% url 'blog:series_detail' current_series.slug %}" class="btn-revolutionary-hero btn-secondary-hero series-view-all">
+                <span>📚</span>
+                <span>{% trans "Посмотреть все статьи серии" %}</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endif %}
+
+<!-- Article Navigation -->
+{% if prev_article or next_article %}
+<section class="article-navigation-revolutionary">
+    <div class="container">
+        <div class="navigation-grid-revolutionary">
+            {% if prev_article %}
+            <a href="{{ prev_article.get_absolute_url }}" class="nav-card-revolutionary nav-prev animate-fade-in">
+                <div class="nav-direction">
+                    <span class="nav-arrow">←</span>
+                    <span class="nav-label">{% trans "Предыдущая статья" %}</span>
+                </div>
+                <h3 class="nav-title">{{ prev_article.title|truncatechars:60 }}</h3>
+                <div class="nav-meta">
+                    <span>{{ prev_article.category.icon|default:"📖" }}</span>
+                    <span>{{ prev_article.published_at|date:"d.m.Y" }}</span>
+                </div>
+            </a>
+            {% else %}
+            <div class="nav-placeholder"></div>
+            {% endif %}
+            
+            {% if next_article %}
+            <a href="{{ next_article.get_absolute_url }}" class="nav-card-revolutionary nav-next animate-fade-in delay-1">
+                <div class="nav-direction">
+                    <span class="nav-label">{% trans "Следующая статья" %}</span>
+                    <span class="nav-arrow">→</span>
+                </div>
+                <h3 class="nav-title">{{ next_article.title|truncatechars:60 }}</h3>
+                <div class="nav-meta">
+                    <span>{{ next_article.category.icon|default:"📖" }}</span>
+                    <span>{{ next_article.published_at|date:"d.m.Y" }}</span>
+                </div>
+            </a>
+            {% else %}
+            <div class="nav-placeholder"></div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Comments Section -->
+{% if article.allow_comments %}
+<section class="comments-revolutionary" id="comments">
+    <div class="container">
+        <div class="comments-header-revolutionary animate-fade-in">
+            <h2 class="comments-title-revolutionary">
+                <span>💬</span>
+                <span>{% trans "Комментарии" %} ({{ comments_count|default:"0" }})</span>
+            </h2>
+        </div>
+        
+        {% if user.is_authenticated %}
+        
+        <form class="comment-form-revolutionary animate-fade-in delay-1" method="post" action="{{ article.get_absolute_url }}" id="mainCommentForm">
+            {% csrf_token %}
+            <div class="comment-author-revolutionary">
+                <div class="comment-author-avatar">{{ user.username|safe_first|upper }}</div>
+                <div class="comment-author-name">{{ user.username }}</div>
+            </div>
+            
+            <textarea name="content" class="comment-textarea-revolutionary" placeholder="Поделитесь вашими мыслями о статье..." rows="4" maxlength="5000" id="id_content" required>{{ comment_form.content.value|default:'' }}</textarea>
+            
+            <div class="comment-actions-revolutionary">
+                <button type="submit" class="comment-submit-revolutionary">
+                    <span>✍️</span>
+                    <span>{% trans "Отправить комментарий" %}</span>
+                </button>
+            </div>
+        </form>
+        {% else %}
+        <div class="comment-auth-revolutionary animate-fade-in delay-1">
+            <div class="auth-message">
+                <span>🔐</span>
+                <span>{% trans "Войдите в систему, чтобы оставить комментарий" %}</span>
+            </div>
+            <a href="{% url 'authentication:signin' %}?next={{ request.path }}" class="auth-btn-revolutionary">
+                <span>🚪</span>
+                <span>{% trans "Войти" %}</span>
+            </a>
+        </div>
+        {% endif %}
+        
+        <!-- Comments List -->
+        <div class="comments-list-revolutionary">
+            {% for comment in comments %}
+            <div class="comment-item-revolutionary animate-fade-in delay-{{ forloop.counter|add:1 }}" id="comment-{{ comment.id }}">
+                <div class="comment-header-revolutionary">
+                    <div class="comment-avatar-revolutionary">{{ comment.author.username|safe_first|upper }}</div>
+                    <div class="comment-info-revolutionary">
+                        <div class="comment-author-revolutionary">{{ comment.author.username }}</div>
+                        <div class="comment-date-revolutionary">{{ comment.created_at|date:"d.m.Y в H:i" }}</div>
+                    </div>
+                </div>
+                <div class="comment-content-revolutionary" id="content-{{ comment.id }}">{{ comment.content|linebreaks }}</div>
+                
+                <!-- Edit Form (Hidden) -->
+                <div id="edit-form-{{ comment.id }}" class="comment-edit-form-revolutionary hidden">
+                    <form class="edit-form-revolutionary" method="post" action="{% url 'blog:comment_edit' comment.id %}">
+                        {% csrf_token %}
+                        <textarea name="content" class="comment-textarea-revolutionary" rows="4" maxlength="5000" required>{{ comment.content }}</textarea>
+                        <div class="edit-form-actions">
+                            <button type="submit" class="edit-submit-btn">
+                                <span>✅</span>
+                                <span>{% trans "Сохранить" %}</span>
+                            </button>
+                            <button type="button" class="edit-cancel-btn" data-comment-id="{{ comment.id }}" data-action="toggle-edit">
+                                <span>❌</span>
+                                <span>{% trans "Отмена" %}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Action Buttons -->
+                {% if user.is_authenticated %}
+                <div class="comment-actions-revolutionary">
+                    <button class="reply-btn-revolutionary" data-comment-id="{{ comment.id }}" data-action="toggle-reply">
+                        <span>↩️</span>
+                        <span>{% trans "Ответить" %}</span>
+                    </button>
+                    {% if comment.author == user %}
+                    <button class="edit-btn-revolutionary" data-comment-id="{{ comment.id }}" data-action="toggle-edit">
+                        <span>✏️</span>
+                        <span>{% trans "Редактировать" %}</span>
+                    </button>
+                    <form method="post" action="{% url 'blog:comment_delete' comment.id %}" class="inline-form" data-confirm-delete="Вы уверены, что хотите удалить этот комментарий?">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn-revolutionary">
+                            <span>🗑️</span>
+                            <span>{% trans "Удалить" %}</span>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <!-- Reply Form (Hidden by default) -->
+                {% if user.is_authenticated %}
+                <div id="reply-form-{{ comment.id }}" class="comment-reply-form-revolutionary hidden">
+                    <form class="reply-form-revolutionary" method="post" action="{{ article.get_absolute_url }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <div class="reply-form-header">
+                            <div class="comment-author-avatar">{{ user.username|safe_first|upper }}</div>
+                            <div class="reply-form-label">{% trans "Ответ на комментарий" %} <strong>{{ comment.author.username }}</strong></div>
+                        </div>
+                        <textarea name="content" class="comment-textarea-revolutionary" placeholder="Введите ваш ответ..." rows="3" maxlength="5000" required></textarea>
+                        <div class="reply-form-actions">
+                            <button type="submit" class="reply-submit-btn">
+                                <span>✍️</span>
+                                <span>{% trans "Отправить ответ" %}</span>
+                            </button>
+                            <button type="button" class="reply-cancel-btn" data-comment-id="{{ comment.id }}" data-action="toggle-reply">
+                                <span>❌</span>
+                                <span>{% trans "Отмена" %}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                
+                <!-- Replies List -->
+                {% if comment.replies.all %}
+                <div class="comment-replies-revolutionary">
+                    {% for reply in comment.replies.all %}
+                    <div class="comment-reply-item-revolutionary" id="comment-{{ reply.id }}">
+                        <div class="comment-header-revolutionary">
+                            <div class="comment-avatar-revolutionary reply-avatar">{{ reply.author.username|safe_first|upper }}</div>
+                            <div class="comment-info-revolutionary">
+                                <div class="comment-author-revolutionary">{{ reply.author.username }}</div>
+                                <div class="comment-date-revolutionary">{{ reply.created_at|date:"d.m.Y в H:i" }}</div>
+                            </div>
+                        </div>
+                        <div class="comment-content-revolutionary" id="content-{{ reply.id }}">{{ reply.content|linebreaks }}</div>
+                        
+                        <!-- Edit Form for Reply (Hidden) -->
+                        <div id="edit-form-{{ reply.id }}" class="comment-edit-form-revolutionary hidden">
+                            <form class="edit-form-revolutionary" method="post" action="{% url 'blog:comment_edit' reply.id %}">
+                                {% csrf_token %}
+                                <textarea name="content" class="comment-textarea-revolutionary" rows="3" maxlength="5000" required>{{ reply.content }}</textarea>
+                                <div class="edit-form-actions">
+                                    <button type="submit" class="edit-submit-btn">
+                                        <span>✅</span>
+                                        <span>{% trans "Сохранить" %}</span>
+                                    </button>
+                                    <button type="button" class="edit-cancel-btn" data-comment-id="{{ reply.id }}" data-action="toggle-edit">
+                                        <span>❌</span>
+                                        <span>{% trans "Отмена" %}</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Action Buttons for Reply -->
+                        {% if user.is_authenticated %}
+                        <div class="comment-actions-revolutionary">
+                            <button class="reply-btn-revolutionary reply-btn-nested" data-comment-id="{{ reply.id }}" data-action="toggle-reply">
+                                <span>↩️</span>
+                                <span>{% trans "Ответить" %}</span>
+                            </button>
+                            {% if reply.author == user %}
+                            <button class="edit-btn-revolutionary edit-btn-nested" data-comment-id="{{ reply.id }}" data-action="toggle-edit">
+                                <span>✏️</span>
+                                <span>{% trans "Редактировать" %}</span>
+                            </button>
+                            <form method="post" action="{% url 'blog:comment_delete' reply.id %}" class="inline-form" data-confirm-delete="Вы уверены, что хотите удалить этот ответ?">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-btn-revolutionary delete-btn-nested">
+                                    <span>🗑️</span>
+                                    <span>{% trans "Удалить" %}</span>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Reply to Reply Form -->
+                        {% if user.is_authenticated %}
+                        <div id="reply-form-{{ reply.id }}" class="comment-reply-form-revolutionary hidden">
+                            <form class="reply-form-revolutionary" method="post" action="{{ article.get_absolute_url }}">
+                                {% csrf_token %}
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <div class="reply-form-header">
+                                    <div class="comment-author-avatar">{{ user.username|safe_first|upper }}</div>
+                                    <div class="reply-form-label">{% trans "Ответ на комментарий" %} <strong>{{ reply.author.username }}</strong></div>
+                                </div>
+                                <textarea name="content" class="comment-textarea-revolutionary" placeholder="Введите ваш ответ..." rows="3" maxlength="5000" required></textarea>
+                                <div class="reply-form-actions">
+                                    <button type="submit" class="reply-submit-btn">
+                                        <span>✍️</span>
+                                        <span>{% trans "Отправить ответ" %}</span>
+                                    </button>
+                                    <button type="button" class="reply-cancel-btn" data-comment-id="{{ reply.id }}" data-action="toggle-reply">
+                                        <span>❌</span>
+                                        <span>{% trans "Отмена" %}</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-comments-revolutionary animate-fade-in delay-2">
+                <div class="empty-icon">💭</div>
+                <h3>{% trans "Комментариев пока нет" %}</h3>
+                <p>{% trans "Станьте первым, кто поделится мнением об этой статье!" %}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if comments.has_other_pages %}
+        <div class="pagination-revolutionary">
+            <div class="pagination-info">
+                {% trans "Страница" %} {{ comments.number }} {% trans "из" %} {{ comments.paginator.num_pages }}
+            </div>
+            <div class="pagination-buttons">
+                {% if comments.has_previous %}
+                <a href="?page=1#comments" class="pagination-btn pagination-first">
+                    <span>⏮️</span>
+                    <span>{% trans "Первая" %}</span>
+                </a>
+                <a href="?page={{ comments.previous_page_number }}#comments" class="pagination-btn pagination-prev">
+                    <span>◀️</span>
+                    <span>{% trans "Предыдущая" %}</span>
+                </a>
+                {% endif %}
+                
+                {% for num in comments.paginator.page_range %}
+                    {% if comments.number == num %}
+                        <span class="pagination-btn pagination-current">{{ num }}</span>
+                    {% elif num > comments.number|add:'-3' and num < comments.number|add:'3' %}
+                        <a href="?page={{ num }}#comments" class="pagination-btn">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if comments.has_next %}
+                <a href="?page={{ comments.next_page_number }}#comments" class="pagination-btn pagination-next">
+                    <span>{% trans "Следующая" %}</span>
+                    <span>▶️</span>
+                </a>
+                <a href="?page={{ comments.paginator.num_pages }}#comments" class="pagination-btn pagination-last">
+                    <span>{% trans "Последняя" %}</span>
+                    <span>⏭️</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Similar Articles -->
+<section class="features-revolutionary">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>🔗</span>
+                <span>{% trans "Похожие" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Похожие статьи" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Продолжите изучение с этими материалами" %}
+            </p>
+        </div>
+        
+        <div class="features-grid-revolutionary">
+            {% if similar_articles %}
+                {% for similar in similar_articles|slice:":3" %}
+                <div class="feature-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:1 }}">
+                    <div class="feature-icon-revolutionary">
+                        {{ similar.category.icon|default:"📖" }}
+                    </div>
+                    <h3 class="feature-title-revolutionary">
+                        <a href="{{ similar.get_absolute_url }}">{{ similar.title|truncatechars:50 }}</a>
+                    </h3>
+                    <p class="feature-description-revolutionary">
+                        {{ similar.excerpt|default:similar.content|smart_excerpt:15 }}
+                    </p>
+                    <div class="feature-stats-revolutionary">
+                        <span class="stat">📅 {{ similar.published_at|date:"d.m.Y" }}</span>
+                        <span class="stat">👁️ {{ similar.views_count|default:"0" }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Примеры похожих статей -->
+                <div class="feature-card-revolutionary animate-fade-in delay-2">
+                    <div class="feature-icon-revolutionary">🐍</div>
+                    <h3 class="feature-title-revolutionary">
+                        <span>{% trans "Продвинутый Python: декораторы" %}</span>
+                    </h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Изучаем мощный инструмент Python для создания элегантного и переиспользуемого кода." %}
+                    </p>
+                    <div class="feature-stats-revolutionary">
+                        <span class="stat">📅 22.10.2025</span>
+                        <span class="stat">👁️ 1.5K</span>
+                    </div>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-3">
+                    <div class="feature-icon-revolutionary">⚛️</div>
+                    <h3 class="feature-title-revolutionary">
+                        <span>{% trans "React: оптимизация производительности" %}</span>
+                    </h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Советы и техники для создания быстрых React-приложений с отличным пользовательским опытом." %}
+                    </p>
+                    <div class="feature-stats-revolutionary">
+                        <span class="stat">📅 19.10.2025</span>
+                        <span class="stat">👁️ 980</span>
+                    </div>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-4">
+                    <div class="feature-icon-revolutionary">🔐</div>
+                    <h3 class="feature-title-revolutionary">
+                        <span>{% trans "Безопасность веб-приложений: основы" %}</span>
+                    </h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Защитите ваши приложения от основных уязвимостей и атак злоумышленников." %}
+                    </p>
+                    <div class="feature-stats-revolutionary">
+                        <span class="stat">📅 17.10.2025</span>
+                        <span class="stat">👁️ 2.1K</span>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-revolutionary">
+    <div class="container">
+        <div class="cta-content-revolutionary">
+            <h2 class="cta-title-revolutionary animate-fade-in">
+                {% trans "Понравилась статья?" %}
+            </h2>
+            <p class="cta-description-revolutionary animate-fade-in delay-1">
+                {% trans "Подпишитесь на наши обновления и получайте новые статьи первыми. Развивайтесь вместе с PyLand!" %}
+            </p>
+            <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                <a href="{% url 'blog:article_list' %}" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>📚</span>
+                    <span>{% trans "Все статьи" %}</span>
+                </a>
+                <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                    <span>📧</span>
+                    <span>{% trans "Подписаться" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Передаем URL из Django в JavaScript
+    window.BLOG_CONFIG = {
+        apiReactionUrl: "{% url 'blog:article_reaction' %}",
+        apiCommentUrl: "{% url 'blog:add_comment' %}",
+        csrfToken: "{{ csrf_token }}"
+    };
+    
+    // Показываем Django messages через showNotification
+    {% if messages %}
+    document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+        showNotification("{{ message|escapejs }}", "{{ message.tags }}");
+        {% endfor %}
+    });
+    {% endif %}
+</script>
+<script src="{% static 'js/courses/courses.js' %}"></script>
+<script src="{% static 'js/blog/code-copy.js' %}"></script>
+<script src="{% static 'js/blog/article-detail.js' %}"></script>
+<script src="{% static 'js/blog/article-reactions.js' %}"></script>
+<script src="{% static 'js/blog/article-comments.js' %}"></script>
+{% endblock %}

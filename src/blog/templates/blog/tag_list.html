@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Все теги" %} - {% trans "Блог PyLand" %}{% endblock %}
+{% block description %}{% trans "Все теги блога PyLand. Найдите статьи по интересующим вас ключевым словам." %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog/tag-list.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/blog/utils.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Revolutionary Tags Hero -->
+<section class="revolutionary-hero-home">
+    <div class="hero-particles">
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        <div class="particle particle-4"></div>
+        <div class="particle particle-5"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-main-content">
+            <div class="hero-badge-revolutionary animate-fade-in">
+                <span>🏷️</span>
+                <span>{% trans "Навигация по темам" %}</span>
+            </div>
+            
+            <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                {% trans "Все теги" %}
+                <br>{% trans "нашего блога" %}
+            </h1>
+            
+            <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Исследуйте материалы по ключевым словам и технологиям. Быстро находите статьи по интересующим темам и углубляйте свои знания в IT." %}
+            </p>
+            
+            <div class="hero-actions-revolutionary animate-fade-in delay-3">
+                <a href="#tags" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>🔍</span>
+                    <span>{% trans "Найти теги" %}</span>
+                </a>
+                <a href="{% url 'blog:article_list' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                    <span>📚</span>
+                    <span>{% trans "Все статьи" %}</span>
+                </a>
+            </div>
+            
+            <div class="hero-stats-revolutionary animate-fade-in delay-4">
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">{{ tags.count|default:"25+" }}</span>
+                    <span class="stat-label-revolutionary">{% trans "Тегов" %}</span>
+                </div>
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">⚡</span>
+                    <span class="stat-label-revolutionary">{% trans "Быстрый поиск" %}</span>
+                </div>
+                <div class="stat-card-revolutionary">
+                    <span class="stat-number-revolutionary">🎯</span>
+                    <span class="stat-label-revolutionary">{% trans "Точность" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="courses-revolutionary" id="tags">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>🔍</span>
+                <span>{% trans "Поиск" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Найдите нужные теги" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Используйте поиск ниже для фильтрации популярных тегов и категорий" %}
+            </p>
+        </div>
+        
+        <div class="search-box-revolutionary animate-fade-in delay-1">
+            <input type="text" id="tagSearch" placeholder="{% trans 'Начните вводить: python, django, react...' %}" class="search-input-revolutionary">
+            <button class="search-btn-revolutionary" id="scrollDownBtn" type="button" title="{% trans 'Показать категории' %}">
+                <span class="emoji-large">🔍</span>
+            </button>
+        </div>
+        
+        <div class="search-hint animate-fade-in delay-2">
+            💡 {% trans "Подсказка: введите ключевое слово для фильтрации тегов ниже или кликните на категорию" %}
+        </div>
+        
+        <div id="searchResults">
+            <span>📊 {% trans "Найдено" %}: <span id="resultCount">0</span> {% trans "тегов" %}</span>
+        </div>
+    </div>
+</section>
+
+<!-- Tags by Category -->
+<section class="courses-grid-section-revolutionary" id="categoriesSection">
+    <div class="container">
+        <div class="section-header-revolutionary">
+            <div class="section-badge animate-fade-in">
+                <span>🏷️</span>
+                <span>{% trans "По категориям" %}</span>
+            </div>
+            <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                {% trans "Теги по категориям" %}
+            </h2>
+            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Выберите категорию или кликните на тег для просмотра статей" %}
+            </p>
+            <div class="category-hint animate-fade-in delay-1">
+                👆 {% trans "Кликните на название категории для быстрого поиска" %}
+            </div>
+        </div>
+        
+        <div class="courses-grid-revolutionary">
+            {% for category in tag_categories %}
+            <div class="course-card-revolutionary tag-category-card animate-fade-in delay-{{ forloop.counter }}" data-category="{{ category.slug }}">
+                <div class="course-image-revolutionary">
+                    <div class="course-placeholder-image">
+                        {{ category.emoji }}
+                    </div>
+                    <div class="course-badge-revolutionary">{{ category.badge }}</div>
+                </div>
+                <div class="course-content-revolutionary">
+                    <h3 class="course-title-revolutionary">{{ category.name }}</h3>
+                    <p class="course-description-revolutionary">{{ category.description }}</p>
+                    <div class="tag-category-tags">
+                        {% for tag in category.tags %}
+                        <a href="{% url 'blog:tag_detail' tag.name %}" class="tag-revolutionary-small" title="{{ tag.name }} ({{ tag.count }})">
+                            #{{ tag.name }}
+                        </a>
+                        {% empty %}
+                        <span class="tag-revolutionary-small tag-disabled">
+                            {% trans "Теги скоро появятся" %}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-revolutionary">
+    <div class="container">
+        <div class="cta-content-revolutionary">
+            <h2 class="cta-title-revolutionary animate-fade-in">
+                {% trans "Не нашли нужный тег?" %}
+            </h2>
+            <p class="cta-description-revolutionary animate-fade-in delay-1">
+                {% trans "Предложите новую тему или найдите похожие материалы в наших статьях" %}
+            </p>
+            <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                <a href="{% url 'blog:article_list' %}" class="btn-revolutionary-hero btn-primary-hero">
+                    <span>🔍</span>
+                    <span>{% trans "Найти статьи" %}</span>
+                </a>
+                <a href="{% url 'core:contacts' %}" class="btn-revolutionary-hero btn-secondary-hero">
+                    <span>💡</span>
+                    <span>{% trans "Предложить тему" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/courses/courses.js' %}"></script>
+<script src="{% static 'js/blog/tag-search.js' %}"></script>
+{% endblock %}

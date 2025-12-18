@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}PyLand - {% trans "Контакты" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/core/phone-input.css' %}">
+<link rel="stylesheet" href="{% static 'css/core/contact-form.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section (используем классы из home.html) -->
+    <section class="revolutionary-hero-home">
+        <div class="hero-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-main-content">
+                <div class="hero-badge-revolutionary animate-fade-in">
+                    <span>📞</span>
+                    <span>{% trans "Свяжитесь с нами" %}</span>
+                </div>
+                
+                <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Готовы помочь вам начать путь в IT" %}
+                </h1>
+                
+                <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Наша команда экспертов готова ответить на любые вопросы о курсах, карьере в программировании и выборе подходящего направления обучения." %}
+                </p>
+                
+                <div class="hero-actions-revolutionary animate-fade-in delay-3">
+                    <a href="#contact-form" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>✉️</span>
+                        <span>{% trans "Написать нам" %}</span>
+                    </a>
+                    <a href="tel:+995551006254" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>📞</span>
+                        <span>{% trans "Позвонить сейчас" %}</span>
+                    </a>
+                </div>
+                
+                <div class="hero-stats-revolutionary animate-fade-in delay-4">
+                    <div class="stat-card-revolutionary">
+                        <span class="stat-number-revolutionary">< 15</span>
+                        <span class="stat-label-revolutionary">{% trans "минут ответ" %}</span>
+                    </div>
+                    <div class="stat-card-revolutionary">
+                        <span class="stat-number-revolutionary">24/7</span>
+                        <span class="stat-label-revolutionary">{% trans "техподдержка" %}</span>
+                    </div>
+                    <div class="stat-card-revolutionary">
+                        <span class="stat-number-revolutionary">5+</span>
+                        <span class="stat-label-revolutionary">{% trans "лет опыта" %}</span>
+                    </div>
+                    <div class="stat-card-revolutionary">
+                        <span class="stat-number-revolutionary">98%</span>
+                        <span class="stat-label-revolutionary">{% trans "довольных студентов" %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Methods Section (используем features-revolutionary) -->
+    <section class="features-revolutionary">
+        <div class="container">
+            <div class="section-header-revolutionary">
+                <div class="section-badge animate-fade-in">
+                    <span>🤝</span>
+                    <span>{% trans "Способы связи" %}</span>
+                </div>
+                <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Выберите удобный способ" %}
+                </h2>
+                <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Мы всегда на связи и готовы помочь вам в выборе курса и развитии карьеры" %}
+                </p>
+            </div>
+            
+            <div class="features-grid-revolutionary">
+                <div class="feature-card-revolutionary animate-fade-in delay-1">
+                    <div class="feature-icon-revolutionary">📞</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Телефон" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Персональная консультация с нашими менторами. Поможем выбрать подходящий курс и построить план обучения." %}
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <a href="tel:+995551006254" class="btn-revolutionary-hero btn-primary-hero" style="font-size: 14px; padding: 12px 24px; text-decoration: none;">
+                            <span>📱</span>
+                            <span>+995 551 00 62 54</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-3">
+                    <div class="feature-icon-revolutionary">✉️</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Email" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Подробные ответы на сложные вопросы в письменном виде. Отвечаем в течение дня." %}
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <a href="mailto:pyland-school@yandex.com" class="btn-revolutionary-hero btn-primary-hero" style="font-size: 14px; padding: 12px 24px; text-decoration: none;">
+                            <span>📧</span>
+                            <span>pyland-school@yandex.com</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-4">
+                    <div class="feature-icon-revolutionary">🎥</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Видеозвонок" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Персональная встреча онлайн для детального обсуждения ваших целей и выбора оптимального пути обучения." %}
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <a href="#contact-form" class="btn-revolutionary-hero btn-secondary-hero" style="font-size: 14px; padding: 12px 24px; text-decoration: none;">
+                            <span>📅</span>
+                            <span>{% trans "Записаться" %}</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-5">
+                    <div class="feature-icon-revolutionary">💼</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Карьерная консультация" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Бесплатная консультация с HR-экспертом о возможностях трудоустройства и развития карьеры в IT." %}
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <a href="#contact-form" class="btn-revolutionary-hero btn-secondary-hero" style="font-size: 14px; padding: 12px 24px; text-decoration: none;">
+                            <span>🎯</span>
+                            <span>{% trans "Получить консультацию" %}</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="feature-card-revolutionary animate-fade-in delay-5">
+                    <div class="feature-icon-revolutionary">🌐</div>
+                    <h3 class="feature-title-revolutionary">{% trans "Онлайн встреча" %}</h3>
+                    <p class="feature-description-revolutionary">
+                        {% trans "Запланируйте онлайн встречу с нами. Покажем, как проходит обучение, и ответим на все вопросы." %}
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <a href="#office-info" class="btn-revolutionary-hero btn-secondary-hero" style="font-size: 14px; padding: 12px 24px; text-decoration: none;">
+                            <span>📍</span>
+                            <span>{% trans "Как добраться" %}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact-form-section" id="contact-form">
+        <div class="contact-form-container">
+            <div class="section-header-revolutionary">
+                <div class="section-badge animate-fade-in">
+                    <span>✉️</span>
+                    <span>{% trans "Напишите нам" %}</span>
+                </div>
+                <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Остались вопросы?" %}
+                </h2>
+                <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Заполните форму, и мы свяжемся с вами в течение дня" %}
+                </p>
+            </div>
+            
+            <div class="contact-form-card">
+                <form method="post" id="contactForm">
+                    {% csrf_token %}
+                    
+                    <div class="contact-form-grid">
+                        <div class="contact-form-group">
+                            <label class="contact-form-label">
+                                {% trans "Ваше имя" %} <span class="contact-form-required">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="first_name" 
+                                   class="contact-form-input"
+                                   placeholder="{% trans 'Введите ваше имя' %}"
+                                   required>
+                        </div>
+                        
+                        <div class="contact-form-group">
+                            <label class="contact-form-label">
+                                {% trans "Номер телефона" %} <span class="contact-form-required">*</span>
+                            </label>
+                            <div class="phone-input-wrapper phone-input-group">
+                                <div class="country-select-wrapper">
+                                    <select class="country-select" id="contact-country-code" aria-label="{% trans 'Выберите страну' %}">
+                                        <!-- Options will be populated by JavaScript -->
+                                    </select>
+                                    <svg class="country-select-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                                <input type="tel" 
+                                       name="phone_number" 
+                                       class="phone-number-input"
+                                       placeholder="+7 (___) ___-__-__"
+                                       required
+                                       autocomplete="tel">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form-group contact-form-group-full">
+                        <label class="contact-form-label">
+                            {% trans "Email адрес" %} <span class="contact-form-required">*</span>
+                        </label>
+                        <input type="email" 
+                               name="email" 
+                               class="contact-form-input"
+                               placeholder="{% trans 'example@email.com' %}"
+                               required
+                               autocomplete="email">
+                    </div>
+                    
+                    <div class="contact-form-group contact-form-group-full">
+                        <label class="contact-form-label">
+                            {% trans "Тема обращения" %}
+                        </label>
+                        <select name="topic" class="contact-form-input">
+                            <option value="">{% trans "Выберите тему" %}</option>
+                            <option value="courses">{% trans "Вопросы о курсах" %}</option>
+                            <option value="career">{% trans "Карьерная консультация" %}</option>
+                            <option value="technical">{% trans "Техническая поддержка" %}</option>
+                            <option value="partnership">{% trans "Сотрудничество" %}</option>
+                            <option value="other">{% trans "Другое" %}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="contact-form-group contact-form-group-full">
+                        <label class="contact-form-label">
+                            {% trans "Ваше сообщение" %} <span class="contact-form-required">*</span>
+                        </label>
+                        <textarea name="message" 
+                                  rows="6" 
+                                  class="contact-form-textarea"
+                                  placeholder="{% trans 'Расскажите подробнее о вашем вопросе или запросе...' %}"
+                                  required></textarea>
+                    </div>
+                    
+                    <div class="contact-form-agreement">
+                        <input type="checkbox" 
+                               name="agree_terms" 
+                               id="agree_terms"
+                               class="contact-form-checkbox"
+                               required>
+                        <label for="agree_terms" class="contact-form-agreement-text">
+                            {% trans "Я соглашаюсь с" %} 
+                            <a href="{% url 'core:privacy_policy' %}" class="contact-form-agreement-link">{% trans "политикой конфиденциальности" %}</a> 
+                            {% trans "и" %} 
+                            <a href="{% url 'core:data_processing' %}" class="contact-form-agreement-link">{% trans "обработкой персональных данных" %}</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="contact-form-submit">
+                        <svg class="contact-form-submit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                        <span>{% trans "Отправить сообщение" %}</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Office Info Section -->
+    <section class="features-revolutionary" id="office-info">
+        <div class="container">
+            <div class="section-header-revolutionary">
+                <div class="section-badge animate-fade-in">
+                    <span>🌍</span>
+                    <span>{% trans "Наше местоположение" %}</span>
+                </div>
+                <h2 class="section-title-revolutionary animate-fade-in delay-1">
+                    {% trans "Мы находимся в Грузии" %}
+                </h2>
+                <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+                    {% trans "Онлайн школа программирования доступна 24/7 из любой точки мира" %}
+                </p>
+            </div>
+            
+            <div class="features-grid-revolutionary" style="grid-template-columns: repeat(4, 1fr);">
+                <!-- Address -->
+                <div class="feature-card-revolutionary animate-fade-in delay-1">
+                    <div class="feature-icon-revolutionary">📍</div>
+                    <h4 class="feature-title-revolutionary">{% trans "Адрес" %}</h4>
+                    <p class="feature-description-revolutionary">{% trans "Грузия, г. Кутаиси" %}<br>{% trans "ул. Абашидзе, д. 8, офис 83" %}</p>
+                </div>
+                
+                <!-- Phone -->
+                <div class="feature-card-revolutionary animate-fade-in delay-2">
+                    <div class="feature-icon-revolutionary">📞</div>
+                    <h4 class="feature-title-revolutionary">{% trans "Телефон" %}</h4>
+                    <p class="feature-description-revolutionary">
+                        <a href="tel:+995551006254" style="color: var(--primary-600); text-decoration: none;">+995 551 00 62 54</a>
+                    </p>
+                </div>
+                
+                <!-- Email -->
+                <div class="feature-card-revolutionary animate-fade-in delay-3">
+                    <div class="feature-icon-revolutionary">✉️</div>
+                    <h4 class="feature-title-revolutionary">Email</h4>
+                    <p class="feature-description-revolutionary">
+                        <a href="mailto:pyland-school@yandex.com" style="color: var(--primary-600); text-decoration: none;">pyland-school@yandex.com</a>
+                    </p>
+                </div>
+                
+                <!-- Map Links -->
+                <div class="feature-card-revolutionary animate-fade-in delay-4">
+                    <div class="feature-icon-revolutionary">🗺️</div>
+                    <h4 class="feature-title-revolutionary">{% trans "На карте" %}</h4>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <a href="https://yandex.com.ge/maps/10279/kutaisi/house/YEsYcABlQUQCQFpofX53dH5jYA==/?ll=42.678490%2C42.265706&z=18.07" target="_blank" class="btn-revolutionary-hero btn-primary-hero" style="font-size: 12px; padding: 8px 16px;">
+                            <span>📍</span>
+                            <span>Яндекс</span>
+                        </a>
+                        <a href="https://www.google.com/maps/place/8+Abashidze+St,+Kutaisi,+Georgia/@42.265706,42.678490,18z" target="_blank" class="btn-revolutionary-hero btn-secondary-hero" style="font-size: 12px; padding: 8px 16px;">
+                            <span>🌍</span>
+                            <span>Google</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-revolutionary">
+        <div class="container">
+            <div class="cta-content-revolutionary">
+                <h2 class="cta-title-revolutionary animate-fade-in">
+                    {% trans "Готовы начать свой путь в IT?" %}
+                </h2>
+                <p class="cta-description-revolutionary animate-fade-in delay-1">
+                    {% trans "Свяжитесь с нами любым удобным способом, и мы поможем выбрать идеальный курс для достижения ваших целей. Первая консультация — бесплатно!" %}
+                </p>
+                <div class="cta-actions-revolutionary animate-fade-in delay-2">
+                    <a href="#contact-form" class="btn-revolutionary-hero btn-primary-hero">
+                        <span>🚀</span>
+                        <span>{% trans "Получить консультацию" %}</span>
+                    </a>
+                    <a href="tel:+995551006254" class="btn-revolutionary-hero btn-secondary-hero">
+                        <span>📞</span>
+                        <span>{% trans "Позвонить сейчас" %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/core/phone-input.js' %}"></script>
+<script src="{% static 'js/courses/courses.js' %}"></script>
+<script src="{% static 'js/core/contact-form-validation.js' %}"></script>
+{% endblock %}
