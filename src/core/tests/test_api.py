@@ -11,19 +11,11 @@ Core API Tests
 """
 
 import pytest
-from ninja.testing import TestClient
 
 from authentication.models import Role, Student
 from courses.models import Course, Lesson
 from managers.models import Feedback
 from notifications.models import Subscription
-from pyland.api import api
-
-
-@pytest.fixture(scope="module")
-def api_client():
-    """Fixture для тестового API клиента."""
-    return TestClient(api)
 
 
 @pytest.mark.django_db

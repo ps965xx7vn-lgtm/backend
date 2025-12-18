@@ -29,7 +29,7 @@ def create_roles(db):
         Role.objects.get_or_create(name=name, defaults={"description": description})
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def api_client():
     """Клиент для тестирования API."""
     return TestClient(auth_router)
