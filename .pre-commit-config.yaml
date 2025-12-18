@@ -52,7 +52,7 @@ repos:
     rev: 1.22.2
     hooks:
       - id: django-upgrade
-        args: [--target-version, "5.2"]
+        args: [--target-version, "5.1"]
 
   # Проверка безопасности
   - repo: https://github.com/PyCQA/bandit

@@ -87,7 +87,20 @@ jobs:
         cd src
         poetry run python manage.py migrate --noinput
 
+    - name: Create initial data
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pyland_test
+        REDIS_URL: redis://localhost:6379/0
+        SECRET_KEY: test-secret-key-for-ci
+        DEBUG: 'True'
+      run: |
+        cd src
+        poetry run python manage.py create_roles
+
     - name: Compile translations
+      env:
+        SECRET_KEY: test-secret-key-for-ci
+        DEBUG: 'True'
       run: |
         cd src
         poetry run python manage.py compilemessages
@@ -98,10 +111,9 @@ jobs:
         REDIS_URL: redis://localhost:6379/0
         SECRET_KEY: test-secret-key-for-ci
         DEBUG: 'True'
-        DJANGO_SETTINGS_MODULE: pyland.settings
       run: |
         cd src
-        poetry run pytest --cov=. --cov-report=xml:../coverage.xml --cov-report=term-missing --nomigrations -v
+        poetry run pytest --cov=. --cov-report=xml:../coverage.xml --cov-report=term-missing -v
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
