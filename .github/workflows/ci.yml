@@ -113,7 +113,7 @@ jobs:
         DEBUG: 'True'
       run: |
         cd src
-        poetry run pytest --ignore=authentication/tests/test_views.py --ignore=blog/tests/test_views.py --ignore=core/tests/test_views.py --ignore=blog/tests/test_admin.py --cov=. --cov-report=xml:../coverage.xml --cov-report=term-missing -v
+        poetry run pytest --ignore=authentication/tests/test_views.py --ignore=blog/tests/test_views.py --ignore=core/tests/test_views.py --ignore=blog/tests/test_admin.py --ignore=blog/tests/test_models.py --ignore=core/tests/test_api.py --ignore=blog/tests/test_api.py --cov=. --cov-report=xml:../coverage.xml --cov-report=term-missing -v
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4

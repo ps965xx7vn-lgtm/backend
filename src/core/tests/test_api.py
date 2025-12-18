@@ -32,7 +32,7 @@ class TestFeedbackAPI:
             "agree_terms": True,
         }
 
-        response = api_client.post("/core/feedback/", json=data)
+        response = api_client.post("/feedback/", json=data)
 
         assert response.status_code == 200
         result = response.json()
@@ -56,7 +56,7 @@ class TestFeedbackAPI:
             "agree_terms": True,
         }
 
-        response = api_client.post("/core/feedback/", json=data)
+        response = api_client.post("/feedback/", json=data)
         assert response.status_code == 422  # Validation error
 
     def test_create_feedback_invalid_email(self, api_client):
@@ -82,7 +82,7 @@ class TestFeedbackAPI:
             "agree_terms": True,
         }
 
-        response = api_client.post("/core/feedback/", json=data)
+        response = api_client.post("/feedback/", json=data)
         assert response.status_code == 422
 
     def test_create_feedback_without_consent(self, api_client):
@@ -95,7 +95,7 @@ class TestFeedbackAPI:
             "agree_terms": False,  # Не согласен
         }
 
-        response = api_client.post("/core/feedback/", json=data)
+        response = api_client.post("/feedback/", json=data)
         assert response.status_code == 422
 
     def test_create_feedback_name_with_digits(self, api_client):
