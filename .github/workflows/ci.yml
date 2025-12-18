@@ -101,7 +101,7 @@ jobs:
         DJANGO_SETTINGS_MODULE: pyland.settings
       run: |
         cd src
-        poetry run pytest --cov=. --cov-report=xml:../coverage.xml --cov-report=term-missing --reuse-db --nomigrations -v
+        poetry run pytest --cov=. --cov-report=xml:../coverage.xml --cov-report=term-missing --nomigrations -v
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
