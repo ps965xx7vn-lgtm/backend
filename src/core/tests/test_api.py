@@ -20,7 +20,7 @@ from notifications.models import Subscription
 from pyland.api import api
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def api_client():
     """Fixture для тестового API клиента."""
     return TestClient(api)
