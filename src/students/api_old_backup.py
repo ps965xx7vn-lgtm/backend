@@ -21,7 +21,6 @@ Account API - REST API для управления учетными запися
 """
 
 import logging
-from typing import Dict
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import ValidationError, validate_password
@@ -72,7 +71,7 @@ UserModel = get_user_model()
 # ============================================================================
 
 
-def generate_tokens_for_user(user) -> Dict[str, str]:
+def generate_tokens_for_user(user) -> dict[str, str]:
     """
     Генерация JWT токенов для пользователя.
 
@@ -104,7 +103,7 @@ def validate_user_password(password: str, user=None) -> None:
         validate_password(password, user)
     except ValidationError as e:
         logger.warning(f"API: Валидация пароля не пройдена: {e.messages}")
-        raise HttpError(400, "; ".join(e.messages))
+        raise HttpError(400, "; ".join(e.messages)) from e
 
 
 # ============================================================================
@@ -199,9 +198,9 @@ def login_view(request, payload: LoginIn) -> LoginOut:
 
     try:
         user = UserModel.objects.get(email=payload.email)
-    except ObjectDoesNotExist:
+    except ObjectDoesNotExist as e:
         logger.warning(f"API: Пользователь не найден: {payload.email}")
-        raise HttpError(401, "Invalid credentials")
+        raise HttpError(401, "Invalid credentials") from e
 
     # Проверка пароля
     if not user.check_password(payload.password):
@@ -738,7 +737,7 @@ def refresh_token(request, data: RefreshTokenIn) -> TokenOut:
         )
     except Exception as e:
         logger.warning(f"API: Ошибка обновления токена: {e}")
-        raise HttpError(401, "Invalid or expired refresh token")
+        raise HttpError(401, "Invalid or expired refresh token") from e
 
 
 @router.post("/token/verify", response=SuccessSchema, auth=JWTAuth())

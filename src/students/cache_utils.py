@@ -17,7 +17,7 @@ Account Cache Utils Module - Утилиты для безопасной рабо
 from __future__ import annotations
 
 import logging
-from typing import Any, List, Optional
+from typing import Any
 
 from django.core.cache import cache
 
@@ -42,7 +42,7 @@ def safe_cache_get(key: str, default: Any = None) -> Any:
         return default
 
 
-def safe_cache_set(key: str, value: Any, timeout: Optional[int] = None) -> bool:
+def safe_cache_set(key: str, value: Any, timeout: int | None = None) -> bool:
     """
     Безопасная запись значения в кэш с обработкой ошибок Redis.
 
@@ -84,7 +84,7 @@ class ProgressCacheManager:
     """Менеджер кэша для данных прогресса обучения"""
 
     @staticmethod
-    def get_cache_keys(student_id: str, course_id: str = None, lesson_id: str = None) -> List[str]:
+    def get_cache_keys(student_id: str, course_id: str = None, lesson_id: str = None) -> list[str]:
         """Получить все ключи кэша для студента"""
         keys = [
             f"dashboard_stats_{student_id}",

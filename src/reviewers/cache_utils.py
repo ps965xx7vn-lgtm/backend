@@ -13,7 +13,7 @@ Reviewers Cache Utils - Утилиты кэширования для оптим�
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from django.core.cache import cache
 from django.db.models import Avg
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 CACHE_TIMEOUT = 600
 
 
-def get_reviewer_stats(reviewer_id: Any) -> Dict[str, Any]:
+def get_reviewer_stats(reviewer_id: Any) -> dict[str, Any]:
     """
     Получить статистику ревьюера с кэшированием.
 
@@ -136,7 +136,7 @@ def get_submission_review_cache_key(submission_id: int) -> str:
 
 
 def cache_submission_review(
-    submission_id: int, review_data: Dict[str, Any], timeout: int = 300
+    submission_id: int, review_data: dict[str, Any], timeout: int = 300
 ) -> None:
     """
     Закэшировать данные проверки работы.
@@ -154,7 +154,7 @@ def cache_submission_review(
         logger.warning(f"Не удалось закэшировать проверку работы {submission_id}: {e}")
 
 
-def get_cached_submission_review(submission_id: int) -> Optional[Dict[str, Any]]:
+def get_cached_submission_review(submission_id: int) -> dict[str, Any] | None:
     """
     Получить закэшированные данные проверки работы.
 

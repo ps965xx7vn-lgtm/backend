@@ -15,7 +15,7 @@ Template tags для работы с Markdown в Django шаблонах:
 """
 
 import re
-from typing import Any, Dict, Optional
+from typing import Any
 
 import markdown
 from django import template
@@ -25,7 +25,7 @@ register = template.Library()
 
 
 @register.filter(name="markdown")
-def markdown_format(text: Optional[str]) -> SafeString:
+def markdown_format(text: str | None) -> SafeString:
     """
     Конвертирует Markdown текст в HTML.
 
@@ -45,7 +45,7 @@ def markdown_format(text: Optional[str]) -> SafeString:
 
 
 @register.filter(name="get_item")
-def get_item(dictionary: Dict[str, Any], key: str) -> Any:
+def get_item(dictionary: dict[str, Any], key: str) -> Any:
     """
     Получает значение из словаря по ключу в шаблоне.
 
@@ -63,7 +63,7 @@ def get_item(dictionary: Dict[str, Any], key: str) -> Any:
 
 
 @register.filter
-def clean_markdown(text: Optional[str]) -> str:
+def clean_markdown(text: str | None) -> str:
     """
     Очищает текст от Markdown-символов для отображения в превью карточек.
 
@@ -131,7 +131,7 @@ def clean_markdown(text: Optional[str]) -> str:
 
 
 @register.filter
-def smart_excerpt(content: Optional[str], words_limit: int = 20) -> str:
+def smart_excerpt(content: str | None, words_limit: int = 20) -> str:
     """
     Умное извлечение отрывка из контента с очисткой от Markdown.
 

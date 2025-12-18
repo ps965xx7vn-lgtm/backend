@@ -38,7 +38,7 @@ Security Headers:
 from __future__ import annotations
 
 import logging
-from typing import Callable
+from collections.abc import Callable
 
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse

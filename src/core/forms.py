@@ -144,12 +144,12 @@ class FeedbackForm(forms.Form):
             # Возвращаем номер в международном формате E164
             return phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
 
-        except NumberParseException:
+        except NumberParseException as err:
             raise ValidationError(
                 _(
                     "Неверный формат номера телефона. Используйте международный формат, например: +7 999 123 45 67"
                 )
-            )
+            ) from err
 
     def clean_email(self) -> str:
         """

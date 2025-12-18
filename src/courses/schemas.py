@@ -1,4 +1,3 @@
-from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -12,7 +11,7 @@ class CourseCreateIn(BaseModel):
     """
 
     name: str
-    description: Optional[str] = None
+    description: str | None = None
 
 
 class LessonCreateIn(BaseModel):
@@ -31,7 +30,7 @@ class StepCreateIn(BaseModel):
 
     lesson_id: UUID
     name: str
-    description: Optional[str] = None
+    description: str | None = None
 
 
 class SubmissionCreateIn(BaseModel):
@@ -57,7 +56,7 @@ class MentorReviewIn(BaseModel):
     """
 
     status: str  # 'changes_requested', 'approved'
-    mentor_comment: Optional[str] = None
+    mentor_comment: str | None = None
 
 
 # ----------------- OUTPUT SCHEMAS -----------------
@@ -71,7 +70,7 @@ class StepOut(BaseModel):
     id: UUID
     name: str
     step_number: int
-    description: Optional[str] = None
+    description: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -85,7 +84,7 @@ class LessonOut(BaseModel):
     name: str
     lesson_number: int
     slug: str
-    steps: List[StepOut] = []
+    steps: list[StepOut] = []
 
     model_config = {"from_attributes": True}
 
@@ -97,9 +96,9 @@ class CourseOut(BaseModel):
 
     id: UUID
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     slug: str
-    lessons: List[LessonOut] = []
+    lessons: list[LessonOut] = []
 
     model_config = {"from_attributes": True}
 
@@ -118,10 +117,10 @@ class SubmissionOut(BaseModel):
     status_display: str
     status_icon: str
     status_color: str
-    mentor_comment: Optional[str] = None
-    mentor_name: Optional[str] = None
+    mentor_comment: str | None = None
+    mentor_name: str | None = None
     submitted_at: str
-    reviewed_at: Optional[str] = None
+    reviewed_at: str | None = None
     revision_count: int
     can_resubmit: bool
     is_approved: bool
@@ -134,7 +133,7 @@ class SubmissionsListOut(BaseModel):
     Схема для списка работ с группировкой по статусам.
     """
 
-    pending: List[SubmissionOut] = []
-    changes_requested: List[SubmissionOut] = []
-    approved: List[SubmissionOut] = []
+    pending: list[SubmissionOut] = []
+    changes_requested: list[SubmissionOut] = []
+    approved: list[SubmissionOut] = []
     total_count: int

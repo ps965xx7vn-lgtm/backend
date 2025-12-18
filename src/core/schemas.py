@@ -11,7 +11,6 @@ Pydantic схемы для валидации и сериализации дан
 """
 
 import re
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field, validator
 
@@ -115,9 +114,9 @@ class ContactInfoSchema(BaseModel):
 
     email: str
     phone: str
-    address: Optional[str] = None
+    address: str | None = None
     social_links: dict = Field(default_factory=dict)
-    working_hours: Optional[str] = None
+    working_hours: str | None = None
 
     class Config:
         json_schema_extra = {
@@ -180,7 +179,7 @@ class FeedbackResponseSchema(BaseModel):
 
     success: bool
     message: str
-    feedback_id: Optional[int] = None
+    feedback_id: int | None = None
 
     class Config:
         json_schema_extra = {

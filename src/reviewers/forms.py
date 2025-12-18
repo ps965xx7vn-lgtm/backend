@@ -13,7 +13,7 @@ Reviewers Forms - Современные формы для работы с ре�
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -272,7 +272,7 @@ class SubmissionFilterForm(forms.Form):
         label=_("Поиск"),
     )
 
-    def clean(self) -> Dict[str, Any]:
+    def clean(self) -> dict[str, Any]:
         """Валидация всей формы."""
         cleaned_data = super().clean()
         date_from = cleaned_data.get("date_from")

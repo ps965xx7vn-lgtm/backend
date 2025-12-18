@@ -7,12 +7,12 @@ Core Context Processors
 Подключается в settings.py -> TEMPLATES -> OPTIONS -> context_processors
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest
 
 
-def footer_data(request: HttpRequest) -> Dict[str, Any]:
+def footer_data(request: HttpRequest) -> dict[str, Any]:
     """
     Добавляет в контекст данные для футера: только существующие курсы из БД.
     Этот контекст-процессор подключается в TEMPLATES -> OPTIONS -> context_processors
@@ -66,7 +66,7 @@ def footer_data(request: HttpRequest) -> Dict[str, Any]:
         }
 
 
-def header_courses(request: HttpRequest) -> Dict[str, Any]:
+def header_courses(request: HttpRequest) -> dict[str, Any]:
     """
     Добавляет в контекст курсы для выпадающего меню в header.
     Берет все опубликованные курсы из БД, упорядоченные по категориям.

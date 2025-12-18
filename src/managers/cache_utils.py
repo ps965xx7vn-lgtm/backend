@@ -41,9 +41,10 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from collections.abc import Callable
 from datetime import datetime, timedelta
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from django.core.cache import cache
 from django.db.models import Count

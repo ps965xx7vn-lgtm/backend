@@ -38,7 +38,6 @@ Pydantic схемы для валидации и сериализации дан
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -137,7 +136,7 @@ class FeedbackStatsOut(BaseModel):
     this_week_feedback: int = Field(..., description="За неделю")
     this_month_feedback: int = Field(..., description="За месяц")
     average_per_day: float = Field(..., description="Среднее в день")
-    most_active_day: Optional[str] = Field(None, description="Самый активный день")
+    most_active_day: str | None = Field(None, description="Самый активный день")
     recent_feedback: list[FeedbackOut] = Field(..., description="Последние сообщения")
 
 
@@ -155,7 +154,7 @@ class FeedbackDeleteResponse(BaseModel):
 
     success: bool = Field(..., description="Статус операции")
     message: str = Field(..., description="Сообщение о результате")
-    deleted_id: Optional[int] = Field(None, description="ID удаленной записи")
+    deleted_id: int | None = Field(None, description="ID удаленной записи")
 
 
 # ============================================================================
@@ -182,12 +181,12 @@ class SystemLogOut(BaseModel):
     """
 
     id: int = Field(..., description="ID лога")
-    user_email: Optional[str] = Field(None, description="Email пользователя")
+    user_email: str | None = Field(None, description="Email пользователя")
     action: str = Field(..., description="Тип действия")
     model_name: str = Field(..., description="Название модели")
-    object_id: Optional[int] = Field(None, description="ID объекта")
-    details: Optional[dict] = Field(None, description="Детали в JSON")
-    ip_address: Optional[str] = Field(None, description="IP адрес")
+    object_id: int | None = Field(None, description="ID объекта")
+    details: dict | None = Field(None, description="Детали в JSON")
+    ip_address: str | None = Field(None, description="IP адрес")
     timestamp: datetime = Field(..., description="Время события")
 
     class Config:
@@ -254,7 +253,7 @@ class SettingOut(BaseModel):
     id: int = Field(..., description="ID настройки")
     key: str = Field(..., description="Ключ настройки")
     value: str = Field(..., description="Значение")
-    description: Optional[str] = Field(None, description="Описание")
+    description: str | None = Field(None, description="Описание")
     value_type: str = Field(..., description="Тип значения")
     is_active: bool = Field(..., description="Активна ли")
     updated_at: datetime = Field(..., description="Дата обновления")
@@ -272,8 +271,8 @@ class SettingUpdateIn(BaseModel):
         is_active: Активировать/деактивировать
     """
 
-    value: Optional[str] = Field(None, description="Новое значение")
-    is_active: Optional[bool] = Field(None, description="Активность")
+    value: str | None = Field(None, description="Новое значение")
+    is_active: bool | None = Field(None, description="Активность")
 
 
 class SettingsListOut(BaseModel):
@@ -349,8 +348,8 @@ class SystemStatsOut(BaseModel):
     users: UserStatsOut = Field(..., description="Статистика пользователей")
     content: ContentStatsOut = Field(..., description="Статистика контента")
     feedback: FeedbackStatsOut = Field(..., description="Статистика обратной связи")
-    system_load: Optional[dict] = Field(None, description="Нагрузка системы")
-    cache_status: Optional[dict] = Field(None, description="Статус кеша")
+    system_load: dict | None = Field(None, description="Нагрузка системы")
+    cache_status: dict | None = Field(None, description="Статус кеша")
 
 
 # ============================================================================
@@ -371,5 +370,5 @@ class ErrorResponse(BaseModel):
     """
 
     error: str = Field(..., description="Описание ошибки")
-    detail: Optional[str] = Field(None, description="Детали ошибки")
-    field: Optional[str] = Field(None, description="Поле с ошибкой")
+    detail: str | None = Field(None, description="Детали ошибки")
+    field: str | None = Field(None, description="Поле с ошибкой")

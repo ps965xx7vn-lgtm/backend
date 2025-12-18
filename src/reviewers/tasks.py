@@ -13,7 +13,6 @@ Reviewers Celery Tasks - Асинхронные задачи для ревьюе
 from __future__ import annotations
 
 import logging
-from typing import List
 
 from celery import shared_task
 from django.conf import settings
@@ -26,7 +25,7 @@ logger = logging.getLogger(__name__)
 @shared_task(bind=True, max_retries=3)
 def send_new_submission_notification(
     self,
-    reviewer_emails: List[str],
+    reviewer_emails: list[str],
     student_name: str,
     course_name: str,
     lesson_name: str,
@@ -133,7 +132,7 @@ def send_review_completed_notification(
     status_emoji: str,
     rating: int = None,
     comments: str = "",
-    improvements: List[str] = None,
+    improvements: list[str] = None,
     header_color: str = "#10b981",
     status_bg_color: str = "#ecfdf5",
     status_border_color: str = "#10b981",
@@ -236,4 +235,4 @@ def send_review_completed_notification(
             f"для работы {submission_id}: {e}"
         )
         # Повторяем попытку через 60 секунд
-        raise self.retry(exc=e, countdown=60)
+        raise self.retry(exc=e, countdown=60) from e

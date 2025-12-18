@@ -274,7 +274,7 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
                         >= reviewer.max_reviews_per_day,
                         "progress_percentage": (
                             int(
-                                (stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100)
+                                stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100
                             )
                             if reviewer.max_reviews_per_day > 0
                             else 0
@@ -300,7 +300,7 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
                         >= reviewer.max_reviews_per_day,
                         "progress_percentage": (
                             int(
-                                (stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100)
+                                stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100
                             )
                             if reviewer.max_reviews_per_day > 0
                             else 0
@@ -416,7 +416,7 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
                     - stats.get("reviews_today", 0),
                     "limit_reached": stats.get("reviews_today", 0) >= reviewer.max_reviews_per_day,
                     "progress_percentage": (
-                        int((stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100))
+                        int(stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100)
                         if reviewer.max_reviews_per_day > 0
                         else 0
                     ),
@@ -436,7 +436,7 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
             "reviews_remaining": reviewer.max_reviews_per_day - stats.get("reviews_today", 0),
             "limit_reached": stats.get("reviews_today", 0) >= reviewer.max_reviews_per_day,
             "progress_percentage": (
-                int((stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100))
+                int(stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100)
                 if reviewer.max_reviews_per_day > 0
                 else 0
             ),

@@ -76,7 +76,7 @@ def split(value, sep=","):
     if value is None:
         return []
     try:
-        return [part for part in str(value).split(sep)]
+        return list(str(value).split(sep))
     except Exception:
         return []
 

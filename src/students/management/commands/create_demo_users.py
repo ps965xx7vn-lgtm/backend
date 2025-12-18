@@ -158,7 +158,7 @@ class Command(BaseCommand):
         course_slugs = scenario["courses"]
         progress_percentages = scenario["progress"]
 
-        for course_slug, target_progress in zip(course_slugs, progress_percentages):
+        for course_slug, target_progress in zip(course_slugs, progress_percentages, strict=False):
             # Находим курс
             course = next((c for c in courses if c.slug == course_slug), None)
             if not course:

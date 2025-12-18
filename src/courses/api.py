@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from django.utils import timezone
@@ -24,7 +23,7 @@ from .schemas import (
 router = Router(tags=["Courses"])
 
 
-@router.get("/", response=List[CourseOut])
+@router.get("/", response=list[CourseOut])
 def list_courses(request):
     """
     Получить список всех курсов с уроками и шагами.
@@ -80,8 +79,8 @@ def get_course(request, course_id: UUID):
     """
     try:
         course = Course.objects.prefetch_related("lessons__steps").get(id=course_id)
-    except Course.DoesNotExist:
-        raise HttpError(404, "Course not found")
+    except Course.DoesNotExist as e:
+        raise HttpError(404, "Course not found") from e
     return CourseOut(
         id=course.id,
         name=course.name,
@@ -115,8 +114,8 @@ def create_lesson(request, data: LessonCreateIn):
     """
     try:
         course = Course.objects.get(id=data.course_id)
-    except Course.DoesNotExist:
-        raise HttpError(404, "Course not found")
+    except Course.DoesNotExist as e:
+        raise HttpError(404, "Course not found") from e
     lesson = Lesson.objects.create(course=course, name=data.name)
     return LessonOut(
         id=lesson.id,
@@ -134,8 +133,8 @@ def create_step(request, data: StepCreateIn):
     """
     try:
         lesson = Lesson.objects.get(id=data.lesson_id)
-    except Lesson.DoesNotExist:
-        raise HttpError(404, "Lesson not found")
+    except Lesson.DoesNotExist as e:
+        raise HttpError(404, "Lesson not found") from e
     step = Step.objects.create(lesson=lesson, name=data.name, description=data.description or "")
     return StepOut(
         id=step.id,
@@ -207,8 +206,8 @@ def get_submission_detail(request, submission_id: UUID):
         submission = LessonSubmission.objects.select_related(
             "lesson", "lesson__course", "mentor", "mentor__user", "student", "student__user"
         ).get(id=submission_id)
-    except LessonSubmission.DoesNotExist:
-        raise HttpError(404, "Submission not found")
+    except LessonSubmission.DoesNotExist as e:
+        raise HttpError(404, "Submission not found") from e
 
     # Проверка доступа
     if submission.student != request.user.student and not request.user.is_staff:
@@ -248,8 +247,8 @@ def resubmit_submission(request, submission_id: UUID, data: SubmissionResubmitIn
         submission = LessonSubmission.objects.select_related(
             "lesson", "lesson__course", "student", "student__user"
         ).get(id=submission_id)
-    except LessonSubmission.DoesNotExist:
-        raise HttpError(404, "Submission not found")
+    except LessonSubmission.DoesNotExist as e:
+        raise HttpError(404, "Submission not found") from e
 
     # Проверка прав
     if submission.student != request.user.student:
@@ -299,8 +298,8 @@ def mentor_review_submission(request, submission_id: UUID, data: MentorReviewIn)
         submission = LessonSubmission.objects.select_related(
             "lesson", "lesson__course", "student", "student__user"
         ).get(id=submission_id)
-    except LessonSubmission.DoesNotExist:
-        raise HttpError(404, "Submission not found")
+    except LessonSubmission.DoesNotExist as e:
+        raise HttpError(404, "Submission not found") from e
 
     # Валидация статуса
     if data.status not in ["changes_requested", "approved"]:

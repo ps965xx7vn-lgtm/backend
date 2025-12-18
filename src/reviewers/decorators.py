@@ -11,8 +11,9 @@ Reviewers Decorators - Современные декораторы для про
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -59,10 +60,10 @@ def active_reviewer_required(view_func: Callable) -> Callable:
                 )
                 raise PermissionDenied("Reviewer is not active")
 
-        except Reviewer.DoesNotExist:
+        except Reviewer.DoesNotExist as e:
             messages.error(request, "Профиль ревьюера не найден.")
             logger.error(f"Reviewer profile missing for {request.user.email}")
-            raise PermissionDenied("Reviewer profile does not exist")
+            raise PermissionDenied("Reviewer profile does not exist") from e
 
         return view_func(request, *args, **kwargs)
 
@@ -111,10 +112,10 @@ def can_review_course(view_func: Callable) -> Callable:
         # Получаем ревьюера
         try:
             reviewer = Reviewer.objects.get(user=request.user)
-        except Reviewer.DoesNotExist:
+        except Reviewer.DoesNotExist as e:
             messages.error(request, "Профиль ревьюера не найден.")
             logger.error(f"Reviewer profile missing for {request.user.email}")
-            raise PermissionDenied("Reviewer profile does not exist")
+            raise PermissionDenied("Reviewer profile does not exist") from e
 
         # Проверяем доступ к курсу
         if course not in reviewer.courses.all():
@@ -196,9 +197,9 @@ def max_reviews_per_day_check(view_func: Callable) -> Callable:
                         f"Reviewer {request.user.email} at daily limit: {today_reviews_count}/{max_reviews}"
                     )
 
-        except Reviewer.DoesNotExist:
+        except Reviewer.DoesNotExist as e:
             messages.error(request, "Профиль ревьюера не найден.")
-            raise PermissionDenied("Reviewer profile does not exist")
+            raise PermissionDenied("Reviewer profile does not exist") from e
 
         return view_func(request, *args, **kwargs)
 

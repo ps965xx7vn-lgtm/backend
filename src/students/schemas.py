@@ -14,7 +14,6 @@ Pydantic схемы для Account API.
 """
 
 from enum import Enum
-from typing import List, Optional
 
 from ninja import Field, Schema
 
@@ -68,8 +67,8 @@ class RegisterIn(Schema):
     password: str = Field(
         ..., min_length=8, max_length=128, description="Пароль (минимум 8 символов)"
     )
-    first_name: Optional[str] = Field(None, max_length=150, description="Имя пользователя")
-    phone: Optional[str] = Field(None, max_length=20, description="Номер телефона")
+    first_name: str | None = Field(None, max_length=150, description="Имя пользователя")
+    phone: str | None = Field(None, max_length=20, description="Номер телефона")
 
 
 class LoginIn(Schema):
@@ -110,35 +109,35 @@ class PasswordResetConfirmIn(Schema):
 class ProfileUpdate(Schema):
     """Схема обновления профиля."""
 
-    first_name: Optional[str] = Field(None, max_length=150, description="Имя")
-    last_name: Optional[str] = Field(None, max_length=150, description="Фамилия")
-    phone: Optional[str] = Field(None, max_length=20, description="Номер телефона")
-    birthday: Optional[str] = Field(None, description="Дата рождения (YYYY-MM-DD)")
-    gender: Optional[Gender] = Field(None, description="Пол")
-    country: Optional[str] = Field(None, max_length=2, description="Код страны (ISO 3166-1)")
-    city: Optional[str] = Field(None, max_length=100, description="Город")
-    address: Optional[str] = Field(None, max_length=500, description="Адрес")
-    bio: Optional[str] = Field(None, max_length=1000, description="О себе")
+    first_name: str | None = Field(None, max_length=150, description="Имя")
+    last_name: str | None = Field(None, max_length=150, description="Фамилия")
+    phone: str | None = Field(None, max_length=20, description="Номер телефона")
+    birthday: str | None = Field(None, description="Дата рождения (YYYY-MM-DD)")
+    gender: Gender | None = Field(None, description="Пол")
+    country: str | None = Field(None, max_length=2, description="Код страны (ISO 3166-1)")
+    city: str | None = Field(None, max_length=100, description="Город")
+    address: str | None = Field(None, max_length=500, description="Адрес")
+    bio: str | None = Field(None, max_length=1000, description="О себе")
 
 
 class NotificationSettingsUpdate(Schema):
     """Схема обновления настроек уведомлений."""
 
-    email_notifications: Optional[bool] = Field(None, description="Уведомления по email")
-    course_updates: Optional[bool] = Field(None, description="Обновления курсов")
-    lesson_reminders: Optional[bool] = Field(None, description="Напоминания о уроках")
-    achievement_alerts: Optional[bool] = Field(None, description="Уведомления о достижениях")
-    weekly_summary: Optional[bool] = Field(None, description="Еженедельная сводка")
-    marketing_emails: Optional[bool] = Field(None, description="Маркетинговые письма")
+    email_notifications: bool | None = Field(None, description="Уведомления по email")
+    course_updates: bool | None = Field(None, description="Обновления курсов")
+    lesson_reminders: bool | None = Field(None, description="Напоминания о уроках")
+    achievement_alerts: bool | None = Field(None, description="Уведомления о достижениях")
+    weekly_summary: bool | None = Field(None, description="Еженедельная сводка")
+    marketing_emails: bool | None = Field(None, description="Маркетинговые письма")
 
 
 class PrivacySettingsUpdate(Schema):
     """Схема обновления настроек приватности."""
 
-    profile_visibility: Optional[ProfileVisibility] = Field(None, description="Видимость профиля")
-    show_progress: Optional[bool] = Field(None, description="Показывать прогресс")
-    show_achievements: Optional[bool] = Field(None, description="Показывать достижения")
-    allow_messages: Optional[bool] = Field(None, description="Разрешить сообщения")
+    profile_visibility: ProfileVisibility | None = Field(None, description="Видимость профиля")
+    show_progress: bool | None = Field(None, description="Показывать прогресс")
+    show_achievements: bool | None = Field(None, description="Показывать достижения")
+    allow_messages: bool | None = Field(None, description="Разрешить сообщения")
 
 
 class AvatarUploadIn(Schema):
@@ -165,7 +164,7 @@ class DeviceTokenIn(Schema):
 
     device_token: str = Field(..., description="FCM/APNS токен устройства")
     device_type: str = Field(..., description="Тип устройства (ios/android)")
-    device_name: Optional[str] = Field(None, description="Название устройства")
+    device_name: str | None = Field(None, description="Название устройства")
 
 
 # ============================================================================
@@ -184,21 +183,21 @@ class ProfileOut(Schema):
     """Схема вывода профиля пользователя."""
 
     id: str = Field(..., description="Уникальный идентификатор профиля")
-    username: Optional[str] = Field(None, description="Имя пользователя")
+    username: str | None = Field(None, description="Имя пользователя")
     email: str = Field(..., description="Email адрес")
-    first_name: Optional[str] = Field(None, description="Имя")
-    last_name: Optional[str] = Field(None, description="Фамилия")
-    phone: Optional[str] = Field(None, description="Номер телефона")
-    birthday: Optional[str] = Field(None, description="Дата рождения")
-    gender: Optional[str] = Field(None, description="Пол")
-    country: Optional[str] = Field(None, description="Страна")
-    city: Optional[str] = Field(None, description="Город")
-    address: Optional[str] = Field(None, description="Адрес")
-    bio: Optional[str] = Field(None, description="О себе")
-    avatar_url: Optional[str] = Field(None, description="URL аватара")
-    role: Optional[str] = Field(None, description="Роль пользователя")
-    courses: List[str] = Field(default_factory=list, description="Курсы пользователя")
-    created_at: Optional[str] = Field(None, description="Дата создания профиля")
+    first_name: str | None = Field(None, description="Имя")
+    last_name: str | None = Field(None, description="Фамилия")
+    phone: str | None = Field(None, description="Номер телефона")
+    birthday: str | None = Field(None, description="Дата рождения")
+    gender: str | None = Field(None, description="Пол")
+    country: str | None = Field(None, description="Страна")
+    city: str | None = Field(None, description="Город")
+    address: str | None = Field(None, description="Адрес")
+    bio: str | None = Field(None, description="О себе")
+    avatar_url: str | None = Field(None, description="URL аватара")
+    role: str | None = Field(None, description="Роль пользователя")
+    courses: list[str] = Field(default_factory=list, description="Курсы пользователя")
+    created_at: str | None = Field(None, description="Дата создания профиля")
 
 
 class RegisterOut(Schema):
@@ -266,25 +265,25 @@ class ProfileDetailOut(Schema):
 
     # Базовая информация
     id: str = Field(..., description="Уникальный идентификатор профиля")
-    username: Optional[str] = Field(None, description="Имя пользователя")
+    username: str | None = Field(None, description="Имя пользователя")
     email: str = Field(..., description="Email адрес")
     email_is_verified: bool = Field(..., description="Email подтвержден")
 
     # Персональные данные
-    first_name: Optional[str] = Field(None, description="Имя")
-    last_name: Optional[str] = Field(None, description="Фамилия")
-    phone: Optional[str] = Field(None, description="Номер телефона")
-    birthday: Optional[str] = Field(None, description="Дата рождения")
-    gender: Optional[str] = Field(None, description="Пол")
-    country: Optional[str] = Field(None, description="Страна")
-    city: Optional[str] = Field(None, description="Город")
-    address: Optional[str] = Field(None, description="Адрес")
-    bio: Optional[str] = Field(None, description="О себе")
-    avatar_url: Optional[str] = Field(None, description="URL аватара")
+    first_name: str | None = Field(None, description="Имя")
+    last_name: str | None = Field(None, description="Фамилия")
+    phone: str | None = Field(None, description="Номер телефона")
+    birthday: str | None = Field(None, description="Дата рождения")
+    gender: str | None = Field(None, description="Пол")
+    country: str | None = Field(None, description="Страна")
+    city: str | None = Field(None, description="Город")
+    address: str | None = Field(None, description="Адрес")
+    bio: str | None = Field(None, description="О себе")
+    avatar_url: str | None = Field(None, description="URL аватара")
 
     # Роли и курсы (детальные)
-    role: Optional[RoleOut] = Field(None, description="Роль пользователя с описанием")
-    courses: List[CourseOut] = Field(
+    role: RoleOut | None = Field(None, description="Роль пользователя с описанием")
+    courses: list[CourseOut] = Field(
         default_factory=list, description="Курсы пользователя с деталями"
     )
 
@@ -296,9 +295,9 @@ class ProfileDetailOut(Schema):
     stats: ProfileStatsOut = Field(..., description="Статистика обучения")
 
     # Метаданные
-    created_at: Optional[str] = Field(None, description="Дата создания профиля")
-    updated_at: Optional[str] = Field(None, description="Дата последнего обновления")
-    last_login: Optional[str] = Field(None, description="Последний вход")
+    created_at: str | None = Field(None, description="Дата создания профиля")
+    updated_at: str | None = Field(None, description="Дата последнего обновления")
+    last_login: str | None = Field(None, description="Последний вход")
 
 
 class AccountStatusOut(Schema):

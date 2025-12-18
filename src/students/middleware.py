@@ -19,7 +19,8 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any, Callable, Dict
+from collections.abc import Callable
+from typing import Any
 
 from django.conf import settings
 from django.core.cache import cache
@@ -439,7 +440,7 @@ def cache_key_versioning(user_id: str | int, version: str = "v1") -> str:
     return f"{version}_{user_id}"
 
 
-def get_cache_settings() -> Dict[str, Any]:
+def get_cache_settings() -> dict[str, Any]:
     """
     Возвращает рекомендуемые настройки Redis для кэширования прогресса обучения.
 
@@ -466,7 +467,7 @@ def get_cache_settings() -> Dict[str, Any]:
     }
 
 
-def cache_context_processor(request: HttpRequest) -> Dict[str, Any]:
+def cache_context_processor(request: HttpRequest) -> dict[str, Any]:
     """
     Контекстный процессор для передачи статистики кэша в шаблоны (только DEBUG).
 

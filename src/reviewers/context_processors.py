@@ -22,14 +22,14 @@ Reviewers Context Processors - Процессоры контекста для re
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest
 
 from .models import LessonSubmission, ReviewerNotification
 
 
-def reviewers_context(request: HttpRequest) -> Dict[str, Any]:
+def reviewers_context(request: HttpRequest) -> dict[str, Any]:
     """
     Добавляет контекст для reviewers приложения.
 
