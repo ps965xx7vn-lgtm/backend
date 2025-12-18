@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# Poetry
+poetry.lock
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+/static
+dump.rdb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Tests
+tests/
+test_*.py
+*_test.py
+conftest.py
+pytest.ini
+.coverage
+htmlcov/
+
+# Development files
+.env
+.env.local
+.env.*.local
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile.dev
+
+# Node (если используется для фронтенда)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+.cache/
+
+# Logs
+logs/
+*.log
+
+# OS
+Thumbs.db
+.DS_Store

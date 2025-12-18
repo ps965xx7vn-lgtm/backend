@@ -1,0 +1,142 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: pyland-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pyland}
+      POSTGRES_USER: ${POSTGRES_USER:-pyland_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pyland_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pyland_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pyland-network
+
+  # Redis Cache & Broker
+  redis:
+    image: redis:7-alpine
+    container_name: pyland-redis
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pyland-network
+
+  # Django Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pyland-web
+    command: >
+      sh -c "
+        python manage.py migrate --noinput &&
+        python manage.py create_roles &&
+        python manage.py collectstatic --noinput &&
+        gunicorn pyland.wsgi:application
+          --bind 0.0.0.0:8000
+          --workers 2
+          --reload
+          --access-logfile -
+          --error-logfile -
+      "
+    environment:
+      DEBUG: ${DEBUG:-True}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pyland_user}:${POSTGRES_PASSWORD:-pyland_password}@postgres:5432/${POSTGRES_DB:-pyland}
+      REDIS_URL: redis://redis:6379/0
+      ALLOWED_HOSTS: localhost,127.0.0.1,web
+      CSRF_TRUSTED_ORIGINS: http://localhost:8000,http://127.0.0.1:8000
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    volumes:
+      - ./src:/app/src
+      - media_files:/app/media
+      - static_files:/app/static
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - pyland-network
+    restart: unless-stopped
+
+  # Celery Worker
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pyland-celery-worker
+    command: celery -A pyland worker -l info --concurrency=2
+    environment:
+      DEBUG: ${DEBUG:-True}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pyland_user}:${POSTGRES_PASSWORD:-pyland_password}@postgres:5432/${POSTGRES_DB:-pyland}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - pyland-network
+    restart: unless-stopped
+
+  # Celery Beat (Periodic Tasks)
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pyland-celery-beat
+    command: celery -A pyland beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    environment:
+      DEBUG: ${DEBUG:-True}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pyland_user}:${POSTGRES_PASSWORD:-pyland_password}@postgres:5432/${POSTGRES_DB:-pyland}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - pyland-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  media_files:
+    driver: local
+  static_files:
+    driver: local
+
+networks:
+  pyland-network:
+    driver: bridge

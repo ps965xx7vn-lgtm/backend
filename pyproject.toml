@@ -32,7 +32,8 @@ dependencies = [
     "django-taggit (>=6.1.0,<7.0.0)",
     "djangorestframework (>=3.16.1,<4.0.0)",
     "sentry-sdk[django] (>=2.43.0,<3.0.0)",
-    "psycopg[binary] (>=3.2.0,<4.0.0)"
+    "psycopg[binary] (>=3.2.0,<4.0.0)",
+    "gunicorn (>=23.0.0,<24.0.0)"
 ]
 
 [build-system]

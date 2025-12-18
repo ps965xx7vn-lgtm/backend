@@ -44,6 +44,7 @@ from managers.models import Feedback
 from notifications.models import Subscription
 
 from .cache_utils import cache_contact_info, cache_stats
+from .health import health_check, readiness_check
 from .schemas import (
     ContactInfoSchema,
     FeedbackResponseSchema,
@@ -336,3 +337,37 @@ def get_platform_stats(request):
             total_hours=0.0,
             completion_rate=0.0,
         )
+
+
+# === Health Check Endpoints для Kubernetes ===
+
+
+@router.get("/health/", auth=None, include_in_schema=False)
+def health_endpoint(request):
+    """
+    Базовая проверка здоровья (liveness probe).
+    Используется Kubernetes для проверки что под жив.
+
+    Returns:
+        dict: Базовый статус приложения
+    """
+    result = health_check()
+    return result
+
+
+@router.get("/readiness/", auth=None, include_in_schema=False)
+def readiness_endpoint(request):
+    """
+    Проверка готовности к обработке запросов (readiness probe).
+    Проверяет все критичные зависимости (БД, Redis).
+
+    Returns:
+        dict: Полный статус приложения и зависимостей
+    """
+    result = readiness_check()
+    status_code = 200 if result.get("ready", False) else 503
+
+    # Для Ninja можно вернуть tuple (data, status_code)
+    if status_code != 200:
+        return result, status_code
+    return result
