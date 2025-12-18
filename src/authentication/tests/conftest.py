@@ -6,9 +6,7 @@ Pytest fixtures для тестов authentication.
 
 import pytest
 from django.contrib.auth import get_user_model
-from ninja.testing import TestClient
 
-from authentication.api import auth_router
 from authentication.models import Role
 
 User = get_user_model()
@@ -29,10 +27,8 @@ def create_roles(db):
         Role.objects.get_or_create(name=name, defaults={"description": description})
 
 
-@pytest.fixture(scope="session")
-def api_client():
-    """Клиент для тестирования API."""
-    return TestClient(auth_router)
+# Используется api_client из root conftest (TestClient(api))
+# Authentication tests должны использовать пути /api/auth/*
 
 
 @pytest.fixture

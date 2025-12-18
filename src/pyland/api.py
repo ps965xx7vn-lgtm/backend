@@ -38,45 +38,66 @@ from reviewers.api import router as reviews_router
 from students.api import router as account_router
 from support.api import router as support_router
 
-api = NinjaAPI(
-    title="Pyland School API",
-    version="1.0.0",
-    description="API для онлайн‑школы Pyland",
-    auth=JWTAuth(),
-    urls_namespace="pyland_api",
-)
-
-# Аутентификация и регистрация
-api.add_router("/auth/", auth_router)
-
-# Управление профилями студентов
-api.add_router("/students/", account_router)
-
-# Основные модули приложения
-api.add_router("/blog/", blog_router)
-api.add_router("/certificates/", certificates_router)
-api.add_router("/core/", core_router)
-api.add_router("/courses/", courses_router)
-api.add_router("/managers/", manager_router)  # Admin-only endpoints
-api.add_router("/mentors/", mentors_router)
-api.add_router("/notifications/", notifications_router)
-api.add_router("/payments/", payments_router)
-api.add_router("/reviews/", reviews_router)
-api.add_router("/support/", support_router)
+# Глобальная переменная для хранения единственного экземпляра API
+_api_instance = None
 
 
-@api.get("/ping", auth=None)
-def ping(request):
+def get_api():
     """
-    Health check эндпоинт.
+    Возвращает singleton инстанс NinjaAPI.
 
-    Публичный эндпоинт для проверки доступности API.
-
-    Returns:
-        dict: {"ping": "pong"}
-
-    Example:
-        GET /api/ping
-        Response: {"ping": "pong"}
+    Используется для предотвращения создания множественных экземпляров API.
     """
-    return {"ping": "pong"}
+    global _api_instance
+
+    if _api_instance is not None:
+        return _api_instance
+
+    api_instance = NinjaAPI(
+        title="Pyland School API",
+        version="1.0.0",
+        description="API для онлайн‑школы Pyland",
+        auth=JWTAuth(),
+        urls_namespace="pyland_api",
+    )
+
+    # Аутентификация и регистрация
+    api_instance.add_router("/auth/", auth_router)
+
+    # Управление профилями студентов
+    api_instance.add_router("/students/", account_router)
+
+    # Основные модули приложения
+    api_instance.add_router("/blog/", blog_router)
+    api_instance.add_router("/certificates/", certificates_router)
+    api_instance.add_router("/core/", core_router)
+    api_instance.add_router("/courses/", courses_router)
+    api_instance.add_router("/managers/", manager_router)  # Admin-only endpoints
+    api_instance.add_router("/mentors/", mentors_router)
+    api_instance.add_router("/notifications/", notifications_router)
+    api_instance.add_router("/payments/", payments_router)
+    api_instance.add_router("/reviews/", reviews_router)
+    api_instance.add_router("/support/", support_router)
+
+    @api_instance.get("/ping", auth=None)
+    def ping(request):
+        """
+        Health check эндпоинт.
+
+        Публичный эндпоинт для проверки доступности API.
+
+        Returns:
+            dict: {"ping": "pong"}
+
+        Example:
+            GET /api/ping
+            Response: {"ping": "pong"}
+        """
+        return {"ping": "pong"}
+
+    _api_instance = api_instance
+    return _api_instance
+
+
+# Создаем API при первом импорте модуля
+api = get_api()

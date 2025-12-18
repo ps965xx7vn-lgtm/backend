@@ -38,7 +38,7 @@ def get_cache_key(prefix: str, *args, **kwargs) -> str:
         params_str = json.dumps({"args": args, "kwargs": sorted(kwargs.items())}, sort_keys=True)
 
         # Хешируем для короткого ключа
-        params_hash = hashlib.md5(params_str.encode()).hexdigest()[:12]
+        params_hash = hashlib.md5(params_str.encode(), usedforsecurity=False).hexdigest()[:12]
 
         return f"core:{prefix}:{params_hash}"
     except Exception as e:
@@ -75,7 +75,6 @@ def cache_page_data(timeout: int = None, key_prefix: str = "page"):
                 # Пытаемся получить из кеша
                 cached_data = cache.get(cache_key)
                 if cached_data is not None:
-
                     return cached_data
 
                 # Вызываем функцию и кешируем результат
@@ -160,7 +159,7 @@ def warm_cache():
         from courses.models import Lesson
 
         stats = {
-            "students": Student.objects.filter(roles__name="student").distinct().count(),
+            "students": Student.objects.filter(user__role__name="student").distinct().count(),
             "courses": Course.objects.count(),
             "lessons": Lesson.objects.count(),
         }

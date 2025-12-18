@@ -44,14 +44,25 @@ def staff_user(db):
     Returns:
         User: Staff пользователь
     """
-    return User.objects.create_user(
+    from authentication.models import Role
+
+    # Создаем или получаем роль manager
+    manager_role, _ = Role.objects.get_or_create(
+        name="manager", defaults={"description": "Manager role"}
+    )
+
+    user = User.objects.create_user(
         username="staffuser",
         email="staff@example.com",
         password="staffpass123",
         first_name="Staff",
         last_name="User",
         is_staff=True,
+        is_superuser=True,  # Superuser имеет все права
     )
+    user.role = manager_role
+    user.save()
+    return user
 
 
 @pytest.fixture
@@ -104,15 +115,8 @@ def client():
     return Client()
 
 
-@pytest.fixture
-def api_client():
-    """
-    Django REST Framework API client.
-
-    Returns:
-        APIClient: DRF API client
-    """
-    return APIClient()
+# Удалена фикстура api_client - используется session-scope фикстура из root conftest.py
+# которая возвращает TestClient(api) для всего проекта
 
 
 @pytest.fixture

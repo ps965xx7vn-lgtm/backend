@@ -38,7 +38,7 @@ class TestRegisterAPI:
             "role": "student",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
         data = response.json()
@@ -66,7 +66,7 @@ class TestRegisterAPI:
             "role": "mentor",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
 
@@ -86,7 +86,7 @@ class TestRegisterAPI:
             "role": "reviewer",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
         user = User.objects.get(email="newreviewer@example.com")
@@ -104,7 +104,7 @@ class TestRegisterAPI:
             "role": "manager",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
         user = User.objects.get(email="newmanager@example.com")
@@ -122,7 +122,7 @@ class TestRegisterAPI:
             "role": "admin",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
         user = User.objects.get(email="newadmin@example.com")
@@ -141,7 +141,7 @@ class TestRegisterAPI:
             "role": "support",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
         user = User.objects.get(email="newsupport@example.com")
@@ -158,7 +158,7 @@ class TestRegisterAPI:
             "last_name": "User",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
         user = User.objects.get(email="default@example.com")
@@ -175,7 +175,7 @@ class TestRegisterAPI:
             "role": "student",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         # Pydantic validation возвращает 422
         assert response.status_code == 422
@@ -193,7 +193,7 @@ class TestRegisterAPI:
             "role": "student",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 400
 
@@ -208,7 +208,7 @@ class TestRegisterAPI:
             "role": "student",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 422  # Ошибка валидации Pydantic
 
@@ -237,7 +237,7 @@ class TestLoginAPI:
 
         payload = {"email": "testuser@example.com", "password": "TestPass123!"}
 
-        response = api_client.post("/login", json=payload)
+        response = api_client.post("/auth/login", json=payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -254,7 +254,7 @@ class TestLoginAPI:
 
         payload = {"email": "testuser@example.com", "password": "WrongPassword!"}
 
-        response = api_client.post("/login", json=payload)
+        response = api_client.post("/auth/login", json=payload)
 
         assert response.status_code == 401
 
@@ -263,7 +263,7 @@ class TestLoginAPI:
         """Ошибка при попытке входа несуществующего пользователя."""
         payload = {"email": "nonexistent@example.com", "password": "TestPass123!"}
 
-        response = api_client.post("/login", json=payload)
+        response = api_client.post("/auth/login", json=payload)
 
         assert response.status_code == 401
 
@@ -276,7 +276,7 @@ class TestLoginAPI:
 
         payload = {"email": inactive_user.email, "password": "TestPass123!"}
 
-        response = api_client.post("/login", json=payload)
+        response = api_client.post("/auth/login", json=payload)
 
         assert response.status_code == 401
 
@@ -290,7 +290,7 @@ class TestProfileAPI:
         token = jwt_token
 
         # Получаем профиль
-        response = api_client.get("/profile", headers={"Authorization": f"Bearer {token}"})
+        response = api_client.get("/auth/profile", headers={"Authorization": f"Bearer {token}"})
 
         assert response.status_code == 200
         data = response.json()
@@ -300,7 +300,7 @@ class TestProfileAPI:
 
     def test_get_profile_without_auth(self, api_client):
         """Ошибка при получении профиля без аутентификации."""
-        response = api_client.get("/profile")
+        response = api_client.get("/auth/profile")
 
         assert response.status_code == 401
 
@@ -319,7 +319,7 @@ class TestProfileAPI:
         }
 
         response = api_client.patch(
-            "/profile", json=payload, headers={"Authorization": f"Bearer {token}"}
+            "/auth/profile", json=payload, headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 200
@@ -346,13 +346,15 @@ class TestPasswordChangeAPI:
         }
 
         response = api_client.post(
-            "/password/change", json=payload, headers={"Authorization": f"Bearer {token}"}
+            "/auth/password/change", json=payload, headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 200
 
         # Проверяем, что можем войти с новым паролем
-        response = api_client.post("/login", json={"email": user.email, "password": "NewPass123!"})
+        response = api_client.post(
+            "/auth/login", json={"email": user.email, "password": "NewPass123!"}
+        )
         assert response.status_code == 200
 
     def test_change_password_wrong_old_password(self, api_client, user, jwt_token):
@@ -366,7 +368,7 @@ class TestPasswordChangeAPI:
         }
 
         response = api_client.post(
-            "/password/change", json=payload, headers={"Authorization": f"Bearer {token}"}
+            "/auth/password/change", json=payload, headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 400
@@ -382,7 +384,7 @@ class TestPasswordChangeAPI:
         }
 
         response = api_client.post(
-            "/password/change", json=payload, headers={"Authorization": f"Bearer {token}"}
+            "/auth/password/change", json=payload, headers={"Authorization": f"Bearer {token}"}
         )
 
         # Pydantic validation возвращает 422
@@ -397,7 +399,7 @@ class TestPasswordResetAPI:
         """Запрос сброса пароля."""
         payload = {"email": user.email}
 
-        response = api_client.post("/password/reset", json=payload)
+        response = api_client.post("/auth/password/reset", json=payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -412,7 +414,9 @@ class TestEmailVerificationAPI:
         """Отправка письма верификации."""
         token = jwt_token
 
-        response = api_client.post("/email/resend", headers={"Authorization": f"Bearer {token}"})
+        response = api_client.post(
+            "/auth/email/resend", headers={"Authorization": f"Bearer {token}"}
+        )
 
         assert response.status_code == 200
         data = response.json()
@@ -427,7 +431,9 @@ class TestLogoutAPI:
     def test_logout_success(self, api_client, user):
         """Успешный выход."""
         # Логинимся чтобы получить refresh token
-        response = api_client.post("/login", json={"email": user.email, "password": "TestPass123!"})
+        response = api_client.post(
+            "/auth/login", json={"email": user.email, "password": "TestPass123!"}
+        )
         tokens = response.json()["tokens"]
         token = tokens["access"]
         refresh = tokens["refresh"]

@@ -235,8 +235,8 @@ class TestPlatformStatsAPI:
             user = django_user_model.objects.create_user(
                 username=f"student{i}", email=f"student{i}@test.com", password="testpass123"
             )
-            profile = Student.objects.get(user=user)
-            profile.roles.add(student_role)
+            user.role = student_role
+            user.save()
 
         # Создаем 2 курса
         Course.objects.create(name="Python Basics", slug="python-basics")
@@ -281,11 +281,11 @@ class TestAPIIntegration:
     def test_full_user_journey(self, api_client):
         """Тест полного пути пользователя через API."""
         # 1. Получаем контактную информацию
-        contact_response = api_client.get("/core/contact-info/")
+        contact_response = api_client.get("/contact-info/")
         assert contact_response.status_code == 200
 
         # 2. Получаем статистику платформы
-        stats_response = api_client.get("/core/stats/")
+        stats_response = api_client.get("/stats/")
         assert stats_response.status_code == 200
 
         # 3. Подписываемся на рассылку

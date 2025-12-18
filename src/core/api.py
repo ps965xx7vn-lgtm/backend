@@ -94,7 +94,9 @@ def get_cached_stats():
     stats = {}
 
     try:
-        stats["total_students"] = Student.objects.filter(roles__name="student").distinct().count()
+        stats["total_students"] = (
+            Student.objects.filter(user__role__name="student").distinct().count()
+        )
     except Exception as e:
         logger.error(f"Ошибка при подсчете студентов: {e}")
         stats["total_students"] = 0
@@ -157,8 +159,7 @@ def create_feedback(request, data: FeedbackSchema):
         )
 
         logger.info(
-            f"API: Создана заявка обратной связи #{feedback.id} "
-            f"от {data.email} ({data.first_name})"
+            f"API: Создана заявка обратной связи #{feedback.id} от {data.email} ({data.first_name})"
         )
 
         return FeedbackResponseSchema(
