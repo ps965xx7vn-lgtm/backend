@@ -28,7 +28,7 @@ from __future__ import annotations
 
 import functools
 import logging
-from typing import Callable, List, Optional
+from collections.abc import Callable
 
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect
@@ -100,7 +100,7 @@ def has_permission(user, permission: str) -> bool:
         return False
 
 
-def get_user_role(user) -> Optional[str]:
+def get_user_role(user) -> str | None:
     """
     Получает текущую роль пользователя.
 
@@ -131,7 +131,7 @@ def get_user_role(user) -> Optional[str]:
 
 
 def require_role(
-    role_name: str, *, api_response: bool = False, redirect_url: Optional[str] = None
+    role_name: str, *, api_response: bool = False, redirect_url: str | None = None
 ) -> Callable:
     """
     Декоратор для проверки наличия конкретной роли.
@@ -207,7 +207,7 @@ def require_role(
 
 
 def require_any_role(
-    role_names: List[str], *, api_response: bool = False, redirect_url: Optional[str] = None
+    role_names: list[str], *, api_response: bool = False, redirect_url: str | None = None
 ) -> Callable:
     """
     Декоратор для проверки наличия хотя бы одной из ролей.
@@ -286,7 +286,7 @@ def require_any_role(
 
 
 def require_permission(
-    permission: str, *, api_response: bool = False, redirect_url: Optional[str] = None
+    permission: str, *, api_response: bool = False, redirect_url: str | None = None
 ) -> Callable:
     """
     Декоратор для проверки наличия Django permission.
@@ -358,7 +358,7 @@ def require_permission(
 
 
 def require_any_permission(
-    permissions: List[str], *, api_response: bool = False, redirect_url: Optional[str] = None
+    permissions: list[str], *, api_response: bool = False, redirect_url: str | None = None
 ) -> Callable:
     """
     Декоратор для проверки наличия хотя бы одного из permissions.
@@ -444,7 +444,7 @@ def require_role_and_permission(
     permission: str,
     *,
     api_response: bool = False,
-    redirect_url: Optional[str] = None,
+    redirect_url: str | None = None,
 ) -> Callable:
     """
     Декоратор для проверки роли И permission одновременно.

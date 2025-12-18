@@ -89,7 +89,7 @@ def validate_user_password(password: str, user: AbstractUser = None) -> None:
     try:
         validate_password(password, user=user)
     except DjangoValidationError as e:
-        raise HttpError(400, "; ".join(e.messages))
+        raise HttpError(400, "; ".join(e.messages)) from e
 
 
 def serialize_user(user: AbstractUser) -> dict:
