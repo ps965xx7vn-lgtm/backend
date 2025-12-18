@@ -52,7 +52,7 @@ class TestPingEndpoint:
 
     def test_ping_success(self, authenticated_api_client):
         """Тест health check."""
-        response = authenticated_api_client.get("/blog/ping")
+        response = authenticated_api_client.get("/api/blog/ping")
 
         assert response.status_code == 200
         data = response.json()
@@ -257,7 +257,7 @@ class TestArticleDetailEndpoint:
         """Тест получения деталей статьи."""
         article = ArticleFactory(slug="test-article", title="Test Article", status="published")
 
-        response = api_client.get(f"/api/blog/articles/{article.slug}")
+        response = api_client.get(f"/blog/articles/{article.slug}")
 
         assert response.status_code == 200
         data = response.json()
@@ -278,7 +278,7 @@ class TestArticleDetailEndpoint:
         series = SeriesFactory(title="Test Series")
         article = ArticleFactory(series=series, series_order=1, status="published")
 
-        response = api_client.get(f"/api/blog/articles/{article.slug}")
+        response = api_client.get(f"/blog/articles/{article.slug}")
 
         assert response.status_code == 200
         data = response.json()
@@ -313,7 +313,7 @@ class TestCategoriesEndpoints:
         category = CategoryFactory(slug="python", name="Python")
         ArticleFactory.create_batch(3, category=category, status="published")
 
-        response = api_client.get(f"/api/blog/categories/{category.slug}")
+        response = api_client.get(f"/blog/categories/{category.slug}")
 
         assert response.status_code == 200
         data = response.json()
@@ -385,7 +385,7 @@ class TestSeriesEndpoints:
         series = SeriesFactory(slug="python-basics")
         ArticleFactory.create_batch(3, series=series, status="published")
 
-        response = api_client.get(f"/api/blog/series/{series.slug}")
+        response = api_client.get(f"/blog/series/{series.slug}")
 
         assert response.status_code == 200
         data = response.json()
@@ -524,7 +524,7 @@ class TestAPIIntegration:
         # 3. Получаем детали первой статьи
         article_slug = articles[0]["slug"]
 
-        response = api_client.get(f"/api/blog/articles/{article_slug}")
+        response = api_client.get(f"/blog/articles/{article_slug}")
         assert response.status_code == 200
         article_detail = response.json()
         assert article_detail["slug"] == article_slug

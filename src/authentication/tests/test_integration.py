@@ -32,7 +32,7 @@ class TestCompleteRegistrationFlow:
             "role": "student",
         }
 
-        response = api_client.post("/register", json=payload)
+        response = api_client.post("/auth/register", json=payload)
 
         assert response.status_code == 201
         data = response.json()
@@ -43,7 +43,9 @@ class TestCompleteRegistrationFlow:
         access_token = data["tokens"]["access"]
 
         # Шаг 2: Получаем профиль с токеном
-        response = api_client.get("/profile", headers={"Authorization": f"Bearer {access_token}"})
+        response = api_client.get(
+            "/auth/profile", headers={"Authorization": f"Bearer {access_token}"}
+        )
 
         assert response.status_code == 200
         profile_data = response.json()
@@ -80,7 +82,7 @@ class TestCompleteRegistrationFlow:
                 "role": role_name,
             }
 
-            response = api_client.post("/register", json=payload)
+            response = api_client.post("/auth/register", json=payload)
 
             assert response.status_code == 201
 
@@ -107,7 +109,7 @@ class TestCompleteLoginLogoutFlow:
         # Шаг 1: Вход
         login_payload = {"email": "test@example.com", "password": "TestPass123!"}
 
-        response = api_client.post("/login", json=login_payload)
+        response = api_client.post("/auth/login", json=login_payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -115,7 +117,9 @@ class TestCompleteLoginLogoutFlow:
         refresh_token = data["tokens"]["refresh"]
 
         # Шаг 2: Работа с аутентифицированным API
-        response = api_client.get("/profile", headers={"Authorization": f"Bearer {access_token}"})
+        response = api_client.get(
+            "/auth/profile", headers={"Authorization": f"Bearer {access_token}"}
+        )
 
         assert response.status_code == 200
 
@@ -202,7 +206,9 @@ class TestCompleteProfileUpdateFlow:
         access_token = response.json()["tokens"]["access"]
 
         # Получаем текущий профиль
-        response = api_client.get("/profile", headers={"Authorization": f"Bearer {access_token}"})
+        response = api_client.get(
+            "/auth/profile", headers={"Authorization": f"Bearer {access_token}"}
+        )
 
         assert response.status_code == 200
         original_data = response.json()

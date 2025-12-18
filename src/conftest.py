@@ -7,8 +7,6 @@
 import pytest
 from ninja.testing import TestClient
 
-from pyland.api import api
-
 
 @pytest.fixture(scope="session")
 def api_client():
@@ -18,4 +16,6 @@ def api_client():
     Создается один раз для всей тестовой сессии, чтобы избежать
     ошибки "Already registered: pyland_api" от Django Ninja.
     """
+    from pyland.api import api
+
     return TestClient(api)
