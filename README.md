@@ -89,50 +89,184 @@ main         - Production-ready код (защищена, только PR)
        └── feature/* - Фичи/фиксы (короткоживущие)
 ```
 
-### Как работать с ветками
+### ⚠️ ВАЖНО: НЕ переключайтесь вручную между ветками!
 
-**1. Создание новой фичи:**
+**Используй Pull Requests через GitHub UI, а не ручной merge!**
+
+---
+
+## 📋 Полный Workflow (шаг за шагом)
+
+### Этап 1: Разработка новой фичи
+
 ```bash
-# Переключиться на develop
+# 1. Убедись что на develop
 git checkout develop
 git pull origin develop
 
-# Создать feature ветку
-git checkout -b feature/my-new-feature
+# 2. Создай feature ветку
+git checkout -b feature/add-user-profile
 
-# Работа над фичей
+# 3. Разработка (локально или Docker)
+poetry shell && cd src
+python manage.py runserver
+
+# 4. Коммиты по ходу работы
 git add .
-git commit -m "feat: add new feature"
-git push origin feature/my-new-feature
+git commit -m "feat: add user profile page"
+git commit -m "feat: add profile edit form"
+
+# 5. Залей на GitHub
+git push origin feature/add-user-profile
 ```
 
-**2. Pull Request → develop:**
-- GitHub Actions запускает CI (тесты, линтинг, security checks)
-- Code review от команды
-- Merge в `develop` после проверки
+### Этап 2: Pull Request в develop (через GitHub UI)
 
-**3. Release → main:**
+1. **Открой GitHub:** https://github.com/your-repo/backend
+2. **Создай Pull Request:**
+   - Source: `feature/add-user-profile`
+   - Target: `develop`
+   - Добавь описание изменений
+
+3. **GitHub Actions автоматически:**
+   - ✅ Запустит тесты (pytest)
+   - ✅ Проверит линтинг (ruff, black)
+   - ✅ Проверит security (bandit)
+   - ✅ Покажет coverage
+
+4. **Если CI прошел:**
+   - ✅ Зелёная галочка в PR
+   - 👀 Code review (опционально)
+   - 🔀 Нажми "Merge Pull Request"
+   - 🗑️ Удали feature ветку (GitHub предложит)
+
+5. **Если CI упал:**
+   - ❌ Красный крестик
+   - 🔍 Посмотри логи в Actions
+   - 🛠️ Исправь локально:
+     ```bash
+     git add .
+     git commit -m "fix: resolve test failures"
+     git push origin feature/add-user-profile
+     ```
+   - CI запустится заново автоматически
+
+### Этап 3: Тестирование на develop (опционально)
+
+После merge в `develop` можешь протестировать:
+
 ```bash
-# После тестирования на develop
+# Переключись на develop
+git checkout develop
+git pull origin develop
+
+# Запусти локально или в Docker
+docker-compose up -d
+
+# Проверь что всё работает
+curl http://localhost:8000/api/health/
+```
+
+**Или** задеплой на dev окружение (когда настроим k8s).
+
+### Этап 4: Release в main (через GitHub UI)
+
+Когда накопились фичи и готов релиз:
+
+1. **Создай Pull Request на GitHub:**
+   - Source: `develop`
+   - Target: `main`
+   - Название: "Release v1.2.0"
+   - Опиши все изменения (changelog)
+
+2. **GitHub Actions запустит полный CI:**
+   - ✅ Все тесты
+   - ✅ Security checks
+   - ✅ Coverage upload
+   - ✅ Documentation checks
+
+3. **После проверки:**
+   - 🔀 Merge в `main` через UI
+   - 🏷️ Создай Git tag:
+     ```bash
+     git checkout main
+     git pull origin main
+     git tag -a v1.2.0 -m "Release 1.2.0: User profiles, bug fixes"
+     git push origin v1.2.0
+     ```
+
+4. **Production deploy:**
+   - Пока вручную (позже автоматизируем через GitHub Actions)
+   - К этому моменту `main` уже протестирован дважды (в feature PR и в develop)
+
+---
+
+## 🚫 Что НЕ делать
+
+❌ **НЕ делай `git merge` вручную:**
+```bash
+# ❌ ПЛОХО - пропускает CI и code review
 git checkout main
 git merge develop
-git tag -a v1.0.0 -m "Release 1.0.0"
-git push origin main --tags
+git push origin main
 ```
 
-### CI/CD на разных ветках
+✅ **Используй Pull Request:**
+- Открой PR: `develop` → `main`
+- CI проверит автоматически
+- Merge через GitHub UI
 
-| Ветка | Триггер | Что запускается | Результат |
-|-------|---------|-----------------|-----------|
-| `feature/*` | Push | ❌ Не запускается | Локальная разработка |
-| `develop` | Push/PR | ✅ CI (тесты + линтинг) | Проверка перед merge |
-| `main` | Push/PR | ✅ CI + Security + Docs | Production checks |
+❌ **НЕ пушь напрямую в main:**
+```bash
+# ❌ ПЛОХО - нарушает защиту ветки
+git checkout main
+git commit -m "quick fix"
+git push origin main  # Будет отклонен если настроена защита
+```
 
-**CI включает:**
-- ✅ Тесты (pytest): 134 passed, 9 skipped
-- ✅ Линтинг (ruff, black, isort)
-- ✅ Security (bandit, safety)
-- ✅ Coverage upload (Codecov)
+✅ **Создай feature ветку даже для hotfix:**
+```bash
+git checkout -b hotfix/critical-bug
+git commit -m "fix: critical security issue"
+git push origin hotfix/critical-bug
+# Открой PR в GitHub
+```
+
+---
+
+## 🔄 Краткая шпаргалка
+
+| Действие | Команда/Где |
+|----------|-------------|
+| Новая фича | `git checkout -b feature/name` от `develop` |
+| Залить код | `git push origin feature/name` |
+| **Merge фичи в develop** | **GitHub UI → Pull Request** |
+| Проверить develop | `git checkout develop && git pull` |
+| **Release в main** | **GitHub UI → Pull Request (develop → main)** |
+| Создать tag | `git tag -a v1.0.0 && git push origin v1.0.0` |
+
+**Главное правило:** Весь код попадает в `develop` и `main` только через Pull Requests!
+
+### 🤖 Как работает CI/CD
+
+| Ветка | Когда запускается CI | Что проверяет |
+|-------|---------------------|---------------|
+| `feature/*` | При push | ❌ НЕ запускается (только локально) |
+| `develop` | При **Pull Request** | ✅ Тесты + Линтинг + Security |
+| `main` | При **Pull Request** | ✅ Полный CI + Coverage + Docs |
+
+**Что делает CI автоматически:**
+- ✅ `pytest` - запускает 134 теста
+- ✅ `ruff` + `black` + `isort` - проверяет форматирование
+- ✅ `bandit` + `safety` - security сканирование
+- ✅ `codecov` - загружает coverage отчет
+
+**CI показывает результат прямо в Pull Request:**
+- 🟢 Зелёная галочка = всё ОК, можно мержить
+- 🔴 Красный крестик = есть ошибки, нужно исправить
+- 🟡 Жёлтый кружок = CI ещё работает, подожди
+
+**Важно:** CI запускается **автоматически** при создании/обновлении PR. Тебе ничего не нужно запускать вручную!
 
 ---
 
