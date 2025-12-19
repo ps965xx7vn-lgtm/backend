@@ -186,13 +186,13 @@ Closes #123"
    git push origin feature/your-feature-name
    ```
 
-2. **Создайте PR на GitHub:**
+1. **Создайте PR на GitHub:**
    - Понятный title (как коммит)
    - Подробное описание изменений
    - Ссылки на связанные issues
    - Screenshots/GIFs если UI изменения
 
-3. **PR Template:**
+2. **PR Template:**
 
    ```markdown
 
@@ -538,7 +538,7 @@ class Item(Model):
    git push origin v1.0.0
    ```
 
-4. **GitHub Release** с описанием изменений
+1. **GitHub Release** с описанием изменений
 
 ## Получение Помощи
 

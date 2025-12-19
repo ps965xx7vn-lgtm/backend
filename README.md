@@ -5,9 +5,11 @@
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![Django 5.2](https://img.shields.io/badge/django-5.2-green.svg)](https://www.djangoproject.com/)
 
-Django 5.2 онлайн школа программирования с многоролевой системой пользователей.
+Django 5.2 онлайн школа программирования с многоролевой системой
+пользователей.
 
-**Стек:** Django 5.2 + Django Ninja (REST API) · Python 3.13 · PostgreSQL · Redis · Celery · Docker
+**Стек:** Django 5.2 + Django Ninja (REST API) · Python 3.13 ·
+PostgreSQL · Redis · Celery · Docker
 
 ---
 

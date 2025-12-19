@@ -43,7 +43,7 @@ STUDENTS_RATE_LIMIT_ANONYMOUS = 100       # запросов в час
 
 - Добавляет HTTP headers с информацией о лимитах:
 
-  ```
+  ```text
   X-RateLimit-Limit: 1000
   X-RateLimit-Remaining: 995
   X-RateLimit-Reset: 1704067200

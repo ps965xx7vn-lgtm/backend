@@ -687,7 +687,7 @@ your_app/
        return Item.objects.create(**payload.dict())
    ```
 
-3. **Test** in `your_app/tests/test_api.py`:
+1. **Test** in `your_app/tests/test_api.py`:
 
    ```python
    def test_create_item_api(api_client):
@@ -695,7 +695,7 @@ your_app/
        assert response.status_code == 201
    ```
 
-4. Router auto-added to main API in `/pyland/api.py`
+2. Router auto-added to main API in `/pyland/api.py`
 
 ### Adding a Celery Task
 
