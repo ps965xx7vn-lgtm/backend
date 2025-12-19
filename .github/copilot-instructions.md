@@ -2,9 +2,13 @@
 
 ## Project Overview
 
-**Pyland** is a Django 5.2 online school platform with multi-role user system (students, mentors, reviewers, managers). It uses **Django Ninja** for REST APIs, **Redis** for caching, **Celery** for async tasks, and **PostgreSQL** as primary database.
+**Pyland** is a Django 5.2 online school platform with multi-role user system
+(students, mentors, reviewers, managers). It uses **Django Ninja** for REST
+APIs, **Redis** for caching, **Celery** for async tasks, and **PostgreSQL**
+as primary database.
 
 **Key Technologies:**
+
 - Django 5.2 + Django Ninja (OpenAPI-compliant REST)
 - Python 3.13+, pytest-django for testing
 - JWT authentication via `ninja-jwt`
@@ -14,8 +18,12 @@
 - **Poetry** for dependency management (Python 3.13+)
 
 **Dependencies:**
-- Production: Django 5.2.3, Ninja 1.4.3, Pydantic 2.11.7, Celery 5.5.3, Redis 6.4.0+, Pillow, django-countries, phonenumber-field, django-taggit, loguru, social-auth-app-django, sentry-sdk
-- Development: pytest, pytest-django, factory-boy, pytest-cov, pytest-xdist, freezegun
+
+- Production: Django 5.2.3, Ninja 1.4.3, Pydantic 2.11.7, Celery 5.5.3,
+  Redis 6.4.0+, Pillow, django-countries, phonenumber-field,
+  django-taggit, loguru, social-auth-app-django, sentry-sdk
+- Development: pytest, pytest-django, factory-boy, pytest-cov,
+  pytest-xdist, freezegun
 
 ---
 
@@ -27,17 +35,17 @@ The project uses a **modular app architecture** with clear separation of concern
 
 | App | Purpose | Key Pattern |
 |-----|---------|------------|
-| `authentication/` | User models, JWT auth, email verification, Student + Reviewer profiles | Custom User extending AbstractUser with single Role FK |
-| `core/` | Homepage, public pages, global context | Context processors for footer data, SEO |
-| `students/` | Student dashboard, account management, courses progress | Dashboard views + caching |
-| `courses/` | Course/lesson/step structure, submissions | Hierarchical with LessonSubmission model |
-| `blog/` | Articles, comments, reactions | Full caching + nested comments (3 levels max) |
-| `managers/` | Admin dashboard, feedback, system logs | Rate limiting middleware + admin-only endpoints |
-| `reviewers/` | Review workflow for submissions | Reviewer + Review + StudentImprovement models |
-| `certificates/` | Course completion certificates | Generated on course finish |
-| `mentors/` | Mentor profiles, mentoring connections | Bridge between reviewers and students |
-| `payments/` | Payment processing, course purchases | Payment model with status tracking |
-| `notifications/` | Email/SMS/Telegram notifications | Celery async task handlers |
+| `authentication/` | User models, JWT auth, email verification | Custom User with Role FK |
+| `core/` | Homepage, public pages, global context | Context processors for SEO |
+| `students/` | Student dashboard, courses progress | Dashboard views + caching |
+| `courses/` | Course/lesson/step structure | Hierarchical model |
+| `blog/` | Articles, comments, reactions | Full caching + nested comments |
+| `managers/` | Admin dashboard, feedback, logs | Rate limiting middleware |
+| `reviewers/` | Review workflow for submissions | Review + Improvement models |
+| `certificates/` | Course completion certificates | Generated on finish |
+| `mentors/` | Mentor profiles, connections | Bridge reviewers & students |
+| `payments/` | Payment processing, purchases | Payment status tracking |
+| `notifications/` | Email/SMS/Telegram | Celery async handlers |
 | `support/` | Support tickets, user support system | Ticket tracking and resolution |
 
 **URL Routing** (`urls.py`):
@@ -452,12 +460,12 @@ class ArticleAdmin(admin.ModelAdmin):
 
 ### **Reviewers App**
 - **Purpose:** Review workflow for student submissions with modern architecture
-- **Models:** 
+- **Models:**
   - `Reviewer` (from authentication.models) - reviewer profile with expertise, courses, is_active, statistics
   - `Review` - review of submission with status/rating/comments/time_spent
   - `StudentImprovement` - specific improvements for submission with priority
   - `ReviewerNotification` - notifications about new submissions
-- **Decorators:** 
+- **Decorators:**
   - `active_reviewer_required` - checks reviewer is_active=True
   - `can_review_course` - validates course access
   - `max_reviews_per_day_check` - enforces daily review limit
@@ -647,13 +655,13 @@ Example:
 def process_user_data(user_id: int) -> dict:
     """
     Обрабатывает данные пользователя и кэширует результат.
-    
+
     Args:
         user_id: ID пользователя
-        
+
     Returns:
         dict: Обработанные данные
-        
+
     Raises:
         User.DoesNotExist: Если пользователь не найден
     """
