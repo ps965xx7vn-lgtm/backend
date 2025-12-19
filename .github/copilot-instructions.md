@@ -468,23 +468,30 @@ class ArticleAdmin(admin.ModelAdmin):
 ## Specialized Apps Details
 
 ### **Students App**
+
 - **Purpose:** Account management, profile editing, personal dashboard
 - **Key Models:** User profile extended via `authentication/Profile`
-- **API Endpoints:** Registration, login, profile get/update, token management, avatar upload
-- **Middleware:** `StudentsRateLimitMiddleware` (1000 req/hour for auth, 100 for anon)
+- **API Endpoints:** Registration, login, profile get/update,
+  token management, avatar upload
+- **Middleware:** `StudentsRateLimitMiddleware`
+  (1000 req/hour for auth, 100 for anon)
 - **Schemas:** `RegisterIn`, `LoginIn`, `ProfileOut`, `NotificationSettingsOut`
 
 ### **Courses App**
+
 - **Hierarchy:** Course → Lesson → Step → (Tip/ExtraSource)
-- **Submissions:** `LessonSubmission` model tracks student submissions with status workflow
+- **Submissions:** `LessonSubmission` model tracks student submissions
+  with status workflow
 - **Status Workflow:** pending → changes_requested → approved
 - **Caching:** Progress cached per student per course
 - **Key Endpoints:** List/get courses, create lessons/steps, manage submissions
 
 ### **Reviewers App**
+
 - **Purpose:** Review workflow for student submissions with modern architecture
 - **Models:**
-  - `Reviewer` (from authentication.models) - reviewer profile with expertise, courses, is_active, statistics
+  - `Reviewer` (from authentication.models) - reviewer profile with
+    expertise, courses, is_active, statistics
   - `Review` - review of submission with status/rating/comments/time_spent
   - `StudentImprovement` - specific improvements for submission with priority
   - `ReviewerNotification` - notifications about new submissions
