@@ -40,6 +40,9 @@ services:
 
   # Django Web Application
   web:
+    # Используйте либо готовый образ из Docker Hub (закомментируйте build)
+    # image: username/pyland-backend:latest
+    # Либо локальную сборку (закомментируйте image)
     build:
       context: .
       dockerfile: Dockerfile

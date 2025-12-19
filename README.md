@@ -1,6 +1,7 @@
 # Pyland Backend
 
 [![codecov](https://codecov.io/gh/ps965xx7vn-lgtm/backend/branch/main/graph/badge.svg)](https://codecov.io/gh/ps965xx7vn-lgtm/backend)
+[![Docker Hub](https://img.shields.io/docker/pulls/username/pyland-backend.svg)](https://hub.docker.com/r/username/pyland-backend)
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![Django 5.2](https://img.shields.io/badge/django-5.2-green.svg)](https://www.djangoproject.com/)
 
@@ -14,31 +15,44 @@ PostgreSQL · Redis · Celery · Docker
 
 ## 🚀 Быстрый старт
 
-### Вариант 1: Docker (рекомендуется)
+### Вариант 1: Docker Hub (самый быстрый)
 
 ```bash
+# Pull готового образа из Docker Hub
+docker pull username/pyland-backend:latest
 
-# Запуск всех сервисов (web + postgres + redis + celery)
-
+# Запуск с docker-compose (образ из Docker Hub)
+# Создайте docker-compose.yml или используйте существующий
 docker-compose up -d
 
 # Создание суперпользователя
-
 docker-compose exec web python manage.py createsuperuser
 
 # Открыть: <http://localhost:8000>
+```
 
-```text
-### Вариант 2: Локально (без Docker)
+> 📦 См. [DOCKER_HUB_SETUP.md](DOCKER_HUB_SETUP.md) для подробной
+> документации по Docker Hub
+
+### Вариант 2: Docker (локальная сборка)
 
 ```bash
+# Запуск всех сервисов (web + postgres + redis + celery)
+docker-compose up -d
 
+# Создание суперпользователя
+docker-compose exec web python manage.py createsuperuser
+
+# Открыть: <http://localhost:8000>
+```
+
+### Вариант 3: Локально (без Docker)
+
+```bash
 # 1. Установка зависимостей
-
 poetry install
 
 # 2. Активация virtualenv
-
 poetry shell
 cd src
 
