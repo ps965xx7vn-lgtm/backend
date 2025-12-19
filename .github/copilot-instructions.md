@@ -87,7 +87,8 @@ in `schemas.py` per app.
 
 - **Primary DB:** PostgreSQL (via `dj-database-url`)
 - **Models:** Django ORM with `get_user_model()` for User everywhere
-- **Migrations:** Per-app under `migrations/` (apply with `python manage.py migrate`)
+- **Migrations:** Per-app under `migrations/`
+  (apply with `python manage.py migrate`)
 - **Fixtures:** Use `conftest.py` + Factory Boy factories (see Testing section)
 
 **User Model Location:** `authentication/models.py`
@@ -499,18 +500,24 @@ class ArticleAdmin(admin.ModelAdmin):
   - `active_reviewer_required` - checks reviewer is_active=True
   - `can_review_course` - validates course access
   - `max_reviews_per_day_check` - enforces daily review limit
-- **Forms:** ReviewForm, ReviewerProfileForm, SubmissionFilterForm, StudentImprovementForm (full validation + clean methods)
-- **Views:** dashboard_view, submissions_list_view, submission_review_view, settings_view, api_pending_count
-- **URLs:** Simple structure like students app: dashboard/, submissions/, submissions/<id>/, settings/, api/pending-count/
+- **Forms:** ReviewForm, ReviewerProfileForm, SubmissionFilterForm,
+  StudentImprovementForm (full validation + clean methods)
+- **Views:** dashboard_view, submissions_list_view,
+  submission_review_view, settings_view, api_pending_count
+- **URLs:** Simple structure like students app: dashboard/,
+  submissions/, submissions/ID/, settings/, api/pending-count/
 - **Caching:** get_reviewer_stats (10min TTL), invalidate_reviewer_cache pattern
 - **Statuses:** approved / needs_work / rejected
-- **Access Control:** @require_any_role(['reviewer', 'mentor']) + custom decorators
-- **Review Process:** GET form → POST validation → update submission status → invalidate cache → redirect
+- **Access Control:** @require_any_role(['reviewer', 'mentor']) +
+  custom decorators
+- **Review Process:** GET form → POST validation →
+  update submission status → invalidate cache → redirect
 
 ### **Blog App**
 
 - **Features:** 149 unit tests, Redis caching, nested comments (max 3 levels)
-- **Models:** Category, Article, Series, Comment, Reaction, Bookmark, ReadingProgress, Newsletter
+- **Models:** Category, Article, Series, Comment, Reaction, Bookmark,
+  ReadingProgress, Newsletter
 - **Markdown Support:** Articles stored as markdown, rendered with `django-markdownify`
 - **Reactions:** Like, love, helpful, insightful, amazing types
 - **SEO:** Meta-tags, schema.org, Open Graph, sitemap generation
@@ -536,7 +543,8 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Channels:** Email (primary), SMS (via Twilio), Telegram (via bot)
 - **Tasks:** Async Celery tasks for sending
 - **Settings:** Per-user notification preferences in Profile
-- **Types:** course_updates, lesson_reminders, achievement_alerts, weekly_summary
+- **Types:** course_updates, lesson_reminders, achievement_alerts,
+  weekly_summary
 
 ### **Certificates App**
 
@@ -562,7 +570,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
 For **new features**, follow this structure:
 
-```
+```text
 your_app/
 ├── models.py           # Django models
 ├── schemas.py          # Pydantic schemas (API I/O)
@@ -592,13 +600,16 @@ your_app/
 
 1. **Define Pydantic schema** in `your_app/schemas.py`
 2. **Add route** in `your_app/api.py`:
+
    ```python
    @router.post("/endpoint/", response=ResponseSchema)
    def create_item(request, payload: CreatePayload):
        # Validation auto-handled by Pydantic
        return Item.objects.create(**payload.dict())
    ```
+
 3. **Test** in `your_app/tests/test_api.py`:
+
    ```python
    def test_create_item_api(api_client):
        response = api_client.post("/api/your_app/endpoint/", json={...})
