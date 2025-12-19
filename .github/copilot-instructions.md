@@ -148,7 +148,8 @@ poetry shell
 cd src
 
 # Setup roles and initial data
-python manage.py create_roles              # Create user roles (student, mentor, reviewer, manager, admin, support)
+# Create user roles (student, mentor, reviewer, manager, admin, support)
+python manage.py create_roles
 
 # Populate database with test data
 python manage.py populate_courses_data     # Create 10 test courses with data
@@ -220,6 +221,7 @@ poetry run pytest --cov=blog --cov-report=html
 ```
 
 **Test Configuration:** `pytest.ini` defines:
+
 - `DJANGO_SETTINGS_MODULE = pyland.settings`
 - Auto-discovers files matching `test_*.py` or `*_tests.py`
 - Markers: `@pytest.mark.slow`, `@pytest.mark.integration`, `@pytest.mark.api`, `@pytest.mark.unit`
@@ -278,6 +280,7 @@ poetry run celery -A pyland worker -B -l info
 ```
 
 **Task definition pattern:**
+
 ```python
 from celery import shared_task
 
@@ -299,6 +302,7 @@ def send_email_notification(self, user_id):
 ### 1. **Caching (Redis-backed)**
 
 **Cache Utils Pattern:**
+
 ```python
 # blog/cache_utils.py - exemplary implementation
 from django.core.cache import cache
@@ -306,7 +310,8 @@ from django.core.cache import cache
 def get_cache_key(prefix, *args, **kwargs):
     """Generate unique key from prefix + args."""
     params_str = json.dumps({'args': args, 'kwargs': sorted(kwargs.items())})
-    params_hash = hashlib.md5(params_str.encode()).hexdigest()[:12]
+    hash_obj = hashlib.md5(params_str.encode())
+    params_hash = hash_obj.hexdigest()[:12]
     return f"{prefix}:{params_hash}"
 
 @cache_page_data(timeout=300, key_prefix='article_list')
@@ -320,6 +325,7 @@ def get_articles(category=None, page=1):
 ### 2. **Logging (Loguru + Django logger)**
 
 Every module should import logger:
+
 ```python
 import logging
 logger = logging.getLogger(__name__)
@@ -354,6 +360,7 @@ def do_something(request, payload: Schema):
 **Factories Location:** `tests/factories.py` per app.
 
 **Standard test file structure:**
+
 ```python
 # blog/tests/test_models.py
 @pytest.mark.django_db
@@ -377,17 +384,20 @@ def test_list_articles_api(api_client, article):
 ```
 
 **Key Factories (in `blog/tests/factories.py`):**
+
 - `UserFactory`, `StaffUserFactory`, `SuperUserFactory`
 - `CategoryFactory`, `ArticleFactory`, `DraftArticleFactory`
 - `CommentFactory`, `ReactionFactory`, `BookmarkFactory`
 
 **Clients Available:**
+
 - `api_client = TestClient(api)` — from `ninja.testing`
 - `authenticated_client = client` with `client.force_login(user)`
 
 ### 5. **Pydantic Schemas (Input/Output Validation)**
 
 Located in `schemas.py` per app:
+
 ```python
 from pydantic import BaseModel, EmailStr
 
