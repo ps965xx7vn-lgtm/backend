@@ -20,16 +20,23 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Установка Poetry
+ENV POETRY_VERSION=1.8.2 \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_CREATE=false
+
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    ln -s /opt/poetry/bin/poetry /usr/local/bin/poetry
+
 # Рабочая директория
 WORKDIR /app
 
 # Копирование файлов зависимостей
-COPY pyproject.toml ./
+COPY pyproject.toml poetry.lock README.md ./
 
-# Установка зависимостей (без dev-группы)
-# Используем pip с поддержкой PEP 621
-RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir .
+# Установка только production-зависимостей через Poetry
+RUN poetry install --only main --no-root --no-interaction --no-ansi
 
 # Stage 2: Production - минимальный образ
 FROM python:3.13-slim AS production
