@@ -29,8 +29,6 @@
 
 ### 1. Настройка Окружения
 
-См. подробности в [DEVELOPMENT.md](DEVELOPMENT.md)
-
 ```bash
 
 # Копируем .env
@@ -544,7 +542,7 @@ class Item(Model):
 
 - **GitHub Issues** - для багов и feature requests
 - **GitHub Discussions** - для вопросов
-- **Documentation** - см. README.md, DEVELOPMENT.md, ARCHITECTURE.md
+- **Documentation** - см. README.md, ARCHITECTURE.md
 
 ## Code of Conduct
 

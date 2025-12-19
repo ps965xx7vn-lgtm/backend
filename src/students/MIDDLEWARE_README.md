@@ -13,14 +13,14 @@
 
 ## StudentsRateLimitMiddleware
 
-### Назначение
+### Назначение RateLimitMiddleware
 
 Защищает студентские endpoints (`/students/*`) от злоупотреблений, ограничивая количество запросов:
 
 - **Аутентифицированные пользователи**: 1000 запросов/час
 - **Анонимные пользователи**: 100 запросов/час
 
-### Конфигурация
+### Конфигурация RateLimitMiddleware
 
 ```python
 
@@ -76,11 +76,11 @@ STUDENTS_RATE_LIMIT_ANONYMOUS = 100       # запросов в час
 
 ## StudentsSecurityHeadersMiddleware
 
-### Назначение
+### Назначение SecurityHeadersMiddleware
 
 Добавляет security headers для защиты студентской зоны от XSS, clickjacking, MIME-sniffing и других атак.
 
-### Конфигурация
+### Конфигурация SecurityHeadersMiddleware
 
 ```python
 
@@ -148,11 +148,11 @@ STUDENTS_CSP_POLICY = (
 
 ## ProgressCacheMiddleware
 
-### Назначение
+### Назначение ProgressCacheMiddleware
 
 Добавляет HTTP headers с информацией о кэше в DEBUG режиме для мониторинга производительности.
 
-### Конфигурация
+### Конфигурация ProgressCacheMiddleware
 
 ```python
 
@@ -188,11 +188,11 @@ X-Cache-Performance: 0.123s
 
 ## CacheHitCounterMiddleware
 
-### Назначение
+### Назначение CacheHitCounterMiddleware
 
 Подсчитывает и логирует попадания/промахи кэша для аналитики производительности.
 
-### Конфигурация
+### Конфигурация CacheHitCounterMiddleware
 
 ```python
 

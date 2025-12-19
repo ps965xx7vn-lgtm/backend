@@ -7,20 +7,6 @@
 - **[Templates README](templates/README.md)** - HTML шаблоны и их структура
 - **[Template Tags README](templatetags/README.md)** - Custom template tags и фильтры
 - **[Tests README](tests/README.md)** - Юнит тесты и coverage (53 теста)
-- **[API README](CORE_API_README.md)** - Детальная документация REST API
-
-## 📋 Содержание
-
-- [Обзор](#обзор)
-- [Структура приложения](#структура-приложения)
-- [API эндпоинты](#api-эндпоинты)
-- [Представления (Views)](#представления-views)
-- [Формы](#формы)
-- [Схемы (Pydantic)](#схемы-pydantic)
-- [Context Processors](#context-processors)
-- [Template Tags](#template-tags)
-- [Тестирование](#тестирование)
-- [Использование](#использование)
 
 ## 🎯 Обзор
 
@@ -1199,7 +1185,6 @@ def create_feedback(request, data: FeedbackSchema):
 - [Templates README](templates/README.md) - HTML шаблоны (5 страниц)
 - [Template Tags README](templatetags/README.md) - Custom tags (2 модуля)
 - [Tests README](tests/README.md) - Юнит тесты (53 теста)
-- [API README](CORE_API_README.md) - REST API (4 эндпоинта)
 
 **Static файлы:**
 
