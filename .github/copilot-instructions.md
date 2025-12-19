@@ -320,7 +320,8 @@ def get_articles(category=None, page=1):
     return articles
 ```
 
-**Convention:** Prefix caches with app name (`blog:`, `students:`, etc.). Fallback to dummy cache if Redis unavailable.
+**Convention:** Prefix caches with app name (`blog:`, `students:`, etc.).
+Fallback to dummy cache if Redis unavailable.
 
 ### 2. **Logging (Loguru + Django logger)**
 
@@ -421,6 +422,7 @@ class CreateArticlePayload(BaseModel):
 ### 6. **Admin Customization**
 
 Located in `admin.py` per app, extends Django `ModelAdmin`:
+
 ```python
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
@@ -436,23 +438,27 @@ class ArticleAdmin(admin.ModelAdmin):
 ## Integration Points & Data Flows
 
 ### 1. **Authentication Flow**
+
 - User registers → `authentication.views.SignUpView` or `/api/auth/register`
 - Email verification signal in `authentication.signals.py`
 - JWT tokens via `ninja-jwt` at `/api/auth/token/`
 - Profile auto-created via Django signal on User creation
 
 ### 2. **Student Progress Tracking**
+
 - Student enrolls in course → `students/models.py` stores enrollment
 - Progress updates async via Celery → cached in Redis
 - Dashboard reads from `students.views.DashboardView` + cache
 
 ### 3. **Blog Publishing Workflow**
+
 - Create article (draft) → `blog.models.Article` (status='draft')
 - Publish → update status to 'published', cache invalidates
 - Readers fetch from cached list → count views via signal
 - Comments trigger email notification tasks (Celery)
 
 ### 4. **Role-Based Access**
+
 - Middleware/decorators check `request.user.profile.roles.all()`
 - Manager endpoints in `/managers/api.py` check `is_staff=True`
 - Rate limiting applied to sensitive endpoints via `middleware.py`
