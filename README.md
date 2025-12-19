@@ -549,6 +549,35 @@ SENTRY_DSN=<https://...>
 
 ---
 
+## � Docker Hub Integration
+
+Проект автоматически публикуется в Docker Hub при каждом коммите в `main`.
+
+### Быстрая настройка
+
+1. **Создайте Docker Hub Access Token:**
+   - Войдите в [Docker Hub](https://hub.docker.com/)
+   - Settings → Security → New Access Token
+   - Скопируйте токен
+
+2. **Добавьте GitHub Secrets:**
+   - Откройте Settings → Secrets and variables → Actions
+   - Добавьте `DOCKERHUB_USERNAME` (ваш username)
+   - Добавьте `DOCKERHUB_TOKEN` (токен из шага 1)
+
+3. **Обновите имя образа:**
+   - Замените `username` на ваш Docker Hub username в файлах:
+     - `.github/workflows/docker-publish.yml`
+     - `docker-compose.prod.yml`
+     - `README.md`
+
+**Готово!** При следующем push в `main` образ автоматически соберется и
+опубликуется.
+
+📦 **Подробная документация:** [DOCKER_HUB_SETUP.md](DOCKER_HUB_SETUP.md)
+
+---
+
 ## 📄 Лицензия
 
 MIT License - см. LICENSE файл
