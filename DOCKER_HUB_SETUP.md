@@ -24,12 +24,14 @@
 2. Перейдите в **Settings** → **Secrets and variables** → **Actions**
 3. Нажмите **New repository secret** и добавьте:
 
-**DOCKERHUB_USERNAME**
+#### DOCKERHUB_USERNAME
+
 ```text
 Ваш username в Docker Hub (например: myusername)
 ```
 
-**DOCKERHUB_TOKEN**
+#### DOCKERHUB_TOKEN
+
 ```text
 Access token, созданный на предыдущем шаге
 ```
@@ -134,12 +136,14 @@ volumes:
 ## Мультиплатформенная поддержка
 
 Образ собирается для:
+
 - `linux/amd64` (Intel/AMD процессоры)
 - `linux/arm64` (Apple Silicon, Raspberry Pi, и др.)
 
 ## Кэширование
 
 Workflow использует Docker layer caching для ускорения сборки:
+
 - Кэш сохраняется в Docker Hub с тегом `buildcache`
 - Последующие сборки используют закэшированные слои
 - Значительно ускоряет повторные сборки
@@ -168,6 +172,7 @@ docker inspect username/pyland-backend:latest | jq '.[0].Config.Labels'
 ```
 
 Доступные labels:
+
 - `org.opencontainers.image.created` - дата сборки
 - `org.opencontainers.image.revision` - Git SHA коммита
 - `org.opencontainers.image.version` - версия
@@ -180,6 +185,7 @@ docker inspect username/pyland-backend:latest | jq '.[0].Config.Labels'
 **Проблема:** Неверные credentials для Docker Hub
 
 **Решение:**
+
 1. Проверьте корректность `DOCKERHUB_USERNAME`
 2. Убедитесь, что `DOCKERHUB_TOKEN` не истек
 3. Пересоздайте Access Token в Docker Hub
@@ -189,6 +195,7 @@ docker inspect username/pyland-backend:latest | jq '.[0].Config.Labels'
 **Проблема:** Недостаточно прав у токена
 
 **Решение:**
+
 1. Создайте новый Access Token с правами **Read, Write, Delete**
 2. Обновите `DOCKERHUB_TOKEN` в GitHub Secrets
 
@@ -197,6 +204,7 @@ docker inspect username/pyland-backend:latest | jq '.[0].Config.Labels'
 **Проблема:** Сборка занимает много времени
 
 **Решение:**
+
 1. Проверьте, что кэширование работает (смотрите логи сборки)
 2. Убедитесь, что `.dockerignore` настроен правильно
 3. Оптимизируйте Dockerfile (группируйте команды RUN)
@@ -206,6 +214,7 @@ docker inspect username/pyland-backend:latest | jq '.[0].Config.Labels'
 **Проблема:** Workflow завершился успешно, но образа нет
 
 **Решение:**
+
 1. Проверьте имя репозитория (`DOCKERHUB_USERNAME/pyland-backend`)
 2. Убедитесь, что репозиторий существует в Docker Hub
 3. Проверьте логи шага "Build and push Docker image"

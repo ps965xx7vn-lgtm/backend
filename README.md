@@ -1,7 +1,6 @@
 # Pyland Backend
 
 [![codecov](https://codecov.io/gh/ps965xx7vn-lgtm/backend/branch/main/graph/badge.svg)](https://codecov.io/gh/ps965xx7vn-lgtm/backend)
-[![Docker Hub](https://img.shields.io/docker/pulls/username/pyland-backend.svg)](https://hub.docker.com/r/username/pyland-backend)
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![Django 5.2](https://img.shields.io/badge/django-5.2-green.svg)](https://www.djangoproject.com/)
 
