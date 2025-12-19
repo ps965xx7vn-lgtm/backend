@@ -35,7 +35,7 @@ The project uses a **modular app architecture** with clear separation of concern
 
 | App | Purpose | Key Pattern |
 |-----|---------|------------|
-| `authentication/` | User models, JWT auth, email verification | Custom User with Role FK |
+| `authentication/` | User models, JWT auth | Custom User Role FK |
 | `core/` | Homepage, public pages, global context | Context processors for SEO |
 | `students/` | Student dashboard, courses progress | Dashboard views + caching |
 | `courses/` | Course/lesson/step structure | Hierarchical model |
@@ -46,22 +46,25 @@ The project uses a **modular app architecture** with clear separation of concern
 | `mentors/` | Mentor profiles, connections | Bridge reviewers & students |
 | `payments/` | Payment processing, purchases | Payment status tracking |
 | `notifications/` | Email/SMS/Telegram | Celery async handlers |
-| `support/` | Support tickets, user support system | Ticket tracking and resolution |
+| `support/` | Support tickets | Ticket tracking |
 
 **URL Routing** (`urls.py`):
-- API routes: `path('api/', api.urls)` → combines all app routers via `NinjaAPI`
-- i18n patterns wrap traditional Django views with locale prefixes
+
+- API routes: `path('api/', api.urls)` → all app routers
+- i18n patterns wrap Django views with locale prefixes
 - Supports 3 languages: Russian (ru), English (en), Georgian (ka)
 
 ### 2. **API Architecture (Django Ninja)**
 
 **Central Registry:** `/src/pyland/api.py`
+
 - Aggregates routers from all apps
 - Single `NinjaAPI` instance with JWT auth
 - Health check: `GET /api/ping` (no auth required)
 
 **Router Pattern:**
 Each app has `api.py` with a router:
+
 ```python
 # Example: blog/api.py
 router = Router(tags=["Blog"])
@@ -77,7 +80,8 @@ def add_reaction(request, id: int, payload: ReactionPayload):
     pass
 ```
 
-**Key Pattern:** Request/response validation via Pydantic schemas defined in `schemas.py` per app.
+**Key Pattern:** Request/response validation via Pydantic schemas
+in `schemas.py` per app.
 
 ### 3. **Database & ORM**
 
@@ -87,6 +91,7 @@ def add_reaction(request, id: int, payload: ReactionPayload):
 - **Fixtures:** Use `conftest.py` + Factory Boy factories (see Testing section)
 
 **User Model Location:** `authentication/models.py`
+
 - Custom User extends `AbstractUser`, email is unique identifier
 - **Role System:** Each user has ONE role via ForeignKey (not M2M)
   - Available roles: student, mentor, reviewer, manager, admin, support
@@ -129,9 +134,11 @@ poetry export -f requirements.txt --output requirements.txt
 ```
 
 **Poetry Configuration:** `pyproject.toml`
+
 - Python version constraint: `>=3.13,<4.0`
 - Project name: `pyland`
-- Dev dependencies group: pytest, pytest-django, factory-boy, pytest-cov, pytest-xdist, freezegun
+- Dev dependencies: pytest, pytest-django, factory-boy,
+  pytest-cov, pytest-xdist, freezegun
 
 ### Popular Management Commands
 
