@@ -2,10 +2,12 @@
 
 ## Обзор
 
-Модуль `students.middleware` содержит четыре middleware компонента для защиты, мониторинга и оптимизации студентских endpoints:
+Модуль `students.middleware` содержит четыре middleware компонента для
+защиты, мониторинга и оптимизации студентских endpoints:
 
 1. **StudentsRateLimitMiddleware** - защита от злоупотреблений через rate limiting
-2. **StudentsSecurityHeadersMiddleware** - добавление security headers для защиты от XSS и других атак
+2. **StudentsSecurityHeadersMiddleware** - добавление security headers для
+   защиты от XSS и других атак
 3. **ProgressCacheMiddleware** - мониторинг производительности кэша (debug режим)
 4. **CacheHitCounterMiddleware** - подсчет попаданий/промахов кэша для аналитики
 
@@ -15,7 +17,8 @@
 
 ### Назначение RateLimitMiddleware
 
-Защищает студентские endpoints (`/students/*`) от злоупотреблений, ограничивая количество запросов:
+Защищает студентские endpoints (`/students/*`) от злоупотреблений,
+ограничивая количество запросов:
 
 - **Аутентифицированные пользователи**: 1000 запросов/час
 - **Анонимные пользователи**: 100 запросов/час
@@ -70,7 +73,8 @@ STUDENTS_RATE_LIMIT_ANONYMOUS = 100       # запросов в час
 
 ### Хранилище
 
-Использует Redis для хранения счетчиков с автоматическим TTL. Если Redis недоступен, middleware gracefully degrade (пропускает запросы).
+Использует Redis для хранения счетчиков с автоматическим TTL. Если Redis
+недоступен, middleware gracefully degrade (пропускает запросы).
 
 ---
 
@@ -78,7 +82,8 @@ STUDENTS_RATE_LIMIT_ANONYMOUS = 100       # запросов в час
 
 ### Назначение SecurityHeadersMiddleware
 
-Добавляет security headers для защиты студентской зоны от XSS, clickjacking, MIME-sniffing и других атак.
+Добавляет security headers для защиты студентской зоны от XSS,
+clickjacking, MIME-sniffing и других атак.
 
 ### Конфигурация SecurityHeadersMiddleware
 
