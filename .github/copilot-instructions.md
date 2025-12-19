@@ -508,6 +508,7 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Review Process:** GET form → POST validation → update submission status → invalidate cache → redirect
 
 ### **Blog App**
+
 - **Features:** 149 unit tests, Redis caching, nested comments (max 3 levels)
 - **Models:** Category, Article, Series, Comment, Reaction, Bookmark, ReadingProgress, Newsletter
 - **Markdown Support:** Articles stored as markdown, rendered with `django-markdownify`
@@ -515,6 +516,7 @@ class ArticleAdmin(admin.ModelAdmin):
 - **SEO:** Meta-tags, schema.org, Open Graph, sitemap generation
 
 ### **Managers App**
+
 - **Dashboard:** Feedback management, system logs, platform statistics
 - **Models:** Feedback, SystemLog
 - **Rate Limiting:** 50 req/hour for operations
@@ -522,6 +524,7 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Logging:** All actions logged with timestamps, user, action type
 
 ### **Payments App**
+
 - **Model:** Payment with user, course, amount, status
 - **Status:** pending / completed / failed / cancelled
 - **Methods:** Credit card, bank transfer, PayPal, etc.
@@ -529,22 +532,26 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Views:** Purchase view for course checkout
 
 ### **Notifications App**
+
 - **Channels:** Email (primary), SMS (via Twilio), Telegram (via bot)
 - **Tasks:** Async Celery tasks for sending
 - **Settings:** Per-user notification preferences in Profile
 - **Types:** course_updates, lesson_reminders, achievement_alerts, weekly_summary
 
 ### **Certificates App**
+
 - **Trigger:** Auto-generated when course completion % >= 100
 - **Fields:** Student, course, completion date, certificate number
 - **Format:** PDF export with student name, course, completion date
 
 ### **Mentors App**
+
 - **Profile:** Mentor with expertise areas, available courses
 - **Connection:** Many-to-many between mentors and students
 - **Review Rights:** Mentors can review submissions in assigned courses
 
 ### **Support App**
+
 - **Ticket System:** User creates support tickets
 - **Status:** open / in_progress / resolved / closed
 - **Assignment:** Auto-assigned or manually assigned to support team
