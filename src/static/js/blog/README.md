@@ -814,9 +814,9 @@ const throttledProgress = throttle(updateProgress, 1000);
    <script src="{% static 'js/blog/article-detail.js' %}"></script>
    ```
 
-5. **Подключите файл**: `<script src="{% static 'js/blog/...' %}" defer></script>`
-6. **Удалите inline**: удалите `<script>` блок из шаблона
-7. **Скопируйте в staticfiles**: `python manage.py collectstatic`
+1. **Подключите файл**: `<script src="{% static 'js/blog/...' %}" defer></script>`
+2. **Удалите inline**: удалите `<script>` блок из шаблона
+3. **Скопируйте в staticfiles**: `python manage.py collectstatic`
 
 ### Отладка
 
