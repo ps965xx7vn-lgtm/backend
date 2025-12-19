@@ -10,14 +10,9 @@ LABEL description="Pyland Online School Backend"
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    POETRY_VERSION=1.8.2 \
-    POETRY_HOME="/opt/poetry" \
-    POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    POETRY_VIRTUALENVS_CREATE=true
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Системные зависимости
+# Системные зависимости для сборки
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -25,18 +20,16 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Установка Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 - && \
-    ln -s /opt/poetry/bin/poetry /usr/local/bin/poetry
-
 # Рабочая директория
 WORKDIR /app
 
 # Копирование файлов зависимостей
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml ./
 
-# Установка зависимостей (без dev)
-RUN poetry install --only main --no-root --no-interaction --no-ansi
+# Установка зависимостей (без dev-группы)
+# Используем pip с поддержкой PEP 621
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir .
 
 # Stage 2: Production - минимальный образ
 FROM python:3.13-slim AS production
@@ -44,7 +37,6 @@ FROM python:3.13-slim AS production
 # Переменные окружения
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PATH="/app/.venv/bin:$PATH" \
     DJANGO_SETTINGS_MODULE=pyland.settings
 
 # Системные зависимости (только runtime)
@@ -58,8 +50,9 @@ RUN apt-get update && apt-get install -y \
 # Рабочая директория
 WORKDIR /app
 
-# Копирование virtualenv из builder
-COPY --from=builder /app/.venv /app/.venv
+# Копирование Python-пакетов из builder
+COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Копирование кода приложения
 COPY --chown=pyland:pyland ./src /app/src
