@@ -20,23 +20,18 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Установка Poetry
-ENV POETRY_VERSION=1.8.2 \
-    POETRY_HOME="/opt/poetry" \
-    POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_CREATE=false
-
-RUN curl -sSL https://install.python-poetry.org | python3 - && \
-    ln -s /opt/poetry/bin/poetry /usr/local/bin/poetry
+# Обновление pip и установка инструментов сборки
+RUN pip install --upgrade pip setuptools wheel
 
 # Рабочая директория
 WORKDIR /app
 
-# Копирование файлов зависимостей
-COPY pyproject.toml poetry.lock README.md ./
+# Копирование файлов проекта для установки зависимостей
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
 
-# Установка всех зависимостей (Poetry не поддерживает исключение dependency-groups)
-RUN poetry install --no-root --no-interaction --no-ansi
+# Установка зависимостей через pip (PEP 621 формат)
+RUN pip install --no-cache-dir -e .
 
 # Stage 2: Production - минимальный образ
 FROM python:3.13-slim AS production
@@ -62,10 +57,9 @@ COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Копирование кода приложения
-COPY --chown=pyland:pyland ./src /app/src
+COPY --chown=pyland:pyland ./src /app/
 
 # Компиляция переводов
-WORKDIR /app/src
 RUN python manage.py compilemessages || true
 
 # Сбор статики (будет использоваться WhiteNoise)
