@@ -46,8 +46,9 @@ dump.rdb
 .gitignore
 .gitattributes
 
-# Documentation
+# Documentation (но сохраняем README.md для Docker build)
 *.md
+!README.md
 docs/
 
 # CI/CD
