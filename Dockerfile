@@ -35,8 +35,8 @@ WORKDIR /app
 # Копирование файлов зависимостей
 COPY pyproject.toml poetry.lock README.md ./
 
-# Установка только production-зависимостей через Poetry
-RUN poetry install --only main --no-root --no-interaction --no-ansi
+# Установка всех зависимостей (Poetry не поддерживает исключение dependency-groups)
+RUN poetry install --no-root --no-interaction --no-ansi
 
 # Stage 2: Production - минимальный образ
 FROM python:3.13-slim AS production
