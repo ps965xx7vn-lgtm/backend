@@ -19,20 +19,20 @@ HTML шаблоны для приложения блога с поддержко
 
 ### Основные возможности
 
-✅ Адаптивный дизайн (мобильные, планшеты, десктоп)  
-✅ SEO оптимизация (meta tags, Open Graph, Schema.org)  
-✅ Поддержка темной темы  
-✅ AJAX загрузка комментариев и реакций  
-✅ Прогресс-бар чтения статей  
-✅ Бесконечная прокрутка (infinite scroll)  
-✅ Фильтрация и сортировка статей  
-✅ Социальные кнопки Share  
-✅ Markdown рендеринг контента  
-✅ Кастомные template tags  
+✅ Адаптивный дизайн (мобильные, планшеты, десктоп)
+✅ SEO оптимизация (meta tags, Open Graph, Schema.org)
+✅ Поддержка темной темы
+✅ AJAX загрузка комментариев и реакций
+✅ Прогресс-бар чтения статей
+✅ Бесконечная прокрутка (infinite scroll)
+✅ Фильтрация и сортировка статей
+✅ Социальные кнопки Share
+✅ Markdown рендеринг контента
+✅ Кастомные template tags
 
 ## 📁 Структура шаблонов
 
-```
+```text
 templates/blog/
 ├── home.html                    # Главная страница блога
 ├── article_list.html            # Список всех статей (с фильтрами)
@@ -59,17 +59,18 @@ templates/blog/
     ├── breadcrumbs.html         # Хлебные крошки
     ├── pagination.html          # Пагинация
     └── sidebar.html             # Боковая панель
-```
-
+```text
 ## 📄 Основные шаблоны
 
 ### home.html
+
 **Главная страница блога**
 
-**URL**: `/blog/`  
+**URL**: `/blog/`
 **View**: `BlogHomeView`
 
 **Context переменные**:
+
 ```python
 {
     'featured_articles': QuerySet[Article],  # До 6 рекомендованных статей
@@ -84,9 +85,9 @@ templates/blog/
     'page_title': str,                       # "Блог PySchool"
     'meta_description': str,                 # SEO описание
 }
-```
-
+```text
 **Секции**:
+
 1. **Hero секция** - Приветствие и статистика
 2. **Рекомендованные статьи** - Карусель/сетка featured статей
 3. **Последние статьи** - Сетка 3x4 со всеми статьями
@@ -94,6 +95,7 @@ templates/blog/
 5. **Популярные теги** - Облако тегов
 
 **Пример структуры**:
+
 ```html
 {% extends "base.html" %}
 {% load blog_extras %}
@@ -149,26 +151,29 @@ templates/blog/
     <h2>Популярные теги</h2>
     <div class="tags-cloud">
         {% for tag in popular_tags %}
-        <a href="{% url 'blog:tag_detail' tag.slug %}" 
-           class="tag" 
+        <a href="{% url 'blog:tag_detail' tag.slug %}"
+           class="tag"
            style="font-size: {{ tag.usage_count|tag_size }}px">
+
             #{{ tag.name }}
+
         </a>
         {% endfor %}
     </div>
 </section>
 {% endblock %}
-```
-
+```text
 ---
 
 ### article_list.html
+
 **Список всех статей с фильтрами**
 
-**URL**: `/blog/articles/`  
+**URL**: `/blog/articles/`
 **View**: `ArticleListView`
 
 **Context переменные**:
+
 ```python
 {
     'articles': Page[Article],        # Paginated список (12 на страницу)
@@ -178,9 +183,9 @@ templates/blog/
     'current_difficulty': str|None,   # Активный фильтр сложности
     'current_sort': str,              # Сортировка (latest/popular/rated)
 }
-```
-
+```text
 **Фичи**:
+
 - Фильтрация по категориям, сложности, тегам
 - Сортировка: последние / популярные / рейтинговые
 - Пагинация (12 статей на страницу)
@@ -190,12 +195,14 @@ templates/blog/
 ---
 
 ### article_detail.html
+
 **Детальная страница статьи**
 
-**URL**: `/blog/articles/<slug>/`  
+**URL**: `/blog/articles/<slug>/`
 **View**: `ArticleDetailView`
 
 **Context переменные**:
+
 ```python
 {
     'article': Article,                    # Текущая статья
@@ -206,9 +213,9 @@ templates/blog/
     'is_bookmarked': bool,                 # Добавлена ли в закладки
     'reading_progress': int,               # Прогресс чтения (0-100)
 }
-```
-
+```text
 **Секции**:
+
 1. **Header** - Заголовок, мета-информация, breadcrumbs
 2. **Featured Image** - Главное изображение статьи
 3. **Content** - Markdown контент (с подсветкой кода)
@@ -220,6 +227,7 @@ templates/blog/
 9. **Comments** - Система комментариев с вложенностью
 
 **Пример структуры**:
+
 ```html
 {% extends "base.html" %}
 {% load blog_extras %}
@@ -250,7 +258,7 @@ templates/blog/
 <!-- Schema.org JSON-LD -->
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
+  "@context": "<https://schema.org",>
   "@type": "BlogPosting",
   "headline": "{{ article.title }}",
   "image": "{{ article.featured_image.url }}",
@@ -289,9 +297,9 @@ templates/blog/
             </time>
             <span class="reading-time">⏱️ {{ article.reading_time }} мин</span>
         </div>
-        
+
         <h1>{{ article.title }}</h1>
-        
+
         <div class="stats">
             <span>👁️ {{ article.views_count }} просмотров</span>
             <span>💬 {{ article.comments.count }} комментариев</span>
@@ -351,13 +359,13 @@ templates/blog/
 <!-- Comments Section -->
 <section class="comments-section" id="comments">
     <h2>Комментарии ({{ comments.count }})</h2>
-    
+
     {% if user.is_authenticated %}
         {% include "blog/includes/comment_form.html" with form=comment_form article=article %}
     {% else %}
         <p><a href="{% url 'account:login' %}">Войдите</a>, чтобы оставить комментарий</p>
     {% endif %}
-    
+
     <div class="comments-list">
         {% for comment in comments %}
             {% include "blog/includes/comment_item.html" with comment=comment depth=0 %}
@@ -373,122 +381,127 @@ templates/blog/
 document.addEventListener('DOMContentLoaded', function() {
     // Трекинг прогресса чтения
     initReadingProgress({{ article.id }});
-    
+
     // AJAX реакции
     initReactions({{ article.id }});
-    
+
     // AJAX комментарии
     initComments({{ article.id }});
-    
+
     // Автоматическое увеличение просмотров
     incrementViews({{ article.id }});
 });
 </script>
 {% endblock %}
-```
-
+```text
 ---
 
 ### category_detail.html
+
 **Статьи категории**
 
-**URL**: `/blog/categories/<slug>/`  
+**URL**: `/blog/categories/<slug>/`
 **View**: `CategoryDetailView`
 
 **Context**:
+
 ```python
 {
     'category': Category,
     'articles': Page[Article],  # Статьи категории (пагинация)
     'total_articles': int,
 }
-```
-
+```text
 ---
 
 ### series_detail.html
+
 **Статьи серии**
 
-**URL**: `/blog/series/<slug>/`  
+**URL**: `/blog/series/<slug>/`
 **View**: `SeriesDetailView`
 
 **Context**:
+
 ```python
 {
     'series': Series,
     'articles': QuerySet[Article],  # Статьи в порядке публикации
 }
-```
-
+```text
 ---
 
 ### tag_detail.html
+
 **Статьи с тегом**
 
-**URL**: `/blog/tags/<slug>/`  
+**URL**: `/blog/tags/<slug>/`
 **View**: `TagDetailView`
 
 **Context**:
+
 ```python
 {
     'tag': Tag,
     'articles': Page[Article],  # Статьи с тегом (пагинация)
 }
-```
-
+```text
 ---
 
 ### search_results.html
+
 **Результаты поиска**
 
-**URL**: `/blog/search/?q=python`  
+**URL**: `/blog/search/?q=python`
 **View**: `SearchView`
 
 **Context**:
+
 ```python
 {
     'query': str,              # Поисковый запрос
     'results': Page[Article],  # Найденные статьи
     'total_results': int,      # Количество результатов
 }
-```
-
+```text
 ## 🧩 Переиспользуемые компоненты
 
 ### includes/article_card.html
+
 **Карточка статьи для списков**
 
 **Параметры**:
+
 ```python
 {
     'article': Article,
     'featured': bool,  # Большая карточка для featured (optional)
 }
-```
-
+```text
 **Пример использования**:
+
 ```html
 {% include "blog/includes/article_card.html" with article=article featured=True %}
-```
-
+```text
 **Структура**:
+
 ```html
 <div class="article-card {% if featured %}featured{% endif %}">
     <a href="{{ article.get_absolute_url }}">
         {% if article.featured_image %}
         <img src="{{ article.featured_image.url }}" alt="{{ article.title }}">
         {% endif %}
-        
+
         <div class="card-body">
             <div class="meta">
                 <span class="category">{{ article.category.icon }} {{ article.category.name }}</span>
                 <span class="difficulty">{{ article.get_difficulty_display }}</span>
             </div>
-            
+
             <h3>{{ article.title }}</h3>
-            
+
             <p>{{ article.excerpt|truncatewords:30|clean_markdown }}</p>
-            
+
             <div class="footer">
                 <time>{{ article.published_at|date:"d.m.Y" }}</time>
                 <span>⏱️ {{ article.reading_time }} мин</span>
@@ -497,43 +510,44 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </a>
 </div>
-```
-
+```text
 ---
 
 ### includes/comment_item.html
+
 **Отдельный комментарий с вложенностью**
 
 **Параметры**:
+
 ```python
 {
     'comment': Comment,
     'depth': int,  # Уровень вложенности (0, 1, 2)
 }
-```
-
+```text
 **Пример**:
+
 ```html
 {% include "blog/includes/comment_item.html" with comment=comment depth=0 %}
-```
-
+```text
 **Структура** (с рекурсией для вложенности):
+
 ```html
-<div class="comment-item" 
-     data-comment-id="{{ comment.id }}" 
+<div class="comment-item"
+     data-comment-id="{{ comment.id }}"
      style="margin-left: {{ depth|multiply:40 }}px">
-    
+
     <div class="comment-header">
         <img src="{{ comment.author.avatar }}" alt="{{ comment.author.username }}">
         <strong>{{ comment.author.get_full_name|default:comment.author.username }}</strong>
         <time>{{ comment.created_at|timesince }} назад</time>
         {% if comment.is_edited %}<span class="edited">(изменено)</span>{% endif %}
     </div>
-    
+
     <div class="comment-content">
         {{ comment.content|linebreaks }}
     </div>
-    
+
     <div class="comment-actions">
         <button class="like-btn" data-comment-id="{{ comment.id }}">
             👍 {{ comment.likes_count }}
@@ -541,24 +555,24 @@ document.addEventListener('DOMContentLoaded', function() {
         <button class="dislike-btn" data-comment-id="{{ comment.id }}">
             👎 {{ comment.dislikes_count }}
         </button>
-        
+
         {% if user.is_authenticated and comment.can_reply %}
         <button class="reply-btn" data-comment-id="{{ comment.id }}">
             Ответить
         </button>
         {% endif %}
-        
+
         {% if user == comment.author %}
         <button class="edit-btn">Редактировать</button>
         <button class="delete-btn">Удалить</button>
         {% endif %}
     </div>
-    
+
     <!-- Форма ответа (скрыта по умолчанию) -->
     <div class="reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
         {% include "blog/includes/comment_form.html" with parent_id=comment.id %}
     </div>
-    
+
     <!-- Вложенные комментарии (рекурсия) -->
     {% if depth < 2 %}
     <div class="comment-replies">
@@ -568,34 +582,35 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
     {% endif %}
 </div>
-```
-
+```text
 ---
 
 ### includes/reaction_buttons.html
+
 **Кнопки лайк/дизлайк**
 
 **Параметры**:
+
 ```python
 {
     'article': Article,
     'user_reaction': str|None,  # 'like'/'dislike'/None
 }
-```
-
+```text
 **Структура**:
+
 ```html
 <div class="reaction-buttons" data-article-id="{{ article.id }}">
     <button class="btn-like {% if user_reaction == 'like' %}active{% endif %}"
             data-reaction="like">
         👍 <span class="count">{{ article.likes_count }}</span>
     </button>
-    
+
     <button class="btn-dislike {% if user_reaction == 'dislike' %}active{% endif %}"
             data-reaction="dislike">
         👎 <span class="count">{{ article.dislikes_count }}</span>
     </button>
-    
+
     {% if user.is_authenticated %}
     <button class="btn-bookmark {% if is_bookmarked %}active{% endif %}"
             data-article-id="{{ article.id }}">
@@ -603,58 +618,61 @@ document.addEventListener('DOMContentLoaded', function() {
     </button>
     {% endif %}
 </div>
-```
-
+```text
 ---
 
 ### includes/pagination.html
+
 **Пагинация для списков**
 
 **Параметры**:
+
 ```python
 {
     'page_obj': Page,  # Django Page object
 }
-```
-
+```text
 **Пример**:
+
 ```html
 {% if page_obj.has_other_pages %}
     {% include "blog/includes/pagination.html" with page_obj=page_obj %}
 {% endif %}
-```
-
+```text
 ## 🔍 SEO оптимизация
 
 ### Meta теги
+
 Все шаблоны включают:
+
 - `<title>` - Уникальный заголовок
 - `<meta name="description">` - Описание страницы
 - `<meta name="keywords">` - Ключевые слова
 - `<link rel="canonical">` - Канонический URL
 
 ### Open Graph (Facebook, LinkedIn)
+
 ```html
 <meta property="og:title" content="{{ article.title }}">
 <meta property="og:description" content="{{ article.excerpt }}">
 <meta property="og:image" content="{{ article.featured_image.url }}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-```
-
+```text
 ### Twitter Card
+
 ```html
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ article.title }}">
 <meta name="twitter:description" content="{{ article.excerpt }}">
 <meta name="twitter:image" content="{{ article.featured_image.url }}">
-```
-
+```text
 ### Schema.org (JSON-LD)
+
 ```html
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
+  "@context": "<https://schema.org",>
   "@type": "BlogPosting",
   "headline": "{{ article.title }}",
   "image": "{{ article.featured_image.url }}",
@@ -679,13 +697,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 }
 </script>
-```
-
+```text
 ## 💻 JavaScript интеграция
 
 ### AJAX операции
 
 #### Добавление комментария
+
 ```javascript
 // В article-detail.js
 function submitComment(articleId, content, parentId = null) {
@@ -710,9 +728,9 @@ function submitComment(articleId, content, parentId = null) {
         }
     });
 }
-```
-
+```text
 #### Реакции (лайк/дизлайк)
+
 ```javascript
 function toggleReaction(articleId, reactionType) {
     fetch('/blog/ajax/toggle-reaction/', {
@@ -734,18 +752,18 @@ function toggleReaction(articleId, reactionType) {
         }
     });
 }
-```
-
+```text
 #### Прогресс чтения
+
 ```javascript
 function initReadingProgress(articleId) {
     const content = document.querySelector('.article-content');
     const progressBar = document.querySelector('.reading-progress-bar');
-    
+
     window.addEventListener('scroll', throttle(() => {
         const progress = calculateProgress(content);
         progressBar.style.width = `${progress}%`;
-        
+
         // Сохранить прогресс на сервере
         if (progress % 10 === 0) {  // Каждые 10%
             saveProgress(articleId, progress);
@@ -766,11 +784,11 @@ function saveProgress(articleId, progress) {
         })
     });
 }
-```
-
+```text
 ## 📝 Примеры использования
 
 ### Кастомизация карточки статьи
+
 ```html
 <!-- Своя карточка с дополнительными данными -->
 <div class="custom-article-card">
@@ -778,14 +796,14 @@ function saveProgress(articleId, progress) {
         <a href="{{ article.get_absolute_url }}">
             <h3>{{ article.title }}</h3>
             <p>{{ article.excerpt|clean_markdown|truncatewords:20 }}</p>
-            
+
             <!-- Теги -->
             <div class="tags">
                 {% for tag in article.tags.all|slice:":3" %}
                 <span class="tag">#{{ tag.name }}</span>
                 {% endfor %}
             </div>
-            
+
             <!-- Прогресс серии -->
             {% if article.series %}
             <div class="series-progress">
@@ -795,33 +813,33 @@ function saveProgress(articleId, progress) {
         </a>
     {% endwith %}
 </div>
-```
-
+```text
 ### Фильтрация статей
+
 ```html
 <form method="get" class="filters">
     <!-- Категории -->
     <select name="category">
         <option value="">Все категории</option>
         {% for category in categories %}
-        <option value="{{ category.slug }}" 
+        <option value="{{ category.slug }}"
                 {% if category.slug == current_category %}selected{% endif %}>
             {{ category.icon }} {{ category.name }}
         </option>
         {% endfor %}
     </select>
-    
+
     <!-- Сложность -->
     <select name="difficulty">
         <option value="">Любая сложность</option>
         {% for value, label in difficulties %}
-        <option value="{{ value }}" 
+        <option value="{{ value }}"
                 {% if value == current_difficulty %}selected{% endif %}>
             {{ label }}
         </option>
         {% endfor %}
     </select>
-    
+
     <!-- Сортировка -->
     <select name="sort">
         <option value="latest" {% if current_sort == 'latest' %}selected{% endif %}>
@@ -834,12 +852,12 @@ function saveProgress(articleId, progress) {
             Рейтинговые
         </option>
     </select>
-    
+
     <button type="submit">Применить</button>
 </form>
-```
-
+```text
 ### Адаптивная сетка статей
+
 ```html
 <div class="articles-grid">
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -854,11 +872,11 @@ function saveProgress(articleId, progress) {
         {% endfor %}
     </div>
 </div>
-```
-
+```text
 ## 🎨 CSS классы
 
 ### Основные классы
+
 - `.article-card` - Карточка статьи
 - `.article-detail` - Контейнер детальной страницы
 - `.comment-item` - Комментарий
@@ -868,6 +886,7 @@ function saveProgress(articleId, progress) {
 - `.category-card` - Карточка категории
 
 ### Модификаторы
+
 - `.featured` - Рекомендованная статья
 - `.active` - Активная кнопка/фильтр
 - `.edited` - Отредактированный комментарий

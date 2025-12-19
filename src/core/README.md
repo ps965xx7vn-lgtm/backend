@@ -35,20 +35,20 @@
 
 ### Основные возможности
 
-✅ Главная страница с популярными курсами  
-✅ Форма обратной связи с валидацией  
-✅ Подписка на email рассылку  
-✅ Юридические страницы (Terms of Service, Privacy Policy)  
-✅ REST API для AJAX запросов  
-✅ Context processor для футера сайта  
-✅ Markdown поддержка в шаблонах  
-✅ Умные редиректы по ролям пользователей  
-✅ 53 юнит теста (покрытие API и схем)  
-✅ Логирование всех операций (logger)  
+✅ Главная страница с популярными курсами
+✅ Форма обратной связи с валидацией
+✅ Подписка на email рассылку
+✅ Юридические страницы (Terms of Service, Privacy Policy)
+✅ REST API для AJAX запросов
+✅ Context processor для футера сайта
+✅ Markdown поддержка в шаблонах
+✅ Умные редиректы по ролям пользователей
+✅ 53 юнит теста (покрытие API и схем)
+✅ Логирование всех операций (logger)
 
 ## 📁 Структура приложения
 
-```
+```text
 core/
 ├── __init__.py              # Инициализация приложения с подробным docstring
 ├── apps.py                  # Конфигурация приложения (CoreConfig)
@@ -78,18 +78,20 @@ core/
     ├── test_api.py          # Тесты API эндпоинтов (15 тестов)
     ├── test_schemas.py      # Тесты Pydantic схем (28 тестов)
     └── test_response_validation.py  # Валидация ответов (10 тестов)
-```
-
+```text
 **⭐ Новые модули (аналогично blog):**
+
 - `cache_utils.py` - Кеширование страниц и API данных через Redis
 - `middleware.py` - Rate limiting для API + security headers
 
 **См. подробную документацию:**
+
 - [Templates README](templates/README.md) - Документация шаблонов
 - [Template Tags README](templatetags/README.md) - Custom template tags
 - [Tests README](tests/README.md) - Документация тестов
 
 **Модули с логированием:**
+
 - `views.py` - Логирование форм обратной связи и подписок + обработка исключений
 - `api.py` - Логирование API запросов (feedback, subscription) + обработка исключений
 - `forms.py` - Логирование валидации форм
@@ -100,10 +102,9 @@ core/
 
 ### Базовый URL
 
-```
+```text
 /api/core/
-```
-
+```text
 Все эндпоинты публичные (не требуют аутентификации).
 
 ### 1. Отправка обратной связи
@@ -122,9 +123,9 @@ core/
   "message": "Хочу узнать больше о курсах Python",
   "agree_terms": true
 }
-```
-
+```text
 **Validation:**
+
 - `first_name`: не должно содержать цифры
 - `phone_number`: формат `+XXXXXXXXX` (9-15 цифр после +)
 - `email`: валидный email адрес
@@ -139,8 +140,7 @@ core/
   "message": "Спасибо! Мы получили ваше сообщение и свяжемся с вами в ближайшее время.",
   "feedback_id": 42
 }
-```
-
+```text
 ---
 
 ### 2. Подписка на рассылку
@@ -155,8 +155,7 @@ core/
 {
   "email": "user@example.com"
 }
-```
-
+```text
 **Response 200 (новая подписка):**
 
 ```json
@@ -165,8 +164,7 @@ core/
   "message": "Вы успешно подписаны на рассылку!",
   "already_subscribed": false
 }
-```
-
+```text
 **Response 200 (уже подписан):**
 
 ```json
@@ -175,8 +173,7 @@ core/
   "message": "Этот email уже подписан на рассылку.",
   "already_subscribed": true
 }
-```
-
+```text
 **Response 200 (реактивация):**
 
 ```json
@@ -185,8 +182,7 @@ core/
   "message": "Ваша подписка снова активна!",
   "already_subscribed": false
 }
-```
-
+```text
 ---
 
 ### 3. Получение контактной информации
@@ -204,13 +200,12 @@ core/
   "address": "г. Москва, ул. Примерная, д. 1",
   "working_hours": "Пн-Пт: 9:00-18:00",
   "social_links": {
-    "telegram": "https://t.me/pyland",
-    "vk": "https://vk.com/pyland",
-    "youtube": "https://youtube.com/@pyland"
+    "telegram": "<https://t.me/pyland",>
+    "vk": "<https://vk.com/pyland",>
+    "youtube": "<https://youtube.com/@pyland">
   }
 }
-```
-
+```text
 ---
 
 ### 4. Получение статистики платформы
@@ -228,8 +223,7 @@ core/
   "total_lessons": 342,
   "completion_rate": 78.5
 }
-```
-
+```text
 ---
 
 ## 📄 Представления (Views)
@@ -243,11 +237,12 @@ core/
 Главная страница платформы.
 
 **Отображает:**
+
 - Популярные курсы (аннотированные количеством студентов)
 - Статистику платформы
 - SEO мета-теги
 
-**URL:** `/`  
+**URL:** `/`
 **Template:** `core/home.html`
 
 ---
@@ -257,12 +252,13 @@ core/
 Страница контактов с формой обратной связи.
 
 **Функциональность:**
+
 - Отображение формы `FeedbackForm`
 - Обработка POST запросов
 - Сохранение заявок в модель `Feedback` (из приложения `manager`)
 - Flash messages об успехе/ошибках
 
-**URL:** `/contacts/`  
+**URL:** `/contacts/`
 **Template:** `core/contacts.html`
 
 ---
@@ -271,7 +267,7 @@ core/
 
 Страница "О нас" с информацией о платформе.
 
-**URL:** `/about/`  
+**URL:** `/about/`
 **Template:** `core/about.html`
 
 ---
@@ -281,12 +277,13 @@ core/
 Обработка подписки на email рассылку.
 
 **Функциональность:**
+
 - Валидация email через `SubscriptionForm`
 - Создание записи в модель `Subscription` (notifications app)
 - Обработка дубликатов подписок
 - Редирект на главную с flash message
 
-**URL:** `/subscribe/` (POST)  
+**URL:** `/subscribe/` (POST)
 **Redirect:** `/`
 
 ---
@@ -295,7 +292,7 @@ core/
 
 Страница условий использования (юридическая).
 
-**URL:** `/terms-of-service/`  
+**URL:** `/terms-of-service/`
 **Template:** `core/terms_of_service.html`
 
 ---
@@ -304,7 +301,7 @@ core/
 
 Страница политики конфиденциальности (юридическая).
 
-**URL:** `/privacy-policy/`  
+**URL:** `/privacy-policy/`
 **Template:** `core/privacy_policy.html`
 
 ---
@@ -314,6 +311,7 @@ core/
 Умный редирект пользователей по их ролям.
 
 **Логика маршрутизации:**
+
 - **Неаутентифицированные** → главная страница (`core:home`)
 - **Mentor** → `mentor:mentor_dashboard`
 - **Student** → `account:account_dashboard`
@@ -332,6 +330,7 @@ core/
 Форма обратной связи для страниц контактов и главной.
 
 **Поля:**
+
 - `first_name` - Имя отправителя (макс 100 символов)
 - `phone_number` - Номер телефона (+1234567890)
 - `email` - Email адрес
@@ -339,6 +338,7 @@ core/
 - `agree_terms` - Согласие с условиями (checkbox)
 
 **Валидация:**
+
 - Имя не должно содержать цифры
 - Телефон должен начинаться с `+` и содержать 9-15 цифр
 - Email должен соответствовать стандартному формату
@@ -351,8 +351,7 @@ form = FeedbackForm(request.POST)
 if form.is_valid():
     name = form.cleaned_data['first_name']
     Feedback.objects.create(**form.cleaned_data)
-```
-
+```text
 ---
 
 ### SubscriptionForm
@@ -360,9 +359,11 @@ if form.is_valid():
 Форма подписки на email рассылку.
 
 **Поля:**
+
 - `email` - Email адрес для подписки
 
 **Валидация:**
+
 - Email должен быть валидным
 
 **Использование:**
@@ -372,8 +373,7 @@ form = SubscriptionForm(request.POST)
 if form.is_valid():
     email = form.cleaned_data['email']
     Subscription.objects.get_or_create(email=email)
-```
-
+```text
 ---
 
 ## 🔍 Схемы (Pydantic)
@@ -391,15 +391,14 @@ class FeedbackSchema(Schema):
     email: EmailStr
     message: str = Field(..., min_length=10)
     agree_terms: bool = Field(..., const=True)
-    
+
     @field_validator('first_name')
     @classmethod
     def validate_no_digits(cls, value: str) -> str:
         if any(char.isdigit() for char in value):
             raise ValueError("Имя не должно содержать цифры")
         return value
-```
-
+```text
 ---
 
 #### SubscriptionSchema
@@ -409,8 +408,7 @@ class FeedbackSchema(Schema):
 ```python
 class SubscriptionSchema(Schema):
     email: EmailStr
-```
-
+```text
 ---
 
 ### Output Schemas
@@ -424,8 +422,7 @@ class FeedbackResponseSchema(Schema):
     success: bool
     message: str
     feedback_id: int
-```
-
+```text
 ---
 
 #### SubscriptionResponseSchema
@@ -437,8 +434,7 @@ class SubscriptionResponseSchema(Schema):
     success: bool
     message: str
     already_subscribed: bool
-```
-
+```text
 ---
 
 #### ContactInfoSchema
@@ -452,8 +448,7 @@ class ContactInfoSchema(Schema):
     address: Optional[str] = None
     working_hours: Optional[str] = None
     social_links: Optional[Dict[str, str]] = None
-```
-
+```text
 ---
 
 #### StatsSchema
@@ -466,8 +461,7 @@ class StatsSchema(Schema):
     total_courses: int = Field(default=0, ge=0)
     total_lessons: int = Field(default=0, ge=0)
     completion_rate: float = Field(default=0.0, ge=0.0, le=100.0)
-```
-
+```text
 ---
 
 ## 🌐 Context Processors
@@ -490,8 +484,7 @@ class StatsSchema(Schema):
         }
     }
 }
-```
-
+```text
 **Использование в шаблоне:**
 
 ```django
@@ -500,8 +493,7 @@ class StatsSchema(Schema):
 {% endfor %}
 
 <p>Студентов: {{ footer_data.stats.total_students }}</p>
-```
-
+```text
 **Настройка в settings.py:**
 
 ```python
@@ -509,14 +501,15 @@ TEMPLATES = [
     {
         'OPTIONS': {
             'context_processors': [
-                # ...
+
+                #
+
                 'core.context_processors.footer_data',
             ],
         },
     },
 ]
-```
-
+```text
 ---
 
 ## 🏷️ Template Tags
@@ -533,32 +526,28 @@ TEMPLATES = [
 {% load markdown_filters %}
 
 {{ article.content|markdown_format|safe }}
-```
-
+```text
 #### `get_item`
 
 Получает элемент из словаря по ключу.
 
 ```django
 {{ my_dict|get_item:"key_name" }}
-```
-
+```text
 #### `clean_markdown`
 
 Удаляет Markdown разметку, оставляя только текст.
 
 ```django
 {{ article.content|clean_markdown }}
-```
-
+```text
 #### `smart_excerpt`
 
 Создает умную выдержку из текста (первые 150 символов).
 
 ```django
 {{ article.content|smart_excerpt:150 }}
-```
-
+```text
 ---
 
 ### Article Tags
@@ -579,21 +568,19 @@ TEMPLATES = [
 2 статьи
 5 статей
 -->
-```
-
+```text
 ---
 
 ## 🧪 Тестирование
 
 ### Структура тестов
 
-```
+```text
 tests/
 ├── test_api.py                     # 15 тестов
 ├── test_schemas.py                 # 28 тестов
 └── test_response_validation.py     # 10 тестов
-```
-
+```text
 **Всего: 53 теста** ✅
 
 ---
@@ -603,6 +590,7 @@ tests/
 Тестирование API эндпоинтов:
 
 **Feedback API (6 тестов):**
+
 - ✅ `test_create_feedback_success` - успешное создание заявки
 - ✅ `test_create_feedback_invalid_phone` - валидация телефона
 - ✅ `test_create_feedback_invalid_email` - валидация email
@@ -611,20 +599,24 @@ tests/
 - ✅ `test_create_feedback_name_with_digits` - имя без цифр
 
 **Subscription API (4 теста):**
+
 - ✅ `test_create_subscription_new` - новая подписка
 - ✅ `test_create_subscription_already_exists` - дубликат подписки
 - ✅ `test_reactivate_inactive_subscription` - реактивация
 - ✅ `test_subscription_invalid_email` - валидация email
 
 **Contact Info API (1 тест):**
+
 - ✅ `test_get_contact_info` - получение контактов
 
 **Stats API (3 теста):**
+
 - ✅ `test_get_stats_empty_db` - статистика пустой БД
 - ✅ `test_get_stats_with_data` - статистика с данными
 - ✅ `test_stats_counts_all_courses` - подсчет курсов
 
 **Integration (1 тест):**
+
 - ✅ `test_full_user_journey` - полный путь пользователя
 
 ---
@@ -634,6 +626,7 @@ tests/
 Тестирование Pydantic схем:
 
 **FeedbackSchema (10 тестов):**
+
 - ✅ Валидация валидных данных
 - ✅ Телефон без `+`
 - ✅ Телефон с неверным форматом
@@ -645,16 +638,19 @@ tests/
 - ✅ Пропущенные обязательные поля
 
 **SubscriptionSchema (3 теста):**
+
 - ✅ Валидный email
 - ✅ Невалидный email
 - ✅ Пропущенный email
 
 **ContactInfoSchema (3 теста):**
+
 - ✅ Полная информация
 - ✅ Минимальная информация
 - ✅ Пустые социальные ссылки
 
 **StatsSchema (5 тестов):**
+
 - ✅ Валидная статистика
 - ✅ Значения по умолчанию
 - ✅ Границы completion_rate (0-100)
@@ -662,6 +658,7 @@ tests/
 - ✅ FeedbackResponseSchema
 
 **Response Schemas (7 тестов):**
+
 - ✅ FeedbackResponseSchema
 - ✅ SubscriptionResponseSchema
 - ✅ Все поля присутствуют
@@ -688,19 +685,23 @@ tests/
 ### Запуск тестов
 
 ```bash
+
 # Все тесты core
+
 pytest src/core/tests/ -v
 
 # Только API тесты
+
 pytest src/core/tests/test_api.py -v
 
 # Только тесты схем
+
 pytest src/core/tests/test_schemas.py -v
 
 # С покрытием кода
-pytest src/core/tests/ --cov=core --cov-report=html
-```
 
+pytest src/core/tests/ --cov=core --cov-report=html
+```text
 ---
 
 ## 💡 Использование
@@ -711,11 +712,12 @@ pytest src/core/tests/ --cov=core --cov-report=html
 
 ```python
 INSTALLED_APPS = [
-    # ...
+
+    #
+
     'core',
 ]
-```
-
+```text
 2. **Подключить URL:**
 
 ```python
@@ -724,8 +726,7 @@ from django.urls import path, include
 urlpatterns = [
     path('', include('core.urls')),
 ]
-```
-
+```text
 3. **Добавить context processor:**
 
 ```python
@@ -738,18 +739,18 @@ TEMPLATES = [
         },
     },
 ]
-```
-
+```text
 4. **Подключить API к главному роутеру:**
 
 ```python
+
 # pyland/api.py
+
 from core.api import router as core_router
 
 api = NinjaAPI()
 api.add_router("/core/", core_router)
-```
-
+```text
 ---
 
 ### Примеры использования
@@ -775,8 +776,7 @@ fetch('/api/core/feedback/', {
 .then(data => {
     console.log('Заявка создана:', data.feedback_id);
 });
-```
-
+```text
 ---
 
 #### Подписка на рассылку
@@ -799,8 +799,7 @@ fetch('/api/core/subscribe/', {
         alert(data.message);
     }
 });
-```
-
+```text
 ---
 
 #### Использование в шаблонах
@@ -817,20 +816,19 @@ fetch('/api/core/subscribe/', {
         {% for course in footer_data.popular_courses %}
             <a href="{{ course.get_absolute_url }}">{{ course.title }}</a>
         {% endfor %}
-        
+
         <p>Всего студентов: {{ footer_data.stats.total_students }}</p>
     </div>
-    
+
     <!-- Markdown контент -->
     <div class="article-content">
         {{ content|markdown_format|safe }}
     </div>
-    
+
     <!-- Склонение слова "статья" -->
     <p>Найдено: {{ count }} {{ count|pluralize_articles }}</p>
 {% endblock %}
-```
-
+```text
 ---
 
 ---
@@ -845,30 +843,29 @@ fetch('/api/core/subscribe/', {
 import logging
 
 logger = logging.getLogger(__name__)
-```
-
+```text
 ### Уровни логирования
 
 **В views.py:**
+
 ```python
 logger.info(f"Форма обратной связи отправлена: {form.cleaned_data['email']}")
 logger.warning("Попытка подписаться с уже существующим email")
 logger.error(f"Ошибка при сохранении feedback: {str(e)}")
-```
-
+```text
 **В api.py:**
+
 ```python
 logger.info(f"API: Создана заявка обратной связи #{feedback.id}")
 logger.warning(f"API: Попытка повторной подписки для {email}")
 logger.error(f"API: Ошибка при получении статистики: {str(e)}")
-```
-
+```text
 **В forms.py:**
+
 ```python
 logger.debug(f"Валидация телефона: {phone_number}")
 logger.warning(f"Имя содержит цифры: {first_name}")
-```
-
+```text
 ### Конфигурация в settings.py
 
 ```python
@@ -902,17 +899,15 @@ LOGGING = {
         },
     },
 }
-```
-
+```text
 ### Примеры логов
 
-```
+```text
 INFO 2025-11-10 core.api API: Создана заявка обратной связи #42
 INFO 2025-11-10 core.views Форма обратной связи отправлена: ivan@example.com
 WARNING 2025-11-10 core.api API: Попытка повторной подписки для test@example.com
 ERROR 2025-11-10 core.views Ошибка при сохранении feedback: Database error
-```
-
+```text
 ### Логирование в тестах
 
 Тесты автоматически захватывают логи:
@@ -922,13 +917,15 @@ import logging
 
 def test_something(caplog):
     with caplog.at_level(logging.INFO):
-        # Выполнить действие
-        create_feedback(data)
-        
-    # Проверить логи
-    assert "Создана заявка" in caplog.text
-```
 
+        # Выполнить действие
+
+        create_feedback(data)
+
+    # Проверить логи
+
+    assert "Создана заявка" in caplog.text
+```text
 ---
 
 ## � Кеширование (cache_utils.py)
@@ -947,9 +944,10 @@ def test_something(caplog):
 from core.cache_utils import get_cache_key
 
 key = get_cache_key('contact_info', user_id=123)
-# Результат: 'core:contact_info:a1b2c3d4e5f6'
-```
 
+# Результат: 'core:contact_info:a1b2c3d4e5f6'
+
+```text
 #### cache_page_data(timeout, key_prefix)
 
 Декоратор для кеширования функций:
@@ -959,10 +957,11 @@ from core.cache_utils import cache_page_data
 
 @cache_page_data(timeout=300, key_prefix='contact_info')
 def get_contact_info():
-    # Тяжелая операция
-    return expensive_data()
-```
 
+    # Тяжелая операция
+
+    return expensive_data()
+```text
 #### invalidate_core_cache(patterns)
 
 Инвалидирует кеш по паттернам:
@@ -971,12 +970,13 @@ def get_contact_info():
 from core.cache_utils import invalidate_core_cache
 
 # Инвалидировать конкретный кеш
+
 invalidate_core_cache(['home_page'])
 
 # Инвалидировать весь кеш core
-invalidate_core_cache()
-```
 
+invalidate_core_cache()
+```text
 ### Готовые декораторы
 
 ```python
@@ -991,21 +991,22 @@ from core.cache_utils import (
 @cache_home_page()
 def get_home_data():
     return {'courses': courses, 'features': features}
-```
-
+```text
 ### Прогрев кеша
 
 ```python
 from core.cache_utils import warm_cache
 
 # Прогреть популярные данные
-warm_cache()  # Кеширует топ курсы и статистику
-```
 
+warm_cache()  # Кеширует топ курсы и статистику
+```text
 ### Конфигурация в settings.py
 
 ```python
+
 # Настройка таймаутов кеша
+
 CACHE_TTL = {
     'home_page': 300,      # 5 минут
     'contact_info': 1800,  # 30 минут
@@ -1015,6 +1016,7 @@ CACHE_TTL = {
 }
 
 # Redis настройки
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -1024,8 +1026,7 @@ CACHES = {
         }
     }
 }
-```
-
+```text
 ---
 
 ## 🛡️ Middleware (middleware.py)
@@ -1047,16 +1048,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
     # Core middleware
+
     'core.middleware.CoreRateLimitMiddleware',  # ⭐ Rate limiting
     'core.middleware.CoreSecurityHeadersMiddleware',  # ⭐ Security headers
 ]
-```
-
+```text
 #### Настройка лимитов
 
 ```python
+
 # Лимиты для Core API (по умолчанию)
+
 CORE_API_RATE_LIMITS = {
     'anonymous': {
         'requests': 50,   # 50 запросов
@@ -1069,12 +1073,12 @@ CORE_API_RATE_LIMITS = {
 }
 
 # Пути для проверки
+
 CORE_RATE_LIMIT_PATHS = [
     '/api/core/feedback/',
     '/api/core/subscribe/',
 ]
-```
-
+```text
 #### Ответ при превышении лимита
 
 ```json
@@ -1086,27 +1090,24 @@ HTTP 429 Too Many Requests
     "limit": 50,
     "window": 3600
 }
-```
-
+```text
 #### Headers ответа
 
-```
+```text
 X-RateLimit-Limit: 50
 X-RateLimit-Remaining: 23
 X-RateLimit-Reset: 1699876543
-```
-
+```text
 ### CoreSecurityHeadersMiddleware
 
 Добавляет security headers ко всем ответам:
 
-```
+```text
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 X-XSS-Protection: 1; mode=block
 Referrer-Policy: strict-origin-when-cross-origin
-```
-
+```text
 #### Использование
 
 Middleware автоматически добавляет headers, дополнительная настройка не требуется.
@@ -1118,15 +1119,16 @@ import logging
 logger = logging.getLogger('core.middleware')
 
 # Логи при превышении лимита
+
 logger.warning(
     f"Rate limit превышен для IP:192.168.1.1 "
     f"на /api/core/feedback/: 51/50"
 )
 
 # Логи ошибок
-logger.error(f"Ошибка в CoreRateLimitMiddleware: {e}")
-```
 
+logger.error(f"Ошибка в CoreRateLimitMiddleware: {e}")
+```text
 ---
 
 ## 🔄 Обработка исключений
@@ -1138,7 +1140,9 @@ logger.error(f"Ошибка в CoreRateLimitMiddleware: {e}")
 ```python
 def home(request):
     try:
+
         # Основная логика
+
         if request.method == "POST":
             try:
                 feedback = Feedback.objects.create(**form.cleaned_data)
@@ -1146,19 +1150,19 @@ def home(request):
             except Exception as e:
                 logger.error(f"Ошибка создания feedback: {e}")
                 messages.error(request, "Произошла ошибка...")
-        
+
         # Получение курсов
+
         try:
             courses = Course.objects.annotate(...)[:4]
         except Exception as e:
             logger.error(f"Ошибка получения курсов: {e}")
             courses = []
-            
+
     except Exception as e:
         logger.error(f"Критическая ошибка: {e}")
         return render(request, template, fallback_context)
-```
-
+```text
 ### API (api.py)
 
 Все API endpoints защищены:
@@ -1177,31 +1181,33 @@ def create_feedback(request, data: FeedbackSchema):
             message="Произошла ошибка...",
             feedback_id=None
         )
-```
-
+```text
 ### Преимущества
 
-✅ Graceful degradation - сайт продолжает работать при ошибках  
-✅ Подробное логирование для отладки  
-✅ Понятные сообщения пользователю  
-✅ Fallback данные при сбоях БД  
-✅ Аналогично архитектуре blog приложения  
+✅ Graceful degradation - сайт продолжает работать при ошибках
+✅ Подробное логирование для отладки
+✅ Понятные сообщения пользователю
+✅ Fallback данные при сбоях БД
+✅ Аналогично архитектуре blog приложения
 
 ---
 
 ## �📚 Дополнительная документация
 
 **Core приложение:**
+
 - [Templates README](templates/README.md) - HTML шаблоны (5 страниц)
 - [Template Tags README](templatetags/README.md) - Custom tags (2 модуля)
 - [Tests README](tests/README.md) - Юнит тесты (53 теста)
 - [API README](CORE_API_README.md) - REST API (4 эндпоинта)
 
 **Static файлы:**
+
 - [CSS Architecture](../../static/css/core/README.md) - Архитектура стилей
 - [JavaScript Documentation](../../static/js/core/README.md) - JS скрипты
 
 **Другое:**
+
 - [Legal Pages README](LEGAL_PAGES_REDESIGN.md) - Юридические страницы
 
 ---

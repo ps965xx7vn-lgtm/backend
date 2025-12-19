@@ -14,6 +14,7 @@
 ## 🎯 Обзор
 
 Manager - это полнофункциональное административное приложение для управления:
+
 - **Обратной связью** от пользователей
 - **Системными логами** и событиями
 - **Настройками платформы**
@@ -38,6 +39,7 @@ Manager - это полнофункциональное администрати
 from manager.models import Feedback
 
 # Создание обращения
+
 feedback = Feedback.objects.create(
     first_name='Иван',
     phone_number='+79001234567',
@@ -46,16 +48,18 @@ feedback = Feedback.objects.create(
 )
 
 # Получение необработанных
+
 unprocessed = Feedback.objects.filter(is_processed=False)
 
 # Отметить как обработанное
+
 feedback.is_processed = True
 feedback.processed_by = request.user
 feedback.processed_at = timezone.now()
 feedback.save()
-```
-
+```text
 **Поля:**
+
 - `first_name` - Имя пользователя (max 50)
 - `phone_number` - Номер телефона (max 16)
 - `email` - Email адрес (indexed)
@@ -74,6 +78,7 @@ feedback.save()
 from manager.models import SystemLog
 
 # Логирование события
+
 SystemLog.objects.create(
     level='INFO',
     action_type='USER_LOGIN',
@@ -85,13 +90,14 @@ SystemLog.objects.create(
 )
 
 # Получение критических ошибок
+
 critical_logs = SystemLog.objects.filter(
     level='CRITICAL',
     created_at__gte=hour_ago
 )
-```
-
+```text
 **Уровни логов:**
+
 - `DEBUG` - Отладочная информация
 - `INFO` - Информационные сообщения
 - `WARNING` - Предупреждения
@@ -99,6 +105,7 @@ critical_logs = SystemLog.objects.filter(
 - `CRITICAL` - Критические ошибки
 
 **Типы действий:**
+
 - `USER_LOGIN/LOGOUT/REGISTERED/UPDATED/DELETED`
 - `FEEDBACK_CREATED/UPDATED/DELETED`
 - `SETTINGS_UPDATED`
@@ -115,6 +122,7 @@ critical_logs = SystemLog.objects.filter(
 from manager.models import SystemSettings
 
 # Создание настройки
+
 setting = SystemSettings.objects.create(
     key='max_upload_size',
     value='10485760',  # 10 MB
@@ -124,13 +132,15 @@ setting = SystemSettings.objects.create(
 )
 
 # Получение типизированного значения
+
 max_size = setting.get_typed_value()  # int: 10485760
 
 # Получение публичных настроек
-public_settings = SystemSettings.objects.filter(is_public=True)
-```
 
+public_settings = SystemSettings.objects.filter(is_public=True)
+```text
 **Типы значений:**
+
 - `string` - Строки
 - `integer` - Целые числа
 - `boolean` - Логические (true/false)
@@ -145,22 +155,24 @@ public_settings = SystemSettings.objects.filter(is_public=True)
 Manager endpoints видны только авторизованным staff пользователям:
 
 1. **Создать superuser:**
+
    ```bash
    cd src
    poetry run python manage.py createsuperuser
    ```
 
 2. **Запустить сервер:**
+
    ```bash
    poetry run python manage.py runserver
    ```
 
 3. **Авторизоваться:**
-   - Откройте http://127.0.0.1:8000/admin/
+   - Откройте <http://127.0.0.1:8000/admin/>
    - Войдите под admin учетными данными
 
 4. **Открыть Swagger UI:**
-   - Перейдите на http://127.0.0.1:8000/api/docs
+   - Перейдите на <http://127.0.0.1:8000/api/docs>
    - Найдите секцию "Manager" в списке tags
    - Swagger автоматически использует вашу admin сессию
 
@@ -171,17 +183,19 @@ Manager endpoints видны только авторизованным staff п�
 Получить список обращений с пагинацией.
 
 **Query параметры:**
+
 - `page` (int, default=1) - Номер страницы
 - `page_size` (int, default=20) - Размер страницы
 - `search` (str, optional) - Поиск по имени, email, сообщению
 
 **Пример запроса:**
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
-  "http://localhost:8000/api/managers/feedback/?page=1&page_size=20&search=иван"
-```
-
+  "<http://localhost:8000/api/managers/feedback/?page=1&page_size=20&search=иван">
+```text
 **Пример ответа:**
+
 ```json
 {
   "items": [
@@ -200,19 +214,19 @@ curl -H "Authorization: Bearer <token>" \
   "page_size": 20,
   "total_pages": 3
 }
-```
-
+```text
 ### GET /api/managers/feedback/{id}/
 
 Получить детали одного обращения.
 
 **Пример запроса:**
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
-  "http://localhost:8000/api/managers/feedback/1/"
-```
-
+  "<http://localhost:8000/api/managers/feedback/1/">
+```text
 **Пример ответа:**
+
 ```json
 {
   "id": 1,
@@ -223,42 +237,43 @@ curl -H "Authorization: Bearer <token>" \
   "registered_at": "2025-01-15T10:30:45Z",
   "is_processed": false
 }
-```
-
+```text
 ### DELETE /api/managers/feedback/{id}/
 
 Удалить обращение (только staff).
 
 **Пример запроса:**
+
 ```bash
 curl -X DELETE \
   -H "Authorization: Bearer <token>" \
-  "http://localhost:8000/api/managers/feedback/1/"
-```
-
+  "<http://localhost:8000/api/managers/feedback/1/">
+```text
 **Пример ответа:**
+
 ```json
 {
   "success": true,
   "message": "Обращение успешно удалено",
   "id": 1
 }
-```
-
+```text
 ### GET /api/managers/feedback/stats/
 
 Получить статистику по обращениям.
 
 **Query параметры:**
+
 - `recent_count` (int, default=5) - Количество последних обращений
 
 **Пример запроса:**
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
-  "http://localhost:8000/api/managers/feedback/stats/?recent_count=10"
-```
-
+  "<http://localhost:8000/api/managers/feedback/stats/?recent_count=10">
+```text
 **Пример ответа:**
+
 ```json
 {
   "total_feedback": 142,
@@ -276,8 +291,7 @@ curl -H "Authorization: Bearer <token>" \
     }
   ]
 }
-```
-
+```text
 ## 💾 Кеширование
 
 ### Конфигурация
@@ -285,7 +299,9 @@ curl -H "Authorization: Bearer <token>" \
 Redis используется для всех кеш операций:
 
 ```python
+
 # settings.py
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
@@ -294,8 +310,7 @@ CACHES = {
         'TIMEOUT': 300,  # 5 минут
     }
 }
-```
-
+```text
 ### TTL (Time To Live)
 
 - **Статистика обратной связи:** 600 сек (10 минут)
@@ -311,15 +326,17 @@ from manager.cache_utils import (
 )
 
 # Получить кешированную статистику
+
 stats = get_cached_feedback_stats(recent_count=10)
 
 # Инвалидировать кеш после изменений
+
 invalidate_feedback_cache()
 
 # Прогрев кеша
-warm_feedback_cache()
-```
 
+warm_feedback_cache()
+```text
 ### Паттерны ключей
 
 - `manager:feedback_stats:recent_count=<N>` - Статистика
@@ -332,11 +349,12 @@ warm_feedback_cache()
 ```python
 from manager.cache_utils import get_cache_key
 
-key = get_cache_key('manager', 'feedback_list', 
+key = get_cache_key('manager', 'feedback_list',
                     page=1, page_size=20, search='очень длинный поисковый запрос')
-# Результат: "manager:feedback_list:a1b2c3d4..." (MD5 хеш параметров)
-```
 
+# Результат: "manager:feedback_list:a1b2c3d4..." (MD5 хеш параметров)
+
+```text
 ## 🛡️ Middleware
 
 ### ManagerRateLimitMiddleware
@@ -344,110 +362,124 @@ key = get_cache_key('manager', 'feedback_list',
 Ограничивает частоту запросов к `/api/managers/*` эндпоинтам.
 
 **Лимиты:**
+
 - Анонимные: 50 запросов/час
 - Авторизованные: 200 запросов/час
 - Staff: без ограничений
 
 **Активация:**
+
 ```python
+
 # settings.py
+
 MIDDLEWARE = [
     ...
     'manager.middleware.ManagerRateLimitMiddleware',
 ]
-```
-
+```text
 **Пример ответа при превышении:**
+
 ```json
 {
   "error": "Rate limit exceeded",
   "detail": "Максимум 50 запросов в час",
   "retry_after": 3600
 }
-```
-
+```text
 ### ManagerSecurityHeadersMiddleware
 
 Добавляет заголовки безопасности к ответам `/api/managers/*` и `/managers/*`.
 
 **Заголовки:**
+
 - `X-Content-Type-Options: nosniff`
 - `X-Frame-Options: DENY`
 - `X-XSS-Protection: 1; mode=block`
 - `Referrer-Policy: strict-origin-when-cross-origin`
 
 **Активация:**
+
 ```python
+
 # settings.py
+
 MIDDLEWARE = [
     ...
     'manager.middleware.ManagerSecurityHeadersMiddleware',
 ]
-```
-
+```text
 ## 🚀 Использование
 
 ### Настройка
 
 1. **Добавить в INSTALLED_APPS:**
+
 ```python
+
 # settings.py
+
 INSTALLED_APPS = [
     ...
     'manager',
 ]
-```
-
+```text
 2. **Подключить middleware:**
+
 ```python
+
 # settings.py
+
 MIDDLEWARE = [
     ...
     'manager.middleware.ManagerRateLimitMiddleware',
     'manager.middleware.ManagerSecurityHeadersMiddleware',
 ]
-```
-
+```text
 3. **Подключить URLs:**
+
 ```python
+
 # pyland/urls.py
+
 from manager.api import router as manager_router
 
 urlpatterns = [
     ...
     path('api/', manager_router.urls),
 ]
-```
-
+```text
 4. **Применить миграции:**
+
 ```bash
 poetry run python manage.py migrate manager
-```
-
+```text
 5. **Запустить Redis:**
+
 ```bash
 redis-server --daemonize yes
-```
-
+```text
 ### Создание superuser
 
 ```bash
 poetry run python manage.py createsuperuser
-```
-
+```text
 ### Тестирование
 
 ```bash
+
 # Запустить тесты middleware
+
 poetry run python test_manager_middleware.py
 
 # Запустить unit tests
-poetry run pytest managers/tests/
-```
 
+poetry run pytest managers/tests/
+```text
 ### Производственное развертывание
 
 1. **Настроить Redis cluster:**
+
 ```python
 CACHES = {
     'default': {
@@ -458,18 +490,20 @@ CACHES = {
         ],
     }
 }
-```
-
+```text
 2. **Настроить rate limits:**
+
 ```python
+
 # Увеличить лимиты для production
+
 MANAGER_RATE_LIMITS = {
     'anonymous': {'limit': 100, 'window': 3600},
     'authenticated': {'limit': 500, 'window': 3600},
 }
-```
-
+```text
 3. **Настроить логирование:**
+
 ```python
 LOGGING = {
     'loggers': {
@@ -479,8 +513,7 @@ LOGGING = {
         },
     },
 }
-```
-
+```text
 ## 📝 Примеры использования
 
 ### Работа с обратной связью в коде
@@ -490,9 +523,11 @@ from manager.models import Feedback
 from django.utils import timezone
 
 # Получить все необработанные
+
 unprocessed = Feedback.objects.filter(is_processed=False)
 
 # Массовое обновление
+
 Feedback.objects.filter(
     is_processed=False,
     registered_at__lt=timezone.now() - timedelta(days=7)
@@ -501,18 +536,20 @@ Feedback.objects.filter(
     processed_by=admin_user,
     admin_notes='Автоматическая обработка старых обращений'
 )
-```
-
+```text
 ### Логирование событий
 
 ```python
 from manager.models import SystemLog
 
 def my_view(request):
+
     # Ваш код
+
     result = perform_action()
-    
+
     # Логирование
+
     SystemLog.objects.create(
         level='INFO',
         action_type='CUSTOM_ACTION',
@@ -521,14 +558,14 @@ def my_view(request):
         message=f'Выполнено действие: {result}',
         details={'result': result, 'duration': 1.5}
     )
-```
-
+```text
 ### Управление настройками
 
 ```python
 from manager.models import SystemSettings
 
 # Получить настройку
+
 try:
     setting = SystemSettings.objects.get(key='maintenance_mode')
     is_maintenance = setting.get_typed_value()  # bool
@@ -536,16 +573,16 @@ except SystemSettings.DoesNotExist:
     is_maintenance = False
 
 # Обновить настройку
+
 setting.value = 'true'
 setting.updated_by = request.user
 setting.save()
-```
-
+```text
 ## 🔧 Разработка
 
 ### Структура файлов
 
-```
+```text
 managers/
 ├── __init__.py
 ├── admin.py              # Django admin конфигурация
@@ -562,8 +599,7 @@ managers/
 ├── templates/            # HTML шаблоны
 ├── tests/                # Unit tests
 └── README.md             # Документация
-```
-
+```text
 ### Стиль кода
 
 - ✅ Русские докстринги в стиле Poetry
@@ -589,29 +625,35 @@ managers/
 ### Проверка кеша
 
 ```bash
+
 # Подключиться к Redis
+
 redis-cli
 
 # Посмотреть все ключи manager
+
 KEYS pyland:manager:*
 
 # Получить значение
+
 GET pyland:manager:feedback_stats:recent_count=5
 
 # Очистить кеш manager
-DEL pyland:manager:feedback_stats:*
-```
 
+DEL pyland:manager:feedback_stats:*
+```text
 ### Проверка rate limits
 
 ```bash
+
 # Посмотреть текущие лимиты
+
 redis-cli KEYS pyland:manager:rate_limit:*
 
 # Сбросить лимит для пользователя
-redis-cli DEL pyland:manager:rate_limit:user_123
-```
 
+redis-cli DEL pyland:manager:rate_limit:user_123
+```text
 ## 📄 Лицензия
 
 Pyland Internal - 2025

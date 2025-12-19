@@ -3,6 +3,7 @@
 ## Обзор
 
 **Students** — приложение для управления обучением студентов в Pyland. Включает:
+
 - Dashboard с прогрессом обучения
 - Доступ к курсам и урокам
 - Статистику выполнения заданий
@@ -13,7 +14,7 @@
 
 ## Структура приложения
 
-```
+```text
 students/
 ├── __init__.py
 ├── admin.py                 # Админка для моделей студентов
@@ -32,8 +33,7 @@ students/
 ├── tests/                  # Юнит и интеграционные тесты
 ├── MIDDLEWARE_README.md    # Документация middleware
 └── README.md               # Этот файл
-```
-
+```text
 ---
 
 ## Основные компоненты
@@ -57,9 +57,9 @@ def get_progress(request):
         "current_course": "Python Basics",
         "last_activity": "2025-01-01"
     }
-```
-
+```text
 **Endpoints:**
+
 - `GET /api/students/progress/` - прогресс обучения
 - `GET /api/students/courses/` - доступные курсы
 - `GET /api/students/dashboard/` - данные дашборда
@@ -80,9 +80,9 @@ def dashboard(request):
         'progress': get_user_progress(request.user),
         'courses': get_available_courses(request.user)
     })
-```
-
+```text
 **Маршруты:**
+
 - `/students/dashboard/` - главная страница студента
 - `/students/courses/` - список курсов
 - `/students/course/<id>/` - детали курса
@@ -100,9 +100,9 @@ MIDDLEWARE = [
     'students.middleware.ProgressCacheMiddleware',          # Cache headers
     'students.middleware.CacheHitCounterMiddleware',        # Cache logging
 ]
-```
-
+```text
 **Возможности:**
+
 - Rate limiting: 1000 req/hour для аутентифицированных, 100 для анонимных
 - Security headers: защита от XSS, clickjacking, MIME-sniffing
 - Cache monitoring: headers с информацией о кэше (debug режим)
@@ -120,19 +120,22 @@ from students.cache_utils import ProgressCacheManager
 manager = ProgressCacheManager()
 
 # Сохранить прогресс
+
 manager.set_progress(user.id, {
     'completed_lessons': 15,
     'current_course': 3
 })
 
 # Получить прогресс
+
 progress = manager.get_progress(user.id)
 
 # Инвалидировать при изменении
-manager.invalidate_progress(user.id)
-```
 
+manager.invalidate_progress(user.id)
+```text
 **Фичи:**
+
 - Автоматическое версионирование ключей
 - TTL 1 час для прогресса
 - Bulk операции для дашборда
@@ -156,8 +159,7 @@ class HomeworkSubmitIn(Schema):
     lesson_id: int
     answer: str
     files: list[str] | None = None
-```
-
+```text
 ---
 
 ## Установка и настройка
@@ -165,17 +167,20 @@ class HomeworkSubmitIn(Schema):
 ### 1. Добавить в INSTALLED_APPS
 
 ```python
+
 # settings.py
+
 INSTALLED_APPS = [
     ...
     'students',
 ]
-```
-
+```text
 ### 2. Настроить middleware
 
 ```python
+
 # settings.py
+
 MIDDLEWARE = [
     ...
     'students.middleware.StudentsRateLimitMiddleware',
@@ -185,17 +190,20 @@ MIDDLEWARE = [
 ]
 
 # Опционально: изменить лимиты
+
 STUDENTS_RATE_LIMIT_AUTHENTICATED = 1000  # запросов в час
 STUDENTS_RATE_LIMIT_ANONYMOUS = 100       # запросов в час
 
 # Опционально: кастомная CSP политика
-STUDENTS_CSP_POLICY = "default-src 'self'; ..."
-```
 
+STUDENTS_CSP_POLICY = "default-src 'self'; ..."
+```text
 ### 3. Добавить URL маршруты
 
 ```python
+
 # urls.py
+
 from django.urls import path, include
 
 urlpatterns = [
@@ -203,12 +211,13 @@ urlpatterns = [
     path('students/', include('students.urls')),
     path('api/students/', students_api),  # Django Ninja
 ]
-```
-
+```text
 ### 4. Настроить Redis для кэша
 
 ```python
+
 # settings.py
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
@@ -220,14 +229,12 @@ CACHES = {
         'TIMEOUT': 3600,
     }
 }
-```
-
+```text
 ### 5. Запустить миграции
 
 ```bash
 python manage.py migrate students
-```
-
+```text
 ---
 
 ## Использование
@@ -235,17 +242,20 @@ python manage.py migrate students
 ### Пример 1: Получение прогресса через API
 
 ```bash
+
 # Аутентификация
-curl -X POST http://localhost:8000/api/auth/token/ \
+
+curl -X POST <http://localhost:8000/api/auth/token/> \
   -H "Content-Type: application/json" \
   -d '{"username": "student", "password": "pass123"}'
 
 # Получение прогресса
-curl http://localhost:8000/api/students/progress/ \
-  -H "Authorization: Bearer YOUR_TOKEN"
-```
 
+curl <http://localhost:8000/api/students/progress/> \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```text
 **Ответ:**
+
 ```json
 {
   "completed_lessons": 15,
@@ -254,53 +264,59 @@ curl http://localhost:8000/api/students/progress/ \
   "last_activity": "2025-01-01",
   "completion_rate": 30.0
 }
-```
-
+```text
 ### Пример 2: Веб интерфейс
 
 ```python
+
 # students/views.py
+
 @login_required
 def dashboard(request):
     """Дашборд студента"""
     cache_manager = ProgressCacheManager()
-    
+
     # Попытка получить из кэша
+
     progress = cache_manager.get_progress(request.user.id)
-    
+
     if not progress:
+
         # Загрузка из БД при cache miss
+
         progress = calculate_progress(request.user)
         cache_manager.set_progress(request.user.id, progress)
-    
+
     return render(request, 'students/dashboard.html', {
         'progress': progress,
         'courses': get_available_courses(request.user)
     })
-```
-
+```text
 ### Пример 3: Rate Limiting
 
 ```python
+
 # Rate limit автоматически применяется к /students/* маршрутам
+
 @login_required
 def submit_homework(request, lesson_id):
     """Отправка домашнего задания"""
+
     # При превышении лимита middleware вернет 429 до вызова view
-    
+
     homework = Homework.objects.create(
         student=request.user,
         lesson_id=lesson_id,
         answer=request.POST['answer']
     )
-    
+
     # Инвалидировать кэш прогресса
+
     cache_manager = ProgressCacheManager()
     cache_manager.invalidate_progress(request.user.id)
-    
-    return redirect('students:dashboard')
-```
 
+    return redirect('students:dashboard')
+```text
 ---
 
 ## Интеграция с другими приложениями
@@ -308,18 +324,21 @@ def submit_homework(request, lesson_id):
 ### С Authentication
 
 ```python
+
 # Используем модели из students
+
 from students.models import Student
 
 def get_student_profile(user) -> Student:
     """Получить профиль студента"""
     return user.student
-```
-
+```text
 ### С Courses
 
 ```python
+
 # Доступ к курсам из students
+
 from courses.models import Course, Lesson
 
 def get_available_courses(user: User) -> list[Course]:
@@ -328,12 +347,13 @@ def get_available_courses(user: User) -> list[Course]:
         is_published=True,
         students=user
     )
-```
-
+```text
 ### С Notifications
 
 ```python
+
 # Уведомления о прогрессе
+
 from notifications.utils import send_notification
 
 def notify_course_completion(user: User, course: Course):
@@ -343,8 +363,7 @@ def notify_course_completion(user: User, course: Course):
         title=f"Поздравляем! Курс '{course.title}' завершен",
         message=f"Вы получили сертификат о прохождении курса"
     )
-```
-
+```text
 ---
 
 ## Тестирование
@@ -352,7 +371,9 @@ def notify_course_completion(user: User, course: Course):
 ### Юнит тесты
 
 ```python
+
 # students/tests/test_api.py
+
 import pytest
 from django.test import Client
 
@@ -362,9 +383,9 @@ def test_get_progress_authenticated():
     client = Client()
     user = User.objects.create_user('student', 'test@test.com', 'pass123')
     client.force_login(user)
-    
+
     response = client.get('/api/students/progress/')
-    
+
     assert response.status_code == 200
     assert 'completed_lessons' in response.json()
 
@@ -372,21 +393,24 @@ def test_get_progress_authenticated():
 def test_rate_limit():
     """Тест rate limiting для анонимных пользователей"""
     client = Client()
-    
+
     # Первые 100 запросов должны пройти
+
     for i in range(100):
         response = client.get('/students/dashboard/')
         assert response.status_code in [200, 302]  # 302 redirect to login
-    
+
     # 101-й запрос должен быть заблокирован
+
     response = client.get('/students/dashboard/')
     assert response.status_code == 429
-```
-
+```text
 ### Интеграционные тесты
 
 ```python
+
 # students/tests/test_views.py
+
 import pytest
 from django.test import Client
 
@@ -396,20 +420,22 @@ def test_dashboard_with_cache():
     client = Client()
     user = User.objects.create_user('student', 'test@test.com', 'pass123')
     client.force_login(user)
-    
+
     # Первый запрос - cache miss
+
     response = client.get('/students/dashboard/')
     assert response.status_code == 200
-    
+
     # Второй запрос - cache hit
+
     response = client.get('/students/dashboard/')
     assert response.status_code == 200
-    
+
     # Проверяем headers в debug режиме
+
     if settings.DEBUG:
         assert 'X-Cache-Stats' in response
-```
-
+```text
 ---
 
 ## Performance
@@ -429,19 +455,24 @@ def test_dashboard_with_cache():
 ### Оптимизация запросов
 
 ```python
+
 # Используйте select_related для FK
+
 courses = Course.objects.select_related('author').all()
 
 # Используйте prefetch_related для M2M
+
 courses = Course.objects.prefetch_related('lessons').all()
 
 # Кэшируйте тяжелые вычисления
+
 @cached(timeout=3600, key_prefix='course_stats')
 def get_course_statistics(course_id):
-    # Тяжелые вычисления...
-    pass
-```
 
+    # Тяжелые вычисления
+
+    pass
+```text
 ---
 
 ## Мониторинг и логирование
@@ -449,7 +480,9 @@ def get_course_statistics(course_id):
 ### Логирование
 
 ```python
+
 # settings.py
+
 LOGGING = {
     'loggers': {
         'students': {
@@ -464,22 +497,23 @@ LOGGING = {
         },
     },
 }
-```
-
+```text
 ### Метрики
 
 ```python
+
 # Логи rate limiting
+
 logger.warning(
     f"Rate limit exceeded for User:{user.id} "
     f"on {request.path}: {count}/{limit}"
 )
 
 # Логи кэша
+
 logger.info(f"Cache HIT for key: progress_user_{user.id}")
 logger.info(f"Cache MISS for key: dashboard_user_{user.id}")
-```
-
+```text
 ---
 
 ## Безопасность
@@ -487,7 +521,9 @@ logger.info(f"Cache MISS for key: dashboard_user_{user.id}")
 ### Защита endpoints
 
 ```python
+
 # Используйте decorators для проверки прав доступа
+
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -495,10 +531,9 @@ def student_only_view(request):
     """View только для студентов"""
     if not request.user.student.roles.filter(name='student').exists():
         return HttpResponseForbidden()
-    
-    return render(request, 'students/dashboard.html')
-```
 
+    return render(request, 'students/dashboard.html')
+```text
 ### Rate Limiting
 
 - Защита от DDoS атак
@@ -508,13 +543,14 @@ def student_only_view(request):
 ### Валидация данных
 
 ```python
+
 # Используйте Pydantic схемы для API
+
 class HomeworkSubmitIn(Schema):
     lesson_id: int = Field(..., gt=0)
     answer: str = Field(..., min_length=1, max_length=10000)
     files: list[str] | None = Field(None, max_length=5)
-```
-
+```text
 ---
 
 ## Troubleshooting
@@ -522,25 +558,29 @@ class HomeworkSubmitIn(Schema):
 ### Проблема: Кэш не работает
 
 **Решение:**
+
 1. Проверьте подключение к Redis:
+
 ```bash
 redis-cli ping
-```
-
+```text
 2. Проверьте настройки кэша в settings.py
 3. Включите логирование кэша для отладки
 
 ### Проблема: Rate limit слишком строгий
 
 **Решение:**
-```python
-# settings.py
-STUDENTS_RATE_LIMIT_AUTHENTICATED = 2000  # увеличить лимит
-```
 
+```python
+
+# settings.py
+
+STUDENTS_RATE_LIMIT_AUTHENTICATED = 2000  # увеличить лимит
+```text
 ### Проблема: Медленные запросы
 
 **Решение:**
+
 1. Используйте select_related/prefetch_related
 2. Добавьте индексы в БД
 3. Кэшируйте тяжелые вычисления
@@ -551,16 +591,19 @@ STUDENTS_RATE_LIMIT_AUTHENTICATED = 2000  # увеличить лимит
 ## Roadmap
 
 ### v1.1 (Q1 2025)
+
 - [ ] Добавить Prometheus метрики
 - [ ] WebSocket для real-time обновлений прогресса
 - [ ] GraphQL API как альтернатива REST
 
 ### v1.2 (Q2 2025)
+
 - [ ] Gamification: badges, achievements, leaderboard
 - [ ] Social features: follow students, study groups
 - [ ] Mobile app SDK
 
 ### v2.0 (Q3 2025)
+
 - [ ] AI-powered рекомендации курсов
 - [ ] Adaptive learning paths
 - [ ] Integration with LMS systems
@@ -576,6 +619,6 @@ STUDENTS_RATE_LIMIT_AUTHENTICATED = 2000  # увеличить лимит
 
 ---
 
-**Автор**: Pyland Team  
-**Дата обновления**: 2025-01-01  
+**Автор**: Pyland Team
+**Дата обновления**: 2025-01-01
 **Версия**: 1.0

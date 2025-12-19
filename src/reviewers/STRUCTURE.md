@@ -3,11 +3,13 @@
 ## Выполненные изменения
 
 ### 1. Декораторы views.py ✅
+
 - Все представления используют декораторы от `authentication.decorators`:
   - `@login_required`
   - `@require_any_role(['reviewer', 'mentor'], redirect_url='/')`
 
 ### 2. Удалены лишние файлы ✅
+
 - `decorators_old.py`
 - `forms_old.py`
 - `views_old_full.py`
@@ -18,28 +20,32 @@
 - `README.md`
 
 ### 3. Статические файлы ✅
+
 Размещены в общей папке static (не в reviewers/static):
+
 - `static/css/reviewers/dashboard.css`
 - `static/js/reviewers/dashboard.js`
 - `static/js/reviewers/dashboard-mobile.js`
 
 ### 4. Шаблоны обновлены ✅
+
 Все 9 шаблонов теперь используют **только** reviewers стили:
 
 **До:**
+
 ```django
 {% static 'css/students/dashboard.css' %}
 {% static 'css/reviewers/dashboard.css' %}
 {% static 'js/students/dashboard.js' %}
-```
-
+```text
 **После:**
+
 ```django
 {% static 'css/reviewers/dashboard.css' %}
 {% static 'js/reviewers/dashboard.js' %}
-```
+```text
+### Обновленные шаблоны
 
-### Обновленные шаблоны:
 1. `dashboard.html` - главная панель
 2. `submissions_list.html` - список работ
 3. `submission_review.html` - проверка работы
@@ -53,7 +59,7 @@
 
 ## Текущая структура
 
-```
+```text
 reviewers/
 ├── __init__.py
 ├── admin.py
@@ -90,8 +96,7 @@ static/ (общая папка проекта)
     └── reviewers/
         ├── dashboard.js
         └── dashboard-mobile.js
-```
-
+```text
 ## Views с декораторами authentication
 
 ```python
@@ -99,28 +104,27 @@ static/ (общая папка проекта)
 @require_any_role(['reviewer', 'mentor'], redirect_url='/')
 def dashboard_view(request: HttpRequest) -> HttpResponse:
     """Главная страница ревьюера с статистикой"""
-    
+
 @login_required
 @require_any_role(['reviewer', 'mentor'], redirect_url='/')
 def submissions_list_view(request: HttpRequest) -> HttpResponse:
     """Список работ на проверку с фильтрами"""
-    
+
 @login_required
 @require_any_role(['reviewer', 'mentor'], redirect_url='/')
 def submission_review_view(request: HttpRequest, submission_id: int) -> HttpResponse:
     """Проверка конкретной работы студента"""
-    
+
 @login_required
 @require_any_role(['reviewer', 'mentor'], redirect_url='/')
 def settings_view(request: HttpRequest) -> HttpResponse:
     """Настройки профиля ревьюера"""
-    
+
 @login_required
 @require_any_role(['reviewer', 'mentor'], redirect_url='/')
 def api_pending_count(request: HttpRequest) -> JsonResponse:
     """API endpoint для получения количества ожидающих работ"""
-```
-
+```text
 ## Проверка
 
 **Lint статус:** ✅ 0 ошибок
@@ -132,6 +136,7 @@ def api_pending_count(request: HttpRequest) -> JsonResponse:
 ## Готово к использованию
 
 Приложение reviewers полностью готово:
+
 - ✅ Современная архитектура
 - ✅ Собственные стили и JS
 - ✅ Декораторы от auth

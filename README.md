@@ -16,37 +16,46 @@ Django 5.2 онлайн школа программирования с мног�
 ### Вариант 1: Docker (рекомендуется)
 
 ```bash
+
 # Запуск всех сервисов (web + postgres + redis + celery)
+
 docker-compose up -d
 
 # Создание суперпользователя
+
 docker-compose exec web python manage.py createsuperuser
 
-# Открыть: http://localhost:8000
-```
+# Открыть: <http://localhost:8000>
 
+```text
 ### Вариант 2: Локально (без Docker)
 
 ```bash
+
 # 1. Установка зависимостей
+
 poetry install
 
 # 2. Активация virtualenv
+
 poetry shell
 cd src
 
 # 3. Применение миграций
+
 python manage.py migrate
 python manage.py create_roles
 
 # 4. Создание суперпользователя
+
 python manage.py createsuperuser
 
 # 5. Запуск сервера
-python manage.py runserver
-```
 
+python manage.py runserver
+```text
 **Важно для локальной разработки:**
+
 - PostgreSQL должен быть запущен (или используется SQLite по умолчанию)
 - Redis опционален (будет использован dummy cache если Redis недоступен)
 
@@ -54,7 +63,7 @@ python manage.py runserver
 
 ## 📂 Структура проекта
 
-```
+```text
 backend/
 ├── src/                          # Django приложение
 │   ├── authentication/          # Пользователи, роли, JWT auth
@@ -73,23 +82,21 @@ backend/
 ├── docker-compose.yml           # Локальная разработка
 ├── pyproject.toml              # Poetry зависимости
 └── README.md                   # Эта инструкция
-```
-
+```text
 ---
 
 ## 🔄 Git Workflow (Ветки и CI)
 
 ### Основные ветки
 
-```
+```text
 main         - Production-ready код (защищена, только PR)
   ↑
   └── develop  - Development ветка (текущая разработка)
        ↑
        └── feature/* - Фичи/фиксы (короткоживущие)
-```
-
-### ⚠️ ВАЖНО: НЕ переключайтесь вручную между ветками!
+```text
+### ⚠️ ВАЖНО: НЕ переключайтесь вручную между ветками
 
 **Используй Pull Requests через GitHub UI, а не ручной merge!**
 
@@ -100,29 +107,34 @@ main         - Production-ready код (защищена, только PR)
 ### Этап 1: Разработка новой фичи
 
 ```bash
+
 # 1. Убедись что на develop
+
 git checkout develop
 git pull origin develop
 
 # 2. Создай feature ветку
+
 git checkout -b feature/add-user-profile
 
 # 3. Разработка (локально или Docker)
+
 poetry shell && cd src
 python manage.py runserver
 
 # 4. Коммиты по ходу работы
+
 git add .
 git commit -m "feat: add user profile page"
 git commit -m "feat: add profile edit form"
 
 # 5. Залей на GitHub
-git push origin feature/add-user-profile
-```
 
+git push origin feature/add-user-profile
+```text
 ### Этап 2: Pull Request в develop (через GitHub UI)
 
-1. **Открой GitHub:** https://github.com/your-repo/backend
+1. **Открой GitHub:** <https://github.com/your-repo/backend>
 2. **Создай Pull Request:**
    - Source: `feature/add-user-profile`
    - Target: `develop`
@@ -144,11 +156,13 @@ git push origin feature/add-user-profile
    - ❌ Красный крестик
    - 🔍 Посмотри логи в Actions
    - 🛠️ Исправь локально:
+
      ```bash
      git add .
      git commit -m "fix: resolve test failures"
      git push origin feature/add-user-profile
      ```
+
    - CI запустится заново автоматически
 
 ### Этап 3: Тестирование на develop (опционально)
@@ -156,17 +170,20 @@ git push origin feature/add-user-profile
 После merge в `develop` можешь протестировать:
 
 ```bash
+
 # Переключись на develop
+
 git checkout develop
 git pull origin develop
 
 # Запусти локально или в Docker
+
 docker-compose up -d
 
 # Проверь что всё работает
-curl http://localhost:8000/api/health/
-```
 
+curl <http://localhost:8000/api/health/>
+```text
 **Или** задеплой на dev окружение (когда настроим k8s).
 
 ### Этап 4: Release в main (через GitHub UI)
@@ -188,6 +205,7 @@ curl http://localhost:8000/api/health/
 3. **После проверки:**
    - 🔀 Merge в `main` через UI
    - 🏷️ Создай Git tag:
+
      ```bash
      git checkout main
      git pull origin main
@@ -204,34 +222,41 @@ curl http://localhost:8000/api/health/
 ## 🚫 Что НЕ делать
 
 ❌ **НЕ делай `git merge` вручную:**
+
 ```bash
+
 # ❌ ПЛОХО - пропускает CI и code review
+
 git checkout main
 git merge develop
 git push origin main
-```
-
+```text
 ✅ **Используй Pull Request:**
+
 - Открой PR: `develop` → `main`
 - CI проверит автоматически
 - Merge через GitHub UI
 
 ❌ **НЕ пушь напрямую в main:**
+
 ```bash
+
 # ❌ ПЛОХО - нарушает защиту ветки
+
 git checkout main
 git commit -m "quick fix"
 git push origin main  # Будет отклонен если настроена защита
-```
-
+```text
 ✅ **Создай feature ветку даже для hotfix:**
+
 ```bash
 git checkout -b hotfix/critical-bug
 git commit -m "fix: critical security issue"
 git push origin hotfix/critical-bug
-# Открой PR в GitHub
-```
 
+# Открой PR в GitHub
+
+```text
 ---
 
 ## 🔄 Краткая шпаргалка
@@ -256,12 +281,14 @@ git push origin hotfix/critical-bug
 | `main` | При **Pull Request** | ✅ Полный CI + Coverage + Docs |
 
 **Что делает CI автоматически:**
+
 - ✅ `pytest` - запускает 134 теста
 - ✅ `ruff` + `black` + `isort` - проверяет форматирование
 - ✅ `bandit` + `safety` - security сканирование
 - ✅ `codecov` - загружает coverage отчет
 
 **CI показывает результат прямо в Pull Request:**
+
 - 🟢 Зелёная галочка = всё ОК, можно мержить
 - 🔴 Красный крестик = есть ошибки, нужно исправить
 - 🟡 Жёлтый кружок = CI ещё работает, подожди
@@ -272,69 +299,78 @@ git push origin hotfix/critical-bug
 
 ## 🐳 Docker vs Локальная разработка
 
-### Когда использовать Docker:
+### Когда использовать Docker
 
 ✅ **Рекомендуется для:**
+
 - Быстрый старт проекта
 - Тестирование production окружения
 - Celery worker/beat разработка
 - Полная изоляция окружения
 
 **Запуск:**
+
 ```bash
 docker-compose up -d                    # Все сервисы
 docker-compose logs -f web              # Просмотр логов
 docker-compose exec web bash            # Shell внутри контейнера
 docker-compose down                     # Остановка
-```
-
-### Когда использовать локально:
+```text
+### Когда использовать локально
 
 ✅ **Рекомендуется для:**
+
 - Быстрая итерация кода (hot reload)
 - Debugging с breakpoints
 - IDE интеграция (PyCharm, VS Code)
 - Работа без Docker Desktop
 
 **Запуск:**
+
 ```bash
 poetry shell                            # Активация virtualenv
 cd src
 python manage.py runserver              # Django dev server
 pytest -v                               # Тесты
-```
-
+```text
 ### Health Checks (для k8s readiness)
 
 ```bash
-# Приложение живо?
-curl http://localhost:8000/api/health/
+
+# Приложение живо
+
+curl <http://localhost:8000/api/health/>
 
 # Готово принимать трафик? (проверка БД + Redis)
-curl http://localhost:8000/api/readiness/
-```
 
+curl <http://localhost:8000/api/readiness/>
+```text
 ---
 
 ## 🧪 Тестирование
 
 ```bash
+
 # Все тесты
+
 poetry run pytest
 
 # С coverage
+
 poetry run pytest --cov=src --cov-report=html
 
 # Конкретное приложение
+
 poetry run pytest blog/tests/
 
 # С verbose
+
 poetry run pytest -v --tb=short
 
 # Быстро (параллельно)
-poetry run pytest -n auto
-```
 
+poetry run pytest -n auto
+```text
 **Статус тестов:** 134 passed, 9 skipped (некоторые тесты временно отключены из-за Ninja API конфликтов)
 
 ---
@@ -344,29 +380,36 @@ poetry run pytest -n auto
 ### Django Management
 
 ```bash
+
 # Миграции
+
 python manage.py makemigrations
 python manage.py migrate
 
 # Создание данных
+
 python manage.py create_roles              # Роли пользователей
 python manage.py populate_courses_data     # Тестовые курсы
 python manage.py populate_blog_data        # Тестовые статьи
 
 # Суперпользователь
+
 python manage.py createsuperuser
 
 # Shell
+
 python manage.py shell
 
 # Статика
-python manage.py collectstatic --noinput
-```
 
+python manage.py collectstatic --noinput
+```text
 ### Docker Compose
 
 ```bash
+
 # Управление сервисами
+
 docker-compose up -d                       # Запуск
 docker-compose down                        # Остановка
 docker-compose down -v                     # Остановка + удаление БД
@@ -374,38 +417,43 @@ docker-compose restart web                 # Перезапуск сервиса
 docker-compose ps                          # Статус
 
 # Логи
+
 docker-compose logs -f                     # Все сервисы
 docker-compose logs -f web                 # Только web
 docker-compose logs -f celery-worker       # Только celery
 
 # Выполнение команд
+
 docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py shell
 docker-compose exec postgres psql -U pyland_user -d pyland
-```
-
+```text
 ### Pre-commit Hooks
 
 ```bash
+
 # Установка
+
 pre-commit install
 
 # Ручной запуск
+
 pre-commit run --all-files
 
 # Обновление хуков
-pre-commit autoupdate
-```
 
+pre-commit autoupdate
+```text
 ---
 
 ## 🌐 API Документация
 
-- **Swagger UI:** http://localhost:8000/api/docs
-- **ReDoc:** http://localhost:8000/api/redoc
-- **OpenAPI Schema:** http://localhost:8000/api/openapi.json
+- **Swagger UI:** <http://localhost:8000/api/docs>
+- **ReDoc:** <http://localhost:8000/api/redoc>
+- **OpenAPI Schema:** <http://localhost:8000/api/openapi.json>
 
 **Основные endpoints:**
+
 - `/api/auth/*` - Аутентификация (JWT)
 - `/api/blog/*` - Блог (статьи, комментарии)
 - `/api/courses/*` - Курсы и уроки
@@ -418,6 +466,7 @@ pre-commit autoupdate
 ## 🚧 Production Readiness (~40%)
 
 **Готово:**
+
 - ✅ CI/CD (GitHub Actions)
 - ✅ Docker containerization
 - ✅ Health checks для k8s
@@ -425,6 +474,7 @@ pre-commit autoupdate
 - ✅ Security checks (bandit, safety)
 
 **В процессе (план на k8s):**
+
 - ⏳ Kubernetes manifests (ConfigMap, Deployments, Services)
 - ⏳ GitHub Actions → GHCR (Docker registry)
 - ⏳ Observability (Prometheus, Grafana, Loki)
@@ -437,21 +487,25 @@ pre-commit autoupdate
 Создайте `.env` файл (см. `.env.example`):
 
 ```bash
+
 # Django
+
 DEBUG=True
 SECRET_KEY=your-secret-key-here
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Database
+
 DATABASE_URL=postgresql://user:password@localhost:5432/pyland
 
 # Redis
+
 REDIS_URL=redis://localhost:6379/0
 
 # Sentry (опционально)
-SENTRY_DSN=https://...
-```
 
+SENTRY_DSN=<https://...>
+```text
 ---
 
 ## 🤝 Участие в разработке
@@ -463,6 +517,7 @@ SENTRY_DSN=https://...
 5. Откройте Pull Request в `develop`
 
 **Типы коммитов:**
+
 - `feat:` - новая фича
 - `fix:` - исправление бага
 - `docs:` - документация
@@ -475,7 +530,7 @@ SENTRY_DSN=https://...
 ## 📞 Контакты
 
 - **Документация проекта:** См. `src/*/README.md` в каждом приложении
-- **GitHub Issues:** https://github.com/ps965xx7vn-lgtm/backend/issues
+- **GitHub Issues:** <https://github.com/ps965xx7vn-lgtm/backend/issues>
 
 ---
 

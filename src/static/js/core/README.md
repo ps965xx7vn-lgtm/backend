@@ -13,9 +13,11 @@ JavaScript файлы для базовой функциональности п�
 ## 📁 Файлы и их назначение
 
 ### `main.js` (основной файл)
+
 Базовая функциональность, работающая на всех страницах.
 
 **Функциональность:**
+
 - Переключение темы (light/dark mode)
 - Сохранение темы в localStorage
 - Автоопределение системной темы
@@ -26,9 +28,11 @@ JavaScript файлы для базовой функциональности п�
 - Lazy loading изображений
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 
 **Ключевые функции:**
+
 ```javascript
 // Тема
 toggleTheme()                        // Переключить тему
@@ -46,35 +50,35 @@ handleFlashMessages()                // Автоскрытие flash сообщ�
 
 // Изображения
 initLazyLoading()                    // Lazy loading для img[data-src]
-```
-
+```text
 **Переключение темы:**
+
 ```javascript
 document.addEventListener('DOMContentLoaded', function() {
     // Получить сохраненную тему
     const savedTheme = localStorage.getItem('theme');
-    
+
     // Или системную тему
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches 
-        ? 'dark' 
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
         : 'light';
-    
+
     // Применить тему
     const theme = savedTheme || systemTheme;
     document.body.dataset.theme = theme;
-    
+
     // Переключатель темы
     document.querySelector('.theme-toggle')?.addEventListener('click', () => {
         const currentTheme = document.body.dataset.theme || 'light';
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        
+
         document.body.dataset.theme = newTheme;
         localStorage.setItem('theme', newTheme);
     });
 });
-```
-
+```text
 **CSRF токен:**
+
 ```javascript
 function getCsrfToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
@@ -89,14 +93,15 @@ fetch('/api/endpoint/', {
     },
     body: JSON.stringify(data)
 });
-```
-
+```text
 ---
 
 ### `desktop-nav.js` (desktop навигация)
+
 Интерактивность desktop навигации.
 
 **Функциональность:**
+
 - Открытие/закрытие dropdown меню
 - Закрытие меню при клике вне его
 - Highlight активного пункта меню
@@ -104,38 +109,41 @@ fetch('/api/endpoint/', {
 - Sticky header при скролле
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 - Работает только на desktop (≥992px)
 
 **События:**
+
 - Click на `.dropdown-toggle` - показать/скрыть dropdown
 - Click вне dropdown - закрыть dropdown
 - Scroll - добавить класс `.sticky` к header
 - Hover на `.nav-item` - подсветка
 
 **Ключевые функции:**
+
 ```javascript
 initDropdowns()                      // Инициализация dropdown меню
 toggleUserMenu()                     // Toggle user menu
 highlightActiveLink()                // Подсветка активного пункта
 handleStickyHeader()                 // Sticky header при скролле
 closeDropdownsOnClickOutside()       // Закрытие при клике вне
-```
-
+```text
 **Dropdown меню:**
+
 ```javascript
 document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
     toggle.addEventListener('click', function(e) {
         e.preventDefault();
         const dropdown = this.nextElementSibling;
-        
+
         // Закрыть другие
         document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
             if (menu !== dropdown) {
                 menu.classList.remove('show');
             }
         });
-        
+
         // Toggle текущий
         dropdown.classList.toggle('show');
     });
@@ -149,9 +157,9 @@ document.addEventListener('click', function(e) {
         });
     }
 });
-```
-
+```text
 **Sticky header:**
+
 ```javascript
 window.addEventListener('scroll', function() {
     const header = document.querySelector('.header');
@@ -161,14 +169,15 @@ window.addEventListener('scroll', function() {
         header.classList.remove('sticky');
     }
 });
-```
-
+```text
 ---
 
 ### `mobile-menu.js` (мобильное меню)
+
 Логика бургер-меню для мобильных устройств.
 
 **Функциональность:**
+
 - Открытие/закрытие бургер-меню
 - Анимация иконки бургера (X)
 - Блокировка скролла при открытом меню
@@ -177,20 +186,24 @@ window.addEventListener('scroll', function() {
 - Accordion подменю
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 - Работает только на mobile (<992px)
 
 **События:**
+
 - Click на `.mobile-menu-toggle` - открыть/закрыть меню
 - Click на `.mobile-menu-overlay` - закрыть меню
 - Keydown ESC - закрыть меню
 - Click на `.submenu-toggle` - открыть/закрыть подменю
 
 **Зависимости:**
+
 - CSS: `css/core/mobile-menu.css`
 - Классы: `.mobile-menu`, `.mobile-menu.open`, `.mobile-menu-overlay`
 
 **Ключевые функции:**
+
 ```javascript
 openMobileMenu()                     // Открыть меню
 closeMobileMenu()                    // Закрыть меню
@@ -198,9 +211,9 @@ toggleMobileMenu()                   // Toggle меню
 lockScroll()                         // Заблокировать скролл body
 unlockScroll()                       // Разблокировать скролл
 initSubmenuAccordion()               // Инициализация accordion
-```
-
+```text
 **Открытие/закрытие:**
+
 ```javascript
 const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 const mobileMenu = document.querySelector('.mobile-menu');
@@ -236,42 +249,40 @@ document.addEventListener('keydown', function(e) {
         closeMobileMenu();
     }
 });
-```
-
+```text
 **Accordion подменю:**
+
 ```javascript
 document.querySelectorAll('.submenu-toggle').forEach(toggle => {
     toggle.addEventListener('click', function(e) {
         e.preventDefault();
         const submenu = this.nextElementSibling;
         const isOpen = submenu.classList.contains('open');
-        
+
         // Закрыть все подменю
         document.querySelectorAll('.submenu.open').forEach(menu => {
             menu.classList.remove('open');
         });
-        
+
         // Toggle текущее
         if (!isOpen) {
             submenu.classList.add('open');
         }
     });
 });
-```
-
+```text
 ---
 
 ## 🏗️ Архитектура
 
 ### Структура файлов
 
-```
+```text
 static/js/core/
 ├── main.js              # Базовая функциональность (тема, CSRF, etc)
 ├── desktop-nav.js       # Desktop навигация (≥992px)
 └── mobile-menu.js       # Mobile меню (<992px)
-```
-
+```text
 ### Порядок подключения в base.html
 
 ```django
@@ -281,11 +292,11 @@ static/js/core/
 <script src="{% static 'js/core/mobile-menu.js' %}" defer></script>
 
 {% block extra_js %}{% endblock %}
-```
-
+```text
 ### Независимость файлов
 
 Файлы **независимы** друг от друга:
+
 - Не импортируют функции друг друга
 - Каждый инициализируется при `DOMContentLoaded`
 - Работают с разными DOM элементами
@@ -313,7 +324,7 @@ static/js/core/
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PySchool{% endblock %}</title>
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/core/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/components.css' %}">
@@ -322,14 +333,14 @@ static/js/core/
     <link rel="stylesheet" href="{% static 'css/core/themes.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/desktop-nav.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/mobile-menu.css' %}">
-    
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <div class="main-wrapper">
         <!-- Header с навигацией -->
         {% include 'shared/_header.html' %}
-        
+
         <!-- Основной контент -->
         <main class="content-wrapper">
             {% if messages %}
@@ -341,25 +352,24 @@ static/js/core/
                 {% endfor %}
             </div>
             {% endif %}
-            
+
             {% block content %}{% endblock %}
         </main>
-        
+
         <!-- Footer -->
         {% include 'shared/_footer.html' %}
     </div>
-    
+
     <!-- Core JavaScript -->
     <script src="{% static 'js/core/main.js' %}" defer></script>
     <script src="{% static 'js/core/desktop-nav.js' %}" defer></script>
     <script src="{% static 'js/core/mobile-menu.js' %}" defer></script>
-    
+
     <!-- Page specific JS -->
     {% block extra_js %}{% endblock %}
 </body>
 </html>
-```
-
+```text
 ### shared/_header.html (навигация)
 
 ```django
@@ -371,7 +381,7 @@ static/js/core/
             <a href="{% url 'core:home' %}" class="logo">
                 <img src="{% static 'img/logo.svg' %}" alt="PySchool">
             </a>
-            
+
             <!-- Desktop Navigation -->
             <nav class="desktop-nav">
                 <ul class="nav-menu">
@@ -388,7 +398,7 @@ static/js/core/
                             <li><a href="{% url 'core:contacts' %}">Контакты</a></li>
                         </ul>
                     </li>
-                    
+
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle">
@@ -407,13 +417,13 @@ static/js/core/
                     </li>
                     {% endif %}
                 </ul>
-                
+
                 <!-- Theme Toggle -->
                 <button class="theme-toggle" aria-label="Toggle theme">
                     <span class="theme-icon">🌙</span>
                 </button>
             </nav>
-            
+
             <!-- Mobile Menu Toggle -->
             <button class="mobile-menu-toggle" aria-label="Open menu">
                 <span></span>
@@ -437,7 +447,7 @@ static/js/core/
                     <li><a href="{% url 'core:contacts' %}">Контакты</a></li>
                 </ul>
             </li>
-            
+
             {% if user.is_authenticated %}
             <li>
                 <a href="#" class="submenu-toggle">{{ user.username }} ▼</a>
@@ -451,7 +461,7 @@ static/js/core/
             <li><a href="{% url 'account:login' %}" class="btn btn-primary">Вход</a></li>
             {% endif %}
         </ul>
-        
+
         <!-- Theme Toggle в мобильном меню -->
         <button class="theme-toggle mobile" aria-label="Toggle theme">
             🌙 Темная тема
@@ -459,8 +469,7 @@ static/js/core/
     </div>
 </div>
 <div class="mobile-menu-overlay"></div>
-```
-
+```text
 ---
 
 ## 🔌 API и взаимодействие
@@ -484,8 +493,7 @@ fetch('/api/endpoint/', {
     },
     body: JSON.stringify(data)
 });
-```
-
+```text
 ### localStorage API
 
 Используется для сохранения настроек:
@@ -502,8 +510,7 @@ localStorage.removeItem('theme');
 
 // Очистить всё
 localStorage.clear();
-```
-
+```text
 ### Взаимодействие с Django
 
 ```javascript
@@ -515,8 +522,7 @@ document.querySelectorAll('.flash-messages .alert').forEach(alert => {
         setTimeout(() => alert.remove(), 300);
     }, 5000);
 });
-```
-
+```text
 ---
 
 ## 💻 Конвенции кода
@@ -540,8 +546,7 @@ function handleClick() { }
 // get для получения данных
 function getTheme() { }
 function getCsrfToken() { }
-```
-
+```text
 ### DOMContentLoaded
 
 Весь код инициализации:
@@ -552,12 +557,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initTheme();
     initDropdowns();
     initLazyLoading();
-    
+
     // Event listeners
     setupEventListeners();
 });
-```
-
+```text
 ### Event Listeners
 
 ```javascript
@@ -572,8 +576,7 @@ document.addEventListener('click', function(e) {
 document.querySelector('.btn').addEventListener('click', function() {
     // Обработка
 });
-```
-
+```text
 ### Обработка ошибок
 
 ```javascript
@@ -585,8 +588,7 @@ try {
     // Fallback
     document.body.dataset.theme = 'light';
 }
-```
-
+```text
 ---
 
 ## 📊 Статистика
@@ -616,6 +618,7 @@ try {
 **Если нужен новый общий функционал:**
 
 1. Добавьте функцию в `main.js`:
+
 ```javascript
 // main.js
 function myNewFeature() {
@@ -625,13 +628,12 @@ function myNewFeature() {
 document.addEventListener('DOMContentLoaded', function() {
     myNewFeature();
 });
-```
-
+```text
 2. Или создайте новый файл `my-feature.js` и подключите в `base.html`:
+
 ```django
 <script src="{% static 'js/core/my-feature.js' %}" defer></script>
-```
-
+```text
 ### Использование темы в своем коде
 
 ```javascript
@@ -652,15 +654,13 @@ observer.observe(document.body, {
     attributes: true,
     attributeFilter: ['data-theme']
 });
-```
-
+```text
 ### Добавление tooltip
 
 ```html
 <!-- HTML -->
 <button data-tooltip="Это подсказка">Наведи на меня</button>
-```
-
+```text
 ```javascript
 // main.js автоматически инициализирует все [data-tooltip]
 // Или вручную:
@@ -668,6 +668,5 @@ const tooltip = document.querySelector('[data-tooltip]');
 tooltip.addEventListener('mouseenter', function() {
     showTooltip(this.dataset.tooltip);
 });
-```
-
+```text
 Готово! 🎉

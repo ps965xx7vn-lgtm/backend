@@ -11,14 +11,17 @@
 **Расположение:** `authentication/decorators.py`
 
 **Логика роутинга:**
+
 ```python
 @redirect_to_role_dashboard
 def my_view(request):
-    # Код не выполнится, произойдет автоматический редирект
-    pass
-```
 
+    # Код не выполнится, произойдет автоматический редирект
+
+    pass
+```text
 **Маршрутизация:**
+
 - `admin` → `managers:dashboard` (полный доступ к админке)
 - `manager` → `managers:dashboard` (управление платформой)
 - `mentor` → `reviewers:dashboard` (проверка работ + менторство)
@@ -32,28 +35,31 @@ def my_view(request):
 ### 2. View для общего роутинга
 
 **Расположение:** `core/views.py`
+
 ```python
 @redirect_to_role_dashboard
 def home_redirect(request: HttpRequest) -> HttpResponse:
     """Роутер dashboard по ролям пользователей"""
     return redirect("core:home")  # Fallback, не выполнится
-```
-
+```text
 ### 3. URL endpoints
 
 **Расположение:** `core/urls.py`
+
 ```python
 urlpatterns = [
     path("dashboard/", views.home_redirect, name="dashboard"),
-    # ...
-]
-```
 
+    #
+
+]
+```text
 ## Использование
 
 ### В шаблонах
 
 Вместо проверки роли в шаблоне:
+
 ```django
 ❌ ПЛОХО:
 {% if user.role.name == 'reviewer' %}
@@ -64,8 +70,7 @@ urlpatterns = [
 
 ✅ ХОРОШО:
 <a href="{% url 'core:dashboard' %}">Dashboard</a>
-```
-
+```text
 ### В views
 
 ```python
@@ -75,16 +80,16 @@ from authentication.decorators import redirect_to_role_dashboard
 def my_router_view(request):
     """Автоматически перенаправит на нужный dashboard"""
     pass
-```
-
+```text
 ### Прямой редирект
 
 ```python
 def some_view(request):
-    # Перенаправить на dashboard пользователя
-    return redirect('core:dashboard')
-```
 
+    # Перенаправить на dashboard пользователя
+
+    return redirect('core:dashboard')
+```text
 ## Примеры
 
 ### 1. Ссылка "Дашборд" в header
@@ -92,17 +97,17 @@ def some_view(request):
 ```django
 <!-- В _header.html -->
 <a href="{% url 'core:dashboard' %}">Дашборд</a>
-```
-
+```text
 ### 2. После успешного логина
 
 ```python
 def login_view(request):
-    # ...
+
+    #
+
     login(request, user)
     return redirect('core:dashboard')  # Автоматически на нужный dashboard
-```
-
+```text
 ### 3. Кнопка на главной странице
 
 ```django
@@ -110,8 +115,7 @@ def login_view(request):
 {% if user.is_authenticated %}
     <a href="{% url 'core:dashboard' %}" class="btn">Перейти в кабинет</a>
 {% endif %}
-```
-
+```text
 ## Преимущества
 
 1. ✅ **Чистые шаблоны** - никаких проверок ролей
@@ -123,12 +127,12 @@ def login_view(request):
 ## Логирование
 
 Декоратор автоматически логирует все редиректы:
-```
+
+```text
 INFO: Redirecting a@mail.ru (reviewer) to reviewers dashboard
 INFO: Redirecting b@mail.ru (student) to student dashboard
 WARNING: Unknown role 'None' for user c@mail.ru, redirecting to home
-```
-
+```text
 ## Тестирование
 
 ```python
@@ -143,38 +147,45 @@ def test_dashboard_router_student(client, student_user):
     response = client.get(reverse('core:dashboard'))
     assert response.status_code == 302
     assert 'students/account/' in response.url
-```
-
+```text
 ## Миграция существующего кода
 
 ### Шаг 1: Обновить шаблоны
+
 Заменить все условные ссылки на `{% url 'core:dashboard' %}`
 
 ### Шаг 2: Обновить views
+
 ```python
-# Было:
+
+# Было
+
 if user.role.name == 'reviewer':
     return redirect('reviewers:dashboard')
 elif user.role.name == 'student':
     return redirect('students:account_dashboard', user.student.id)
 
-# Стало:
-return redirect('core:dashboard')
-```
+# Стало
 
+return redirect('core:dashboard')
+```text
 ### Шаг 3: Протестировать
+
 Проверить редиректы для всех ролей
 
 ## Troubleshooting
 
 **Проблема:** Редирект на home вместо dashboard
+
 - Проверить наличие роли: `user.role.name`
 - Проверить логи: `grep "Redirecting" logs/django.log`
 
 **Проблема:** Для студента нет ID
+
 - Проверить наличие профиля: `user.student`
 - Проверить сигналы создания Student
 
 **Проблема:** Циклический редирект
+
 - Не использовать декоратор на самих dashboard views
 - Декоратор только для роутеров

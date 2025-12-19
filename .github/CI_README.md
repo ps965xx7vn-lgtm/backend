@@ -47,73 +47,62 @@
 
 ```bash
 poetry install
-```
-
+```text
 ### Запуск линтера
 
 ```bash
 poetry run ruff check src/
-```
-
+```text
 ### Автофикс проблем линтера
 
 ```bash
 poetry run ruff check src/ --fix
-```
-
+```text
 ### Форматирование кода
 
 ```bash
 poetry run black src/
-```
-
+```text
 ### Сортировка импортов
 
 ```bash
 poetry run isort src/
-```
-
+```text
 ### Type checking
 
 ```bash
 poetry run mypy src/
-```
-
+```text
 ### Проверка безопасности
 
 ```bash
 poetry run safety check
 poetry run bandit -r src/
-```
-
+```text
 ### Запуск тестов
 
 ```bash
 cd src
 poetry run pytest
-```
-
+```text
 ### Тесты с coverage
 
 ```bash
 cd src
 poetry run pytest --cov=. --cov-report=html
-```
-
+```text
 ### Проверка миграций
 
 ```bash
 cd src
 poetry run python manage.py makemigrations --check --dry-run
-```
-
+```text
 ### Компиляция переводов
 
 ```bash
 cd src
 poetry run python manage.py compilemessages
-```
-
+```text
 ## Pre-commit хуки (опционально)
 
 Для автоматической проверки перед коммитом можно настроить pre-commit:
@@ -121,8 +110,7 @@ poetry run python manage.py compilemessages
 ```bash
 pip install pre-commit
 pre-commit install
-```
-
+```text
 ## Переменные окружения для CI
 
 В GitHub Secrets нужно добавить:

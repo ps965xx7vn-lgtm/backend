@@ -20,9 +20,12 @@ as primary database.
 **Dependencies:**
 
 - Production: Django 5.2.3, Ninja 1.4.3, Pydantic 2.11.7, Celery 5.5.3,
+
   Redis 6.4.0+, Pillow, django-countries, phonenumber-field,
   django-taggit, loguru, social-auth-app-django, sentry-sdk
+
 - Development: pytest, pytest-django, factory-boy, pytest-cov,
+
   pytest-xdist, freezegun
 
 ---
@@ -66,20 +69,25 @@ The project uses a **modular app architecture** with clear separation of concern
 Each app has `api.py` with a router:
 
 ```python
+
 # Example: blog/api.py
+
 router = Router(tags=["Blog"])
 
 @router.get("/articles/", response=List[ArticleSchema])
 def list_articles(request, category: str = None):
+
     # Pydantic schema validation automatic
+
     pass
 
 @router.post("/articles/{id}/react/", response=ReactionSchema)
 def add_reaction(request, id: int, payload: ReactionPayload):
-    # POST bodies auto-validated against Pydantic schema
-    pass
-```
 
+    # POST bodies auto-validated against Pydantic schema
+
+    pass
+```text
 **Key Pattern:** Request/response validation via Pydantic schemas
 in `schemas.py` per app.
 
@@ -88,7 +96,9 @@ in `schemas.py` per app.
 - **Primary DB:** PostgreSQL (via `dj-database-url`)
 - **Models:** Django ORM with `get_user_model()` for User everywhere
 - **Migrations:** Per-app under `migrations/`
+
   (apply with `python manage.py migrate`)
+
 - **Fixtures:** Use `conftest.py` + Factory Boy factories (see Testing section)
 
 **User Model Location:** `authentication/models.py`
@@ -112,115 +122,143 @@ in `schemas.py` per app.
 ### Project Setup with Poetry
 
 ```bash
+
 # Install dependencies (creates virtualenv automatically)
+
 poetry install
 
 # Install only production deps (excludes dev group)
+
 poetry install --no-dev
 
 # Add a new dependency
+
 poetry add package-name
 
 # Add a dev dependency
+
 poetry add --group dev package-name
 
 # Show installed packages and versions
+
 poetry show
 
 # Update all dependencies
+
 poetry update
 
 # Export to requirements.txt
-poetry export -f requirements.txt --output requirements.txt
-```
 
+poetry export -f requirements.txt --output requirements.txt
+```text
 **Poetry Configuration:** `pyproject.toml`
 
 - Python version constraint: `>=3.13,<4.0`
 - Project name: `pyland`
 - Dev dependencies: pytest, pytest-django, factory-boy,
+
   pytest-cov, pytest-xdist, freezegun
 
 ### Popular Management Commands
 
 ```bash
+
 # OPTION 1: With Poetry shell (recommended for development)
+
 poetry shell
 cd src
 
 # Setup roles and initial data
+
 # Create user roles (student, mentor, reviewer, manager, admin, support)
+
 python manage.py create_roles
 
 # Populate database with test data
+
 python manage.py populate_courses_data     # Create 10 test courses with data
 
 # Blog management
+
 python manage.py generate_sitemap          # Generate sitemap.xml for SEO
 python manage.py populate_blog_data        # Create test articles and blog data
 
 # Migrations and data
+
 python manage.py makemigrations [app_name] # Create migrations
 python manage.py migrate [app_name]        # Apply migrations
 
 # Admin
+
 python manage.py createsuperuser           # Create admin user
 
 # OPTION 2: Direct poetry run (without shell activation)
+
 poetry run python src/manage.py create_roles
 poetry run python src/manage.py populate_courses_data
 poetry run python src/manage.py migrate
-```
-
+```text
 ### Running the Application
 
 ```bash
+
 # OPTION 1: Activate Poetry virtualenv (recommended for development)
+
 poetry shell
 cd src
-python manage.py runserver  # http://localhost:8000
+python manage.py runserver  # <http://localhost:8000>
 
 # OPTION 2: Run directly with poetry (without shell)
+
 poetry run python src/manage.py runserver
 
 # With Redis (optional but recommended, in separate terminal)
-redis-server
-```
 
+redis-server
+```text
 ### Running Tests
 
 ```bash
+
 # OPTION 1: With Poetry shell (recommended)
+
 poetry shell
 cd src
 
 # All tests
+
 pytest
 
 # Specific app
+
 pytest blog/tests/
 
 # With coverage report
+
 pytest --cov=blog --cov-report=html
 
 # Fail on first error, stop after 10 failures
+
 pytest --maxfail=10 --failed-first
 
 # Verbose output with markers
+
 pytest -v --tb=short
 
 # Parallel execution (faster)
+
 pytest -n auto
 
 # Run specific test file
+
 pytest blog/tests/test_models.py -v
 
 # OPTION 2: Direct poetry run (without shell)
+
 poetry run pytest
 poetry run pytest blog/tests/
 poetry run pytest --cov=blog --cov-report=html
-```
-
+```text
 **Test Configuration:** `pytest.ini` defines:
 
 - `DJANGO_SETTINGS_MODULE = pyland.settings`
@@ -230,56 +268,68 @@ poetry run pytest --cov=blog --cov-report=html
 ### Database Management
 
 ```bash
+
 # OPTION 1: With Poetry shell (recommended)
+
 poetry shell
 cd src
 
 # Create new migration
+
 python manage.py makemigrations
 
 # Apply migrations
+
 python manage.py migrate
 
 # Apply specific app migrations
+
 python manage.py migrate authentication
 
 # Shell for direct queries
+
 python manage.py shell
 
 # Create superuser
+
 python manage.py createsuperuser
 
 # OPTION 2: Direct poetry run (without shell)
+
 poetry run python src/manage.py makemigrations
 poetry run python src/manage.py migrate
 poetry run python src/manage.py migrate authentication
 poetry run python src/manage.py createsuperuser
-```
-
+```text
 ### Celery Tasks
 
 Tasks are in `tasks.py` per app (e.g., `blog/tasks.py`, `authentication/tasks.py`).
 
 ```bash
+
 # OPTION 1: With Poetry shell (recommended)
+
 poetry shell
 cd src
 
 # Start Celery worker
+
 celery -A pyland worker -l info
 
 # Start Celery beat scheduler (for periodic tasks, in separate terminal)
+
 celery -A pyland beat -l info
 
 # Combined (worker + beat in one process - dev only)
+
 celery -A pyland worker -B -l info
 
 # OPTION 2: Direct poetry run (without shell)
+
 poetry run celery -A pyland worker -l info
 poetry run celery -A pyland beat -l info
 poetry run celery -A pyland worker -B -l info
-```
-
+```text
 **Task definition pattern:**
 
 ```python
@@ -288,12 +338,13 @@ from celery import shared_task
 @shared_task(bind=True, max_retries=3)
 def send_email_notification(self, user_id):
     try:
+
         # Async work
+
         pass
     except Exception as exc:
         raise self.retry(exc=exc, countdown=60)  # Retry in 60s
-```
-
+```text
 **Triggering:** Called from views/APIs via `task.delay()` or `.apply_async()`.
 
 ---
@@ -305,7 +356,9 @@ def send_email_notification(self, user_id):
 **Cache Utils Pattern:**
 
 ```python
+
 # blog/cache_utils.py - exemplary implementation
+
 from django.core.cache import cache
 
 def get_cache_key(prefix, *args, **kwargs):
@@ -319,8 +372,7 @@ def get_cache_key(prefix, *args, **kwargs):
 def get_articles(category=None, page=1):
     """Decorator auto-caches, checks Redis health."""
     return articles
-```
-
+```text
 **Convention:** Prefix caches with app name (`blog:`, `students:`, etc.).
 Fallback to dummy cache if Redis unavailable.
 
@@ -334,14 +386,15 @@ logger = logging.getLogger(__name__)
 
 logger.info(f"User {user_id} logged in")
 logger.error(f"Failed to process: {exc}")
-```
-
+```text
 **Configured in `settings.py`** — all logs route to `/src/logs/` directory.
 
 ### 3. **Error Handling Pattern (try-except in APIs)**
 
 ```python
+
 # All API endpoints wrap in try-except
+
 @router.post("/do-something/")
 def do_something(request, payload: Schema):
     try:
@@ -354,8 +407,7 @@ def do_something(request, payload: Schema):
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         return {"error": "Internal server error"}, 500
-```
-
+```text
 ### 4. **Testing Patterns**
 
 **Fixture Location:** `conftest.py` at app level and root.
@@ -364,27 +416,35 @@ def do_something(request, payload: Schema):
 **Standard test file structure:**
 
 ```python
+
 # blog/tests/test_models.py
+
 @pytest.mark.django_db
 class TestArticleModel:
     def test_article_creation(self, user, category):
         """Arrange-Act-Assert pattern."""
+
         # Arrange
+
         article_data = {"title": "Test", "category": category, "author": user}
+
         # Act
+
         article = Article.objects.create(**article_data)
+
         # Assert
+
         assert article.slug == "test"
         assert article.author == user
 
 # blog/tests/test_api.py
+
 def test_list_articles_api(api_client, article):
     """Test API responses with Ninja's TestClient."""
     response = api_client.get("/api/blog/articles/")
     assert response.status_code == 200
     assert len(response.json()["data"]) >= 1
-```
-
+```text
 **Key Factories (in `blog/tests/factories.py`):**
 
 - `UserFactory`, `StaffUserFactory`, `SuperUserFactory`
@@ -418,8 +478,7 @@ class CreateArticlePayload(BaseModel):
     content: str = Field(..., min_length=10)
     category_id: int
     tags: List[str] = []
-```
-
+```text
 ### 6. **Admin Customization**
 
 Located in `admin.py` per app, extends Django `ModelAdmin`:
@@ -432,8 +491,7 @@ class ArticleAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     readonly_fields = ('slug', 'created_at')
     prepopulated_fields = {'slug': ('title',)}
-```
-
+```text
 ---
 
 ## Integration Points & Data Flows
@@ -473,16 +531,22 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Purpose:** Account management, profile editing, personal dashboard
 - **Key Models:** User profile extended via `authentication/Profile`
 - **API Endpoints:** Registration, login, profile get/update,
+
   token management, avatar upload
+
 - **Middleware:** `StudentsRateLimitMiddleware`
+
   (1000 req/hour for auth, 100 for anon)
+
 - **Schemas:** `RegisterIn`, `LoginIn`, `ProfileOut`, `NotificationSettingsOut`
 
 ### **Courses App**
 
 - **Hierarchy:** Course → Lesson → Step → (Tip/ExtraSource)
 - **Submissions:** `LessonSubmission` model tracks student submissions
+
   with status workflow
+
 - **Status Workflow:** pending → changes_requested → approved
 - **Caching:** Progress cached per student per course
 - **Key Endpoints:** List/get courses, create lessons/steps, manage submissions
@@ -492,7 +556,9 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Purpose:** Review workflow for student submissions with modern architecture
 - **Models:**
   - `Reviewer` (from authentication.models) - reviewer profile with
+
     expertise, courses, is_active, statistics
+
   - `Review` - review of submission with status/rating/comments/time_spent
   - `StudentImprovement` - specific improvements for submission with priority
   - `ReviewerNotification` - notifications about new submissions
@@ -501,23 +567,34 @@ class ArticleAdmin(admin.ModelAdmin):
   - `can_review_course` - validates course access
   - `max_reviews_per_day_check` - enforces daily review limit
 - **Forms:** ReviewForm, ReviewerProfileForm, SubmissionFilterForm,
+
   StudentImprovementForm (full validation + clean methods)
+
 - **Views:** dashboard_view, submissions_list_view,
+
   submission_review_view, settings_view, api_pending_count
+
 - **URLs:** Simple structure like students app: dashboard/,
+
   submissions/, submissions/ID/, settings/, api/pending-count/
+
 - **Caching:** get_reviewer_stats (10min TTL), invalidate_reviewer_cache pattern
 - **Statuses:** approved / needs_work / rejected
 - **Access Control:** @require_any_role(['reviewer', 'mentor']) +
+
   custom decorators
+
 - **Review Process:** GET form → POST validation →
+
   update submission status → invalidate cache → redirect
 
 ### **Blog App**
 
 - **Features:** 149 unit tests, Redis caching, nested comments (max 3 levels)
 - **Models:** Category, Article, Series, Comment, Reaction, Bookmark,
+
   ReadingProgress, Newsletter
+
 - **Markdown Support:** Articles stored as markdown, rendered with `django-markdownify`
 - **Reactions:** Like, love, helpful, insightful, amazing types
 - **SEO:** Meta-tags, schema.org, Open Graph, sitemap generation
@@ -544,6 +621,7 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Tasks:** Async Celery tasks for sending
 - **Settings:** Per-user notification preferences in Profile
 - **Types:** course_updates, lesson_reminders, achievement_alerts,
+
   weekly_summary
 
 ### **Certificates App**
@@ -590,8 +668,7 @@ your_app/
 │   ├── test_api.py     # API endpoint tests
 │   └── test_views.py   # View tests
 └── migrations/         # Auto-generated
-```
-
+```text
 ---
 
 ## Common Development Tasks
@@ -604,7 +681,9 @@ your_app/
    ```python
    @router.post("/endpoint/", response=ResponseSchema)
    def create_item(request, payload: CreatePayload):
+
        # Validation auto-handled by Pydantic
+
        return Item.objects.create(**payload.dict())
    ```
 
@@ -615,20 +694,25 @@ your_app/
        response = api_client.post("/api/your_app/endpoint/", json={...})
        assert response.status_code == 201
    ```
+
 4. Router auto-added to main API in `/pyland/api.py`
 
 ### Adding a Celery Task
 
 1. Create in `your_app/tasks.py`:
+
    ```python
    @shared_task(bind=True, max_retries=3)
    def process_data(self, data_id):
        try:
            data = Model.objects.get(id=data_id)
+
            # Process
+
        except Exception as exc:
            raise self.retry(exc=exc, countdown=60)
    ```
+
 2. Call from view/API: `process_data.delay(data_id)`
 3. Test with `pytest-django` (auto-uses eager mode in tests)
 
@@ -657,23 +741,29 @@ your_app/
 ### Inspection Tools
 
 ```bash
+
 # Django shell with imported models
+
 python manage.py shell
 >>> from blog.models import Article
 >>> Article.objects.all().count()
 
 # View SQL queries (DEBUG=True in settings)
+
 from django.db import connection
 print(connection.queries)
 
 # API docs (auto-generated by Ninja)
-# http://127.0.0.1:8000/api/docs
+
+# <http://127.0.0.1:8000/api/docs>
 
 # Test coverage
-pytest --cov=src --cov-report=html
-# Open htmlcov/index.html
-```
 
+pytest --cov=src --cov-report=html
+
+# Open htmlcov/index.html
+
+```text
 ---
 
 ## Key Files Reference
@@ -699,6 +789,7 @@ pytest --cov=src --cov-report=html
 - **Logging:** Use logger.info/warning/error with context
 
 Example:
+
 ```python
 def process_user_data(user_id: int) -> dict:
     """
@@ -714,61 +805,89 @@ def process_user_data(user_id: int) -> dict:
         User.DoesNotExist: Если пользователь не найден
     """
     logger.info(f"Processing user {user_id}")
-    # ...
-```
 
+    #
+
+```text
 ---
 
 ## Quick Reference Commands
 
 ```bash
+
 # Setup & Environment
+
 poetry install                      # Install dependencies
 poetry shell                        # Activate virtualenv
 cd src                             # Navigate to Django project
 
 # Development server (from src/ directory)
-python manage.py runserver         # http://localhost:8000
-# Alternative without poetry shell:
+
+python manage.py runserver         # <http://localhost:8000>
+
+# Alternative without poetry shell
+
 # poetry run python src/manage.py runserver
 
 # Database (from src/ directory with poetry shell)
+
 python manage.py makemigrations    # Create migrations
 python manage.py migrate           # Apply migrations
 python manage.py createsuperuser   # Create admin user
-# Alternatives with poetry run:
+
+# Alternatives with poetry run
+
 # poetry run python src/manage.py makemigrations
+
 # poetry run python src/manage.py migrate
+
 # poetry run python src/manage.py createsuperuser
 
 # Testing (from src/ directory with poetry shell)
+
 pytest                             # Run all tests
 pytest -v --tb=short              # Verbose with short traceback
 pytest --cov=blog --cov-report=html  # Coverage report
 pytest blog/tests/test_models.py   # Specific file
-# Alternatives with poetry run:
+
+# Alternatives with poetry run
+
 # poetry run pytest
+
 # poetry run pytest blog/tests/
+
 # poetry run pytest --cov=blog --cov-report=html
 
 # Celery (in separate terminals, from src/ directory with poetry shell)
+
 celery -A pyland worker -l info    # Worker
 celery -A pyland beat -l info      # Beat scheduler
 celery -A pyland worker -B -l info # Combined (dev only)
-# Alternatives with poetry run:
+
+# Alternatives with poetry run
+
 # poetry run celery -A pyland worker -l info
+
 # poetry run celery -A pyland beat -l info
+
 # poetry run celery -A pyland worker -B -l info
 
 # Redis (in separate terminal)
+
 redis-server                       # Start Redis
 
 # Management commands (from src/ directory with poetry shell)
+
 python manage.py populate_courses_data    # Create test courses
 python manage.py create_roles             # Create user roles
 python manage.py generate_sitemap         # Generate sitemap.xml
-# Alternatives with poetry run:
+
+# Alternatives with poetry run
+
 # poetry run python src/manage.py populate_courses_data
+
 # poetry run python src/manage.py create_roles
+
 # poetry run python src/manage.py generate_sitemap
-```
+
+```text

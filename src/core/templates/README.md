@@ -4,7 +4,7 @@ HTML шаблоны для основных страниц приложения 
 
 ## 📋 Структура
 
-```
+```text
 templates/
 ├── base.html                # Базовый шаблон для всего проекта
 ├── shared/                  # Общие компоненты (header, footer, etc.)
@@ -15,8 +15,7 @@ templates/
     └── legal/              # Юридические страницы
         ├── terms_of_service.html
         └── privacy_policy.html
-```
-
+```text
 ## 🏠 base.html
 
 Базовый шаблон, от которого наследуются все страницы проекта.
@@ -29,20 +28,22 @@ templates/
 {% block extra_css %}{% endblock %}       # Дополнительные CSS
 {% block content %}{% endblock %}         # Основной контент
 {% block extra_js %}{% endblock %}        # Дополнительные JS скрипты
-```
-
+```text
 **Подключаемые стили:**
+
 - `static/css/core/main.css` - базовые стили
 - `static/css/core/themes.css` - темная/светлая тема
 - `static/css/core/layout.css` - layout grid system
 - `static/css/core/components.css` - UI компоненты
 
 **Подключаемые скрипты:**
+
 - `static/js/core/main.js` - базовая функциональность
 - `static/js/core/desktop-nav.js` - десктоп навигация
 - `static/js/core/mobile-menu.js` - мобильное меню
 
 **Context variables:**
+
 - `footer_data` - из `core.context_processors.footer_data`
 
 ---
@@ -54,6 +55,7 @@ templates/
 **Extends:** `base.html`
 
 **Context variables:**
+
 ```python
 {
     'popular_courses': QuerySet[Course],  # Популярные курсы (limit 6)
@@ -64,15 +66,16 @@ templates/
         'completion_rate': float
     }
 }
-```
-
+```text
 **Используемые блоки:**
+
 - `title` - "Pyland - Онлайн обучение программированию"
 - `extra_meta` - Open Graph теги для соцсетей
 - `extra_css` - `static/css/core/home.css`
 - `content` - основной контент страницы
 
 **Секции:**
+
 1. **Hero Section** - главный баннер с призывом к действию
 2. **Popular Courses** - карточки популярных курсов
 3. **Statistics** - блок со статистикой платформы
@@ -80,6 +83,7 @@ templates/
 5. **CTA Section** - призыв к регистрации
 
 **Компоненты:**
+
 - `.hero-section` - главный баннер
 - `.course-card` - карточка курса
 - `.stats-grid` - сетка статистики
@@ -95,6 +99,7 @@ templates/
 **Extends:** `base.html`
 
 **Context variables:**
+
 ```python
 {
     'form': FeedbackForm,           # Форма обратной связи
@@ -105,9 +110,9 @@ templates/
         'working_hours': str
     }
 }
-```
-
+```text
 **Используемые блоки:**
+
 - `title` - "Контакты - Pyland"
 - `extra_css` - `static/css/core/contact-form.css`
 - `content` - форма и контактная информация
@@ -124,9 +129,9 @@ templates/
     {{ form.agree_terms }}     <!-- Согласие с условиями -->
     <button type="submit">Отправить</button>
 </form>
-```
-
+```text
 **Валидация:**
+
 - Client-side: HTML5 валидация + JavaScript
 - Server-side: Django forms + Pydantic схемы
 
@@ -142,18 +147,20 @@ templates/
 **Extends:** `base.html`
 
 **Context variables:**
+
 ```python
 {
     'team_members': QuerySet[User],     # Команда (опционально)
     'achievements': List[dict],         # Достижения
 }
-```
-
+```text
 **Используемые блоки:**
+
 - `title` - "О нас - Pyland"
 - `content` - информация о платформе
 
 **Секции:**
+
 1. **About Section** - описание платформы
 2. **Mission** - миссия и ценности
 3. **Team** - команда (если есть)
@@ -170,11 +177,13 @@ templates/
 **Context variables:** Нет
 
 **Используемые блоки:**
+
 - `title` - "Условия использования - Pyland"
 - `extra_css` - `static/css/core/legal-pages.css`
 - `content` - текст условий использования
 
 **Структура:**
+
 1. Общие положения
 2. Регистрация и учетная запись
 3. Права и обязанности сторон
@@ -185,6 +194,7 @@ templates/
 8. Контактная информация
 
 **CSS стили:**
+
 - `.legal-container` - контейнер с типографикой
 - `.legal-section` - отдельная секция
 - `.legal-toc` - оглавление (Table of Contents)
@@ -200,11 +210,13 @@ templates/
 **Context variables:** Нет
 
 **Используемые блоки:**
+
 - `title` - "Политика конфиденциальности - Pyland"
 - `extra_css` - `static/css/core/legal-pages.css`
 - `content` - текст политики
 
 **Структура:**
+
 1. Общие положения
 2. Какие данные мы собираем
 3. Как мы используем данные
@@ -216,6 +228,7 @@ templates/
 9. Контактная информация
 
 **GDPR compliance:**
+
 - Информация о сборе данных
 - Права пользователей (доступ, удаление, исправление)
 - Контактные данные DPO (Data Protection Officer)
@@ -224,7 +237,7 @@ templates/
 
 ## 🔧 Использование в views
 
-### Рендеринг шаблона:
+### Рендеринг шаблона
 
 ```python
 from django.shortcuts import render
@@ -242,9 +255,8 @@ def home(request):
         }
     }
     return render(request, 'core/home.html', context)
-```
-
-### Передача формы:
+```text
+### Передача формы
 
 ```python
 from .forms import FeedbackForm
@@ -253,19 +265,20 @@ def contacts(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
+
             # Обработка формы
+
             pass
     else:
         form = FeedbackForm()
-    
-    return render(request, 'core/contacts.html', {'form': form})
-```
 
+    return render(request, 'core/contacts.html', {'form': form})
+```text
 ---
 
 ## 🎨 CSS классы
 
-### Общие классы (используются во всех шаблонах):
+### Общие классы (используются во всех шаблонах)
 
 ```css
 .container              /* Основной контейнер (max-width: 1200px) */
@@ -277,9 +290,8 @@ def contacts(request):
 .form-control          /* Поле формы */
 .alert                  /* Уведомление */
 .grid                   /* Grid layout */
-```
-
-### Специфичные классы home.html:
+```text
+### Специфичные классы home.html
 
 ```css
 .hero-section          /* Главный баннер */
@@ -288,9 +300,8 @@ def contacts(request):
 .stat-item             /* Элемент статистики */
 .features-list         /* Список возможностей */
 .cta-banner            /* Призыв к действию */
-```
-
-### Специфичные классы contacts.html:
+```text
+### Специфичные классы contacts.html
 
 ```css
 .feedback-form         /* Форма обратной связи */
@@ -298,22 +309,20 @@ def contacts(request):
 .contact-item          /* Элемент контакта */
 .form-group            /* Группа полей формы */
 .error-message         /* Сообщение об ошибке */
-```
-
-### Специфичные классы legal pages:
+```text
+### Специфичные классы legal pages
 
 ```css
 .legal-container       /* Контейнер юридической страницы */
 .legal-section         /* Секция документа */
 .legal-toc             /* Оглавление */
 .legal-highlight       /* Выделенный текст */
-```
-
+```text
 ---
 
 ## 🔍 SEO и мета-теги
 
-### Open Graph теги (home.html):
+### Open Graph теги (home.html)
 
 ```django
 {% block extra_meta %}
@@ -324,31 +333,30 @@ def contacts(request):
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 {% endblock %}
-```
-
-### Canonical URLs:
+```text
+### Canonical URLs
 
 ```django
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
-```
-
+```text
 ---
 
 ## 📱 Адаптивность
 
 Все шаблоны адаптивны и работают на устройствах:
+
 - 📱 Mobile (320px - 767px)
 - 📱 Tablet (768px - 1023px)
 - 💻 Desktop (1024px+)
 
 **Breakpoints:**
+
 ```css
 /* Mobile First подход */
 @media (min-width: 768px) { /* Tablet */ }
 @media (min-width: 1024px) { /* Desktop */ }
 @media (min-width: 1440px) { /* Large Desktop */ }
-```
-
+```text
 ---
 
 ## 🌐 Интернационализация
@@ -360,8 +368,7 @@ def contacts(request):
 
 <h1>{% trans "Welcome to Pyland" %}</h1>
 <p>{% blocktrans %}Learn programming online{% endblocktrans %}</p>
-```
-
+```text
 ---
 
 ## ♿ Доступность (A11y)
@@ -379,7 +386,7 @@ def contacts(request):
 **Пример:**
 
 ```django
-<button 
+<button
     aria-label="Отправить форму обратной связи"
     aria-describedby="form-help-text">
     Отправить
@@ -387,8 +394,7 @@ def contacts(request):
 <span id="form-help-text" class="sr-only">
     Форма будет отправлена на обработку
 </span>
-```
-
+```text
 ---
 
 ## 🧪 Тестирование шаблонов
@@ -401,13 +407,12 @@ class TemplateTests(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/home.html')
-    
+
     def test_contacts_form_displays(self):
         response = self.client.get('/contacts/')
         self.assertContains(response, '<form')
         self.assertContains(response, 'feedback-form')
-```
-
+```text
 ---
 
 ## 📚 Связанная документация

@@ -18,8 +18,7 @@ Django management commands для автоматизации задач authenti
 ```bash
 cd src
 poetry run python manage.py create_roles
-```
-
+```text
 ### Что создается
 
 | Роль | Название | Описание |
@@ -33,7 +32,7 @@ poetry run python manage.py create_roles
 
 ### Вывод
 
-```
+```text
 ✓ Создана роль: student (Студент)
 ✓ Создана роль: mentor (Ментор)
 ✓ Создана роль: reviewer (Ревьюер)
@@ -47,8 +46,7 @@ poetry run python manage.py create_roles
   Уже существовало: 0
   Всего ролей: 6
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
+```text
 ### Особенности
 
 - **Идемпотентна** - можно запускать многократно
@@ -69,9 +67,9 @@ poetry run python manage.py create_roles
 from django.core.management import call_command
 
 # Вызвать из Python кода
-call_command('create_roles')
-```
 
+call_command('create_roles')
+```text
 ---
 
 ## create_test_users
@@ -81,16 +79,19 @@ call_command('create_roles')
 ### Использование
 
 ```bash
+
 # Базовый вариант (6 пользователей - по одному каждой роли)
+
 poetry run python manage.py create_test_users
 
 # С дополнительными студентами
+
 poetry run python manage.py create_test_users --count 10
 
 # Удалить существующих и создать заново
-poetry run python manage.py create_test_users --clear
-```
 
+poetry run python manage.py create_test_users --clear
+```text
 ### Опции
 
 | Опция | Тип | Описание |
@@ -143,8 +144,7 @@ Credentials для входа:
   Email: [role]@test.com
   Password: password123
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
+```text
 ### Особенности
 
 - **Проверяет наличие ролей** - требует запуска `create_roles` сначала
@@ -164,29 +164,37 @@ Credentials для входа:
 ### Пример workflow
 
 ```bash
+
 # 1. Создать роли
+
 poetry run python manage.py create_roles
 
 # 2. Создать тестовых пользователей
+
 poetry run python manage.py create_test_users --count 20
 
 # 3. Запустить сервер
+
 poetry run python manage.py runserver
 
 # 4. Войти как admin
-# Email: admin@test.com
-# Password: password123
-```
 
+# Email: admin@test.com
+
+# Password: password123
+
+```text
 ### Безопасность
 
 ⚠️ **ВАЖНО:**
+
 - Команда создает пользователей с **простыми паролями**
 - **НЕ запускайте на production**
 - Email адреса легко угадываются
 - Все пользователи используют один пароль
 
 **Рекомендации:**
+
 - Используйте только для локальной разработки
 - Удалите перед деплоем: `--clear` + не запускайте команду
 - В production создавайте пользователей через admin или API
@@ -198,13 +206,14 @@ poetry run python manage.py runserver
 ### Структура
 
 ```python
+
 # authentication/management/commands/my_command.py
 
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
     """Краткое описание команды."""
-    
+
     help = 'Подробное описание команды'
 
     def add_arguments(self, parser):
@@ -220,14 +229,12 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS('Команда выполнена!')
         )
-```
-
+```text
 ### Вызов
 
 ```bash
 poetry run python manage.py my_command --option value
-```
-
+```text
 ### Best Practices
 
 1. **Docstrings** - всегда документируйте команды
@@ -252,14 +259,14 @@ class TestCreateRolesCommand(TestCase):
         """Тест команды create_roles."""
         out = StringIO()
         call_command('create_roles', stdout=out)
-        
+
         self.assertIn('Создано ролей: 6', out.getvalue())
-        
+
         # Проверить что роли созданы
+
         from authentication.models import Role
         self.assertEqual(Role.objects.count(), 6)
-```
-
+```text
 ---
 
 ## Troubleshooting
@@ -267,41 +274,51 @@ class TestCreateRolesCommand(TestCase):
 ### Команда не найдена
 
 ```bash
+
 # Проверить файловую структуру
+
 ls authentication/management/commands/
 
-# Должны быть:
-# __init__.py
-# create_roles.py
-# create_test_users.py
-```
+# Должны быть
 
+# __init__.py
+
+# create_roles.py
+
+# create_test_users.py
+
+```text
 ### Import ошибки
 
 ```python
-# В commands/__init__.py должно быть:
+
+# В commands/__init__.py должно быть
+
 """Management commands for authentication app."""
 
-# Не импортируйте команды напрямую в __init__.py!
-```
+# Не импортируйте команды напрямую в __init__.py
 
+```text
 ### Роли не создаются
 
 ```bash
+
 # Проверить миграции
+
 poetry run python manage.py showmigrations authentication
 
 # Применить если нужно
-poetry run python manage.py migrate authentication
-```
 
+poetry run python manage.py migrate authentication
+```text
 ### Permission denied
 
 ```bash
-# Убедиться что файлы команд executable (не обязательно для Python)
-chmod +x authentication/management/commands/*.py
-```
 
+# Убедиться что файлы команд executable (не обязательно для Python)
+
+chmod +x authentication/management/commands/*.py
+```text
 ---
 
 ## CI/CD Integration
@@ -315,36 +332,42 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v2
       - name: Setup roles
+
         run: |
           cd src
           poetry run python manage.py create_roles
+
       - name: Setup test users
+
         run: |
           cd src
           poetry run python manage.py create_test_users --count 10
-```
-
+```text
 ### Docker
 
 ```dockerfile
+
 # Dockerfile
+
 RUN poetry run python manage.py create_roles
 
 # docker-compose.yml
+
 services:
   web:
     command: >
       sh -c "poetry run python manage.py create_roles &&
              poetry run python manage.py runserver 0.0.0.0:8000"
-```
-
+```text
 ---
 
 ## Статус
 
 ✅ **Production Ready**
+
 - Команды протестированы
 - Документация полная
 - Best practices соблюдены

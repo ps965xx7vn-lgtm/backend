@@ -14,10 +14,11 @@
 
 ## 🎯 Обзор
 
-**Всего тестов:** 53  
+**Всего тестов:** 53
 **Покрытие:** API эндпоинты, Pydantic схемы, валидация ответов
 
 **Используемые инструменты:**
+
 - `pytest` - фреймворк для тестирования
 - `pytest-django` - плагин для Django
 - `django.test.TestCase` - базовый класс для тестов
@@ -27,21 +28,20 @@
 
 ## 📁 Структура тестов
 
-```
+```text
 tests/
 ├── __init__.py
 ├── test_api.py                     # 15 тестов API эндпоинтов
 ├── test_schemas.py                 # 28 тестов Pydantic схем
 └── test_response_validation.py     # 10 тестов валидации ответов
-```
-
+```text
 ---
 
 ## 🔌 test_api.py
 
 **15 тестов** для проверки REST API эндпоинтов.
 
-### Fixture `api_client`:
+### Fixture `api_client`
 
 ```python
 @pytest.fixture
@@ -50,8 +50,7 @@ def api_client():
     from ninja.testing import TestClient
     from pyland.api import api
     return TestClient(api)
-```
-
+```text
 ---
 
 ### Feedback API Tests (6 тестов)
@@ -61,6 +60,7 @@ def api_client():
 ✅ Проверяет успешное создание заявки обратной связи.
 
 **Тестирует:**
+
 - POST `/api/core/feedback/`
 - Валидный payload с всеми полями
 - Статус 200
@@ -68,6 +68,7 @@ def api_client():
 - Создание записи в БД
 
 **Код:**
+
 ```python
 def test_create_feedback_success(self, api_client):
     payload = {
@@ -77,16 +78,15 @@ def test_create_feedback_success(self, api_client):
         "message": "Хочу узнать больше о курсах Python",
         "agree_terms": True
     }
-    
+
     response = api_client.post("/core/feedback/", json=payload)
-    
+
     assert response.status_code == 200
     data = response.json()
     assert data["success"] is True
     assert "feedback_id" in data
     assert Feedback.objects.filter(id=data["feedback_id"]).exists()
-```
-
+```text
 ---
 
 #### `test_create_feedback_invalid_phone`
@@ -94,6 +94,7 @@ def test_create_feedback_success(self, api_client):
 ✅ Проверяет валидацию неправильного номера телефона.
 
 **Тестирует:**
+
 - Телефон без `+`
 - Телефон с буквами
 - Телефон слишком короткий/длинный
@@ -106,6 +107,7 @@ def test_create_feedback_success(self, api_client):
 ✅ Проверяет валидацию email.
 
 **Тестирует:**
+
 - Email без `@`
 - Email без домена
 - Статус 422
@@ -117,6 +119,7 @@ def test_create_feedback_success(self, api_client):
 ✅ Проверяет минимальную длину сообщения.
 
 **Тестирует:**
+
 - Сообщение < 10 символов
 - Статус 422
 - Сообщение об ошибке
@@ -128,6 +131,7 @@ def test_create_feedback_success(self, api_client):
 ✅ Проверяет обязательность согласия с условиями.
 
 **Тестирует:**
+
 - `agree_terms = False`
 - Статус 422
 - Требование согласия
@@ -139,6 +143,7 @@ def test_create_feedback_success(self, api_client):
 ✅ Проверяет запрет цифр в имени.
 
 **Тестирует:**
+
 - Имя "Иван123"
 - Кастомный валидатор
 - Статус 422
@@ -152,25 +157,26 @@ def test_create_feedback_success(self, api_client):
 ✅ Проверяет создание новой подписки.
 
 **Тестирует:**
+
 - POST `/api/core/subscribe/`
 - Новый email
 - Создание записи Subscription
 - `already_subscribed = False`
 
 **Код:**
+
 ```python
 def test_create_subscription_new(self, api_client):
     payload = {"email": "new@example.com"}
-    
+
     response = api_client.post("/core/subscribe/", json=payload)
-    
+
     assert response.status_code == 200
     data = response.json()
     assert data["success"] is True
     assert data["already_subscribed"] is False
     assert Subscription.objects.filter(email="new@example.com").exists()
-```
-
+```text
 ---
 
 #### `test_create_subscription_already_exists`
@@ -178,6 +184,7 @@ def test_create_subscription_new(self, api_client):
 ✅ Проверяет обработку дубликата подписки.
 
 **Тестирует:**
+
 - Подписка с существующим email
 - Сообщение "уже подписан"
 - `already_subscribed = True`
@@ -190,6 +197,7 @@ def test_create_subscription_new(self, api_client):
 ✅ Проверяет реактивацию неактивной подписки.
 
 **Тестирует:**
+
 - Подписка с `is_active = False`
 - Реактивация (`is_active = True`)
 - Сообщение "снова активна"
@@ -201,6 +209,7 @@ def test_create_subscription_new(self, api_client):
 ✅ Проверяет валидацию email для подписки.
 
 **Тестирует:**
+
 - Невалидный email
 - Статус 422
 - Pydantic EmailStr валидация
@@ -214,24 +223,25 @@ def test_create_subscription_new(self, api_client):
 ✅ Проверяет получение контактной информации.
 
 **Тестирует:**
+
 - GET `/api/core/contact-info/`
 - Статус 200
 - Структура ответа (email, phone, address, etc.)
 - Опциональные поля (social_links)
 
 **Код:**
+
 ```python
 def test_get_contact_info(self, api_client):
     response = api_client.get("/core/contact-info/")
-    
+
     assert response.status_code == 200
     data = response.json()
     assert "email" in data
     assert "phone" in data
     assert "working_hours" in data
     assert isinstance(data.get("social_links"), dict)
-```
-
+```text
 ---
 
 ### Stats API Tests (3 теста)
@@ -241,6 +251,7 @@ def test_get_contact_info(self, api_client):
 ✅ Проверяет статистику при пустой БД.
 
 **Тестирует:**
+
 - GET `/api/core/stats/`
 - Дефолтные значения (0 для счетчиков)
 - Структура StatsSchema
@@ -252,6 +263,7 @@ def test_get_contact_info(self, api_client):
 ✅ Проверяет статистику с реальными данными.
 
 **Тестирует:**
+
 - Создание тестовых данных (User, Course, Lesson)
 - Правильный подсчет
 - Вычисление completion_rate
@@ -263,6 +275,7 @@ def test_get_contact_info(self, api_client):
 ✅ Проверяет подсчет всех курсов.
 
 **Тестирует:**
+
 - Создание нескольких курсов
 - Правильное количество в ответе
 
@@ -275,6 +288,7 @@ def test_get_contact_info(self, api_client):
 ✅ Проверяет полный путь пользователя.
 
 **Тестирует:**
+
 1. Отправка feedback
 2. Подписка на рассылку
 3. Получение contact-info
@@ -294,6 +308,7 @@ def test_get_contact_info(self, api_client):
 ✅ Проверяет валидный payload.
 
 **Код:**
+
 ```python
 def test_valid_feedback(self):
     data = {
@@ -303,12 +318,11 @@ def test_valid_feedback(self):
         "message": "Тестовое сообщение длиннее 10 символов",
         "agree_terms": True
     }
-    
+
     schema = FeedbackSchema(**data)
     assert schema.first_name == "Иван"
     assert schema.phone_number == "+79991234567"
-```
-
+```text
 ---
 
 #### `test_phone_without_plus`
@@ -316,6 +330,7 @@ def test_valid_feedback(self):
 ✅ Проверяет валидацию телефона без `+`.
 
 **Тестирует:**
+
 - `phone_number = "79991234567"` (без +)
 - ValidationError
 - Сообщение об ошибке regex pattern
@@ -327,6 +342,7 @@ def test_valid_feedback(self):
 ✅ Проверяет неправильный формат телефона.
 
 **Тестирует:**
+
 - Буквы в номере
 - ValidationError
 
@@ -337,6 +353,7 @@ def test_valid_feedback(self):
 ✅ Проверяет границы длины телефона.
 
 **Тестирует:**
+
 - Меньше 9 цифр после `+`
 - Больше 15 цифр после `+`
 
@@ -347,11 +364,13 @@ def test_valid_feedback(self):
 ✅ Проверяет кастомный валидатор имени.
 
 **Тестирует:**
+
 - `first_name = "Иван123"`
 - Кастомный @field_validator
 - Сообщение "не должно содержать цифры"
 
 **Код валидатора:**
+
 ```python
 @field_validator('first_name')
 @classmethod
@@ -359,8 +378,7 @@ def validate_no_digits(cls, value: str) -> str:
     if any(char.isdigit() for char in value):
         raise ValueError("Имя не должно содержать цифры")
     return value
-```
-
+```text
 ---
 
 #### `test_message_too_short`
@@ -368,6 +386,7 @@ def validate_no_digits(cls, value: str) -> str:
 ✅ Проверяет минимальную длину сообщения.
 
 **Тестирует:**
+
 - `message = "abc"` (< 10 символов)
 - Field constraint `min_length=10`
 
@@ -378,6 +397,7 @@ def validate_no_digits(cls, value: str) -> str:
 ✅ Проверяет обязательность согласия.
 
 **Тестирует:**
+
 - `agree_terms = False`
 - Field constraint `const=True`
 
@@ -388,6 +408,7 @@ def validate_no_digits(cls, value: str) -> str:
 ✅ Проверяет EmailStr валидацию.
 
 **Тестирует:**
+
 - Email без `@`
 - Pydantic EmailStr тип
 
@@ -398,6 +419,7 @@ def validate_no_digits(cls, value: str) -> str:
 ✅ Проверяет обязательные поля.
 
 **Тестирует:**
+
 - Отсутствие `phone_number`
 - ValidationError
 
@@ -430,6 +452,7 @@ def validate_no_digits(cls, value: str) -> str:
 ✅ Полная контактная информация со всеми полями.
 
 **Код:**
+
 ```python
 def test_full_contact_info(self):
     data = {
@@ -438,16 +461,15 @@ def test_full_contact_info(self):
         "address": "г. Москва, ул. Примерная, д. 1",
         "working_hours": "Пн-Пт: 9:00-18:00",
         "social_links": {
-            "telegram": "https://t.me/pyland",
-            "vk": "https://vk.com/pyland"
+            "telegram": "<https://t.me/pyland",>
+            "vk": "<https://vk.com/pyland">
         }
     }
-    
+
     schema = ContactInfoSchema(**data)
     assert schema.email == "info@pyland.ru"
-    assert schema.social_links["telegram"] == "https://t.me/pyland"
-```
-
+    assert schema.social_links["telegram"] == "<https://t.me/pyland">
+```text
 ---
 
 #### `test_minimal_contact_info`
@@ -475,14 +497,14 @@ def test_full_contact_info(self):
 ✅ Значения по умолчанию (все 0).
 
 **Код:**
+
 ```python
 def test_default_values(self):
     schema = StatsSchema()
     assert schema.total_students == 0
     assert schema.total_courses == 0
     assert schema.completion_rate == 0.0
-```
-
+```text
 ---
 
 #### `test_completion_rate_boundaries`
@@ -490,6 +512,7 @@ def test_default_values(self):
 ✅ Границы completion_rate (0-100).
 
 **Тестирует:**
+
 - `completion_rate = -1` → ValidationError
 - `completion_rate = 101` → ValidationError
 - `completion_rate = 0` → ✅
@@ -502,6 +525,7 @@ def test_default_values(self):
 ✅ Запрет отрицательных значений для счетчиков.
 
 **Тестирует:**
+
 - `total_students = -1` → ValidationError
 - Field constraint `ge=0` (greater or equal)
 
@@ -523,7 +547,7 @@ def test_default_values(self):
 
 **10 тестов** для проверки валидации ответов API через Pydantic.
 
-### Tests:
+### Tests
 
 #### `test_feedback_response_validates_success_field`
 
@@ -572,6 +596,7 @@ def test_default_values(self):
 ✅ Проверяет неизменяемость Pydantic моделей.
 
 **Код:**
+
 ```python
 def test_response_schemas_are_immutable_after_creation(self):
     response = FeedbackResponseSchema(
@@ -579,11 +604,10 @@ def test_response_schemas_are_immutable_after_creation(self):
         message="Test",
         feedback_id=1
     )
-    
+
     with pytest.raises(ValidationError):
         response.success = False  # Должна быть ошибка
-```
-
+```text
 ---
 
 #### `test_pydantic_models_can_be_serialized_to_dict`
@@ -591,6 +615,7 @@ def test_response_schemas_are_immutable_after_creation(self):
 ✅ Проверяет сериализацию в dict.
 
 **Код:**
+
 ```python
 def test_pydantic_models_can_be_serialized_to_dict(self):
     schema = StatsSchema(
@@ -599,12 +624,11 @@ def test_pydantic_models_can_be_serialized_to_dict(self):
         total_lessons=150,
         completion_rate=75.5
     )
-    
+
     data = schema.model_dump()
     assert isinstance(data, dict)
     assert data["total_students"] == 100
-```
-
+```text
 ---
 
 #### `test_pydantic_models_can_be_serialized_to_json`
@@ -615,61 +639,54 @@ def test_pydantic_models_can_be_serialized_to_dict(self):
 
 ## 🚀 Запуск тестов
 
-### Все тесты core:
+### Все тесты core
 
 ```bash
 pytest src/core/tests/ -v
-```
-
-### Конкретный файл:
+```text
+### Конкретный файл
 
 ```bash
 pytest src/core/tests/test_api.py -v
 pytest src/core/tests/test_schemas.py -v
 pytest src/core/tests/test_response_validation.py -v
-```
-
-### Конкретный тест:
+```text
+### Конкретный тест
 
 ```bash
 pytest src/core/tests/test_api.py::TestFeedbackAPI::test_create_feedback_success -v
-```
-
-### С output:
+```text
+### С output
 
 ```bash
 pytest src/core/tests/ -v -s
-```
-
-### Параллельный запуск:
+```text
+### Параллельный запуск
 
 ```bash
 pytest src/core/tests/ -n auto
-```
-
+```text
 ---
 
 ## 📊 Coverage
 
-### Запуск с coverage:
+### Запуск с coverage
 
 ```bash
 pytest src/core/tests/ --cov=core --cov-report=html
-```
-
-### Просмотр отчета:
+```text
+### Просмотр отчета
 
 ```bash
 open htmlcov/index.html
-```
-
-### Coverage по модулям:
+```text
+### Coverage по модулям
 
 ```bash
 pytest src/core/tests/ --cov=core --cov-report=term-missing
-```
-
+```text
 **Ожидаемое покрытие:**
+
 - `api.py` - 95%+
 - `schemas.py` - 100%
 - `forms.py` - 90%+
@@ -679,7 +696,7 @@ pytest src/core/tests/ --cov=core --cov-report=term-missing
 
 ## 🔧 Конфигурация pytest
 
-### pytest.ini (в корне проекта):
+### pytest.ini (в корне проекта)
 
 ```ini
 [tool:pytest]
@@ -687,7 +704,7 @@ DJANGO_SETTINGS_MODULE = pyland.settings
 python_files = test_*.py
 python_classes = Test*
 python_functions = test_*
-addopts = 
+addopts =
     -v
     --strict-markers
     --tb=short
@@ -695,13 +712,12 @@ addopts =
 markers =
     slow: marks tests as slow
     integration: marks tests as integration tests
-```
-
+```text
 ---
 
 ## 🧪 Fixtures
 
-### Общие fixtures (conftest.py):
+### Общие fixtures (conftest.py)
 
 ```python
 import pytest
@@ -737,37 +753,41 @@ def sample_feedback():
         email="test@example.com",
         message="Тестовое сообщение"
     )
-```
-
+```text
 ---
 
 ## 📝 Best Practices
 
-### 1. Именование тестов:
+### 1. Именование тестов
 
 ```python
 def test_<what_is_tested>_<expected_result>():
-    # test_create_feedback_success
-    # test_invalid_phone_raises_error
-    pass
-```
 
-### 2. AAA Pattern (Arrange, Act, Assert):
+    # test_create_feedback_success
+
+    # test_invalid_phone_raises_error
+
+    pass
+```text
+### 2. AAA Pattern (Arrange, Act, Assert)
 
 ```python
 def test_create_subscription_new(self):
+
     # Arrange - подготовка данных
+
     payload = {"email": "new@example.com"}
-    
+
     # Act - выполнение действия
+
     response = api_client.post("/core/subscribe/", json=payload)
-    
+
     # Assert - проверка результата
+
     assert response.status_code == 200
     assert data["success"] is True
-```
-
-### 3. Используйте fixtures:
+```text
+### 3. Используйте fixtures
 
 ```python
 @pytest.fixture
@@ -775,53 +795,55 @@ def valid_feedback_data():
     return {
         "first_name": "Иван",
         "phone_number": "+79991234567",
-        # ...
+
+        #
+
     }
 
 def test_create_feedback(api_client, valid_feedback_data):
     response = api_client.post("/core/feedback/", json=valid_feedback_data)
     assert response.status_code == 200
-```
-
-### 4. Тестируйте edge cases:
+```text
+### 4. Тестируйте edge cases
 
 ```python
+
 # Границы
+
 test_phone_minimum_length()  # +123456789 (9 цифр)
 test_phone_maximum_length()  # +123456789012345 (15 цифр)
 
 # Ошибочные данные
+
 test_empty_string()
 test_none_value()
 test_special_characters()
-```
-
+```text
 ---
 
 ## 🐛 Debugging тестов
 
-### pdb debugger:
+### pdb debugger
 
 ```python
 def test_something():
     import pdb; pdb.set_trace()
-    # Тест остановится здесь
-    assert something
-```
 
-### pytest с print:
+    # Тест остановится здесь
+
+    assert something
+```text
+### pytest с print
 
 ```bash
 pytest tests/test_api.py -v -s
-```
-
-### Только failed тесты:
+```text
+### Только failed тесты
 
 ```bash
 pytest --lf  # last failed
 pytest --ff  # failed first
-```
-
+```text
 ---
 
 ## 📚 Связанная документация

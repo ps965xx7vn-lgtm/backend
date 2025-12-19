@@ -17,6 +17,7 @@
 ## Обзор
 
 Authentication app - это ядро системы управления пользователями Pyland, предоставляющее:
+
 - ✅ Регистрацию и аутентификацию
 - ✅ JWT токены для API
 - ✅ Ролевую систему (6 ролей)
@@ -26,6 +27,7 @@ Authentication app - это ядро системы управления пол�
 - ✅ Social authentication (Google, GitHub, etc.)
 
 **Технологии:**
+
 - Django 5.2.3
 - Django Ninja 1.4.3 (REST API)
 - ninja-jwt 5.3.7 (JWT auth)
@@ -37,6 +39,7 @@ Authentication app - это ядро системы управления пол�
 ## Возможности
 
 ### Для пользователей
+
 - Регистрация с email верификацией
 - Вход через email/password или social auth
 - Управление профилем (аватар, персональная информация)
@@ -45,6 +48,7 @@ Authentication app - это ядро системы управления пол�
 - Многоролевая система
 
 ### Для разработчиков
+
 - REST API (OpenAPI документация)
 - JWT authentication
 - Готовые Pydantic schemas
@@ -57,9 +61,11 @@ Authentication app - это ядро системы управления пол�
 ## Модели данных
 
 ### User (Пользователь)
+
 Кастомная модель пользователя с email как username.
 
 **Поля:**
+
 - `email` - Email (unique, используется для входа)
 - `first_name`, `last_name` - Имя и фамилия
 - `is_active` - Активен ли аккаунт
@@ -68,13 +74,16 @@ Authentication app - это ядро системы управления пол�
 - `roles` - M2M связь с Role
 
 **Методы:**
+
 - `get_full_name()` - Полное имя
 - `get_short_name()` - Короткое имя (email)
 
 ### Role (Роль)
+
 Роли пользователей в системе.
 
 **Роли:**
+
 1. **student** - Студент (по умолчанию)
 2. **mentor** - Ментор (помощь студентам)
 3. **reviewer** - Ревьюер (проверка работ)
@@ -83,7 +92,9 @@ Authentication app - это ядро системы управления пол�
 6. **support** - Поддержка (помощь пользователям)
 
 ### Profile Models
+
 Расширенные профили для каждой роли:
+
 - **Student** - Информация о студенте (пол, дата рождения, страна)
 - **Mentor** - Профиль ментора (экспертные области)
 - **Reviewer** - Профиль ревьюера (статистика проверок)
@@ -102,6 +113,7 @@ Base URL: `/api/auth/`
 ### Регистрация и вход
 
 **POST** `/register`
+
 ```json
 {
   "email": "user@example.com",
@@ -111,9 +123,9 @@ Base URL: `/api/auth/`
   "last_name": "Doe",
   "role": "student"
 }
-```
-
+```text
 **Response:**
+
 ```json
 {
   "user": {
@@ -128,48 +140,48 @@ Base URL: `/api/auth/`
     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
   }
 }
-```
-
+```text
 **POST** `/login`
+
 ```json
 {
   "email": "user@example.com",
   "password": "SecurePass123!"
 }
-```
-
+```text
 ### Профиль
 
 **GET** `/profile` - Получить профиль (требует JWT)
 
 **PATCH** `/profile` - Обновить профиль
+
 ```json
 {
   "first_name": "John",
   "last_name": "Smith",
   "avatar": "base64_image_data"
 }
-```
-
+```text
 ### Пароль
 
 **POST** `/password/change` - Сменить пароль (требует JWT)
+
 ```json
 {
   "old_password": "OldPass123!",
   "new_password": "NewPass123!",
   "confirm_new_password": "NewPass123!"
 }
-```
-
+```text
 **POST** `/password/reset` - Запросить сброс пароля
+
 ```json
 {
   "email": "user@example.com"
 }
-```
-
+```text
 **POST** `/password/reset/confirm` - Подтвердить сброс пароля
+
 ```json
 {
   "uid": "base64_encoded_uid",
@@ -177,8 +189,7 @@ Base URL: `/api/auth/`
   "password": "NewPass123!",
   "confirm_password": "NewPass123!"
 }
-```
-
+```text
 ### Email верификация
 
 **POST** `/email/resend` - Отправить письмо верификации повторно (требует JWT)
@@ -188,27 +199,28 @@ Base URL: `/api/auth/`
 ### Logout
 
 **POST** `/logout` - Выход (инвалидация refresh token)
+
 ```json
 {
   "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
 }
-```
-
-**Документация:** http://localhost:8000/api/docs (Swagger UI)
+```text
+**Документация:** <http://localhost:8000/api/docs> (Swagger UI)
 
 ---
 
 ## Management Commands
 
 ### create_roles
+
 Создает базовые роли пользователей.
 
 ```bash
 cd src
 poetry run python manage.py create_roles
-```
-
+```text
 **Создает роли:**
+
 - student (Студент)
 - mentor (Ментор)
 - reviewer (Ревьюер)
@@ -219,20 +231,25 @@ poetry run python manage.py create_roles
 **Безопасность:** Команда идемпотентна - можно запускать многократно.
 
 ### create_test_users
+
 Создает тестовых пользователей для разработки.
 
 ```bash
+
 # Базовые тестовые пользователи (по одному каждой роли)
+
 poetry run python manage.py create_test_users
 
 # + 10 дополнительных студентов
+
 poetry run python manage.py create_test_users --count 10
 
 # Удалить существующих и создать заново
-poetry run python manage.py create_test_users --clear
-```
 
+poetry run python manage.py create_test_users --clear
+```text
 **Credentials:**
+
 - `student@test.com` / `password123`
 - `mentor@test.com` / `password123`
 - `reviewer@test.com` / `password123`
@@ -241,25 +258,28 @@ poetry run python manage.py create_test_users --clear
 - `support@test.com` / `password123`
 
 ### create_superadmin
+
 Создает суперпользователя с предустановленными данными для быстрого развёртывания.
 
 ```bash
 cd src
 poetry run python manage.py create_superadmin
-```
-
+```text
 **Credentials:**
+
 - Email: `a@mail.ru`
 - Password: `a`
 - Права: superuser + staff
 - Email verified: ✅
 
 **Опции:**
-```bash
-# Пересоздать если уже существует
-poetry run python manage.py create_superadmin --delete-existing
-```
 
+```bash
+
+# Пересоздать если уже существует
+
+poetry run python manage.py create_superadmin --delete-existing
+```text
 **⚠️ Важно:** Используйте только для разработки/тестирования! В продакшене смените пароль.
 
 ---
@@ -272,12 +292,13 @@ poetry run python manage.py create_superadmin --delete-existing
 cd src
 
 # Все authentication тесты
+
 ./authentication/tests/run_tests.sh
 
 # Или вручную
-poetry run pytest authentication/tests/ -v
-```
 
+poetry run pytest authentication/tests/ -v
+```text
 ### Статистика тестов
 
 - **Всего тестов:** 104
@@ -286,6 +307,7 @@ poetry run pytest authentication/tests/ -v
 - **Coverage:** Все критичные пути
 
 **Тестируется:**
+
 - ✅ Models (35 tests)
 - ✅ Forms (12 tests)
 - ✅ Signals (11 tests)
@@ -302,23 +324,28 @@ poetry run pytest authentication/tests/ -v
 ### Setup проекта
 
 ```bash
+
 # 1. Создать роли
+
 cd src
 poetry run python manage.py create_roles
 
 # 2. Создать superuser
+
 poetry run python manage.py createsuperuser
 
 # 3. (Опционально) Создать тестовых пользователей
+
 poetry run python manage.py create_test_users
 
 # 4. Запустить сервер
-poetry run python manage.py runserver
-```
 
+poetry run python manage.py runserver
+```text
 ### В коде
 
 #### Проверка роли пользователя
+
 ```python
 from django.contrib.auth import get_user_model
 
@@ -326,18 +353,21 @@ User = get_user_model()
 user = User.objects.get(email='user@example.com')
 
 # Проверить роль
+
 if user.roles.filter(name='student').exists():
     print("Это студент")
 
 # Получить все роли
-user_roles = user.roles.all()
-```
 
+user_roles = user.roles.all()
+```text
 #### Создание пользователя с ролью
+
 ```python
 from authentication.models import User, Role
 
 # Создать пользователя
+
 user = User.objects.create_user(
     email='newuser@example.com',
     password='SecurePass123!',
@@ -346,13 +376,15 @@ user = User.objects.create_user(
 )
 
 # Добавить роль
+
 student_role = Role.objects.get(name='student')
 user.roles.add(student_role)
 
-# Профиль создастся автоматически через signal!
-```
+# Профиль создастся автоматически через signal
 
+```text
 #### JWT Authentication в API
+
 ```python
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
@@ -363,26 +395,26 @@ router = Router(auth=JWTAuth(), tags=['Protected'])
 def protected_endpoint(request):
     user = request.auth  # Текущий пользователь
     return {'user_id': user.id, 'email': user.email}
-```
-
+```text
 #### Отправка email через Celery
+
 ```python
 from authentication.tasks import send_verification_email
 
 # Отправить асинхронно
+
 send_verification_email.delay(
     user_id=user.id,
-    activation_url='https://example.com/verify/...',
+    activation_url='<https://example.com/verify/...',>
     subject='Подтвердите email',
     template_name='auth/email/verification.html'
 )
-```
-
+```text
 ---
 
 ## Структура файлов
 
-```
+```text
 authentication/
 ├── __init__.py                 # App config
 ├── README.md                   # Эта документация
@@ -424,13 +456,13 @@ authentication/
 │   ├── test_views.py
 │   └── test_integration.py
 └── migrations/                 # Database migrations
-```
-
+```text
 ---
 
 ## Безопасность
 
 ### Реализованные меры
+
 - ✅ **Password hashing** - Django PBKDF2
 - ✅ **JWT токены** - Short-lived access, long-lived refresh
 - ✅ **Email verification** - Обязательная верификация
@@ -440,6 +472,7 @@ authentication/
 - ✅ **SQL injection protection** - Django ORM
 
 ### Best Practices
+
 - Используйте сильные пароли (Django validators)
 - Включите HTTPS в production
 - Настройте rate limiting
@@ -453,7 +486,9 @@ authentication/
 ### Settings.py
 
 ```python
+
 # JWT Configuration
+
 from datetime import timedelta
 
 SIMPLE_JWT = {
@@ -463,6 +498,7 @@ SIMPLE_JWT = {
 }
 
 # Email Configuration
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -471,53 +507,63 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 # Celery Configuration
+
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-```
-
+```text
 ---
 
 ## Troubleshooting
 
 ### JWT токен не работает
+
 ```bash
+
 # Проверить что пользователь активен
+
 user = User.objects.get(email='user@example.com')
 print(user.is_active)  # Should be True
 
 # Проверить expiry токена
+
 from ninja_jwt.tokens import RefreshToken
 refresh = RefreshToken.for_user(user)
 print(refresh.access_token)
-```
-
+```text
 ### Email не отправляются
+
 ```bash
+
 # Проверить Celery worker запущен
+
 celery -A pyland worker -l info
 
 # Проверить email settings
+
 python manage.py shell
 >>> from django.core.mail import send_mail
 >>> send_mail('Test', 'Body', 'from@example.com', ['to@example.com'])
-```
-
+```text
 ### Роли не создаются автоматически
+
 ```bash
+
 # Запустить команду вручную
+
 poetry run python manage.py create_roles
 
 # Проверить что роли созданы
+
 python manage.py shell
 >>> from authentication.models import Role
 >>> Role.objects.count()  # Should be 6
-```
-
+```text
 ---
 
 ## Changelog
 
 ### v2.0 (2025-12-01)
+
 - ✅ Complete test coverage (90+ tests)
 - ✅ Pydantic 2.x schemas
 - ✅ Management commands
@@ -527,6 +573,7 @@ python manage.py shell
 - ✅ Password reset flow
 
 ### v1.0 (2024)
+
 - Initial release
 - Basic authentication
 - Role system
@@ -536,10 +583,11 @@ python manage.py shell
 ## Контакты и поддержка
 
 **Документация:**
-- API Docs: http://localhost:8000/api/docs
+
+- API Docs: <http://localhost:8000/api/docs>
 - Tests: `authentication/tests/README.md`
 - Templates: `authentication/templates/README.md`
 
-**Команда:** Pyland Team  
-**Версия:** 2.0  
+**Команда:** Pyland Team
+**Версия:** 2.0
 **Статус:** ✅ Production Ready

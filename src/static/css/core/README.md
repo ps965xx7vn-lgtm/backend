@@ -13,9 +13,11 @@
 ## 📁 Файлы и их назначение
 
 ### `main.css` (базовые стили)
+
 Основные глобальные стили приложения.
 
 **Включает:**
+
 - CSS переменные (цвета, шрифты, отступы, тени)
 - Сброс стилей (reset)
 - Типографика (заголовки, параграфы, списки)
@@ -23,9 +25,11 @@
 - Утилитные классы (margin, padding, display)
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 
 **Ключевые переменные:**
+
 ```css
 :root {
     --primary-color: #3498db;
@@ -34,22 +38,22 @@
     --warning-color: #f39c12;
     --dark-color: #2c3e50;
     --light-color: #ecf0f1;
-    
+
     --font-primary: 'Inter', sans-serif;
     --font-code: 'Fira Code', monospace;
-    
+
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
-    
+
     --border-radius: 8px;
     --transition-speed: 0.3s;
 }
-```
-
+```text
 **Утилитные классы:**
+
 ```css
 .container              /* Контейнер с max-width */
 .text-center            /* Центрирование текста */
@@ -58,14 +62,15 @@
 .mb-1, .mb-2, .mb-3     /* Margin bottom */
 .d-flex                 /* Display flex */
 .d-none                 /* Display none */
-```
-
+```text
 ---
 
 ### `components.css` (компоненты)
+
 Переиспользуемые UI компоненты.
 
 **Включает:**
+
 - `.btn` - кнопки (primary, secondary, success, danger, outline)
 - `.card` - карточки контента
 - `.badge` - бейджи и метки
@@ -78,9 +83,11 @@
 - `.loader` - спиннеры загрузки
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 
 **Примеры компонентов:**
+
 ```css
 /* Кнопки */
 .btn                    /* Базовая кнопка */
@@ -101,14 +108,15 @@
 .alert-warning          /* Предупреждение (желтое) */
 .alert-danger           /* Ошибка (красное) */
 .alert-info             /* Информация (синее) */
-```
-
+```text
 ---
 
 ### `layout.css` (layout)
+
 Структура страницы и основные layout элементы.
 
 **Включает:**
+
 - `.main-wrapper` - обертка всей страницы
 - `.content-wrapper` - обертка контента
 - `.sidebar` - боковая панель
@@ -118,9 +126,11 @@
 - Flex utilities
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 
 **Структура страницы:**
+
 ```html
 <div class="main-wrapper">
     <header class="header">...</header>
@@ -130,22 +140,23 @@
     </main>
     <footer class="footer">...</footer>
 </div>
-```
-
+```text
 **Grid система:**
+
 ```css
 .row                    /* Flex контейнер */
 .col-1 ... .col-12      /* Колонки (1-12) */
 .col-md-6, .col-lg-4    /* Адаптивные колонки */
 .gap-1, .gap-2          /* Отступы между элементами */
-```
-
+```text
 ---
 
 ### `animations.css` (анимации)
+
 CSS анимации и transitions.
 
 **Включает:**
+
 - `@keyframes` анимации (fadeIn, slideIn, bounce, spin)
 - Utility классы для анимаций
 - Hover эффекты
@@ -153,9 +164,11 @@ CSS анимации и transitions.
 - Transitions для smooth UI
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 
 **Анимации:**
+
 ```css
 .fade-in                /* Плавное появление */
 .slide-in-left          /* Въезд слева */
@@ -169,29 +182,32 @@ CSS анимации и transitions.
 .hover-scale            /* Увеличение при наведении */
 .hover-shadow           /* Тень при наведении */
 .hover-lift             /* Поднятие при наведении */
-```
-
+```text
 **Использование:**
+
 ```html
 <div class="fade-in">Появится плавно</div>
 <button class="btn hover-scale">Увеличится при hover</button>
-```
-
+```text
 ---
 
 ### `themes.css` (темы)
+
 Поддержка светлой и темной тем.
 
 **Включает:**
+
 - CSS переменные для светлой темы
 - CSS переменные для темной темы
 - Переключение через `[data-theme="dark"]`
 - Автоопределение системной темы через `prefers-color-scheme`
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 
 **Структура:**
+
 ```css
 /* Светлая тема (по умолчанию) */
 :root {
@@ -216,20 +232,21 @@ CSS анимации и transitions.
         ...
     }
 }
-```
-
+```text
 **Переключение темы:**
+
 ```javascript
 // В main.js
 document.body.dataset.theme = 'dark'; // или 'light'
-```
-
+```text
 ---
 
 ### `desktop-nav.css` (desktop навигация)
+
 Стили для desktop навигации в header.
 
 **Включает:**
+
 - `.desktop-nav` - контейнер навигации
 - `.nav-menu` - список пунктов меню
 - `.nav-item` - элемент меню
@@ -238,10 +255,12 @@ document.body.dataset.theme = 'dark'; // или 'light'
 - `.user-menu` - меню пользователя
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 - `shared/_header.html` - компонент header
 
 **Ключевые классы:**
+
 ```css
 .desktop-nav            /* Flex навигация */
 .nav-menu               /* Горизонтальный список */
@@ -250,18 +269,20 @@ document.body.dataset.theme = 'dark'; // или 'light'
 .nav-link.active        /* Активная страница */
 .dropdown-menu          /* Выпадающее меню */
 .user-menu              /* Меню авторизованного пользователя */
-```
-
+```text
 **Медиа-запрос:**
+
 - Показывается на `min-width: 992px`
 - Скрывается на мобильных устройствах
 
 ---
 
 ### `mobile-menu.css` (mobile навигация)
+
 Стили для мобильного бургер-меню.
 
 **Включает:**
+
 - `.mobile-menu-toggle` - кнопка бургера
 - `.mobile-menu` - выдвигающееся меню
 - `.mobile-menu-overlay` - затемняющий оверлей
@@ -269,31 +290,36 @@ document.body.dataset.theme = 'dark'; // или 'light'
 - Анимации открытия/закрытия
 
 **Используется в:**
+
 - `base.html` - подключается на всех страницах
 - `shared/_header.html` - компонент header
 
 **Зависимости:**
+
 - `js/core/mobile-menu.js` - логика открытия/закрытия
 
 **Ключевые классы:**
+
 ```css
 .mobile-menu-toggle     /* Кнопка бургера (3 полоски) */
 .mobile-menu            /* Боковое меню (справа) */
 .mobile-menu.open       /* Открытое состояние */
 .mobile-menu-overlay    /* Темный оверлей */
 .mobile-menu-content    /* Список пунктов меню */
-```
-
+```text
 **Медиа-запрос:**
+
 - Показывается на `max-width: 991px`
 - Скрывается на desktop
 
 ---
 
 ### `home.css` (главная страница)
+
 Стили специфичные для главной страницы (`core/home.html`).
 
 **Включает:**
+
 - `.hero-section` - главный баннер
 - `.features-section` - секция с преимуществами
 - `.stats-section` - статистика
@@ -301,9 +327,11 @@ document.body.dataset.theme = 'dark'; // или 'light'
 - `.testimonials` - отзывы
 
 **Используется в:**
+
 - `core/home.html`
 
 **Секции:**
+
 ```css
 .hero-section           /* Первый экран с заголовком */
 .hero-content           /* Текст + кнопки */
@@ -319,14 +347,15 @@ document.body.dataset.theme = 'dark'; // или 'light'
 .stat-label             /* Подпись */
 
 .cta-section            /* Призыв к действию */
-```
-
+```text
 ---
 
 ### `contact-form.css` (форма контактов)
+
 Стили для страницы контактов и формы обратной связи.
 
 **Включает:**
+
 - `.contact-container` - контейнер страницы
 - `.contact-form` - форма обратной связи
 - `.form-group` - группа полей формы
@@ -334,9 +363,11 @@ document.body.dataset.theme = 'dark'; // или 'light'
 - `.contact-info` - блок контактной информации
 
 **Используется в:**
+
 - `core/contacts.html`
 
 **Ключевые классы:**
+
 ```css
 .contact-container      /* Flex контейнер (форма + инфо) */
 .contact-form           /* Форма слева */
@@ -349,14 +380,15 @@ document.body.dataset.theme = 'dark'; // или 'light'
 .form-error             /* Сообщение об ошибке */
 
 .submit-btn             /* Кнопка отправки */
-```
-
+```text
 ---
 
 ### `legal-pages.css` (юридические страницы)
+
 Стили для страниц Terms of Service и Privacy Policy.
 
 **Включает:**
+
 - `.legal-container` - контейнер страницы
 - `.legal-content` - контент с текстом
 - `.legal-section` - секция документа
@@ -364,10 +396,12 @@ document.body.dataset.theme = 'dark'; // или 'light'
 - Типографика для длинного текста
 
 **Используется в:**
+
 - `core/legal/terms_of_service.html`
 - `core/legal/privacy_policy.html`
 
 **Ключевые классы:**
+
 ```css
 .legal-container        /* Контейнер с max-width */
 .legal-header           /* Заголовок документа */
@@ -375,8 +409,7 @@ document.body.dataset.theme = 'dark'; // или 'light'
 .legal-section          /* Секция с подзаголовком */
 .legal-list             /* Маркированный список */
 .last-updated           /* Дата последнего обновления */
-```
-
+```text
 ---
 
 ## 🏗️ Архитектура стилей
@@ -392,31 +425,31 @@ document.body.dataset.theme = 'dark'; // или 'light'
 <head>
     <!-- 1. Базовые стили (переменные, reset, типографика) -->
     <link rel="stylesheet" href="{% static 'css/core/main.css' %}">
-    
+
     <!-- 2. Компоненты (кнопки, карточки, модалки) -->
     <link rel="stylesheet" href="{% static 'css/core/components.css' %}">
-    
+
     <!-- 3. Layout (структура страницы) -->
     <link rel="stylesheet" href="{% static 'css/core/layout.css' %}">
-    
+
     <!-- 4. Анимации -->
     <link rel="stylesheet" href="{% static 'css/core/animations.css' %}">
-    
+
     <!-- 5. Темы (light/dark mode) -->
     <link rel="stylesheet" href="{% static 'css/core/themes.css' %}">
-    
+
     <!-- 6. Навигация -->
     <link rel="stylesheet" href="{% static 'css/core/desktop-nav.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/mobile-menu.css' %}">
-    
+
     <!-- 7. Специфичные для страницы -->
     {% block extra_css %}{% endblock %}
 </head>
-```
-
+```text
 ### Каскад и специфичность
 
 Порядок важен:
+
 1. `main.css` задает базовые переменные и reset
 2. `components.css` использует эти переменные для компонентов
 3. `layout.css` структурирует страницу
@@ -439,7 +472,7 @@ document.body.dataset.theme = 'dark'; // или 'light'
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PySchool{% endblock %}</title>
-    
+
     <!-- Core CSS -->
     <link rel="stylesheet" href="{% static 'css/core/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/components.css' %}">
@@ -448,31 +481,30 @@ document.body.dataset.theme = 'dark'; // или 'light'
     <link rel="stylesheet" href="{% static 'css/core/themes.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/desktop-nav.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/mobile-menu.css' %}">
-    
+
     <!-- Page specific CSS -->
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <div class="main-wrapper">
         {% include 'shared/_header.html' %}
-        
+
         <main class="content-wrapper">
             {% block content %}{% endblock %}
         </main>
-        
+
         {% include 'shared/_footer.html' %}
     </div>
-    
+
     <!-- Core JS -->
     <script src="{% static 'js/core/main.js' %}" defer></script>
     <script src="{% static 'js/core/desktop-nav.js' %}" defer></script>
     <script src="{% static 'js/core/mobile-menu.js' %}" defer></script>
-    
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>
-```
-
+```text
 ### home.html (главная)
 
 ```django
@@ -502,8 +534,7 @@ document.body.dataset.theme = 'dark'; // или 'light'
     {% include 'shared/_features_section.html' %}
 </section>
 {% endblock %}
-```
-
+```text
 ### contacts.html (контакты)
 
 ```django
@@ -524,14 +555,13 @@ document.body.dataset.theme = 'dark'; // или 'light'
         {% csrf_token %}
         <!-- Форма -->
     </form>
-    
+
     <div class="contact-info">
         <!-- Контактная информация -->
     </div>
 </div>
 {% endblock %}
-```
-
+```text
 ---
 
 ## 🎨 Темизация
@@ -543,16 +573,15 @@ document.body.dataset.theme = 'dark'; // или 'light'
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
     --bg-tertiary: #e9ecef;
-    
+
     --text-primary: #212529;
     --text-secondary: #6c757d;
     --text-muted: #adb5bd;
-    
+
     --border-color: #dee2e6;
     --shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-```
-
+```text
 ### Темная тема
 
 ```css
@@ -560,16 +589,15 @@ document.body.dataset.theme = 'dark'; // или 'light'
     --bg-primary: #1a1a1a;
     --bg-secondary: #2d2d2d;
     --bg-tertiary: #3a3a3a;
-    
+
     --text-primary: #e0e0e0;
     --text-secondary: #9e9e9e;
     --text-muted: #757575;
-    
+
     --border-color: #4a4a4a;
     --shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
-```
-
+```text
 ### Переключение темы
 
 ```javascript
@@ -577,7 +605,7 @@ document.body.dataset.theme = 'dark'; // или 'light'
 function toggleTheme() {
     const currentTheme = document.body.dataset.theme || 'light';
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
+
     document.body.dataset.theme = newTheme;
     localStorage.setItem('theme', newTheme);
 }
@@ -587,8 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.body.dataset.theme = savedTheme;
 });
-```
-
+```text
 ---
 
 ## 📱 Адаптивность
@@ -607,8 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Large Desktop */
 @media (min-width: 1200px) { }
-```
-
+```text
 ### Адаптивная навигация
 
 - **Desktop (≥992px)**: `desktop-nav.css` - горизонтальное меню
@@ -644,8 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
         max-width: 1140px;
     }
 }
-```
-
+```text
 ---
 
 ## 📊 Статистика

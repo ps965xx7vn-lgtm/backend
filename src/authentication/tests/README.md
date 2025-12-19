@@ -3,6 +3,7 @@
 ## Общая статистика
 
 **Всего тестов: 104**
+
 - ✅ **90 passing** (86.5%)
 - ⏭️ **14 skipped** (13.5%)
 - ❌ **0 failed**
@@ -23,23 +24,29 @@
 ### Все тесты (рекомендуемый способ)
 
 ```bash
+
 # Вариант 1: Использовать скрипт (автоматически запускает все правильно)
+
 cd src
 ./authentication/tests/run_tests.sh
 
 # Результат: 90 passed, 14 skipped (104 tests)
-```
 
+```text
 ```bash
+
 # Вариант 2: Главный тестовый скрипт проекта
+
 cd src
 ./tests.sh
 
 # Запускает все тесты всех приложений
-```
 
+```text
 ```bash
+
 # Вариант 3: Вручную - запустить все тесты КРОМЕ view тестов
+
 cd src
 poetry run pytest authentication/tests/test_models.py \
                   authentication/tests/test_forms.py \
@@ -49,54 +56,64 @@ poetry run pytest authentication/tests/test_models.py \
                   -v
 
 # Результат: 77 passed, 9 skipped
-```
 
+```text
 ```bash
+
 # Запустить view тесты отдельно
+
 poetry run pytest authentication/tests/test_views.py -v
 
 # Результат: 13 passed, 5 skipped
-```
 
+```text
 ### Отдельные категории
 
 ```bash
+
 # Модели
+
 poetry run pytest authentication/tests/test_models.py -v
 
 # Формы
+
 poetry run pytest authentication/tests/test_forms.py -v
 
 # Сигналы
+
 poetry run pytest authentication/tests/test_signals.py -v
 
 # API endpoints
+
 poetry run pytest authentication/tests/test_api.py -v
 
 # Интеграционные тесты
-poetry run pytest authentication/tests/test_integration.py -v
-```
 
+poetry run pytest authentication/tests/test_integration.py -v
+```text
 ### С покрытием кода (coverage)
 
 ```bash
+
 # Все тесты с отчетом покрытия
+
 poetry run pytest authentication/tests/ --cov=authentication --cov-report=html
 
 # Открыть HTML отчет
-open htmlcov/index.html
-```
 
-## Почему test_views.py запускается отдельно?
+open htmlcov/index.html
+```text
+## Почему test_views.py запускается отдельно
 
 **Проблема:** Django Ninja router конфликт при одновременном запуске с `test_api.py`.
 
 **Ошибка:**
-```
-ninja.errors.ConfigError: Router@'/auth/' has already been attached to API NinjaAPI:1.0.0
-```
 
+```text
+ninja.errors.ConfigError: Router@'/auth/' has already been attached to API NinjaAPI:1.0.0
+```text
 **Причина:**
+
 1. `test_api.py` импортирует `authentication/api.py` → router регистрируется в NinjaAPI
 2. `test_views.py` использует `reverse('authentication:signin')` → Django импортирует `urls.py` → импортирует `api.py`
 3. Router пытается зарегистрироваться второй раз → ошибка
@@ -110,11 +127,12 @@ ninja.errors.ConfigError: Router@'/auth/' has already been attached to API Ninja
 Проблема: `django.contrib.auth.authenticate()` несовместим с `ninja.testing.TestClient` + social-auth backend.
 
 **Ошибка:**
+
 ```python
 TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy'
-```
-
+```text
 **Skipped тесты:**
+
 1. `test_login_success` - тестирует POST /login
 2. `test_login_invalid_credentials` - тестирует POST /login с неверными данными
 3. `test_login_inactive_user` - тестирует POST /login для неактивного user
@@ -129,17 +147,20 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 Проблема: Используют `/login` endpoint который требует `authenticate()`.
 
 **Skipped тесты:**
+
 1. `test_complete_password_change_cycle` - цикл смены пароля через login
 2. `test_complete_login_logout_cycle` - полный цикл вход/выход
 3. `test_complete_profile_update_cycle` - обновление профиля после login
 
 ### View тесты (5 skipped)
 
-Проблемы: 
+Проблемы:
+
 - `authenticate()` несовместим
 - Специфичные проблемы форм/URL паттернов
 
 **Skipped тесты:**
+
 1. `test_signin_view_post_success` - использует `authenticate()`
 2. `test_signin_view_post_invalid_credentials` - использует `authenticate()`
 3. `test_signup_view_post_success` - проблема с полями формы
@@ -151,9 +172,11 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 Все fixtures определены в `conftest.py`:
 
 ### Auto-use fixtures
+
 - `create_roles()` - автоматически создает все 6 ролей: student, mentor, reviewer, manager, admin, support
 
 ### User fixtures
+
 - `user` - обычный пользователь с email/password
 - `staff_user` - пользователь с is_staff=True
 - `super_user` - суперпользователь с is_superuser=True
@@ -163,14 +186,17 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 - `manager` - пользователь с is_staff=True + роль manager
 
 ### Auth fixtures
+
 - `jwt_token(user)` - JWT access токен для пользователя (через ninja-jwt)
 - `authenticated_client(api_client, user, jwt_token)` - API client с JWT авторизацией
 
 ### Client fixtures
+
 - `api_client` - ninja.testing.TestClient для API endpoints
 - `client` - Django test client (из pytest-django)
 
 ### Role fixtures
+
 - `student_role`, `mentor_role`, `reviewer_role`, `manager_role`, `admin_role`, `support_role`
 
 ## Linting
@@ -178,11 +204,14 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 **Статус: ✅ 0 ошибок**
 
 ```bash
-# Проверка линтинга через VS Code
-# get_errors() → No errors found
-```
 
+# Проверка линтинга через VS Code
+
+# get_errors() → No errors found
+
+```text
 **Проверено:**
+
 - ✅ Все импорты используются
 - ✅ Нет unused variables
 - ✅ Правильные type hints
@@ -195,6 +224,7 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 **Linting errors:** ✅ 0
 
 Все 8 файлов authentication app имеют полное покрытие type hints и docstrings:
+
 - `models.py` - 100%
 - `forms.py` - 100%
 - `views.py` - 100%
@@ -221,6 +251,7 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 ## Production Readiness
 
 ✅ **Authentication модуль готов к production:**
+
 - 90 passing тестов (86.5%)
 - 0 linting ошибок
 - 100% type hints
@@ -229,6 +260,7 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 - Документация полная
 
 **Рекомендации перед деплоем:**
+
 1. Настроить Celery для async email отправки
 2. Настроить Redis для кеширования
 3. Настроить email backend (SMTP)

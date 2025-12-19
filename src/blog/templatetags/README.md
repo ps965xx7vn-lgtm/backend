@@ -16,19 +16,18 @@
 
 ### Основные возможности
 
-✅ Очистка Markdown от служебных символов  
-✅ Форматирование текста для превью  
-✅ Расчет динамических размеров элементов  
-✅ Обработка пользовательского контента  
+✅ Очистка Markdown от служебных символов
+✅ Форматирование текста для превью
+✅ Расчет динамических размеров элементов
+✅ Обработка пользовательского контента
 
 ## 📁 Структура
 
-```
+```text
 templatetags/
 ├── __init__.py          # Инициализация пакета
 └── blog_extras.py       # Кастомные фильтры и теги
-```
-
+```text
 ## 🔧 Установка
 
 ### В шаблонах
@@ -37,8 +36,7 @@ templatetags/
 
 ```django
 {% load blog_extras %}
-```
-
+```text
 ### Пример
 
 ```html
@@ -47,8 +45,7 @@ templatetags/
 <div class="article-preview">
     <p>{{ article.content|clean_markdown|truncatewords:50 }}</p>
 </div>
-```
-
+```text
 ## 🏷️ Фильтры
 
 ### clean_markdown
@@ -56,18 +53,21 @@ templatetags/
 **Назначение**: Очищает текст от Markdown-символов для отображения в карточках и превью.
 
 **Сигнатура**:
+
 ```python
 @register.filter
 def clean_markdown(text: str) -> str
-```
-
+```text
 **Параметры**:
+
 - `text` (str): Исходный текст с Markdown разметкой
 
 **Возвращает**:
+
 - `str`: Очищенный текст без Markdown символов
 
 **Что удаляется**:
+
 1. Заголовки (`# ## ###` и т.д.)
 2. Жирный текст (`**text**`, `__text__`)
 3. Курсив (`*text*`, `_text_`)
@@ -84,7 +84,8 @@ def clean_markdown(text: str) -> str
 ```django
 <!-- Исходный контент статьи -->
 {{ article.content }}
-<!-- 
+<!--
+
 # Заголовок
 
 Это **жирный** текст и *курсив*.
@@ -95,14 +96,16 @@ def clean_markdown(text: str) -> str
 [Ссылка](http://example.com)
 
 ```python
+
 def hello():
     print("Hello")
-```
+
+```text
 -->
 
 <!-- После применения фильтра -->
 {{ article.content|clean_markdown }}
-<!-- 
+<!--
 Заголовок
 
 Это жирный текст и курсив.
@@ -114,8 +117,7 @@ def hello():
 
 def hello(): print("Hello")
 -->
-```
-
+```text
 **Практическое применение**:
 
 ```django
@@ -141,8 +143,7 @@ def hello(): print("Hello")
 <div class="search-result">
     <p>{{ article.content|clean_markdown|truncatewords:50 }}</p>
 </div>
-```
-
+```text
 **Детальная реализация**:
 
 ```python
@@ -154,46 +155,56 @@ def clean_markdown(text):
     """
     if not text:
         return text
-    
+
     # Удаляем заголовки (# ## ### и т.д.)
+
     text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
-    
+
     # Удаляем жирный текст (**text** или __text__)
+
     text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
     text = re.sub(r'__(.*?)__', r'\1', text)
-    
+
     # Удаляем курсив (*text* или _text_)
+
     text = re.sub(r'\*(.*?)\*', r'\1', text)
     text = re.sub(r'_(.*?)_', r'\1', text)
-    
+
     # Удаляем ссылки [text](url)
+
     text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
-    
+
     # Удаляем инлайн код `code`
+
     text = re.sub(r'`([^`]+)`', r'\1', text)
-    
+
     # Удаляем блоки кода ```
+
     text = re.sub(r'```[\s\S]*?```', '', text)
-    
+
     # Удаляем цитаты (>)
+
     text = re.sub(r'^>\s*', '', text, flags=re.MULTILINE)
-    
+
     # Удаляем списки (- * +)
+
     text = re.sub(r'^[\s]*[-\*\+]\s+', '', text, flags=re.MULTILINE)
-    
+
     # Удаляем нумерованные списки
+
     text = re.sub(r'^\d+\.\s+', '', text, flags=re.MULTILINE)
-    
+
     # Удаляем горизонтальные линии
+
     text = re.sub(r'^---+\s*$', '', text, flags=re.MULTILINE)
-    
+
     # Удаляем лишние пробелы и переносы строк
+
     text = re.sub(r'\n+', ' ', text)
     text = re.sub(r'\s+', ' ', text).strip()
-    
-    return text
-```
 
+    return text
+```text
 ## 📝 Примеры использования
 
 ### 1. Карточки статей
@@ -203,20 +214,19 @@ def clean_markdown(text):
 
 <div class="article-card">
     <h3>{{ article.title }}</h3>
-    
+
     <!-- Очищенное превью -->
     <p class="excerpt">
         {{ article.content|clean_markdown|truncatewords:50 }}
     </p>
-    
+
     <!-- Метаданные -->
     <div class="meta">
         <span>{{ article.reading_time }} мин чтения</span>
         <span>{{ article.views_count }} просмотров</span>
     </div>
 </div>
-```
-
+```text
 ### 2. SEO теги
 
 ```django
@@ -231,8 +241,7 @@ def clean_markdown(text):
 
 <!-- Twitter Card -->
 <meta name="twitter:description" content="{{ article.excerpt|clean_markdown|truncatewords:30 }}">
-```
-
+```text
 ### 3. Список комментариев
 
 ```django
@@ -252,8 +261,7 @@ def clean_markdown(text):
     </div>
     {% endfor %}
 </div>
-```
-
+```text
 ### 4. Результаты поиска
 
 ```django
@@ -270,8 +278,7 @@ def clean_markdown(text):
     </div>
     {% endfor %}
 </div>
-```
-
+```text
 ### 5. Email рассылка
 
 ```django
@@ -279,7 +286,7 @@ def clean_markdown(text):
 
 <div class="email-digest">
     <h2>Новые статьи на PySchool</h2>
-    
+
     {% for article in new_articles %}
     <div class="article-preview">
         <h3>{{ article.title }}</h3>
@@ -288,8 +295,7 @@ def clean_markdown(text):
     </div>
     {% endfor %}
 </div>
-```
-
+```text
 ### 6. Мобильное отображение
 
 ```django
@@ -305,35 +311,33 @@ def clean_markdown(text):
     </div>
     {% endfor %}
 </div>
-```
-
+```text
 ### 7. Социальные сети
 
 ```django
 {% load blog_extras %}
 
 <!-- Кнопка Share для Twitter -->
-<a href="https://twitter.com/intent/tweet?text={{ article.title|urlencode }}&url={{ request.build_absolute_uri }}"
+<a href="<https://twitter.com/intent/tweet?text={{> article.title|urlencode }}&url={{ request.build_absolute_uri }}"
    target="_blank"
    class="share-twitter">
     Твитнуть
 </a>
 
 <!-- LinkedIn Share с описанием -->
-<a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}"
+<a href="<https://www.linkedin.com/sharing/share-offsite/?url={{> request.build_absolute_uri }}"
    target="_blank"
    class="share-linkedin">
     Поделиться в LinkedIn
 </a>
 
 <!-- WhatsApp Share -->
-<a href="https://wa.me/?text={{ article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}"
+<a href="<https://wa.me/?text={{> article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}"
    target="_blank"
    class="share-whatsapp">
     Отправить в WhatsApp
 </a>
-```
-
+```text
 ## 🔧 Расширение функциональности
 
 ### Добавление новых фильтров
@@ -350,7 +354,7 @@ register = template.Library()
 def word_count(text):
     """
     Подсчитывает количество слов в тексте.
-    
+
     Usage:
         {{ article.content|word_count }}
     """
@@ -362,59 +366,68 @@ def word_count(text):
 def reading_time_detailed(text):
     """
     Расчет времени чтения с учетом изображений и кода.
-    
+
     Usage:
         {{ article.content|reading_time_detailed }}
     """
     if not text:
         return 0
-    
+
     # 200 слов в минуту
+
     words = len(text.split())
     minutes = words / 200
-    
+
     # +12 секунд за каждое изображение
+
     images = text.count('![')
     minutes += (images * 12) / 60
-    
+
     # +10 секунд за каждый блок кода
+
     code_blocks = text.count('```')
     minutes += (code_blocks * 10) / 60
-    
+
     return max(1, round(minutes))
 
 @register.filter
 def tag_size(usage_count, min_size=12, max_size=32):
     """
     Вычисляет размер шрифта для облака тегов.
-    
+
     Usage:
         <span style="font-size: {{ tag.usage_count|tag_size }}px">
     """
+
     # Нормализация от min_size до max_size
+
     # В зависимости от usage_count
+
     return min_size + (usage_count * (max_size - min_size) / 100)
 
 @register.filter
 def excerpt_smart(text, length=100):
     """
     Умное сокращение текста до ближайшего предложения.
-    
+
     Usage:
         {{ article.content|clean_markdown|excerpt_smart:150 }}
     """
     if not text or len(text) <= length:
         return text
-    
+
     # Обрезать по длине
+
     truncated = text[:length]
-    
+
     # Найти ближайшую точку
+
     last_period = truncated.rfind('.')
     if last_period > length * 0.7:  # Если точка не слишком далеко
         return truncated[:last_period + 1]
-    
+
     # Иначе обрезать по слову
+
     last_space = truncated.rfind(' ')
     return truncated[:last_space] + '...'
 
@@ -422,17 +435,16 @@ def excerpt_smart(text, length=100):
 def highlight_search(text, query):
     """
     Подсвечивает поисковые запросы в тексте.
-    
+
     Usage:
         {{ article.title|highlight_search:search_query }}
     """
     if not query:
         return text
-    
+
     pattern = re.compile(re.escape(query), re.IGNORECASE)
     return pattern.sub(r'<mark>\g<0></mark>', text)
-```
-
+```text
 ### Использование новых фильтров
 
 ```django
@@ -449,7 +461,9 @@ def highlight_search(text, query):
     {% for tag in tags %}
     <a href="{% url 'blog:tag_detail' tag.slug %}"
        style="font-size: {{ tag.usage_count|tag_size:14:28 }}px">
+
         #{{ tag.name }}
+
     </a>
     {% endfor %}
 </div>
@@ -462,8 +476,7 @@ def highlight_search(text, query):
 <!-- Подсветка поискового запроса -->
 <h3>{{ article.title|highlight_search:query|safe }}</h3>
 <p>{{ article.excerpt|clean_markdown|highlight_search:query|safe }}</p>
-```
-
+```text
 ## 🧪 Тестирование фильтров
 
 Создайте тесты в `tests/test_templatetags.py`:
@@ -475,64 +488,64 @@ from blog.templatetags.blog_extras import clean_markdown
 
 class TestCleanMarkdown:
     """Тесты для фильтра clean_markdown"""
-    
+
     def test_removes_headers(self):
         """Удаляет заголовки Markdown"""
         text = "# Заголовок\n\nТекст"
         result = clean_markdown(text)
         assert result == "Заголовок Текст"
-    
+
     def test_removes_bold(self):
         """Удаляет жирный текст"""
         text = "Это **жирный** текст"
         result = clean_markdown(text)
         assert result == "Это жирный текст"
-    
+
     def test_removes_italic(self):
         """Удаляет курсив"""
         text = "Это *курсивный* текст"
         result = clean_markdown(text)
         assert result == "Это курсивный текст"
-    
+
     def test_removes_links(self):
         """Удаляет ссылки, оставляя текст"""
         text = "[Текст ссылки](http://example.com)"
         result = clean_markdown(text)
         assert result == "Текст ссылки"
-    
+
     def test_removes_code_blocks(self):
         """Удаляет блоки кода"""
         text = "Текст\n```python\nprint('hello')\n```\nЕще текст"
         result = clean_markdown(text)
         assert "print" not in result
-    
+
     def test_removes_lists(self):
         """Удаляет маркеры списков"""
         text = "- Элемент 1\n- Элемент 2"
         result = clean_markdown(text)
         assert result == "Элемент 1 Элемент 2"
-    
+
     def test_handles_empty_text(self):
         """Обрабатывает пустой текст"""
         assert clean_markdown(None) is None
         assert clean_markdown("") == ""
-    
+
     def test_in_template(self):
         """Тест использования в шаблоне"""
         template = Template("{% load blog_extras %}{{ text|clean_markdown }}")
         context = Context({'text': "# Заголовок\n\n**Жирный** текст"})
         result = template.render(context)
         assert result == "Заголовок Жирный текст"
-```
-
+```text
 Запуск тестов:
+
 ```bash
 pytest src/blog/tests/test_templatetags.py -v
-```
-
+```text
 ## 📚 Документация Django Template Tags
 
 ### Официальная документация
+
 - [Custom template tags and filters](https://docs.djangoproject.com/en/5.1/howto/custom-template-tags/)
 - [Template filter reference](https://docs.djangoproject.com/en/5.1/ref/templates/builtins/#built-in-filter-reference)
 
@@ -577,8 +590,7 @@ pytest src/blog/tests/test_templatetags.py -v
 
 <!-- Безопасный вывод HTML -->
 {{ text|clean_markdown|safe }}
-```
-
+```text
 ## 🔗 Связанная документация
 
 - **Templates**: См. `templates/README.md` - Использование в шаблонах

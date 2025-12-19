@@ -5,23 +5,27 @@
 ## 🚀 Quick Start
 
 ```bash
+
 # 1. Создать роли
+
 cd src
 poetry run python manage.py create_roles
 
 # 2. Создать тестовых пользователей (опционально)
+
 poetry run python manage.py create_test_users
 
 # 3. Запустить тесты
+
 ./authentication/tests/run_tests.sh
 
 # 4. Запустить сервер
-poetry run python manage.py runserver
-```
 
+poetry run python manage.py runserver
+```text
 ## 📁 Структура
 
-```
+```text
 authentication/
 ├── README.md                   # Полная документация
 ├── QUICK_REFERENCE.md          # Этот файл
@@ -47,8 +51,7 @@ authentication/
 │   ├── run_tests.sh           # Test runner
 │   └── test_*.py              # 104 tests
 └── migrations/                # DB migrations
-```
-
+```text
 ## 📊 Stats
 
 - **Files:** 15 core files
@@ -63,11 +66,13 @@ authentication/
 ## 🔑 Key Components
 
 ### Models
+
 - **User** - Custom user (email login)
 - **Role** - 6 roles (student, mentor, reviewer, manager, admin, support)
 - **Profiles** - Auto-created for each role
 
 ### API (Django Ninja)
+
 - POST `/api/auth/register` - Register
 - POST `/api/auth/login` - Login
 - GET `/api/auth/profile` - Get profile (JWT)
@@ -76,22 +81,26 @@ authentication/
 - POST `/api/auth/logout` - Logout
 
 ### Commands
+
 - `create_roles` - Create 6 roles
 - `create_test_users` - Create test users
 
 ## 🧪 Testing
 
 ```bash
+
 # All tests
+
 ./authentication/tests/run_tests.sh
 
 # Specific test file
+
 poetry run pytest authentication/tests/test_models.py -v
 
 # With coverage
-poetry run pytest authentication/tests/ --cov=authentication
-```
 
+poetry run pytest authentication/tests/ --cov=authentication
+```text
 **Results:** 90 passed, 14 skipped (100% success rate)
 
 ## 📚 Documentation
@@ -116,6 +125,7 @@ poetry run pytest authentication/tests/ --cov=authentication
 ## 🎯 Common Tasks
 
 ### Create user with role
+
 ```python
 from authentication.models import User, Role
 
@@ -126,58 +136,61 @@ user = User.objects.create_user(
     last_name='Doe'
 )
 user.roles.add(Role.objects.get(name='student'))
-# Profile auto-created via signal!
-```
 
+# Profile auto-created via signal
+
+```text
 ### Check user role
+
 ```python
 if user.roles.filter(name='student').exists():
     print("User is a student")
-```
-
+```text
 ### Send verification email
+
 ```python
 from authentication.tasks import send_verification_email
 
 send_verification_email.delay(
     user_id=user.id,
-    activation_url='https://...',
+    activation_url='<https://...',>
     subject='Verify email',
     template_name='auth/email/verification.html'
 )
-```
-
+```text
 ### Generate JWT token
+
 ```python
 from ninja_jwt.tokens import RefreshToken
 
 refresh = RefreshToken.for_user(user)
 access_token = str(refresh.access_token)
-```
-
+```text
 ## 🛠️ Development
 
 ### Setup
+
 ```bash
 poetry install
 cd src
 poetry run python manage.py migrate
 poetry run python manage.py create_roles
 poetry run python manage.py create_test_users
-```
-
+```text
 ### Test credentials
+
 - Email: `[role]@test.com`
 - Password: `password123`
 - Roles: student, mentor, reviewer, manager, admin, support
 
 ### Run server
+
 ```bash
 poetry run python manage.py runserver
-```
-
+```text
 ### API docs
-http://localhost:8000/api/docs
+
+<http://localhost:8000/api/docs>
 
 ## ✅ Status
 
@@ -188,7 +201,7 @@ http://localhost:8000/api/docs
 
 ## 🔗 Links
 
-- API Documentation: http://localhost:8000/api/docs
+- API Documentation: <http://localhost:8000/api/docs>
 - Full README: `authentication/README.md`
 - Testing Guide: `authentication/tests/README.md`
 - Commands Guide: `authentication/management/commands/README.md`
@@ -196,6 +209,6 @@ http://localhost:8000/api/docs
 
 ---
 
-**Version:** 2.0  
-**Status:** ✅ Production Ready  
+**Version:** 2.0
+**Status:** ✅ Production Ready
 **Team:** Pyland

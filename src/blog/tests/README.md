@@ -19,7 +19,7 @@
 
 ### Статистика
 
-```
+```text
 📊 Общие показатели:
 ├── Всего тестов:        149 ✅
 ├── Покрытие кода:       75%
@@ -27,19 +27,18 @@
 ├── Строк кода тестов:   2,845
 ├── Fixtures:            18
 └── Factories:           11
-```
-
+```text
 ### Тестируемые компоненты
 
-✅ **Модели** (37 тестов) - Логика моделей, валидация, методы  
-✅ **Views** (54 теста) - Представления, AJAX эндпоинты, контекст  
-✅ **API** (38 тестов) - REST API эндпоинты, сериализация  
-✅ **Forms** (12 тестов) - Валидация форм  
-✅ **Admin** (8 тестов) - Админ панель, массовые операции  
+✅ **Модели** (37 тестов) - Логика моделей, валидация, методы
+✅ **Views** (54 теста) - Представления, AJAX эндпоинты, контекст
+✅ **API** (38 тестов) - REST API эндпоинты, сериализация
+✅ **Forms** (12 тестов) - Валидация форм
+✅ **Admin** (8 тестов) - Админ панель, массовые операции
 
 ## 📁 Структура тестов
 
-```
+```text
 tests/
 ├── __init__.py              # Инициализация пакета (22 строки)
 ├── conftest.py              # Pytest fixtures (239 строк, 18 fixtures)
@@ -49,8 +48,7 @@ tests/
 ├── test_api.py              # Тесты API (532 строки, 38 тестов)
 ├── test_forms.py            # Тесты форм (188 строк, 12 тестов)
 └── test_admin.py            # Тесты админки (388 строк, 8 тестов)
-```
-
+```text
 ## 🔧 Fixtures
 
 **Файл**: `conftest.py` (239 строк)
@@ -58,6 +56,7 @@ tests/
 ### User Fixtures
 
 #### user
+
 Обычный пользователь для тестов.
 
 ```python
@@ -74,9 +73,9 @@ def user(db):
         first_name="Test",
         last_name="User"
     )
-```
-
+```text
 **Использование**:
+
 ```python
 def test_user_can_comment(user, article):
     comment = Comment.objects.create(
@@ -85,9 +84,9 @@ def test_user_can_comment(user, article):
         content="Test comment"
     )
     assert comment.author == user
-```
-
+```text
 #### staff_user
+
 Пользователь со статусом staff (доступ к админке).
 
 ```python
@@ -97,9 +96,9 @@ def staff_user(db):
         username="staffuser",
         is_staff=True
     )
-```
-
+```text
 #### superuser
+
 Администратор с полными правами.
 
 ```python
@@ -110,9 +109,9 @@ def superuser(db):
         email="admin@example.com",
         password="adminpass123"
     )
-```
-
+```text
 #### author_user
+
 Пользователь-автор статей.
 
 ```python
@@ -122,11 +121,11 @@ def author_user(db):
         username="author",
         email="author@example.com"
     )
-```
-
+```text
 ### Client Fixtures
 
 #### client
+
 Django test client для HTTP запросов.
 
 ```python
@@ -137,9 +136,9 @@ def client():
         Client: Django test client
     """
     return Client()
-```
-
+```text
 #### authenticated_client
+
 Client с авторизованным пользователем.
 
 ```python
@@ -151,9 +150,9 @@ def authenticated_client(client, user):
     """
     client.force_login(user)
     return client
-```
-
+```text
 #### api_client
+
 REST API client для тестирования API.
 
 ```python
@@ -164,11 +163,11 @@ def api_client():
         APIClient: DRF API client
     """
     return APIClient()
-```
-
+```text
 ### Blog Model Fixtures
 
 #### category
+
 Тестовая категория.
 
 ```python
@@ -184,9 +183,9 @@ def category(db):
         icon="🐍",
         color="#3498db"
     )
-```
-
+```text
 #### article
+
 Опубликованная статья.
 
 ```python
@@ -207,9 +206,9 @@ def article(db, category, user):
         published_at=timezone.now(),
         difficulty="beginner"
     )
-```
-
+```text
 #### draft_article
+
 Черновик статьи.
 
 ```python
@@ -219,9 +218,9 @@ def draft_article(db, category, user):
         title="Draft Article",
         status="draft"
     )
-```
-
+```text
 #### series
+
 Серия статей.
 
 ```python
@@ -232,9 +231,9 @@ def series(db):
         slug="python-basics",
         description="Learn Python from scratch"
     )
-```
-
+```text
 #### comment
+
 Корневой комментарий к статье.
 
 ```python
@@ -245,9 +244,9 @@ def comment(db, article, user):
         author=user,
         content="Test comment"
     )
-```
-
+```text
 #### nested_comment
+
 Вложенный ответ на комментарий.
 
 ```python
@@ -259,8 +258,7 @@ def nested_comment(db, article, comment, author_user):
         content="Reply to comment",
         parent=comment
     )
-```
-
+```text
 ### Полный список fixtures (18 штук)
 
 1. `user` - Обычный пользователь
@@ -293,66 +291,72 @@ Factory Boy фабрики для быстрого создания тестов
 ```python
 class UserFactory(DjangoModelFactory):
     """Фабрика для создания пользователей."""
-    
+
     class Meta:
         model = User
         django_get_or_create = ('username',)
-    
+
     username = Faker('user_name')
     email = Faker('email')
     first_name = Faker('first_name')
     last_name = Faker('last_name')
     password = factory.django.Password('testpass123')
-```
-
+```text
 **Использование**:
+
 ```python
+
 # Один пользователь
+
 user = UserFactory()
 
 # С кастомными данными
+
 user = UserFactory(username='john', email='john@example.com')
 
 # Множество пользователей
-users = UserFactory.create_batch(10)
-```
 
+users = UserFactory.create_batch(10)
+```text
 ### CategoryFactory
 
 ```python
 class CategoryFactory(DjangoModelFactory):
     """Фабрика для создания категорий."""
-    
+
     class Meta:
         model = Category
-    
+
     name = Faker('word')
     slug = factory.LazyAttribute(lambda o: slugify(o.name))
     icon = factory.Iterator(['📝', '🐍', '💻', '🚀'])
     color = factory.Iterator(['#3498db', '#e74c3c', '#2ecc71'])
-```
-
+```text
 **Использование**:
+
 ```python
+
 # Одна категория
+
 category = CategoryFactory()
 
 # Конкретная категория
+
 python_cat = CategoryFactory(name='Python', slug='python', icon='🐍')
 
 # 5 категорий
-categories = CategoryFactory.create_batch(5)
-```
 
+categories = CategoryFactory.create_batch(5)
+```text
 ### ArticleFactory
 
 ```python
 class ArticleFactory(DjangoModelFactory):
     """Фабрика для создания статей."""
-    
+
     class Meta:
         model = Article
-    
+
     title = Faker('sentence', nb_words=6)
     slug = factory.LazyAttribute(lambda o: slugify(o.title))
     content = Faker('text', max_nb_chars=2000)
@@ -362,7 +366,7 @@ class ArticleFactory(DjangoModelFactory):
     status = 'published'
     published_at = factory.LazyFunction(timezone.now)
     difficulty = factory.Iterator(['beginner', 'intermediate', 'advanced'])
-    
+
     @post_generation
     def tags(self, create, extracted, **kwargs):
         """Добавление тегов после создания."""
@@ -371,57 +375,62 @@ class ArticleFactory(DjangoModelFactory):
         if extracted:
             for tag in extracted:
                 self.tags.add(tag)
-```
-
+```text
 **Использование**:
+
 ```python
+
 # Опубликованная статья
+
 article = ArticleFactory()
 
 # Черновик
+
 draft = ArticleFactory(status='draft', published_at=None)
 
 # С тегами
+
 article = ArticleFactory(tags=['python', 'django', 'tutorial'])
 
 # С конкретной категорией
+
 article = ArticleFactory(category=python_category)
 
 # 20 статей
+
 articles = ArticleFactory.create_batch(20)
 
 # 10 статей в категории Python
-articles = ArticleFactory.create_batch(10, category__name='Python')
-```
 
+articles = ArticleFactory.create_batch(10, category__name='Python')
+```text
 ### SeriesFactory
 
 ```python
 class SeriesFactory(DjangoModelFactory):
     """Фабрика для создания серий."""
-    
+
     class Meta:
         model = Series
-    
+
     title = Faker('sentence', nb_words=4)
     slug = factory.LazyAttribute(lambda o: slugify(o.title))
     description = Faker('text', max_nb_chars=500)
-```
-
+```text
 ### CommentFactory
 
 ```python
 class CommentFactory(DjangoModelFactory):
     """Фабрика для создания комментариев."""
-    
+
     class Meta:
         model = Comment
-    
+
     article = SubFactory(ArticleFactory)
     author = SubFactory(UserFactory)
     content = Faker('text', max_nb_chars=500)
     is_approved = True
-    
+
     @factory.post_generation
     def with_replies(self, create, extracted, **kwargs):
         """Создание вложенных ответов."""
@@ -429,20 +438,23 @@ class CommentFactory(DjangoModelFactory):
             return
         for _ in range(extracted):
             CommentFactory(article=self.article, parent=self)
-```
-
+```text
 **Использование**:
+
 ```python
+
 # Комментарий
+
 comment = CommentFactory(article=article)
 
 # Комментарий с 3 ответами
+
 comment = CommentFactory(article=article, with_replies=3)
 
 # Вложенный комментарий (ответ)
-reply = CommentFactory(article=article, parent=parent_comment)
-```
 
+reply = CommentFactory(article=article, parent=parent_comment)
+```text
 ### Полный список factories (11 штук)
 
 1. `UserFactory` - Пользователи
@@ -468,79 +480,82 @@ reply = CommentFactory(article=article, parent=parent_comment)
 ```python
 class TestCategoryModel:
     """Тесты модели Category (5 тестов)"""
-    
+
     def test_create_category(self, db):
         """Создание категории"""
         category = Category.objects.create(name="Python", slug="python")
         assert category.name == "Python"
-    
+
     def test_slug_auto_generation(self, db):
         """Автоматическая генерация slug"""
         category = Category.objects.create(name="Python Basics")
         assert category.slug == "python-basics"
-    
+
     def test_get_absolute_url(self, category):
         """URL категории"""
         assert category.get_absolute_url() == "/blog/categories/python/"
 
 class TestArticleModel:
     """Тесты модели Article (15 тестов)"""
-    
+
     def test_create_article(self, article):
         """Создание статьи"""
         assert article.title == "Test Article"
         assert article.status == "published"
-    
+
     def test_published_articles_queryset(self, article, draft_article):
         """Фильтр опубликованных статей"""
         published = Article.objects.filter(status='published')
         assert article in published
         assert draft_article not in published
-    
+
     def test_increment_views(self, article):
         """Увеличение просмотров"""
         initial = article.views_count
         article.increment_views()
         assert article.views_count == initial + 1
-    
+
     def test_update_reading_time(self, article):
         """Расчет времени чтения"""
         article.content = "word " * 400  # 400 слов
         article.update_reading_time()
         assert article.reading_time == 2  # 400/200 = 2 минуты
-    
+
     def test_get_related_articles(self, article, category):
         """Получение похожих статей"""
+
         # Создать 5 статей в той же категории
+
         ArticleFactory.create_batch(5, category=category)
         related = article.get_related_articles(limit=3)
         assert len(related) == 3
 
 class TestCommentModel:
     """Тесты модели Comment (10 тестов)"""
-    
+
     def test_create_comment(self, comment):
         """Создание комментария"""
         assert comment.content == "Test comment"
         assert comment.is_approved is True
-    
+
     def test_comment_depth(self, comment, nested_comment):
         """Уровень вложенности"""
         assert comment.get_depth() == 0
         assert nested_comment.get_depth() == 1
-    
+
     def test_can_reply(self, comment, nested_comment):
         """Проверка возможности ответа"""
         assert comment.can_reply() is True  # depth 0
         assert nested_comment.can_reply() is True  # depth 1
-    
+
     def test_max_depth_validation(self, article, user):
         """Валидация максимальной глубины (3 уровня)"""
         level1 = CommentFactory(article=article)
         level2 = CommentFactory(article=article, parent=level1)
         level3 = CommentFactory(article=article, parent=level2)
-        
+
         # Попытка создать 4-й уровень
+
         with pytest.raises(ValidationError):
             level4 = Comment(
                 article=article,
@@ -549,10 +564,12 @@ class TestCommentModel:
                 parent=level3
             )
             level4.clean()
-    
+
     def test_get_replies(self, comment):
         """Получение ответов"""
+
         # Создать 3 ответа
+
         CommentFactory.create_batch(3, article=comment.article, parent=comment)
         replies = comment.get_replies()
         assert replies.count() == 3
@@ -565,8 +582,7 @@ class TestArticleReactionModel:
 
 class TestBookmarkModel:
     """Тесты модели Bookmark (2 теста)"""
-```
-
+```text
 ### test_views.py (506 строк, 54 теста)
 
 Тестирование Django представлений.
@@ -576,18 +592,18 @@ class TestBookmarkModel:
 ```python
 class TestBlogHomeView:
     """Тесты главной страницы (5 тестов)"""
-    
+
     def test_home_page_loads(self, client):
         """Страница загружается"""
         response = client.get('/blog/')
         assert response.status_code == 200
-    
+
     def test_featured_articles_in_context(self, client, featured_article):
         """Рекомендованные статьи в контексте"""
         response = client.get('/blog/')
         assert 'featured_articles' in response.context
         assert featured_article in response.context['featured_articles']
-    
+
     def test_stats_in_context(self, client, article):
         """Статистика в контексте"""
         response = client.get('/blog/')
@@ -596,17 +612,17 @@ class TestBlogHomeView:
 
 class TestArticleListView:
     """Тесты списка статей (8 тестов)"""
-    
+
     def test_article_list_loads(self, client):
         response = client.get('/blog/articles/')
         assert response.status_code == 200
-    
+
     def test_pagination(self, client):
         """Пагинация работает"""
         ArticleFactory.create_batch(15)  # Создать 15 статей
         response = client.get('/blog/articles/')
         assert response.context['page_obj'].paginator.num_pages == 2
-    
+
     def test_category_filter(self, client, category):
         """Фильтр по категории"""
         ArticleFactory.create_batch(5, category=category)
@@ -616,24 +632,24 @@ class TestArticleListView:
 
 class TestArticleDetailView:
     """Тесты детальной страницы (12 тестов)"""
-    
+
     def test_article_detail_loads(self, client, article):
         """Страница статьи загружается"""
         response = client.get(article.get_absolute_url())
         assert response.status_code == 200
         assert article in response.context
-    
+
     def test_draft_not_accessible(self, client, draft_article):
         """Черновик недоступен"""
         response = client.get(draft_article.get_absolute_url())
         assert response.status_code == 404
-    
+
     def test_comments_in_context(self, client, article, comment):
         """Комментарии в контексте"""
         response = client.get(article.get_absolute_url())
         assert 'comments' in response.context
         assert comment in response.context['comments']
-    
+
     def test_related_articles(self, client, article):
         """Похожие статьи"""
         ArticleFactory.create_batch(5, category=article.category)
@@ -642,7 +658,7 @@ class TestArticleDetailView:
 
 class TestAddCommentView:
     """Тесты добавления комментариев (6 тестов)"""
-    
+
     def test_add_comment_authenticated(self, authenticated_client, article):
         """Авторизованный может комментировать"""
         response = authenticated_client.post('/blog/ajax/add-comment/', {
@@ -652,7 +668,7 @@ class TestAddCommentView:
         assert response.status_code == 200
         data = response.json()
         assert data['success'] is True
-    
+
     def test_add_comment_anonymous(self, client, article):
         """Анонимный не может комментировать"""
         response = client.post('/blog/ajax/add-comment/', {
@@ -663,7 +679,7 @@ class TestAddCommentView:
 
 class TestToggleReactionView:
     """Тесты реакций (8 тестов)"""
-    
+
     def test_like_article(self, authenticated_client, article):
         """Поставить лайк"""
         response = authenticated_client.post('/blog/ajax/toggle-reaction/', {
@@ -676,14 +692,13 @@ class TestToggleReactionView:
 
 class TestSearchView:
     """Тесты поиска (5 тестов)"""
-    
+
     def test_search_results(self, client, article):
         """Поиск находит статьи"""
         response = client.get('/blog/search/?q=test')
         assert response.status_code == 200
         assert 'results' in response.context
-```
-
+```text
 ### test_api.py (532 строки, 38 тестов)
 
 Тестирование REST API.
@@ -693,7 +708,7 @@ class TestSearchView:
 ```python
 class TestArticlesAPI:
     """Тесты API статей (15 тестов)"""
-    
+
     def test_list_articles(self, api_client):
         """GET /api/blog/articles/"""
         ArticleFactory.create_batch(5)
@@ -701,14 +716,14 @@ class TestArticlesAPI:
         assert response.status_code == 200
         data = response.json()
         assert len(data['items']) == 5
-    
+
     def test_article_detail(self, api_client, article):
         """GET /api/blog/articles/{slug}/"""
         response = api_client.get(f'/api/blog/articles/{article.slug}/')
         assert response.status_code == 200
         data = response.json()
         assert data['title'] == article.title
-    
+
     def test_featured_articles(self, api_client):
         """GET /api/blog/articles/featured/"""
         ArticleFactory.create_batch(3, is_featured=True)
@@ -717,7 +732,7 @@ class TestArticlesAPI:
 
 class TestCategoriesAPI:
     """Тесты API категорий (8 тестов)"""
-    
+
     def test_list_categories(self, api_client):
         """GET /api/blog/categories/"""
         CategoryFactory.create_batch(5)
@@ -726,7 +741,7 @@ class TestCategoriesAPI:
 
 class TestReactionsAPI:
     """Тесты API реакций (10 тестов)"""
-    
+
     def test_add_reaction(self, api_client, user, article):
         """POST /api/blog/articles/{slug}/react/"""
         api_client.force_authenticate(user=user)
@@ -735,8 +750,7 @@ class TestReactionsAPI:
             {'reaction_type': 'like'}
         )
         assert response.status_code == 200
-```
-
+```text
 ### test_forms.py (188 строк, 12 тестов)
 
 Тестирование Django форм.
@@ -744,23 +758,22 @@ class TestReactionsAPI:
 ```python
 class TestCommentForm:
     """Тесты формы комментариев (12 тестов)"""
-    
+
     def test_valid_form(self):
         """Валидная форма"""
         form = CommentForm(data={'content': 'Test comment'})
         assert form.is_valid()
-    
+
     def test_empty_content(self):
         """Пустой контент невалиден"""
         form = CommentForm(data={'content': ''})
         assert not form.is_valid()
-    
+
     def test_min_length(self):
         """Минимальная длина 3 символа"""
         form = CommentForm(data={'content': 'ab'})
         assert not form.is_valid()
-```
-
+```text
 ### test_admin.py (388 строк, 8 тестов)
 
 Тестирование Django Admin.
@@ -768,17 +781,18 @@ class TestCommentForm:
 ```python
 class TestArticleAdmin:
     """Тесты админки статей (5 тестов)"""
-    
+
     def test_publish_action(self, staff_client):
         """Массовая публикация статей"""
         drafts = ArticleFactory.create_batch(3, status='draft')
+
         # Выполнить действие "publish"
+
         # Проверить, что все статьи опубликованы
 
 class TestCommentAdmin:
     """Тесты админки комментариев (3 теста)"""
-```
-
+```text
 ## 🚀 Запуск тестов
 
 ### Все тесты блога
@@ -787,77 +801,90 @@ class TestCommentAdmin:
 cd /Users/dmitrii/Documents/GitHub/pyschool_delete_css/backend
 
 # Запуск всех тестов
+
 pytest src/blog/tests/
 
 # С выводом информации
+
 pytest src/blog/tests/ -v
 
 # Быстрый запуск (без warnings)
-pytest src/blog/tests/ -q --tb=line
-```
 
+pytest src/blog/tests/ -q --tb=line
+```text
 ### Конкретный файл
 
 ```bash
+
 # Только тесты моделей
+
 pytest src/blog/tests/test_models.py
 
 # Только тесты API
-pytest src/blog/tests/test_api.py -v
-```
 
+pytest src/blog/tests/test_api.py -v
+```text
 ### Конкретный тест
 
 ```bash
+
 # Один класс тестов
+
 pytest src/blog/tests/test_models.py::TestArticleModel
 
 # Один тест
-pytest src/blog/tests/test_models.py::TestArticleModel::test_increment_views
-```
 
+pytest src/blog/tests/test_models.py::TestArticleModel::test_increment_views
+```text
 ### С фильтрацией
 
 ```bash
+
 # Тесты с "comment" в названии
+
 pytest src/blog/tests/ -k comment
 
 # Тесты с "api" в названии
-pytest src/blog/tests/ -k api -v
-```
 
+pytest src/blog/tests/ -k api -v
+```text
 ### Параллельный запуск
 
 ```bash
-# С pytest-xdist (быстрее)
-pytest src/blog/tests/ -n auto
-```
 
+# С pytest-xdist (быстрее)
+
+pytest src/blog/tests/ -n auto
+```text
 ### С покрытием кода
 
 ```bash
+
 # HTML отчет
+
 pytest src/blog/tests/ --cov=blog --cov-report=html
 
 # Консольный отчет
-pytest src/blog/tests/ --cov=blog --cov-report=term-missing
-```
 
+pytest src/blog/tests/ --cov=blog --cov-report=term-missing
+```text
 ### Failing first
 
 ```bash
+
 # Сначала упавшие тесты
+
 pytest src/blog/tests/ --ff
 
 # Только упавшие тесты
-pytest src/blog/tests/ --lf
-```
 
+pytest src/blog/tests/ --lf
+```text
 ## 📊 Покрытие кода
 
 ### Текущее покрытие: 75%
 
-```
+```text
 Name                  Stmts   Miss  Cover
 -----------------------------------------
 blog/__init__.py          0      0   100%
@@ -874,73 +901,85 @@ blog/urls.py             15      0   100%
 blog/views.py           680    165    76%
 -----------------------------------------
 TOTAL                  1824    427    75%
-```
-
+```text
 ### Генерация отчета
 
 ```bash
+
 # HTML отчет (интерактивный)
+
 pytest src/blog/tests/ --cov=blog --cov-report=html
 
 # Открыть отчет
+
 open htmlcov/index.html
 
 # XML отчет (для CI/CD)
+
 pytest src/blog/tests/ --cov=blog --cov-report=xml
 
 # Терминальный отчет
-pytest src/blog/tests/ --cov=blog --cov-report=term
-```
 
+pytest src/blog/tests/ --cov=blog --cov-report=term
+```text
 ### Coverage по модулям
 
 ```bash
+
 # Только models.py
+
 pytest src/blog/tests/test_models.py --cov=blog.models
 
 # Только API
+
 pytest src/blog/tests/test_api.py --cov=blog.api
 
 # Только views
-pytest src/blog/tests/test_views.py --cov=blog.views
-```
 
+pytest src/blog/tests/test_views.py --cov=blog.views
+```text
 ## 💡 Best Practices
 
 ### 1. Именование тестов
 
 ```python
+
 # ✅ Хорошо - описательное название
+
 def test_user_can_comment_on_published_article():
     pass
 
 # ❌ Плохо - неясное название
+
 def test_comment():
     pass
-```
-
+```text
 ### 2. Организация тестов
 
 ```python
+
 # ✅ Хорошо - группировка в классы
+
 class TestArticleModel:
     def test_create_article(self):
         pass
-    
+
     def test_update_article(self):
         pass
 
 # ❌ Плохо - все в одном файле без структуры
+
 def test_1():
     pass
 def test_2():
     pass
-```
-
+```text
 ### 3. Использование fixtures
 
 ```python
+
 # ✅ Хорошо - переиспользование через fixtures
+
 def test_comment(article, user):
     comment = Comment.objects.create(
         article=article,
@@ -949,68 +988,82 @@ def test_comment(article, user):
     )
 
 # ❌ Плохо - создание данных в каждом тесте
+
 def test_comment():
     user = User.objects.create(...)
     category = Category.objects.create(...)
     article = Article.objects.create(...)
     comment = Comment.objects.create(...)
-```
-
+```text
 ### 4. Использование factories
 
 ```python
+
 # ✅ Хорошо - фабрики для сложных данных
+
 def test_article_list():
     articles = ArticleFactory.create_batch(10, status='published')
     assert len(articles) == 10
 
 # ❌ Плохо - ручное создание множества объектов
+
 def test_article_list():
     for i in range(10):
         Article.objects.create(
             title=f"Article {i}",
             slug=f"article-{i}",
-            # ... много полей
-        )
-```
 
+            # ... много полей
+
+        )
+```text
 ### 5. Assertions
 
 ```python
+
 # ✅ Хорошо - конкретные проверки
+
 def test_article_published():
     article = ArticleFactory(status='published')
     assert article.status == 'published'
     assert article.published_at is not None
 
 # ❌ Плохо - общие проверки
+
 def test_article_published():
     article = ArticleFactory(status='published')
     assert article
-```
-
+```text
 ### 6. Тестирование исключений
 
 ```python
+
 # ✅ Хорошо - pytest.raises
+
 def test_max_depth_validation():
     with pytest.raises(ValidationError):
+
         # код, который должен вызвать ошибку
+
         pass
 
 # ❌ Плохо - try/except
+
 def test_max_depth_validation():
     try:
+
         # код
+
         assert False  # Не должно дойти сюда
     except ValidationError:
         pass
-```
-
+```text
 ### 7. Независимость тестов
 
 ```python
+
 # ✅ Хорошо - каждый тест независим
+
 def test_create_article(db):
     article = ArticleFactory()
     assert article.id is not None
@@ -1021,6 +1074,7 @@ def test_update_article(db):
     article.save()
 
 # ❌ Плохо - тесты зависят друг от друга
+
 article_id = None
 
 def test_create_article():
@@ -1030,47 +1084,55 @@ def test_create_article():
 
 def test_update_article():
     article = Article.objects.get(id=article_id)  # Зависит от первого теста!
-```
-
+```text
 ## 📚 Полезные команды
 
 ```bash
+
 # Вся информация о тестах
+
 pytest src/blog/tests/ -v --tb=short
 
 # С временем выполнения
+
 pytest src/blog/tests/ --durations=10
 
 # Остановка на первой ошибке
+
 pytest src/blog/tests/ -x
 
 # Запуск последних упавших
+
 pytest src/blog/tests/ --lf
 
 # Дебаг режим
+
 pytest src/blog/tests/ --pdb
 
 # Показать print'ы
+
 pytest src/blog/tests/ -s
 
 # Показать локальные переменные при ошибке
+
 pytest src/blog/tests/ -l
 
 # Запуск определенных маркеров
+
 pytest src/blog/tests/ -m slow  # Только медленные тесты
 pytest src/blog/tests/ -m "not slow"  # Без медленных
 
 # Генерация отчета JUnit (для CI/CD)
-pytest src/blog/tests/ --junitxml=test-results.xml
-```
 
+pytest src/blog/tests/ --junitxml=test-results.xml
+```text
 ## 🔗 Связанная документация
 
 - **Models**: См. `../README.md` - Модели данных
 - **Views**: См. `../README.md` - Представления
 - **API**: См. `BLOG_API_DOCUMENTATION.md` - REST API
-- **pytest docs**: https://docs.pytest.org/
-- **Factory Boy docs**: https://factoryboy.readthedocs.io/
+- **pytest docs**: <https://docs.pytest.org/>
+- **Factory Boy docs**: <https://factoryboy.readthedocs.io/>
 
 ## 📦 Зависимости для тестирования
 
@@ -1082,8 +1144,7 @@ pytest-cov = "^6.0.0"
 pytest-xdist = "^3.6.1"  # Параллельный запуск
 factory-boy = "^3.3.1"
 faker = "^33.1.0"
-```
-
+```text
 ---
 
 **Статус**: ✅ 149/149 tests passing | 📊 75% coverage | 🧪 2,845 lines of test code | ⚡ 10.64s runtime
