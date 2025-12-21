@@ -29,6 +29,7 @@ from authentication.api import auth_router
 from blog.api import router as blog_router
 from certificates.api import router as certificates_router
 from core.api import router as core_router
+from core.health import health_check, readiness_check
 from courses.api import router as courses_router
 from managers.api import router as manager_router
 from mentors.api import router as mentors_router
@@ -94,6 +95,26 @@ def get_api():
             Response: {"ping": "pong"}
         """
         return {"ping": "pong"}
+
+    @api_instance.get("/health/", auth=None, include_in_schema=False)
+    def health_endpoint(request):
+        """
+        Liveness probe для Docker/Kubernetes.
+        Базовая проверка что приложение запущено.
+        """
+        return health_check()
+
+    @api_instance.get("/readiness/", auth=None, include_in_schema=False)
+    def readiness_endpoint(request):
+        """
+        Readiness probe для Kubernetes.
+        Проверка что приложение готово обрабатывать запросы (БД, Redis доступны).
+        """
+        result = readiness_check()
+        status_code = 200 if result.get("ready", False) else 503
+        if status_code != 200:
+            return result, status_code
+        return result
 
     _api_instance = api_instance
     return _api_instance

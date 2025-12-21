@@ -85,15 +85,8 @@ RUN chmod +x /app/docker-entrypoint.sh
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
-# Default command: запуск gunicorn
-CMD ["gunicorn", "pyland.wsgi:application", \
-     "--bind", "0.0.0.0:8000", \
-     "--workers", "4", \
-     "--worker-class", "sync", \
-     "--worker-tmp-dir", "/dev/shm", \
-     "--max-requests", "1000", \
-     "--max-requests-jitter", "50", \
-     "--timeout", "120", \
-     "--access-logfile", "-", \
-     "--error-logfile", "-", \
-     "--log-level", "info"]
+# Команды запуска определяются в docker-compose.yml или K8s Deployment
+# Примеры команд:
+# - Web: gunicorn pyland.wsgi:application --bind 0.0.0.0:8000 --workers 4
+# - Celery Worker: celery -A pyland worker -l info --concurrency=2
+# - Celery Beat: celery -A pyland beat -l info
