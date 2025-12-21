@@ -3,19 +3,8 @@ set -e
 
 echo "🚀 Starting Pyland Backend..."
 
-# Ждём готовности PostgreSQL
-echo "⏳ Waiting for PostgreSQL..."
-while ! nc -z ${DB_HOST:-postgres} ${DB_PORT:-5432}; do
-  sleep 0.1
-done
-echo "✅ PostgreSQL is ready!"
-
-# Ждём готовности Redis
-echo "⏳ Waiting for Redis..."
-while ! nc -z ${REDIS_HOST:-redis} ${REDIS_PORT:-6379}; do
-  sleep 0.1
-done
-echo "✅ Redis is ready!"
+# PostgreSQL и Redis проверяются через healthcheck в docker-compose
+# Контейнер стартует только когда зависимости готовы
 
 # Применяем миграции (только для web сервиса)
 if [ "$1" = "gunicorn" ] || [ "$1" = "python" ]; then
