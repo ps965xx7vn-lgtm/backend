@@ -19,6 +19,9 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write  # Требуется для публикации в GHCR
 
     steps:
       - name: Checkout code
