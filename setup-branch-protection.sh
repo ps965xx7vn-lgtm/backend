@@ -22,8 +22,38 @@ fi
 
 # Получить информацию о репозитории
 REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+VISIBILITY=$(gh repo view --json visibility -q .visibility)
 echo "📦 Repository: $REPO"
+echo "🔍 Visibility: $VISIBILITY"
 echo ""
+
+# Проверка типа репозитория
+if [ "$VISIBILITY" = "PRIVATE" ]; then
+    echo "⚠️  WARNING: Branch Protection requires GitHub Pro for private repos"
+    echo ""
+    echo "You have 2 options:"
+    echo ""
+    echo "1️⃣  Make repository PUBLIC (recommended for open-source):"
+    echo "   gh repo edit $REPO --visibility public"
+    echo ""
+    echo "2️⃣  Use alternative protection (GitHub Actions + CODEOWNERS):"
+    echo "   Already configured in .github/workflows/branch-protection.yml"
+    echo ""
+    read -p "Make repository public now? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "📢 Making repository public..."
+        gh repo edit $REPO --visibility public
+        echo "✅ Repository is now public"
+        echo ""
+    else
+        echo "ℹ️  Using alternative protection via GitHub Actions"
+        echo "   Your workflows will block invalid PRs automatically"
+        echo ""
+        echo "✅ Setup complete (alternative mode)"
+        exit 0
+    fi
+fi
 
 # Функция для настройки защиты ветки
 protect_branch() {
