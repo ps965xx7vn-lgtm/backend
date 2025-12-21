@@ -12,8 +12,8 @@ on:
 env:
   # Используем GHCR (GitHub Container Registry) вместо Docker Hub
   REGISTRY: ghcr.io
-  # Используем github.actor (личный аккаунт) вместо repository_owner (может быть org)
-  IMAGE_NAME: ${{ github.actor }}/pyland-backend
+  # Используем github.repository (владелец/репо) для корректного пути в GHCR
+  IMAGE_NAME: ${{ github.repository }}
   DOCKER_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
