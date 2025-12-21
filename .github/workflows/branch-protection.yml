@@ -60,10 +60,10 @@ jobs:
           # GitHub Actions автоматически проверит статус CI
 
       - name: Verify Docker image exists
-        env:
-          DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/pyland-backend
         run: |
-          echo "✅ Verifying Docker image for commit ${{ github.sha }}"
+          echo "✅ Verifying Docker image build and publish"
+          echo "Image: ghcr.io/${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
           # Проверка будет через успешный build в docker-publish workflow
 
   # Полный набор тестов для критичных PR
