@@ -2,12 +2,12 @@ name: Documentation
 
 on:
   push:
-    branches: [main]
+    branches: [dev, main]
     paths:
       - '**.md'
       - '.github/workflows/docs.yml'
   pull_request:
-    branches: [main]
+    branches: [dev, main]
     paths:
       - '**.md'
 
@@ -27,6 +27,7 @@ jobs:
             !src/media/**
             !**/.venv/**
             !**/node_modules/**
+          config: '.markdownlint-cli2.yaml'
 
   check-links:
     runs-on: ubuntu-latest

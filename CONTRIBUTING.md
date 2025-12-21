@@ -2,552 +2,259 @@
 
 Спасибо за интерес к проекту! Мы рады любому вкладу.
 
-## Быстрый Старт
+## 📚 Документация
 
-1. **Fork репозиторий**
-2. **Clone свой fork:**
+Перед началом работы ознакомьтесь с:
 
-   ```bash
-   git clone <https://github.com/YOUR_USERNAME/backend.git>
-   cd backend
-   ```
+- **[GIT_WORKFLOW.md](./GIT_WORKFLOW.md)** — полное руководство по Git Flow, commit guidelines, PR процессу
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** — архитектура проекта, структура кода
+- **[DOCKER_HUB_SETUP.md](./DOCKER_HUB_SETUP.md)** — настройка Docker и деплой
+- **[README.md](./README.md)** — общая информация и quick start
 
-3. **Установите зависимости:**
+## 🚀 Быстрый Старт
 
-   ```bash
-   poetry install
-   poetry run pre-commit install
-   ```
-
-4. **Создайте feature branch:**
-
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-## Процесс Разработки
-
-### 1. Настройка Окружения
+### 1. Fork и Clone
 
 ```bash
+# Fork репозиторий через GitHub UI
 
-# Копируем .env
+# Clone свой fork
+git clone https://github.com/YOUR_USERNAME/backend.git
+cd backend
 
+# Добавить upstream remote
+git remote add upstream https://github.com/ps965xx7vn-lgtm/backend.git
+```
+
+### 2. Установка окружения
+
+```bash
+# Установить зависимости через Poetry
+poetry install
+
+# Установить pre-commit hooks
+poetry run pre-commit install
+
+# Скопировать .env
 cp .env.example .env
 
-# Применяем миграции
+# Запустить БД и Redis (Docker)
+docker-compose up -d db redis
 
+# Применить миграции
 poetry run python src/manage.py migrate
 
-# Создаем роли
-
+# Создать роли
 poetry run python src/manage.py create_roles
-```text
-### 2. Написание Кода
 
-**Следуйте стандартам:**
+# Создать superuser
+poetry run python src/manage.py createsuperuser
+```
 
-- Black для форматирования (line-length=100)
-- Type hints где возможно
-- Docstrings на русском языке
-- Комментарии на русском
+### 3. Создать feature branch
 
-**Пример:**
+```bash
+# Обновить dev
+git checkout dev
+git pull upstream dev
+
+# Создать feature branch
+git checkout -b feature/your-feature-name
+```
+
+## 💻 Процесс Разработки
+
+### 1. Code Style
+
+**Автоматическое форматирование** (через pre-commit):
+
+- **ruff** — linting
+- **black** — code formatting (line-length=100)
+- **isort** — import sorting
+- **mypy** — type checking
+
+**Правила:**
 
 ```python
-def calculate_progress(student_id: int, course_id: int) -> dict:
+# ✅ Хорошо
+def get_student_progress(student_id: int, course_id: int) -> dict[str, Any]:
     """
-    Вычисляет прогресс студента по курсу.
+    Получает прогресс студента по курсу.
 
     Args:
         student_id: ID студента
         course_id: ID курса
 
     Returns:
-        dict: Словарь с данными прогресса
+        Словарь с данными прогресса
 
     Raises:
         Student.DoesNotExist: Если студент не найден
     """
-    student = Student.objects.get(id=student_id)
+    student = Student.objects.select_related('user').get(id=student_id)
+    return calculate_progress(student, course_id)
+```
 
-    #
+### 2. Тестирование
 
-```text
-### 3. Тестирование
-
-**Обязательно пишите тесты для новой функциональности!**
+**Обязательно** пишите тесты для новой функциональности!
 
 ```bash
-
-# Запуск тестов
-
+# Запуск всех тестов
 poetry run pytest
 
-# С coverage
-
-poetry run pytest --cov=src
+# С coverage report
+poetry run pytest --cov=src --cov-report=html
 
 # Конкретный модуль
-
 poetry run pytest src/authentication/tests/
-```text
-**Структура тестов:**
 
-```python
-@pytest.mark.django_db
-class TestYourFeature:
-    def test_something(self, user, course):
-        """Тестирует что-то важное."""
+# Параллельно (быстрее)
+poetry run pytest -n auto
+```
 
-        # Arrange
+### 3. Commit Messages
 
-        data = {...}
-
-        # Act
-
-        result = your_function(data)
-
-        # Assert
-
-        assert result.status == "success"
-```text
-### 4. Pre-commit Checks
-
-Pre-commit hooks запускаются автоматически перед каждым коммитом:
+**Используйте Conventional Commits** (подробно в [GIT_WORKFLOW.md](./GIT_WORKFLOW.md)):
 
 ```bash
-
-# Ручной запуск всех проверок
-
-poetry run pre-commit run --all-files
-
-# Только для staged файлов
-
-poetry run pre-commit run
-```text
-Что проверяется:
-
-- ✅ Ruff linting + formatting
-- ✅ Black code style
-- ✅ isort import sorting
-- ✅ Bandit security
-- ✅ File quality (trailing whitespace, etc)
-- ✅ Django version upgrades
-
-### 5. Коммиты
-
-**Используйте Conventional Commits:**
-
-```bash
-
-# Типы коммитов
-
-feat:     Новая функциональность
-fix:      Исправление бага
-docs:     Документация
-style:    Форматирование (не влияет на код)
-refactor: Рефакторинг
-test:     Добавление тестов
-chore:    Обновление зависимостей, конфигурации
-ci:       Изменения CI/CD
-perf:     Улучшение производительности
+# Формат: <type>(<scope>): <subject>
 
 # Примеры
+feat(authentication): добавлена JWT аутентификация
+fix(blog): исправлена пагинация статей
+docs(api): обновлена документация endpoints
+```
 
-git commit -m "feat: Add lesson submission workflow"
-git commit -m "fix: Resolve cache invalidation issue"
-git commit -m "docs: Update API documentation"
-git commit -m "test: Add tests for review system"
-```text
-**Хороший коммит:**
+### 4. Pull Requests
 
-- Понятный заголовок (до 72 символов)
-- Описывает ЧТО и ПОЧЕМУ (не КАК)
-- Один логический change
+**Перед созданием PR:**
 
 ```bash
-git commit -m "feat: Add email notifications for reviews
+# 1. Убедитесь что тесты проходят
+poetry run pytest
 
-- Send email when review is completed
-- Include improvement suggestions in email
-- Add Celery task for async sending
-- Add tests for notification logic
+# 2. Проверьте code quality
+poetry run ruff check .
+poetry run black --check .
 
-Closes #123"
-```text
-### 6. Pull Request
+# 3. Обновите ветку от upstream
+git fetch upstream
+git rebase upstream/dev
 
-1. **Push в свой fork:**
+# 4. Push в свой fork
+git push origin feature/your-feature-name
+```
 
-   ```bash
-   git push origin feature/your-feature-name
-   ```
+**Создание PR:**
 
-1. **Создайте PR на GitHub:**
-   - Понятный title (как коммит)
-   - Подробное описание изменений
-   - Ссылки на связанные issues
-   - Screenshots/GIFs если UI изменения
+```bash
+gh pr create \
+  --base dev \
+  --head your-username:feature/your-feature-name \
+  --title "feat: краткое описание" \
+  --body "Подробное описание изменений..."
+```
 
-2. **PR Template:**
-
-   ```markdown
-
-   ## Описание
-
-   Краткое описание изменений
-
-   ## Тип изменений
-
-   - [ ] Bug fix
-   - [ ] New feature
-   - [ ] Breaking change
-   - [ ] Documentation update
-
-   ## Тестирование
-
-   - [ ] Юнит-тесты добавлены/обновлены
-   - [ ] Все тесты проходят локально
-   - [ ] Pre-commit hooks проходят
-
-   ## Чеклист
-
-   - [ ] Код следует стайлгайду
-   - [ ] Документация обновлена
-   - [ ] Нет конфликтов с main
-   - [ ] CI checks проходят
-
-   Closes #123
-   ```
-
-## Code Review Process
-
-### Что проверяют reviewers
-
-1. **Функциональность:**
-   - Код делает то, что заявлено
-   - Нет очевидных багов
-   - Edge cases обработаны
-
-2. **Качество кода:**
-   - Читаемость и поддерживаемость
-   - Нет дублирования
-   - Правильное использование паттернов
-
-3. **Тесты:**
-   - Покрытие достаточное
-   - Тесты проверяют правильные вещи
-   - Тесты не хрупкие
-
-4. **Документация:**
-   - Docstrings актуальны
-   - README обновлен если нужно
-   - API docs корректны
-
-5. **Performance:**
-   - Нет N+1 queries
-   - Правильное использование кэша
-   - Async где нужно
-
-### Ответ на review
+**PR Template:**
 
 ```markdown
-@reviewer спасибо за фидбек!
+## Описание
+Что делает этот PR?
 
-✅ Исправил N+1 query через select_related
-✅ Добавил тесты для edge case
-🔄 Переименовал функцию как предложил
-❓ По поводу кэширования - какой TTL лучше использовать?
-```text
-## Разработка Features
+## Изменения
+- Добавлено X
+- Исправлено Y
 
-### Новый API Endpoint
+## Тестирование
+- [x] Unit тесты пройдены
+- [x] Проверено вручную
 
-1. **Создать схему в `app/schemas.py`:**
+## Чеклист
+- [x] Код соответствует style guide
+- [x] Тесты добавлены
+- [x] Документация обновлена
 
-```python
-class FeatureOut(Schema):
-    id: int
-    name: str
+Closes #123
+```
 
-class FeatureIn(Schema):
-    name: str = Field(..., min_length=3)
-```text
-2. **Добавить endpoint в `app/api.py`:**
+## 🔍 Code Review Process
 
-```python
-@router.post("/features/", response=FeatureOut)
-def create_feature(request, payload: FeatureIn):
-    feature = Feature.objects.create(**payload.dict())
-    return feature
-```text
-3. **Написать тесты:**
+### Для автора PR
 
-```python
-def test_create_feature_api(api_client):
-    response = api_client.post(
-        "/api/features/",
-        json={"name": "Test Feature"}
-    )
-    assert response.status_code == 201
-    assert response.json()["name"] == "Test Feature"
-```text
-### Новая Модель
+1. Отвечайте на комментарии быстро и конструктивно
+2. Вносите изменения по замечаниям
+3. Resolve conversations после исправления
 
-1. **Определить в `app/models.py`:**
+### Для reviewer
 
-```python
-class Feature(Model):
-    """Описание модели на русском."""
-    name = CharField(max_length=255)
-    created_at = DateTimeField(auto_now_add=True)
+1. Проверьте код внимательно
+2. Оставляйте конструктивные комментарии
+3. Approve когда всё в порядке
 
-    class Meta:
-        verbose_name = "Фича"
-        verbose_name_plural = "Фичи"
-        ordering = ['-created_at']
+## 📋 Checklist перед Merge
 
-    def __str__(self) -> str:
-        return self.name
-```text
-2. **Создать миграцию:**
+- [ ] Все тесты пройдены (CI green)
+- [ ] Code coverage не упал
+- [ ] Нет конфликтов с base branch
+- [ ] Получен approval от reviewer
+- [ ] Документация обновлена
+
+## 🐛 Баги и Issues
+
+### Reporting Bugs
+
+```markdown
+**Описание бага:**
+Что произошло?
+
+**Как воспроизвести:**
+1. Шаг 1
+2. Шаг 2
+
+**Ожидаемое поведение:**
+Что должно было произойти?
+
+**Окружение:**
+- OS: macOS 14
+- Python: 3.13
+```
+
+### Feature Requests
+
+```markdown
+**Описание фичи:**
+Что хотите добавить?
+
+**Зачем это нужно:**
+Какую проблему решает?
+```
+
+## 📝 Документация
+
+### API Документация
+
+Django Ninja генерирует автоматическую документацию:
 
 ```bash
-poetry run python src/manage.py makemigrations
-poetry run python src/manage.py migrate
-```text
-3. **Зарегистрировать в admin:**
+poetry run python src/manage.py runserver
+open http://127.0.0.1:8000/api/docs
+```
 
-```python
-@admin.register(Feature)
-class FeatureAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_at')
-    search_fields = ('name',)
-```text
-4. **Создать factory:**
+## 🤝 Community Guidelines
 
-```python
-class FeatureFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Feature
-
-    name = factory.Faker('word')
-```text
-### Новый Celery Task
-
-```python
-
-# app/tasks.py
-
-@shared_task(bind=True, max_retries=3)
-def process_feature(self, feature_id: int) -> dict:
-    """Обрабатывает фичу асинхронно."""
-    try:
-        feature = Feature.objects.get(id=feature_id)
-
-        # Processing logic
-
-        return {"status": "success"}
-    except Exception as exc:
-        raise self.retry(exc=exc, countdown=60)
-```text
-## Исправление Багов
-
-### Процесс
-
-1. **Создать issue** (если нет)
-2. **Воспроизвести** баг локально
-3. **Написать failing test**
-4. **Исправить** код
-5. **Убедиться что test проходит**
-6. **Создать PR** с fix + test
-
-### Пример
-
-```python
-
-# Bug: Cache not invalidated on update
-
-# 1. Failing test
-
-def test_cache_invalidation_on_update(article):
-    cached = cache.get(f'article:{article.slug}')
-    article.title = "Updated"
-    article.save()
-    assert cache.get(f'article:{article.slug}') is None
-
-# 2. Fix
-
-class Article(Model):
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        cache.delete(f'article:{self.slug}')  # Add this
-```text
-## Performance Optimization
-
-### Database Queries
-
-```python
-
-# ❌ Bad - N+1 queries
-
-for article in Article.objects.all():
-    print(article.author.name)  # Query per article!
-
-# ✅ Good - 2 queries total
-
-articles = Article.objects.select_related('author')
-for article in articles:
-    print(article.author.name)
-```text
-### Caching
-
-```python
-
-# ❌ Bad - cache key collision
-
-cache_key = 'articles'  # Same for all queries!
-
-# ✅ Good - unique keys
-
-cache_key = f'articles:{category}:{page}:{lang}'
-```text
-### Async Tasks
-
-```python
-
-# ❌ Bad - blocking request
-
-def view(request):
-    send_email(user)  # Blocks!
-    return response
-
-# ✅ Good - async
-
-def view(request):
-    send_email.delay(user.id)  # Non-blocking
-    return response
-```text
-## Security
-
-### Обязательные проверки
-
-1. **Авторизация:**
-
-```python
-@require_role(['manager'])  # Всегда проверяем роль
-def sensitive_view(request):
-    pass
-```text
-2. **Валидация:**
-
-```python
-
-# Pydantic схемы для всех inputs
-
-class DataIn(Schema):
-    email: EmailStr
-    age: int = Field(..., ge=0, le=150)
-```text
-3. **SQL Injection:**
-
-```python
-
-# ❌ Bad
-
-Article.objects.raw(f"SELECT * FROM articles WHERE id={request.GET['id']}")
-
-# ✅ Good
-
-Article.objects.get(id=request.GET['id'])
-```text
-4. **XSS:**
-
-```django
-{# ❌ Bad #}
-{{ user_input|safe }}
-
-{# ✅ Good - auto-escaped #}
-{{ user_input }}
-```text
-## Documentation
-
-### Что документировать
-
-1. **Функции/методы:**
-
-```python
-def complex_function(arg1: int, arg2: str) -> dict:
-    """
-    Краткое описание.
-
-    Args:
-        arg1: Описание первого аргумента
-        arg2: Описание второго
-
-    Returns:
-        dict: Что возвращает
-
-    Raises:
-        ValueError: Когда возникает
-    """
-```text
-2. **API endpoints:**
-
-```python
-@router.get("/items/", response=List[ItemOut])
-def list_items(
-    request,
-    category: str = None,  # Filter by category
-    page: int = 1,         # Page number
-):
-    """
-    Возвращает список items с пагинацией.
-
-    Фильтры:
-
-    - category: slug категории
-    - page: номер страницы (default: 1)
-
-    """
-```text
-3. **Модели:**
-
-```python
-class Item(Model):
-    """
-    Представляет item в системе.
-
-    Fields:
-        name: Название item
-        category: Категория (FK)
-        is_active: Активен ли item
-    """
-```text
-## Release Process
-
-1. **Обновить версию** в `pyproject.toml`
-2. **Обновить CHANGELOG.md**
-3. **Создать tag:**
-
-   ```bash
-   git tag -a v1.0.0 -m "Release v1.0.0"
-   git push origin v1.0.0
-   ```
-
-1. **GitHub Release** с описанием изменений
-
-## Получение Помощи
-
-- **GitHub Issues** - для багов и feature requests
-- **GitHub Discussions** - для вопросов
-- **Documentation** - см. README.md, ARCHITECTURE.md
-
-## Code of Conduct
-
-- Будьте уважительны
+- Будьте уважительны к другим
 - Конструктивная критика приветствуется
-- Все PR рассматриваются одинаково
+- Помогайте новичкам
+- Нет токсичности
 
-Спасибо за вклад в проект! 🚀
+## 📚 Дополнительные Ресурсы
+
+- [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) — полный Git workflow guide
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — архитектура проекта
+- [Django Ninja Docs](https://django-ninja.rest-framework.com/)
+- [pytest-django Docs](https://pytest-django.readthedocs.io/)
+
+---
+
+**Спасибо за вклад в проект!** 🎉
