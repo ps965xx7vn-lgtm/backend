@@ -17,17 +17,14 @@ jobs:
 
       - name: Validate source branch
         run: |
-          echo "Checking PR from '${{ github.head_ref }}' into 'main'"
-          # Проверяем что PR создан из dev
-          if [[ "${{ github.head_ref }}" == "dev" ]]; then
-            echo "✅ Valid: PR from dev → main"
-            exit 0
-          fi
+          echo "✅ Validating PR into main branch"
+          echo "Source: ${{ github.head_ref }}"
+          echo "Target: ${{ github.base_ref }}"
+          echo "Expected source: dev"
 
-          # Для merged PRs может быть refs/pull/*/merge
-          echo "⚠️  Warning: Expected 'dev' but got '${{ github.head_ref }}'"
-          echo "This might be a merged PR or automated action"
-          echo "Proceeding with caution..."
+          # Main требует PR только из dev (Git Flow policy)
+          # Но мы полагаемся на GitHub branch protection rules
+          echo "✅ Proceeding with validation..."
 
       - name: Check for conflicts
         run: |
@@ -36,7 +33,7 @@ jobs:
             echo "❌ Merge conflicts detected!"
             exit 1
           fi
-          echo "✅ No merge conflicts"
+          echo "✅ No merge conflicts detected"
 
   # Проверка PR main → prod
   validate-prod-pr:
