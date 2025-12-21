@@ -1,24 +1,19 @@
-# Markdownlint configuration
-# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+# Markdownlint configuration for CLI2
+# https://github.com/DavidAnson/markdownlint-cli2#configuration
 
-default: true
+config:
+  default: true
+  MD013: false  # Line length
+  MD033: false  # Inline HTML
+  MD041: false  # First line heading
+  MD024:        # Duplicate headings
+    siblings_only: true
+  MD046: false  # Code block style
+  MD029:        # Ordered list prefix
+    style: "any"
 
-# MD013/line-length - Line length (disabled for long URLs)
-MD013: false
-
-# MD033/no-inline-html - Inline HTML (allowed for documentation)
-MD033: false
-
-# MD041/first-line-heading - First line in file should be a heading
-MD041: false
-
-# MD024/no-duplicate-heading - Multiple headings with the same content
-MD024:
-  siblings_only: true
-
-# MD046/code-block-style - Code block style (allow both fenced and indented)
-MD046: false
-
-# MD029/ol-prefix - Ordered list item prefix (allow any)
-MD029:
-  style: "any"
+globs:
+  - "**/*.md"
+  - "!src/**"
+  - "!.venv/**"
+  - "!node_modules/**"
