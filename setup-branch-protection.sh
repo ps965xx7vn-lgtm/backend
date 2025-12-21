@@ -59,59 +59,87 @@ fi
 protect_branch() {
     local branch=$1
     local required_approvals=$2
-    local required_checks=$3
+    shift 2
+    local required_checks=("$@")
 
     echo "🔒 Protecting branch: $branch (approvals: $required_approvals)"
 
-    # Базовая защита через API
+    # Формируем JSON для contexts
+    local contexts_json="["
+    for check in "${required_checks[@]}"; do
+        contexts_json+="\"$check\","
+    done
+    contexts_json="${contexts_json%,}]"  # Удаляем последнюю запятую
+
+    # Базовая защита через API с правильными типами данных
     gh api \
         --method PUT \
         -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
         "/repos/$REPO/branches/$branch/protection" \
-        -f required_status_checks[strict]=true \
-        -f required_status_checks[contexts][]="$required_checks" \
-        -f enforce_admins=true \
-        -f required_pull_request_reviews[dismiss_stale_reviews]=true \
-        -f required_pull_request_reviews[require_code_owner_reviews]=false \
-        -f required_pull_request_reviews[required_approving_review_count]=$required_approvals \
-        -f required_pull_request_reviews[require_last_push_approval]=false \
-        -f restrictions=null \
-        -f required_linear_history=true \
-        -f allow_force_pushes=false \
-        -f allow_deletions=false \
-        -f required_conversation_resolution=true \
-        -f lock_branch=false \
-        -f allow_fork_syncing=true \
-        && echo "✅ $branch protected" || echo "❌ Failed to protect $branch"
-
-    echo ""
+        --input - <<EOF
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": $contexts_json
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": false,
+    "required_approving_review_count": $required_approvals,
+    "require_last_push_approval": false
+  },
+  "restrictions": null,
+  "required_linear_history": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_conversation_resolution": true,
+  "lock_branch": false,
+  "allow_fork_syncing": true
 }
+EOF
 
+    if [ $? -eq 0 ]; then
+        echo "✅ $branch protected"
+    else
+        echo "❌ Failed to protect $branch"
+    fi
 # Настроить защиту для main
 echo "━━━ Configuring main branch ━━━"
-protect_branch "main" "1" "test,security,code-quality"
+protect_branch "main" 1 "test" "security" "code-quality"
 
 # Настроить защиту для prod
 echo "━━━ Configuring prod branch ━━━"
-protect_branch "prod" "2" "test,security,code-quality,validate-prod-pr,full-test-suite"
+protect_branch "prod" 2 "test" "security" "code-quality" "validate-prod-pr" "full-test-suite"
 
 # Настроить защиту для dev (опционально, только тесты)
 echo "━━━ Configuring dev branch ━━━"
 gh api \
     --method PUT \
     -H "Accept: application/vnd.github+json" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
     "/repos/$REPO/branches/dev/protection" \
-    -f required_status_checks[strict]=true \
-    -f required_status_checks[contexts][]=test \
-    -f enforce_admins=false \
-    -f required_pull_request_reviews=null \
-    -f restrictions=null \
-    -f required_linear_history=false \
-    -f allow_force_pushes=true \
-    -f allow_deletions=false \
-    && echo "✅ dev protected (lightweight)" || echo "❌ Failed to protect dev"
+    --input - <<'EOF'
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["test"]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": null,
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": true,
+  "allow_deletions": false
+}
+EOF
 
-echo ""
+if [ $? -eq 0 ]; then
+    echo "✅ dev protected (lightweight)"
+else
+    echo "❌ Failed to protect dev"
+fi
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "✅ Branch Protection configured!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
