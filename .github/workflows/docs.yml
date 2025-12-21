@@ -2,7 +2,7 @@ name: Documentation
 
 on:
   push:
-    branches: [dev, main]
+    branches: [dev]  # Только dev - main/prod требуют чистоту
     paths:
       - '**.md'
       - '.github/workflows/docs.yml'
