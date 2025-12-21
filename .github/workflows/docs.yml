@@ -27,6 +27,7 @@ jobs:
             !src/media/**
             !**/.venv/**
             !**/node_modules/**
+          config: '.markdownlint-cli2.yaml'
 
   check-links:
     runs-on: ubuntu-latest
