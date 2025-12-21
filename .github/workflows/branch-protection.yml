@@ -10,6 +10,7 @@ jobs:
   validate-main-pr:
     if: github.base_ref == 'main'
     runs-on: ubuntu-latest
+    name: Validate Main PR
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,6 +39,7 @@ jobs:
   validate-prod-pr:
     if: github.base_ref == 'prod'
     runs-on: ubuntu-latest
+    name: Validate Prod PR
     steps:
       - uses: actions/checkout@v4
         with:
