@@ -192,40 +192,54 @@ def signup_view(request: HttpRequest) -> HttpResponse:
                     )
                 )
 
-                # Попытка отправить email через Celery, при ошибке - синхронно
+                # Проверяем, нужно ли отправлять email уведомление
+                show_notifications = form.cleaned_data.get("show_notifications", True)
                 email_sent = False
-                try:
-                    send_verification_email.delay(
-                        user.id,
-                        activation_url,
-                        _("Активируйте ваш аккаунт."),
-                        "auth/email/email-verification.html",
-                    )
-                    email_sent = True
-                except Exception as celery_error:
-                    logger.warning(
-                        f"Celery недоступен, переключаемся на синхронную отправку: {celery_error}"
-                    )
-                    # Fallback на синхронную отправку email если Celery недоступен
+
+                if show_notifications:
+                    # Попытка отправить email через Celery, при ошибке - синхронно
                     try:
-                        send_verification_email_sync(
+                        send_verification_email.delay(
                             user.id,
                             activation_url,
                             _("Активируйте ваш аккаунт."),
                             "auth/email/email-verification.html",
                         )
                         email_sent = True
-                    except Exception as sync_error:
-                        logger.error(
-                            f"Ошибка отправки email при регистрации пользователю {user.email}: {sync_error}"
+                        logger.info(f"Email верификации добавлен в очередь для {user.email}")
+                    except Exception as celery_error:
+                        logger.warning(
+                            f"Celery недоступен, переключаемся на синхронную отправку: {celery_error}"
                         )
-                        messages.error(
-                            request,
-                            _("Ошибка отправки письма подтверждения. Попробуйте позже."),
-                        )
-                        raise sync_error  # Это откатит транзакцию
+                        # Fallback на синхронную отправку email если Celery недоступен
+                        try:
+                            send_verification_email_sync(
+                                user.id,
+                                activation_url,
+                                _("Активируйте ваш аккаунт."),
+                                "auth/email/email-verification.html",
+                            )
+                            email_sent = True
+                            logger.info(f"Email верификации отправлен синхронно для {user.email}")
+                        except Exception as sync_error:
+                            logger.error(
+                                f"Ошибка отправки email при регистрации пользователю {user.email}: {sync_error}"
+                            )
+                            messages.error(
+                                request,
+                                _("Ошибка отправки письма подтверждения. Попробуйте позже."),
+                            )
+                            raise sync_error  # Это откатит транзакцию
+                else:
+                    # Пользователь не хочет получать email, сразу успех
+                    logger.info(f"Регистрация без email верификации для {user.email}")
+                    messages.success(
+                        request,
+                        _("Регистрация завершена. Вы можете войти в систему."),
+                    )
+                    return redirect("authentication:signin")
 
-                # Если мы дошли до этой точки, все успешно
+                # Если мы дошли до этой точки и email был отправлен, все успешно
                 if email_sent:
                     messages.success(
                         request,
