@@ -1,0 +1,11 @@
+# CODEOWNERS для защиты prod ветки
+# Только владелец может approve изменения
+
+# Все файлы требуют review от владельца
+* @ps965xx7vn-lgtm
+
+# Критичные файлы
+/.github/workflows/* @ps965xx7vn-lgtm
+/docker-compose*.yml @ps965xx7vn-lgtm
+/Dockerfile @ps965xx7vn-lgtm
+/pyproject.toml @ps965xx7vn-lgtm
