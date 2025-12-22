@@ -1,0 +1,32 @@
+# Staging overlay
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base
+bases:
+  - ../../base
+
+# Namespace suffix for staging
+nameSuffix: -staging
+
+# Replicas for staging (moderate)
+replicas:
+  - name: web
+    count: 2
+  - name: celery-worker
+    count: 2
+
+# Patches for staging
+patchesStrategicMerge:
+  - configmap-patch.yaml
+  - secret-patch.yaml
+
+# Images - use latest tag
+images:
+  - name: ghcr.io/ps965xx7vn-lgtm/backend
+    newTag: latest
+
+# Labels
+commonLabels:
+  environment: staging

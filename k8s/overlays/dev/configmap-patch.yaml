@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+  namespace: pyland
+data:
+  # Override for dev
+  DEBUG: "True"
+  ALLOWED_HOSTS: "localhost,127.0.0.1,*.local"
