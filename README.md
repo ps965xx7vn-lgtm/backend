@@ -579,3 +579,29 @@ SENTRY_DSN=<https://...>
 ## 📄 Лицензия
 
 MIT License - см. LICENSE файл
+
+---
+
+## 📚 Полная документация проекта
+
+### 🚀 Для деплоя через 3 недели:
+- **[DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md)** - ✅ **НАЧНИТЕ С ЭТОГО!** Пошаговый чеклист
+- **[K8S_DEPLOY_GUIDE.md](K8S_DEPLOY_GUIDE.md)** - Полное руководство по деплою в Kubernetes
+- **`deploy.sh`** - Автоматический скрипт деплоя (одна команда)
+
+### ☸️ Kubernetes конфигурация:
+- **`k8s/timeweb-deploy.yaml`** - All-in-one манифест (Namespace, ConfigMap, Secret, Deployments, Services, Job)
+- **`k8s/ingress.yaml`** - Ingress с автоматическим SSL (Let's Encrypt)
+
+### ⚙️ Настройка:
+- **[EMAIL_SMTP_SETUP.md](EMAIL_SMTP_SETUP.md)** - Gmail SMTP для отправки email
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Решение типичных проблем
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Информация о текущем production деплое
+
+### 🏗️ Для разработки:
+- **[QUICK_START.md](QUICK_START.md)** - Быстрый старт локально
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Архитектура проекта
+- **[GIT_WORKFLOW.md](GIT_WORKFLOW.md)** - Git workflow и CI/CD
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Руководство для контрибьюторов
+
+**Главное:** Открой [DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md) перед деплоем через 3 недели! 🎯
