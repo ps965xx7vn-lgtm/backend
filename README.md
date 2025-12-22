@@ -1,33 +1,32 @@
 # Pyland Backend
 
-[![codecov](https://codecov.io/gh/ps965xx7vn-lgtm/backend/branch/main/graph/badge.svg)](https://codecov.io/gh/ps965xx7vn-lgtm/backend)
+[![CI](https://github.com/ps965xx7vn-lgtm/backend/actions/workflows/ci.yml/badge.svg)](https://github.com/ps965xx7vn-lgtm/backend/actions/workflows/ci.yml)
+[![Docker](https://github.com/ps965xx7vn-lgtm/backend/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/ps965xx7vn-lgtm/backend/actions/workflows/docker-publish.yml)
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![Django 5.2](https://img.shields.io/badge/django-5.2-green.svg)](https://www.djangoproject.com/)
+[![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 
-Django 5.2 онлайн школа программирования с многоролевой системой
-пользователей.
+Django 5.2 онлайн школа программирования с многоролевой системой пользователей.
 
-**Стек:** Django 5.2 + Django Ninja (REST API) · Python 3.13 ·
-PostgreSQL · Redis · Celery · Docker
+**Стек:** Django 5.2 + Django Ninja (REST API) · Python 3.13+ · PostgreSQL · Redis · Celery · Docker · K8s-ready
 
 ---
 
 ## 🚀 Быстрый старт
 
-### Вариант 1: Docker Hub (самый быстрый)
+### Вариант 1: GHCR (GitHub Container Registry)
 
 ```bash
-# Pull готового образа из Docker Hub
-docker pull username/pyland-backend:latest
+# Pull образа из GHCR
+docker pull ghcr.io/ps965xx7vn-lgtm/backend:latest
 
-# Запуск с docker-compose (образ из Docker Hub)
-# Создайте docker-compose.yml или используйте существующий
+# Запуск с docker-compose
 docker-compose up -d
 
 # Создание суперпользователя
 docker-compose exec web python manage.py createsuperuser
 
-# Открыть: <http://localhost:8000>
+# Открыть: http://localhost:8000
 ```
 
 > 📦 См. [DOCKER_HUB_SETUP.md](DOCKER_HUB_SETUP.md) для подробной

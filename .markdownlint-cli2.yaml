@@ -1,0 +1,28 @@
+# Markdownlint configuration
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+default: true
+
+# Отключаем проблемные правила
+MD007: false  # ul-indent - Unordered list indentation
+MD013: false  # line-length - Line length
+MD022: false  # blanks-around-headings - Headings should be surrounded by blank lines
+MD026: false  # no-trailing-punctuation - Trailing punctuation in heading
+MD031: false  # blanks-around-fences - Fenced code blocks should be surrounded by blank lines
+MD032: false  # blanks-around-lists - Lists should be surrounded by blank lines
+MD033: false  # no-inline-html - Inline HTML
+MD036: false  # no-emphasis-as-heading - Emphasis used instead of a heading
+MD040: false  # fenced-code-language - Fenced code blocks should have a language specified
+MD041: false  # first-line-heading - First line in file should be a heading
+MD051: false  # link-fragments - Link fragments should be valid
+
+# MD024/no-duplicate-heading - Multiple headings with the same content
+MD024:
+  siblings_only: true
+
+# MD046/code-block-style - Code block style (allow both fenced and indented)
+MD046: false
+
+# MD029/ol-prefix - Ordered list item prefix (allow any)
+MD029:
+  style: "any"
