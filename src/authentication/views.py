@@ -109,7 +109,7 @@ def signin_view(request: HttpRequest) -> HttpResponse:
                     resend_url = reverse("authentication:resend_verification_email")
                     messages.error(
                         request,
-                        mark_safe(
+                        mark_safe(  # nosec B703 B308 - trusted URL from reverse()
                             _(
                                 'Ваш email не подтвержден. <a href="{url}">Отправить письмо повторно</a>'
                             ).format(url=resend_url)
@@ -331,7 +331,10 @@ def password_reset_view(request: HttpRequest) -> HttpResponse:
                     token = default_token_generator.make_token(user)
                     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
                     reset_url = request.build_absolute_uri(
-                        f"/account/reset-password/{uidb64}/{token}/"
+                        reverse(
+                            "authentication:password_reset_confirm",
+                            kwargs={"uidb64": uidb64, "token": token},
+                        )
                     )
 
                     # Попытка отправить email через Celery, при ошибке - синхронно
