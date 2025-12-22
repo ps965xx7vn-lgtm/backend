@@ -177,6 +177,7 @@ spec:
       containers:
       - name: web
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
+        imagePullPolicy: Always
         command: ["gunicorn"]
         args: ["pyland.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "120"]
         ports:
@@ -273,6 +274,7 @@ spec:
       containers:
       - name: celery-worker
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
+        imagePullPolicy: Always
         command: ["celery"]
         args: ["-A", "pyland", "worker", "-l", "info"]
         env:
@@ -331,6 +333,7 @@ spec:
       containers:
       - name: celery-beat
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
+        imagePullPolicy: Always
         command: ["celery"]
         args: ["-A", "pyland", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
         env:
@@ -382,6 +385,7 @@ spec:
       containers:
       - name: migrations
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
+        imagePullPolicy: Always
         command: ["python", "manage.py", "migrate", "--no-input"]
         env:
         - name: DEBUG
