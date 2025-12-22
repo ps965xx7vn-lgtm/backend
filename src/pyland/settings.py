@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     "markdownify",
     "corsheaders",
     "taggit",
+    "django_celery_beat",  # Celery Beat scheduler
 ]
 
 # === LOGGING ===
