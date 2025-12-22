@@ -15,8 +15,15 @@ metadata:
   namespace: pyland
 data:
   DEBUG: "False"
+  K8S_DEPLOYMENT: "True"
   ALLOWED_HOSTS: "pyland.ru,www.pyland.ru,api.pyland.ru,188.225.37.90"
   CSRF_TRUSTED_ORIGINS: "https://pyland.ru,https://www.pyland.ru,https://api.pyland.ru,http://pyland.ru:30796"
+  CSRF_COOKIE_SECURE: "True"
+  CSRF_COOKIE_HTTPONLY: "True"
+  CSRF_COOKIE_SAMESITE: "Lax"
+  SESSION_COOKIE_SECURE: "True"
+  SESSION_COOKIE_HTTPONLY: "True"
+  SESSION_COOKIE_SAMESITE: "Lax"
   DATABASE_URL: "postgresql://pyland_prod_user:VXR8K9mN2pL5vT3wQ7jH6fY4nB1xC0eD8sA5kU9rM3g=@postgres-service:5432/pyland_db"
   REDIS_URL: "redis://redis-service:6379/0"
   CELERY_BROKER_URL: "redis://redis-service:6379/0"

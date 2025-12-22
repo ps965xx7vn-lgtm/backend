@@ -15,7 +15,19 @@ env.read_env()
 # === SECURITY ===
 SECRET_KEY = env.str("SECRET_KEY", "replace_me")
 DEBUG = env.bool("DEBUG", False)
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
+
+# ALLOWED_HOSTS configuration
+# In production, Django requires explicit host validation
+# But for K8s health checks from pod IPs, we'll use '*' and rely on Ingress for security
+ALLOWED_HOSTS = (
+    ["*"]
+    if not DEBUG and env.bool("K8S_DEPLOYMENT", default=False)
+    else env.list("ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
+)
+
+# Allow Kubernetes pod IPs for health checks
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # === LOCALIZATION ===
 TIME_ZONE = "Asia/Tbilisi"
@@ -37,6 +49,12 @@ SITE_ID = 1
 
 # === CSRF ===
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=not DEBUG)
+CSRF_COOKIE_HTTPONLY = env.bool("CSRF_COOKIE_HTTPONLY", default=True)
+CSRF_COOKIE_SAMESITE = env.str("CSRF_COOKIE_SAMESITE", default="Lax")
+SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=not DEBUG)
+SESSION_COOKIE_HTTPONLY = env.bool("SESSION_COOKIE_HTTPONLY", default=True)
+SESSION_COOKIE_SAMESITE = env.str("SESSION_COOKIE_SAMESITE", default="Lax")
 
 # === TEMPLATES ===
 TEMPLATES = [
