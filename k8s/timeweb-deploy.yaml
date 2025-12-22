@@ -214,22 +214,23 @@ spec:
             configMapKeyRef:
               name: django-config
               key: CELERY_BROKER_URL
-        livenessProbe:
-          httpGet:
-            path: /api/ping/
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/health/
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        # Temporarily disabled for debugging
+        # livenessProbe:
+        #   httpGet:
+        #     path: /api/ping/
+        #     port: 8000
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /api/health/
+        #     port: 8000
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "200m"
+            memory: "128Mi"
+            cpu: "50m"
           limits:
             memory: "512Mi"
             cpu: "500m"
@@ -242,13 +243,12 @@ metadata:
   name: web-service
   namespace: pyland
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: web
   ports:
   - port: 8000
     targetPort: 8000
-    nodePort: 30080
 
 ---
 # Celery Worker Deployment
@@ -360,8 +360,8 @@ spec:
               key: CELERY_BROKER_URL
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "50m"
+            memory: "64Mi"
+            cpu: "25m"
           limits:
             memory: "256Mi"
             cpu: "200m"
