@@ -5,12 +5,13 @@
 Приложение успешно задеплоено на Timeweb Kubernetes кластер.
 
 ### Работающие сервисы:
-- ✅ Django Web (1/1 Running) - порт 8000
+- ✅ Django Web (1/1 Running) - порт 8000 с WhiteNoise для статики
 - ✅ Celery Worker (1/1 Running) - асинхронные задачи
 - ✅ Celery Beat (1/1 Running) - периодические задачи с django-celery-beat
 - ✅ PostgreSQL (1/1 Running) - база данных с hostPath volume
 - ✅ Redis (1/1 Running) - кеш и брокер с hostPath volume
 - ✅ Nginx Ingress Controller (Running) - маршрутизация трафика
+- ✅ Static Files - обслуживаются через WhiteNoise middleware
 
 ## 🌐 Доступ к приложению
 
@@ -32,6 +33,12 @@ curl http://194.87.215.91:30796/api/ping
 
 # API Documentation
 curl http://194.87.215.91:30796/api/docs
+
+# Static Files (проверка)
+curl -I http://194.87.215.91:30796/static/admin/css/base.css
+
+# Admin Page
+open http://194.87.215.91:30796/admin/
 ```
 
 ## 📋 Настройка DNS
