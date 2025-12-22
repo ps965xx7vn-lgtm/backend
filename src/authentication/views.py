@@ -476,7 +476,10 @@ def resend_verification_email(request: HttpRequest) -> HttpResponse:
                 token = default_token_generator.make_token(user)
                 uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
                 activation_url = request.build_absolute_uri(
-                    f"/account/verify-email-confirm/{uidb64}/{token}/"
+                    reverse(
+                        "authentication:verify_email_confirm",
+                        kwargs={"uidb64": uidb64, "token": token},
+                    )
                 )
 
                 # Попытка отправить email через Celery, при ошибке - синхронно
