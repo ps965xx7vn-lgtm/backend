@@ -38,7 +38,7 @@ spec:
             memory: "256Mi"
             cpu: "200m"
 
-        # Celery beat command
+        # Celery beat command with DatabaseScheduler
         command: ["celery"]
         args:
           - "-A"
