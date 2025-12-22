@@ -205,11 +205,51 @@ spec:
             configMapKeyRef:
               name: django-config
               key: DEBUG
+        - name: K8S_DEPLOYMENT
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: K8S_DEPLOYMENT
         - name: ALLOWED_HOSTS
           valueFrom:
             configMapKeyRef:
               name: django-config
               key: ALLOWED_HOSTS
+        - name: CSRF_TRUSTED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: CSRF_TRUSTED_ORIGINS
+        - name: CSRF_COOKIE_SECURE
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: CSRF_COOKIE_SECURE
+        - name: CSRF_COOKIE_HTTPONLY
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: CSRF_COOKIE_HTTPONLY
+        - name: CSRF_COOKIE_SAMESITE
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: CSRF_COOKIE_SAMESITE
+        - name: SESSION_COOKIE_SECURE
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: SESSION_COOKIE_SECURE
+        - name: SESSION_COOKIE_HTTPONLY
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: SESSION_COOKIE_HTTPONLY
+        - name: SESSION_COOKIE_SAMESITE
+          valueFrom:
+            configMapKeyRef:
+              name: django-config
+              key: SESSION_COOKIE_SAMESITE
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
