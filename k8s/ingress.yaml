@@ -4,6 +4,9 @@ metadata:
   name: pyland-ingress
   namespace: pyland
   annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
@@ -11,6 +14,12 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - pyland.ru
+    - www.pyland.ru
+    - api.pyland.ru
+    secretName: pyland-tls
   rules:
   - host: pyland.ru
     http:
