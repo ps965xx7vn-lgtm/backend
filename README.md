@@ -582,26 +582,24 @@ MIT License - см. LICENSE файл
 
 ---
 
-## 📚 Полная документация проекта
+## 📚 Документация
 
-### 🚀 Для деплоя через 3 недели:
-- **[DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md)** - ✅ **НАЧНИТЕ С ЭТОГО!** Пошаговый чеклист
-- **[K8S_DEPLOY_GUIDE.md](K8S_DEPLOY_GUIDE.md)** - Полное руководство по деплою в Kubernetes
-- **`deploy.sh`** - Автоматический скрипт деплоя (одна команда)
+### 📖 Полная документация: **[docs/README.md](docs/README.md)**
 
-### ☸️ Kubernetes конфигурация:
-- **`k8s/timeweb-deploy.yaml`** - All-in-one манифест (Namespace, ConfigMap, Secret, Deployments, Services, Job)
-- **`k8s/ingress.yaml`** - Ingress с автоматическим SSL (Let's Encrypt)
+### 🚀 Быстрые ссылки:
 
-### ⚙️ Настройка:
-- **[EMAIL_SMTP_SETUP.md](EMAIL_SMTP_SETUP.md)** - Gmail SMTP для отправки email
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Решение типичных проблем
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Информация о текущем production деплое
+**Для деплоя:**
+- ⭐ **[START HERE](docs/deployment/START_HERE.md)** - Деплой за 5 минут (одна команда!)
+- 📋 **[Чеклист деплоя](docs/deployment/DEPLOY_CHECKLIST.md)** - Пошаговая инструкция
+- ☸️ **[Kubernetes Guide](docs/deployment/K8S_DEPLOY_GUIDE.md)** - Полное руководство
+- ✅ **[Готовность к продакшену](docs/deployment/PRODUCTION_READY.md)** - Статус готовности
 
-### 🏗️ Для разработки:
-- **[QUICK_START.md](QUICK_START.md)** - Быстрый старт локально
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Архитектура проекта
-- **[GIT_WORKFLOW.md](GIT_WORKFLOW.md)** - Git workflow и CI/CD
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Руководство для контрибьюторов
+**Для разработки:**
+- 🚀 **[Быстрый старт](docs/getting-started/QUICK_START.md)** - Локальная разработка
+- 🏗️ **[Архитектура](docs/development/ARCHITECTURE.md)** - Структура проекта
+- 🤝 **[Участие в проекте](docs/development/CONTRIBUTING.md)** - Как участвовать
+- 🌳 **[Git Workflow](docs/development/GIT_WORKFLOW.md)** - Работа с Git
 
-**Главное:** Открой [DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md) перед деплоем через 3 недели! 🎯
+**Устранение проблем:**
+- 📧 **[Email Setup](docs/deployment/EMAIL_SMTP_SETUP.md)** - Настройка SMTP
+- 🔧 **[Troubleshooting](docs/deployment/TROUBLESHOOTING.md)** - Решение проблем
