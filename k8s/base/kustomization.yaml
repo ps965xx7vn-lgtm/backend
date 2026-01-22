@@ -1,0 +1,40 @@
+# Kustomization for base K8s resources
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: pyland
+
+resources:
+  # Namespace
+  - namespace.yaml
+
+  # Configuration
+  - configmap.yaml
+  - secret.yaml
+
+  # Deployments
+  - deployment-web.yaml
+  - deployment-celery-worker.yaml
+  - deployment-celery-beat.yaml
+
+  # StatefulSets
+  - statefulset-postgres.yaml
+  - statefulset-redis.yaml
+
+  # Services
+  - service-web.yaml
+  - service-postgres.yaml
+  - service-redis.yaml
+
+  # Jobs
+  - job-migrations.yaml
+
+# Common labels
+commonLabels:
+  project: pyland
+  managed-by: kustomize
+
+# Common annotations
+commonAnnotations:
+  documentation: "https://github.com/ps965xx7vn-lgtm/backend"

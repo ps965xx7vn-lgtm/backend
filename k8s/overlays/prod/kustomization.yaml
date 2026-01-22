@@ -1,0 +1,44 @@
+# Production overlay
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: pyland
+
+# Resources (without StatefulSets from base)
+resources:
+  - ../../base/deployment-web.yaml
+  - ../../base/deployment-celery-worker.yaml
+  - ../../base/deployment-celery-beat.yaml
+  - ../../base/service-web.yaml
+  - ../../base/service-postgres.yaml
+  - ../../base/service-redis.yaml
+  - ../../base/job-migrations.yaml
+  - postgres-deployment.yaml  # Our Deployment instead of StatefulSet
+  - redis-deployment.yaml      # Our Deployment instead of StatefulSet
+  - ingress.yaml
+
+configMapGenerator:
+  - name: django-config
+    literals:
+      - DEBUG=False
+      - ALLOWED_HOSTS=pyland.ru,www.pyland.ru,194.87.215.91
+      - DATABASE_URL=postgresql://pyland_prod_user:VXR8K9mN2pL5vT3wQ7jH6fY4nB1xC0eD8sA5kU9rM3g=@postgres-service:5432/pyland_db
+      - REDIS_URL=redis://redis-service:6379/0
+      - CELERY_BROKER_URL=redis://redis-service:6379/0
+
+secretGenerator:
+  - name: django-secret
+    literals:
+      - SECRET_KEY=django-prod-$ecure-k3y-7x9z!a2c#d4f%g6h*j8k(m0n)p1q=r3t+u5w-v7y
+      - POSTGRES_USER=pyland_prod_user
+      - POSTGRES_PASSWORD=VXR8K9mN2pL5vT3wQ7jH6fY4nB1xC0eD8sA5kU9rM3g=
+
+# Images - use production tag
+images:
+  - name: ghcr.io/ps965xx7vn-lgtm/backend
+    newTag: production
+
+# Resources
+resources:
+  - ingress.yaml  # Production ingress with TLS

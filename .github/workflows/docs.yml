@@ -2,12 +2,12 @@ name: Documentation
 
 on:
   push:
-    branches: [dev, main]
+    branches: [dev]  # Только dev - main/prod требуют чистоту
     paths:
       - '**.md'
       - '.github/workflows/docs.yml'
   pull_request:
-    branches: [dev, main]
+    branches: [dev]  # Только для dev - prod требует чистоту
     paths:
       - '**.md'
 
@@ -15,12 +15,12 @@ jobs:
   lint-markdown:
     runs-on: ubuntu-latest
     name: Lint Markdown
+    continue-on-error: true  # Не блокировать PR из-за markdown warnings
     steps:
       - uses: actions/checkout@v4
 
       - name: Lint Markdown files
         uses: DavidAnson/markdownlint-cli2-action@v18
-        continue-on-error: true
         with:
           globs: |
             **/*.md

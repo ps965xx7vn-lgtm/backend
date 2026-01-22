@@ -12,12 +12,16 @@ on:
 env:
   # Используем GHCR (GitHub Container Registry) вместо Docker Hub
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/pyland-backend
+  # Используем github.repository (владелец/репо) для корректного пути в GHCR
+  IMAGE_NAME: ${{ github.repository }}
   DOCKER_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write  # Требуется для публикации в GHCR
 
     steps:
       - name: Checkout code
@@ -43,8 +47,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             # dev branch → dev tag
-            type=raw,value=dev,enable={{is_default_branch}}
-            type=sha,prefix=dev-,enable={{is_default_branch}}
+            type=raw,value=dev,enable=${{ github.ref == 'refs/heads/dev' }}
+            type=sha,prefix=dev-,enable=${{ github.ref == 'refs/heads/dev' }}
             # main branch → latest + main tags
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
