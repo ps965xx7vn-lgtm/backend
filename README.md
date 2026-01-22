@@ -579,3 +579,27 @@ SENTRY_DSN=<https://...>
 ## 📄 Лицензия
 
 MIT License - см. LICENSE файл
+
+---
+
+## 📚 Документация
+
+### 📖 Полная документация: **[docs/README.md](docs/README.md)**
+
+### 🚀 Быстрые ссылки:
+
+**Для деплоя:**
+- ⭐ **[START HERE](docs/deployment/START_HERE.md)** - Деплой за 5 минут (одна команда!)
+- 📋 **[Чеклист деплоя](docs/deployment/DEPLOY_CHECKLIST.md)** - Пошаговая инструкция
+- ☸️ **[Kubernetes Guide](docs/deployment/K8S_DEPLOY_GUIDE.md)** - Полное руководство
+- ✅ **[Готовность к продакшену](docs/deployment/PRODUCTION_READY.md)** - Статус готовности
+
+**Для разработки:**
+- 🚀 **[Быстрый старт](docs/getting-started/QUICK_START.md)** - Локальная разработка
+- 🏗️ **[Архитектура](docs/development/ARCHITECTURE.md)** - Структура проекта
+- 🤝 **[Участие в проекте](docs/development/CONTRIBUTING.md)** - Как участвовать
+- 🌳 **[Git Workflow](docs/development/GIT_WORKFLOW.md)** - Работа с Git
+
+**Устранение проблем:**
+- 📧 **[Email Setup](docs/deployment/EMAIL_SMTP_SETUP.md)** - Настройка SMTP
+- 🔧 **[Troubleshooting](docs/deployment/TROUBLESHOOTING.md)** - Решение проблем

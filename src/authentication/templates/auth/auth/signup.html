@@ -48,7 +48,7 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-                    
+
                     <!-- First Name -->
                     <div class="form-group">
                         <label for="{{ form.first_name.id_for_label }}" class="form-label">
@@ -134,7 +134,7 @@
                                 {% for error in form.password.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
-                        
+
                         <!-- Password Strength Indicator -->
                         <div class="password-strength-container">
                             <div class="password-strength">
@@ -192,6 +192,24 @@
                     </div>
 
                     <!-- Email Updates -->
+                    <div class="form-group">
+                        <div class="auth-options">
+                            <label class="checkbox-wrapper">
+                                {{ form.show_notifications }}
+                                <span class="checkmark"></span>
+                                <span class="checkbox-text">{% trans "Отправить email с подтверждением регистрации" %}</span>
+                            </label>
+                        </div>
+                        {% if form.show_notifications.help_text %}
+                            <small class="form-text text-muted">{{ form.show_notifications.help_text }}</small>
+                        {% endif %}
+                        {% if form.show_notifications.errors %}
+                            <div class="form-error visible">
+                                {% for error in form.show_notifications.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
                     <div class="auth-options">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" name="email_updates">
@@ -234,7 +252,7 @@
 
                 <!-- Login Link -->
                 <div class="auth-footer">
-                    <p>{% trans "Уже есть аккаунт?" %} 
+                    <p>{% trans "Уже есть аккаунт?" %}
                         <a href="{% url 'authentication:signin' %}" class="auth-link">
                             {% trans "Войти" %}
                         </a>
@@ -268,7 +286,7 @@
                 <div class="visual-text">
                     <h2>{% trans "Начните своё IT-путешествие" %}</h2>
                     <p>{% trans "Получите доступ к премиальным курсам, интерактивным заданиям и персональной поддержке от экспертов индустрии." %}</p>
-                    
+
                     <div class="features-list">
                         <div class="feature-item">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -307,7 +325,7 @@ function togglePassword(inputId) {
     const toggle = input.parentElement.querySelector('.password-toggle');
     const eyeOpen = toggle.querySelector('.eye-open');
     const eyeClosed = toggle.querySelector('.eye-closed');
-    
+
     if (input.type === 'password') {
         input.type = 'text';
         eyeOpen.style.display = 'none';
@@ -327,17 +345,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = e.target.value;
             const strengthBar = document.getElementById('strength-bar');
             const strengthText = document.getElementById('strength-text');
-            
+
             let strength = 0;
             let text = '{% trans "Слабый" %}';
-            
+
             // Check password strength
             if (password.length >= 8) strength++;
             if (/[A-Z]/.test(password)) strength++;
             if (/[a-z]/.test(password)) strength++;
             if (/[0-9]/.test(password)) strength++;
             if (/[^A-Za-z0-9]/.test(password)) strength++;
-            
+
             // Set strength level
             if (strength === 0) {
                 strengthBar.style.width = '0%';
@@ -360,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 strengthBar.className = 'strength-bar strong';
                 text = '{% trans "Отличный" %}';
             }
-            
+
             strengthText.textContent = text;
         });
     }

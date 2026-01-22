@@ -130,6 +130,14 @@ class UserRegisterForm(forms.ModelForm):
         },
     )
 
+    show_notifications: forms.BooleanField = forms.BooleanField(
+        label=_("Отправить email с подтверждением регистрации"),
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        required=False,
+        initial=True,
+        help_text=_("Отметьте, чтобы получить письмо с ссылкой для подтверждения email"),
+    )
+
     class Meta:
         model = User
         fields = ["email", "password", "first_name", "phone_number"]

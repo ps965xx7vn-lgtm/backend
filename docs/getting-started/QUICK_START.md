@@ -1,4 +1,4 @@
-# 🚀 Quick Start Guide - Pyland Backend
+# 🚀 Быстрый старт - Pyland Backend
 
 ## Branch Structure
 

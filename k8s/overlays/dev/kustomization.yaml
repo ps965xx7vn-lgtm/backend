@@ -1,0 +1,32 @@
+# Development overlay
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base
+bases:
+  - ../../base
+
+# Namespace suffix for dev
+nameSuffix: -dev
+
+# Replicas for dev (minimal)
+replicas:
+  - name: web
+    count: 1
+  - name: celery-worker
+    count: 1
+
+# Patches for development
+patchesStrategicMerge:
+  - configmap-patch.yaml
+  - secret-patch.yaml
+
+# Images - use dev tag
+images:
+  - name: ghcr.io/ps965xx7vn-lgtm/backend
+    newTag: dev
+
+# Labels
+commonLabels:
+  environment: development

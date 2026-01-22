@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-beat
+  namespace: pyland
+  labels:
+    app: celery-beat
+    component: celery
+spec:
+  replicas: 1  # Only 1 beat scheduler
+  selector:
+    matchLabels:
+      app: celery-beat
+  template:
+    metadata:
+      labels:
+        app: celery-beat
+        component: celery
+    spec:
+      containers:
+      - name: celery-beat
+        image: ghcr.io/ps965xx7vn-lgtm/backend:latest
+        imagePullPolicy: Always
+
+        # Environment variables
+        envFrom:
+        - configMapRef:
+            name: django-config
+        - secretRef:
+            name: django-secret
+
+        # Resources
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+
+        # Celery beat command with DatabaseScheduler
+        command: ["celery"]
+        args:
+          - "-A"
+          - "pyland"
+          - "beat"
+          - "-l"
+          - "info"
+          - "--scheduler"
+          - "django_celery_beat.schedulers:DatabaseScheduler"

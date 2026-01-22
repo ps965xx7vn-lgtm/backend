@@ -6,8 +6,8 @@ echo "🚀 Starting Pyland Backend..."
 # PostgreSQL и Redis проверяются через healthcheck в docker-compose
 # Контейнер стартует только когда зависимости готовы
 
-# Применяем миграции (только для web сервиса)
-if [ "$1" = "gunicorn" ] || [ "$1" = "python" ]; then
+# Применяем миграции (только для web сервиса и если не установлен SKIP_MIGRATIONS)
+if [ "$SKIP_MIGRATIONS" != "true" ] && [ "$1" = "gunicorn" ] || [ "$1" = "python" ]; then
     echo "📦 Running migrations..."
     python manage.py migrate --noinput || echo "⚠️ Migrations failed"
 

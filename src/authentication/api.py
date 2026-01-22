@@ -223,6 +223,31 @@ def register(request, data: RegisterIn):
 
     logger.info(f"User created: {user.id} ({user.email}) with role '{role.get_name_display()}'")
 
+    # Отправка email верификации (если show_notifications=True)
+    if data.show_notifications:
+        from django.contrib.auth.tokens import default_token_generator
+        from django.utils.encoding import force_bytes
+        from django.utils.http import urlsafe_base64_encode
+
+        from authentication.tasks import send_verification_email
+
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        activation_url = (
+            f"{request.build_absolute_uri('/')[:-1]}/api/auth/verify-email/{uidb64}/{token}"
+        )
+
+        try:
+            send_verification_email.delay(
+                user.id,
+                activation_url,
+                "Активируйте ваш аккаунт",
+                "auth/email/email-verification.html",
+            )
+            logger.info(f"Verification email queued for {user.email}")
+        except Exception as e:
+            logger.error(f"Failed to queue verification email: {e}")
+
     # Генерация токенов
     tokens = generate_tokens_for_user(user)
 

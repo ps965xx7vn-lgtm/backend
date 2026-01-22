@@ -104,6 +104,9 @@ class RegisterIn(Schema):
     role: str | None = Field(
         default="student", description="Роль: student, mentor, reviewer, manager, admin, support"
     )
+    show_notifications: bool = Field(
+        default=False, description="Отправлять email уведомление с подтверждением"
+    )
 
     @field_validator("email")
     @classmethod

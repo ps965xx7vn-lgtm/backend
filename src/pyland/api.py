@@ -110,11 +110,11 @@ def get_api():
         Readiness probe для Kubernetes.
         Проверка что приложение готово обрабатывать запросы (БД, Redis доступны).
         """
+        from ninja.responses import Response
+
         result = readiness_check()
         status_code = 200 if result.get("ready", False) else 503
-        if status_code != 200:
-            return result, status_code
-        return result
+        return Response(result, status=status_code)
 
     _api_instance = api_instance
     return _api_instance
