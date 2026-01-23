@@ -1,3 +1,12 @@
+"""
+Payments URL Configuration
+
+Маршруты для приложения платежей:
+- Покупка курсов через различные методы оплаты
+
+Требуется авторизация.
+"""
+
 from django.urls import path
 
 from . import views

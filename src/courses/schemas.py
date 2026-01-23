@@ -1,3 +1,26 @@
+"""
+Courses Schemas Module - Pydantic схемы для Courses API.
+
+Этот модуль содержит схемы для валидации входных/выходных данных:
+
+Input схемы (*In):
+    - CourseCreateIn: Создание нового курса
+    - LessonCreateIn: Создание нового урока
+    - StepCreateIn: Создание нового шага
+    - SubmissionResubmitIn: Повторная отправка работы
+    - MentorReviewIn: Проверка работы ментором
+
+Output схемы (*Out):
+    - CourseOut: Детали курса
+    - LessonOut: Детали урока
+    - StepOut: Детали шага
+    - SubmissionOut: Информация об отправленной работе
+    - SubmissionsListOut: Список отправленных работ
+
+Автор: Pyland Team
+Дата: 2025
+"""
+
 from uuid import UUID
 
 from pydantic import BaseModel

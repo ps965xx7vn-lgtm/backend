@@ -366,6 +366,144 @@ def notify_course_completion(user: User, course: Course):
 ```text
 ---
 
+## 📚 Дополнительная документация
+
+В папке `docs/` находятся специализированные документы:
+
+### 🛡️ [MIDDLEWARE_README.md](docs/MIDDLEWARE_README.md)
+
+**Описание:** Полная документация по всем middleware компонентам приложения students.
+
+**Содержит:**
+
+1. **StudentsRateLimitMiddleware**
+   - Rate limiting для защиты от abuse
+   - Лимиты: 1000 запросов/час (авторизованные), 100/час (анонимные)
+   - Redis для хранения счетчиков
+
+2. **StudentsSecurityHeadersMiddleware**
+   - Добавление защитных HTTP заголовков
+   - X-Content-Type-Options, X-Frame-Options, CSP
+
+3. **ProgressCacheMiddleware**
+   - Кеширование прогресса студентов
+   - Cache-Control заголовки
+   - ETag поддержка
+
+**Примеры из документа:**
+
+```python
+# middleware.py
+from django.core.cache import cache
+from django.http import HttpResponse
+
+class StudentsRateLimitMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Получаем идентификатор
+        identifier = self.get_identifier(request)
+        cache_key = f"rate_limit:students:{identifier}"
+
+        # Проверяем лимит
+        requests_count = cache.get(cache_key, 0)
+        limit = 1000 if request.user.is_authenticated else 100
+
+        if requests_count >= limit:
+            return HttpResponse(
+                'Превышен лимит запросов',
+                status=429
+            )
+
+        # Увеличиваем счетчик
+        cache.set(cache_key, requests_count + 1, 3600)
+
+        return self.get_response(request)
+```
+
+**Архитектура:**
+- Модульные middleware классы
+- Redis fallback на in-memory cache
+- Логирование всех ограничений
+- Whitelist для внутренних IP
+
+---
+
+### ⚙️ [MIDDLEWARE_SETUP.md](docs/MIDDLEWARE_SETUP.md)
+
+**Описание:** Пошаговая инструкция по установке и настройке middleware.
+
+**Содержит:**
+
+**1. Установка в settings.py:**
+
+```python
+# settings.py
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Students middleware
+    'students.middleware.StudentsRateLimitMiddleware',
+    'students.middleware.StudentsSecurityHeadersMiddleware',
+    'students.middleware.ProgressCacheMiddleware',
+]
+```
+
+**2. Настройка Redis:**
+
+```python
+# Для rate limiting и кеширования
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+```
+
+**3. Параметры настройки:**
+
+```python
+# Rate limit settings
+STUDENTS_RATE_LIMIT_AUTH = 1000  # запросов/час
+STUDENTS_RATE_LIMIT_ANON = 100   # запросов/час
+STUDENTS_RATE_LIMIT_WHITELIST = ['127.0.0.1', '10.0.0.0/8']
+
+# Cache settings
+STUDENTS_PROGRESS_CACHE_TTL = 300  # 5 минут
+STUDENTS_CACHE_MAX_AGE = 3600      # 1 час
+```
+
+**4. Тестирование:**
+
+```bash
+# Проверка rate limiting
+curl -I http://localhost:8000/students/dashboard/
+# Ждем X-RateLimit-Remaining заголовок
+
+# Проверка security headers
+curl -I http://localhost:8000/students/courses/
+# Ждем X-Content-Type-Options, X-Frame-Options
+```
+
+**Рекомендации:**
+- Запускать Redis перед сервером
+- Настроить whitelist для dev окружения
+- Мониторить логи rate limitинга
+- Настроить алерты при превышении
+
+---
+
 ## Тестирование
 
 ### Юнит тесты

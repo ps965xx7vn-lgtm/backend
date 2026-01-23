@@ -1,3 +1,22 @@
+"""
+Courses Views Module - Django views для публичного каталога курсов.
+
+Этот модуль содержит представления для просмотра курсов:
+
+Публичные представления:
+    - course_list_view: Каталог всех активных курсов
+    - course_detail_view: Детальная страница курса с описанием и программой
+
+Особенности:
+    - Показываются только активные курсы (status='active')
+    - Оптимизация запросов через select_related и prefetch_related
+    - Публичный доступ без требования авторизации
+    - Slug-based URL для SEO
+
+Автор: Pyland Team
+Дата: 2025
+"""
+
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 

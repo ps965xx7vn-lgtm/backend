@@ -549,6 +549,112 @@ python manage.py shell
 ```text
 ---
 
+## 📚 Дополнительная документация
+
+В папке `docs/` находятся расширенные документы по различным аспектам приложения:
+
+### 📡 [DASHBOARD_ROUTER.md](docs/DASHBOARD_ROUTER.md)
+
+**Описание:** Детальная документация по роутингу dashboard на основе ролей пользователей.
+
+**Содержит:**
+- Логика перенаправления пользователей по ролям
+- Маршруты для каждой роли (student, mentor, reviewer, manager, admin)
+- Примеры использования декораторов
+- Интеграция с `core.views.home_redirect`
+
+**Пример использования:**
+```python
+from authentication.decorators import require_role
+
+@require_role('student')
+def student_dashboard(request):
+    """Dashboard для студентов"""
+    return render(request, 'students/dashboard.html')
+
+@require_role('reviewer')
+def reviewer_dashboard(request):
+    """Dashboard для ревьюеров"""
+    return render(request, 'reviewers/dashboard.html')
+```
+
+**Ключевые темы:**
+- Ролевая модель доступа
+- Fallback рутинг для неизвестных ролей
+- Множественные роли у одного пользователя
+- Приоритеты ролей
+
+---
+
+### ⚡ [QUICK_REFERENCE.md](docs/QUICK_REFERENCE.md)
+
+**Описание:** Быстрый справочник по API, моделям и общим операциям.
+
+**Содержит:**
+- Краткие примеры всех API endpoints
+- Частые операции с моделями
+- Cheat sheet по декораторам
+- Решение типичных проблем
+
+**Примеры из документа:**
+
+```python
+# Создание пользователя
+from authentication.models import User, Role
+
+user = User.objects.create_user(
+    email='student@example.com',
+    password='secure_password',
+    first_name='Иван',
+    last_name='Иванов'
+)
+
+# Назначение роли
+student_role = Role.objects.get(name='student')
+user.role = student_role
+user.save()
+
+# Проверка роли
+if user.role.name == 'student':
+    print('Пользователь является студентом')
+
+# Обновление профиля
+user.student.bio = 'Изучаю Python'
+user.student.save()
+```
+
+```bash
+# API примеры
+
+# Регистрация
+curl -X POST http://localhost:8000/api/auth/register/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123!",
+    "first_name": "Иван",
+    "last_name": "Иванов"
+  }'
+
+# Вход
+curl -X POST http://localhost:8000/api/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "password": "SecurePass123!"}'
+
+# Получение профиля
+curl -X GET http://localhost:8000/api/auth/profile/ \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Ключевые разделы:**
+- API endpoints с примерами curl
+- CRUD операции с моделями
+- Работа с JWT токенами
+- Декораторы и permissions
+- Troubleshooting
+
+---
+
 ## Changelog
 
 ### v2.0 (2025-12-01)

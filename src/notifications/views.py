@@ -1,3 +1,22 @@
+"""
+Notifications Views Module - Django views для управления подписками.
+
+Этот модуль содержит представления для работы с уведомлениями:
+
+Представления:
+    - subscribe_view: Обработка подписки на email рассылку
+
+Особенности:
+    - Проверка на дублирование подписок
+    - Валидация email через форму
+    - Flash messages для информирования
+    - Редирект на предыдущую страницу
+    - Защита от спама
+
+Автор: Pyland Team
+Дата: 2025
+"""
+
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
@@ -24,4 +43,4 @@ def subscribe_view(request: HttpRequest) -> HttpResponse:
                 messages.info(request, "Вы уже подписаны.")
         else:
             messages.error(request, "Введите корректный email.")
-    return redirect(request.META.get("HTTP_REFERER", "/"))
+    return redirect(request.headers.get("referer", "/"))
