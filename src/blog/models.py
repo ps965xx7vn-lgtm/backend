@@ -1,3 +1,42 @@
+"""
+Blog Models Module - Модели данных для системы блога.
+
+Этот модуль содержит полнофункциональную систему блога с 11 моделями:
+
+Основные модели:
+    Category - Категории статей (с иконками)
+    Article - Статьи блога (markdown, SEO, статусы)
+    Author - Профили авторов блога
+    Series - Серии связанных статей
+    Comment - Комментарии к статьям (вложенные, до 3 уровней)
+
+Дополнительные модели:
+    ArticleReaction - Реакции на статьи (like, love, helpful, insightful, amazing)
+    Bookmark - Закладки пользователей
+    ReadingProgress - Прогресс чтения статей
+    ArticleView - Просмотры статей (с IP-tracking)
+    Newsletter - Email-подписки на рассылку
+
+Особенности:
+    - Markdown поддержка в статьях
+    - SEO оптимизация (meta-теги, schema.org, Open Graph)
+    - Система тегов (django-taggit)
+    - Вложенные комментарии (макс. 3 уровня)
+    - Различные статусы: draft, pending, published, archived
+    - Уровни сложности: beginner, intermediate, advanced, expert
+    - Рекомендуемые статьи (is_featured)
+    - Автоматический расчет времени чтения
+
+Валидация:
+    - Ограничения на длину полей
+    - Проверка slug на уникальность
+    - Кастомные clean() методы
+    - Автоматическая генерация slug
+
+Автор: Pyland Team
+Дата: 2025
+"""
+
 from __future__ import annotations
 
 import logging

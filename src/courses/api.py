@@ -1,3 +1,31 @@
+"""
+Courses API Module - REST API для управления курсами и уроками.
+
+Этот модуль содержит эндпоинты для работы с курсами:
+
+Endpoints:
+    GET    /api/courses/                       - Список всех курсов
+    GET    /api/courses/{id}                   - Детали курса
+    POST   /api/courses/                       - Создание курса
+    GET    /api/courses/{id}/lessons           - Уроки курса
+    POST   /api/courses/lessons/               - Создание урока
+    GET    /api/courses/lessons/{id}           - Детали урока
+    POST   /api/courses/steps/                 - Создание шага
+    GET    /api/courses/steps/{id}             - Детали шага
+    GET    /api/courses/submissions/           - Список отправленных работ
+    POST   /api/courses/submissions/{id}/resubmit - Повторная отправка
+    POST   /api/courses/submissions/{id}/review   - Проверка работы
+
+Особенности:
+    - Полная валидация через Pydantic схемы
+    - Автоматическая документация через Django Ninja
+    - Поддержка иерархической структуры
+    - Обработка ошибок и валидация
+
+Автор: Pyland Team
+Дата: 2025
+"""
+
 from uuid import UUID
 
 from django.utils import timezone

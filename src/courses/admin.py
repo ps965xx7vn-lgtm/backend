@@ -1,3 +1,28 @@
+"""
+Courses Admin Module - Административный интерфейс Django для управления курсами.
+
+Этот модуль содержит настройки Django Admin для всех моделей курсов:
+
+ModelAdmin классы:
+    - CourseAdmin: Управление курсами с inline уроками
+    - LessonAdmin: Управление уроками с inline шагами
+    - StepAdmin: Управление шагами уроков
+    - StepProgressAdmin: Просмотр прогресса студентов
+    - LessonSubmissionAdmin: Управление отправленными работами
+    - TipAdmin: Управление подсказками к шагам
+    - ExtraSourceAdmin: Управление дополнительными материалами
+
+Особенности:
+    - Inline редактирование иерархии (курс → урок → шаг)
+    - Списковые фильтры по статусу, дате, автору
+    - Кастомные действия для базовых операций
+    - Отображение счетчиков (количество шагов, студентов)
+    - Ссылки на связанные объекты
+
+Автор: Pyland Team
+Дата: 2025
+"""
+
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
@@ -19,14 +44,13 @@ class LessonInline(admin.TabularInline):
     readonly_fields = ("created_at", "updated_at", "steps_count")
     show_change_link = True
 
+    @admin.display(description="Шагов")
     def steps_count(self, obj):
         """Количество шагов в уроке"""
         if obj.id:
             count = obj.steps.count()
             return format_html('<span style="font-weight: bold;">{}</span>', count)
         return "-"
-
-    steps_count.short_description = "Шагов"
 
 
 class StepInline(admin.TabularInline):
@@ -41,13 +65,12 @@ class StepInline(admin.TabularInline):
     readonly_fields = ("has_image",)
     show_change_link = True
 
+    @admin.display(description="Изображение")
     def has_image(self, obj):
         """Есть ли изображение"""
         if obj.image:
             return format_html('<span style="color: #10b981;">✓ Есть</span>')
         return format_html('<span style="color: #6b7280;">✗ Нет</span>')
-
-    has_image.short_description = "Изображение"
 
 
 class TipInline(admin.TabularInline):
@@ -70,6 +93,7 @@ class LessonSubmissionInline(admin.TabularInline):
     readonly_fields = ("edit_link", "student_link", "submitted_at")
     can_delete = False
 
+    @admin.display(description="Действия")
     def edit_link(self, obj):
         """Ссылка на редактирование работы"""
         if not obj.id:
@@ -85,16 +109,13 @@ class LessonSubmissionInline(admin.TabularInline):
             url,
         )
 
-    edit_link.short_description = "Действия"
-
+    @admin.display(description="Студент")
     def student_link(self, obj):
         """Ссылка на студента"""
         if not obj.student:
             return "-"
         url = reverse("admin:authentication_student_change", args=[obj.student.id])
         return format_html('<a href="{}">{}</a>', url, obj.student.user.username)
-
-    student_link.short_description = "Студент"
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """Ограничиваем выбор ментора только пользователями с ролью 'Ментор'"""
@@ -163,6 +184,7 @@ class CourseAdmin(admin.ModelAdmin):
         ("Системная информация", {"fields": ("created_at", "updated_at")}),
     )
 
+    @admin.display(description="Статус")
     def status_display(self, obj):
         """Отображение статуса курса"""
         status_colors = {
@@ -186,8 +208,7 @@ class CourseAdmin(admin.ModelAdmin):
             label,
         )
 
-    status_display.short_description = "Статус"
-
+    @admin.display(description="Уроков")
     def lessons_count(self, obj):
         """Количество уроков"""
         count = obj.lessons.count()
@@ -197,8 +218,7 @@ class CourseAdmin(admin.ModelAdmin):
             count,
         )
 
-    lessons_count.short_description = "Уроков"
-
+    @admin.display(description="Цена")
     def price_display(self, obj):
         """Отображение цены"""
         if obj.price == 0:
@@ -212,22 +232,19 @@ class CourseAdmin(admin.ModelAdmin):
             obj.price,
         )
 
-    price_display.short_description = "Цена"
-
+    @admin.display(description="Всего шагов")
     def total_steps_count(self, obj):
         """Общее количество шагов"""
         count = Step.objects.filter(lesson__course=obj).count()
         return format_html("<strong>{}</strong>", count)
 
-    total_steps_count.short_description = "Всего шагов"
-
+    @admin.display(description="Студентов")
     def students_count(self, obj):
         """Количество студентов"""
         count = obj.students.count()
         return format_html('<span style="color: #10b981; font-weight: bold;">👥 {}</span>', count)
 
-    students_count.short_description = "Студентов"
-
+    @admin.display(description="Статистика")
     def course_stats(self, obj):
         """Детальная статистика курса"""
         if not obj.id:
@@ -279,14 +296,11 @@ class CourseAdmin(admin.ModelAdmin):
             completion_rate,
         )
 
-    course_stats.short_description = "Статистика"
-
+    @admin.action(description="📋 Дублировать курс")
     def duplicate_course(self, request, queryset):
         """Дублирование курса"""
         for course in queryset:
             self.message_user(request, f"Дублирование курса '{course.name}' (функция в разработке)")
-
-    duplicate_course.short_description = "📋 Дублировать курс"
 
     def get_queryset(self, request):
         """Оптимизация запросов"""
@@ -329,13 +343,13 @@ class LessonAdmin(admin.ModelAdmin):
         ("Системная информация", {"fields": ("created_at", "updated_at")}),
     )
 
+    @admin.display(description="Курс")
     def course_link(self, obj):
         """Ссылка на курс"""
         url = reverse("admin:courses_course_change", args=[obj.course.id])
         return format_html('<a href="{}">{}</a>', url, obj.course.name)
 
-    course_link.short_description = "Курс"
-
+    @admin.display(description="Шагов")
     def steps_count(self, obj):
         """Количество шагов"""
         count = obj.steps.count()
@@ -345,15 +359,13 @@ class LessonAdmin(admin.ModelAdmin):
             count,
         )
 
-    steps_count.short_description = "Шагов"
-
+    @admin.display(description="Работ отправлено")
     def submissions_count(self, obj):
         """Количество отправленных работ"""
         count = obj.submissions.count()
         return format_html("<strong>📤 {}</strong>", count)
 
-    submissions_count.short_description = "Работ отправлено"
-
+    @admin.display(description="Статистика")
     def lesson_stats(self, obj):
         """Статистика урока"""
         if not obj.id:
@@ -385,8 +397,6 @@ class LessonAdmin(admin.ModelAdmin):
             total_progress,
             completion_rate,
         )
-
-    lesson_stats.short_description = "Статистика"
 
     def get_queryset(self, request):
         """Оптимизация запросов"""
@@ -434,29 +444,27 @@ class StepAdmin(admin.ModelAdmin):
         ("Статистика", {"fields": ("step_stats",), "classes": ("collapse",)}),
     )
 
+    @admin.display(description="Урок")
     def lesson_link(self, obj):
         """Ссылка на урок"""
         url = reverse("admin:courses_lesson_change", args=[obj.lesson.id])
         return format_html('<a href="{}">{} ({})</a>', url, obj.lesson.name, obj.lesson.course.name)
 
-    lesson_link.short_description = "Урок"
-
+    @admin.display(description="Описание")
     def has_description(self, obj):
         """Есть ли описание"""
         if obj.description:
             return format_html('<span style="color: #10b981;">✓</span>')
         return format_html('<span style="color: #ef4444;">✗</span>')
 
-    has_description.short_description = "Описание"
-
+    @admin.display(description="Изображение")
     def has_image(self, obj):
         """Есть ли изображение"""
         if obj.image:
             return format_html('<span style="color: #10b981;">✓</span>')
         return format_html('<span style="color: #6b7280;">✗</span>')
 
-    has_image.short_description = "Изображение"
-
+    @admin.display(description="Завершено")
     def completion_rate(self, obj):
         """Процент завершения"""
         total = obj.progress.count()
@@ -472,8 +480,7 @@ class StepAdmin(admin.ModelAdmin):
             '<span style="color: {}; font-weight: bold;">{}%</span>', color, int(rate)
         )
 
-    completion_rate.short_description = "Завершено"
-
+    @admin.display(description="Статистика")
     def step_stats(self, obj):
         """Статистика шага"""
         if not obj.id:
@@ -498,8 +505,6 @@ class StepAdmin(admin.ModelAdmin):
             tips_count,
         )
 
-    step_stats.short_description = "Статистика"
-
     def get_queryset(self, request):
         """Оптимизация запросов"""
         qs = super().get_queryset(request)
@@ -519,20 +524,18 @@ class TipAdmin(admin.ModelAdmin):
     search_fields = ("title", "step__name", "description")
     list_filter = ("step__lesson__course", "step__lesson")
 
+    @admin.display(description="Шаг")
     def step_link(self, obj):
         """Ссылка на шаг"""
         url = reverse("admin:courses_step_change", args=[obj.step.id])
         return format_html('<a href="{}">{}</a>', url, obj.step.name)
 
-    step_link.short_description = "Шаг"
-
+    @admin.display(description="Описание")
     def has_description(self, obj):
         """Есть ли описание"""
         if obj.description:
             return format_html('<span style="color: #10b981;">✓</span>')
         return format_html('<span style="color: #6b7280;">✗</span>')
-
-    has_description.short_description = "Описание"
 
 
 @admin.register(ExtraSource)
@@ -548,18 +551,16 @@ class ExtraSourceAdmin(admin.ModelAdmin):
     search_fields = ("name", "url")
     filter_horizontal = ("steps",)
 
+    @admin.display(description="URL")
     def url_link(self, obj):
         """Кликабельная ссылка"""
         return format_html('<a href="{}" target="_blank">{}</a>', obj.url, obj.url)
 
-    url_link.short_description = "URL"
-
+    @admin.display(description="Используется в шагах")
     def steps_count(self, obj):
         """Количество шагов"""
         count = obj.steps.count()
         return format_html('<span style="font-weight: bold;">{}</span>', count)
-
-    steps_count.short_description = "Используется в шагах"
 
 
 @admin.register(StepProgress)
@@ -577,20 +578,19 @@ class StepProgressAdmin(admin.ModelAdmin):
     ordering = ("-completed_at",)
     readonly_fields = ("completed_at",)
 
+    @admin.display(description="Студент")
     def profile_link(self, obj):
         """Ссылка на профиль"""
         url = reverse("admin:students_student_change", args=[obj.profile.id])
         return format_html('<a href="{}">{}</a>', url, obj.profile.user.username)
 
-    profile_link.short_description = "Студент"
-
+    @admin.display(description="Шаг")
     def step_link(self, obj):
         """Ссылка на шаг"""
         url = reverse("admin:courses_step_change", args=[obj.step.id])
         return format_html('<a href="{}">{} → {}</a>', url, obj.step.lesson.name, obj.step.name)
 
-    step_link.short_description = "Шаг"
-
+    @admin.display(description="Статус")
     def completion_status(self, obj):
         """Статус завершения"""
         if obj.is_completed:
@@ -602,8 +602,6 @@ class StepProgressAdmin(admin.ModelAdmin):
             '<span style="background: #6b7280; color: white; padding: 3px 10px; '
             'border-radius: 12px; font-weight: bold;">○ В процессе</span>'
         )
-
-    completion_status.short_description = "Статус"
 
     def get_queryset(self, request):
         """Оптимизация запросов"""
