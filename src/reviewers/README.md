@@ -335,6 +335,200 @@ invalidate_reviewer_cache(reviewer.id)
 
 ---
 
+## 📚 Дополнительная документация
+
+В папке `docs/` находится расширенная документация:
+
+### 🏛️ [STRUCTURE.md](docs/STRUCTURE.md)
+
+**Описание:** Подробная архитектура приложения reviewers с описанием всех компонентов.
+
+**Содержит:**
+
+**1. Архитектура приложения**
+
+```
+reviewers/
+├── models.py          # Модели данных
+│   ├── Review               # Основная проверка
+│   ├── StudentImprovement   # Замечания
+│   └── ReviewerNotification # Уведомления
+├── views.py           # Function-based views
+│   ├── dashboard_view
+│   ├── submissions_list_view
+│   ├── submission_review_view
+│   └── settings_view
+├── forms.py           # 4 формы с валидацией
+│   ├── ReviewForm
+│   ├── ReviewerProfileForm
+│   ├── SubmissionFilterForm
+│   └── StudentImprovementForm
+├── decorators.py      # 3 кастомных декоратора
+│   ├── @active_reviewer_required
+│   ├── @can_review_course
+│   └── @max_reviews_per_day_check
+└── cache_utils.py     # Redis/dummy кеширование
+    ├── get_reviewer_stats()  # TTL: 10min
+    └── invalidate_reviewer_cache()
+```
+
+**2. Workflow проверки**
+
+```
+1. Студент отправляет работу
+   ↓
+2. LessonSubmission.status = 'pending'
+   ↓
+3. ReviewerNotification создается
+   ↓
+4. Ревьюер получает уведомление
+   ↓
+5. Ревьюер открывает submission_review_view
+   ↓
+6. Заполняет ReviewForm
+   ↓
+7. Добавляет StudentImprovement (замечания)
+   ↓
+8. Review сохраняется
+   ↓
+9. LessonSubmission.status обновляется
+   ↓
+10. Студент получает уведомление
+```
+
+**3. Декораторы**
+
+```python
+# decorators.py
+
+@active_reviewer_required
+def some_view(request):
+    """
+    Проверяет:
+    - Пользователь авторизован
+    - Имеет роль reviewer или mentor
+    - reviewer.is_active = True
+    """
+    pass
+
+@can_review_course(course_id_param='course_id')
+def review_submission(request, course_id, submission_id):
+    """
+    Проверяет:
+    - Ревьюер может проверять этот курс
+    - course in reviewer.courses.all()
+    """
+    pass
+
+@max_reviews_per_day_check(limit=20)
+def create_review(request):
+    """
+    Проверяет:
+    - Не превышен лимит проверок в день
+    - Защита от перегрузки
+    """
+    pass
+```
+
+**4. Формы и валидация**
+
+```python
+# forms.py - ReviewForm
+
+class ReviewForm(forms.ModelForm):
+    """
+    Форма для создания/редактирования проверки.
+
+    Валидация:
+    - status: approved / needs_work / rejected
+    - rating: 0.0-5.0 (обязательно для approved)
+    - comments: мин. 10 символов
+    - time_spent: > 0 минут
+    """
+
+    def clean_rating(self):
+        rating = self.cleaned_data.get('rating')
+        status = self.cleaned_data.get('status')
+
+        if status == 'approved' and not rating:
+            raise ValidationError(
+                'Для одобрения обязательна оценка'
+            )
+
+        if rating and not (0 <= rating <= 5):
+            raise ValidationError('Оценка должна быть от 0 до 5')
+
+        return rating
+
+    def clean_comments(self):
+        comments = self.cleaned_data.get('comments', '')
+
+        if len(comments) < 10:
+            raise ValidationError(
+                'Комментарий должен содержать минимум 10 символов'
+            )
+
+        return comments
+```
+
+**5. Кеширование**
+
+```python
+# cache_utils.py
+
+from django.core.cache import cache
+import logging
+
+logger = logging.getLogger(__name__)
+
+def get_reviewer_stats(reviewer_id):
+    """
+    Получает статистику ревьюера с кешированием.
+    TTL: 10 минут
+    """
+    cache_key = f'reviewer_stats:{reviewer_id}'
+
+    # Пробуем получить из кеша
+    cached_stats = safe_cache_get(cache_key)
+    if cached_stats:
+        return cached_stats
+
+    # Собираем статистику
+    from reviewers.models import Review
+
+    stats = {
+        'total_reviews': Review.objects.filter(
+            reviewer_id=reviewer_id
+        ).count(),
+        'approved': Review.objects.filter(
+            reviewer_id=reviewer_id,
+            status='approved'
+        ).count(),
+        'avg_time': Review.objects.filter(
+            reviewer_id=reviewer_id
+        ).aggregate(Avg('time_spent'))['time_spent__avg'] or 0,
+    }
+
+    # Сохраняем в кеш на 10 мин
+    safe_cache_set(cache_key, stats, 600)
+
+    return stats
+
+def invalidate_reviewer_cache(reviewer_id):
+    """Инвалидирует кеш при новой проверке"""
+    cache_key = f'reviewer_stats:{reviewer_id}'
+    safe_cache_delete(cache_key)
+```
+
+**Ключевые принципы:**
+- Function-based views (проще class-based)
+- Полная валидация в формах
+- Кеширование статистики
+- Декораторы для защиты
+- Чистые URL без лишних префиксов
+
+---
+
 ## 🧪 Тестирование
 
 ```bash
