@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-migrations
+  namespace: pyland
+  labels:
+    app: django-migrations
+    component: init
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: django-migrations
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: migrate
+        image: ghcr.io/ps965xx7vn-lgtm/backend:latest
+        imagePullPolicy: Always
+
+        # Environment variables
+        envFrom:
+        - configMapRef:
+            name: django-config
+        - secretRef:
+            name: django-secret
+
+        # Migration command
+        command: ["python"]
+        args:
+          - "manage.py"
+          - "migrate"
+          - "--noinput"

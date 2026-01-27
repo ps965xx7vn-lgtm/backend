@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-worker
+  namespace: pyland
+  labels:
+    app: celery-worker
+    component: celery
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: celery-worker
+  template:
+    metadata:
+      labels:
+        app: celery-worker
+        component: celery
+    spec:
+      containers:
+      - name: celery-worker
+        image: ghcr.io/ps965xx7vn-lgtm/backend:latest
+        imagePullPolicy: Always
+
+        # Environment variables
+        envFrom:
+        - configMapRef:
+            name: django-config
+        - secretRef:
+            name: django-secret
+
+        # Resources
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        # Celery worker command
+        command: ["celery"]
+        args:
+          - "-A"
+          - "pyland"
+          - "worker"
+          - "-l"
+          - "info"
+          - "--concurrency=4"

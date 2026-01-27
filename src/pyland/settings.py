@@ -15,7 +15,19 @@ env.read_env()
 # === SECURITY ===
 SECRET_KEY = env.str("SECRET_KEY", "replace_me")
 DEBUG = env.bool("DEBUG", False)
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
+
+# ALLOWED_HOSTS configuration
+# In production, Django requires explicit host validation
+# But for K8s health checks from pod IPs, we'll use '*' and rely on Ingress for security
+ALLOWED_HOSTS = (
+    ["*"]
+    if not DEBUG and env.bool("K8S_DEPLOYMENT", default=False)
+    else env.list("ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
+)
+
+# Allow Kubernetes pod IPs for health checks
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # === LOCALIZATION ===
 TIME_ZONE = "Asia/Tbilisi"
@@ -37,6 +49,12 @@ SITE_ID = 1
 
 # === CSRF ===
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=not DEBUG)
+CSRF_COOKIE_HTTPONLY = env.bool("CSRF_COOKIE_HTTPONLY", default=True)
+CSRF_COOKIE_SAMESITE = env.str("CSRF_COOKIE_SAMESITE", default="Lax")
+SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=not DEBUG)
+SESSION_COOKIE_HTTPONLY = env.bool("SESSION_COOKIE_HTTPONLY", default=True)
+SESSION_COOKIE_SAMESITE = env.str("SESSION_COOKIE_SAMESITE", default="Lax")
 
 # === TEMPLATES ===
 TEMPLATES = [
@@ -90,6 +108,7 @@ INSTALLED_APPS = [
     "markdownify",
     "corsheaders",
     "taggit",
+    "django_celery_beat",  # Celery Beat scheduler
 ]
 
 # === LOGGING ===
@@ -144,6 +163,7 @@ LOGGING = {
 # === MIDDLEWARE ===
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Static files serving
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -215,6 +235,18 @@ SIMPLE_JWT = {
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# WhiteNoise configuration for production static files
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+WHITENOISE_MANIFEST_STRICT = False  # Don't fail on missing files
+WHITENOISE_AUTOREFRESH = DEBUG  # Auto-refresh in development
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
