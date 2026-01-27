@@ -2,26 +2,41 @@
 
 const phoneInputHandler = {
     countries: [
-        { code: 'RU', name: 'Россия', dialCode: '+7', flag: '🇷🇺', mask: '(___) ___-__-__' },
-        { code: 'GE', name: 'Грузия', dialCode: '+995', flag: '🇬🇪', mask: '___ __ __ __' },
-        { code: 'KZ', name: 'Казахстан', dialCode: '+7', flag: '🇰🇿', mask: '(___) ___-__-__' },
-        { code: 'BY', name: 'Беларусь', dialCode: '+375', flag: '🇧🇾', mask: '(__) ___-__-__' },
-        { code: 'UA', name: 'Украина', dialCode: '+380', flag: '🇺🇦', mask: '(__) ___-__-__' },
-        { code: 'AM', name: 'Армения', dialCode: '+374', flag: '🇦🇲', mask: '__ ___-___' },
-        { code: 'AZ', name: 'Азербайджан', dialCode: '+994', flag: '🇦🇿', mask: '__ ___-__-__' },
-        { code: 'KG', name: 'Киргизия', dialCode: '+996', flag: '🇰🇬', mask: '___ ___-___' },
-        { code: 'TJ', name: 'Таджикистан', dialCode: '+992', flag: '🇹🇯', mask: '__ ___-____' },
-        { code: 'UZ', name: 'Узбекистан', dialCode: '+998', flag: '🇺🇿', mask: '__ ___-____' },
-        { code: 'MD', name: 'Молдова', dialCode: '+373', flag: '🇲🇩', mask: '____ ____' },
-        { code: 'US', name: 'США', dialCode: '+1', flag: '🇺🇸', mask: '(___) ___-____' },
-        { code: 'GB', name: 'Великобритания', dialCode: '+44', flag: '🇬🇧', mask: '____ ______' },
-        { code: 'DE', name: 'Германия', dialCode: '+49', flag: '🇩🇪', mask: '___ ________' },
-        { code: 'FR', name: 'Франция', dialCode: '+33', flag: '🇫🇷', mask: '_ __ __ __ __' },
-        { code: 'IT', name: 'Италия', dialCode: '+39', flag: '🇮🇹', mask: '___ _______' },
-        { code: 'ES', name: 'Испания', dialCode: '+34', flag: '🇪🇸', mask: '___ __ __ __' },
-        { code: 'PL', name: 'Польша', dialCode: '+48', flag: '🇵🇱', mask: '___ ___-___' },
-        { code: 'TR', name: 'Турция', dialCode: '+90', flag: '🇹🇷', mask: '___ ___-____' },
+        { code: 'RU', name: 'Россия', nameKa: 'რუსეთი', nameEn: 'Russia', dialCode: '+7', flag: '🇷🇺', mask: '(___) ___-__-__' },
+        { code: 'GE', name: 'Грузия', nameKa: 'საქართველო', nameEn: 'Georgia', dialCode: '+995', flag: '🇬🇪', mask: '___ __ __ __' },
+        { code: 'KZ', name: 'Казахстан', nameKa: 'ყაზახეთი', nameEn: 'Kazakhstan', dialCode: '+7', flag: '🇰🇿', mask: '(___) ___-__-__' },
+        { code: 'BY', name: 'Беларусь', nameKa: 'ბელარუსი', nameEn: 'Belarus', dialCode: '+375', flag: '🇧🇾', mask: '(__) ___-__-__' },
+        { code: 'UA', name: 'Украина', nameKa: 'უკრაინა', nameEn: 'Ukraine', dialCode: '+380', flag: '🇺🇦', mask: '(__) ___-__-__' },
+        { code: 'AM', name: 'Армения', nameKa: 'სომხეთი', nameEn: 'Armenia', dialCode: '+374', flag: '🇦🇲', mask: '__ ___-___' },
+        { code: 'AZ', name: 'Азербайджан', nameKa: 'აზერბაიჯანი', nameEn: 'Azerbaijan', dialCode: '+994', flag: '🇦🇿', mask: '__ ___-__-__' },
+        { code: 'KG', name: 'Киргизия', nameKa: 'ყირგიზეთი', nameEn: 'Kyrgyzstan', dialCode: '+996', flag: '🇰🇬', mask: '___ ___-___' },
+        { code: 'TJ', name: 'Таджикистан', nameKa: 'ტაჯიკეთი', nameEn: 'Tajikistan', dialCode: '+992', flag: '🇹🇯', mask: '__ ___-____' },
+        { code: 'UZ', name: 'Узбекистан', nameKa: 'უზბეკეთი', nameEn: 'Uzbekistan', dialCode: '+998', flag: '🇺🇿', mask: '__ ___-____' },
+        { code: 'MD', name: 'Молдова', nameKa: 'მოლდოვა', nameEn: 'Moldova', dialCode: '+373', flag: '🇲🇩', mask: '____ ____' },
+        { code: 'US', name: 'США', nameKa: 'აშშ', nameEn: 'USA', dialCode: '+1', flag: '🇺🇸', mask: '(___) ___-____' },
+        { code: 'GB', name: 'Великобритания', nameKa: 'დიდი ბრიტანეთი', nameEn: 'United Kingdom', dialCode: '+44', flag: '🇬🇧', mask: '____ ______' },
+        { code: 'DE', name: 'Германия', nameKa: 'გერმანია', nameEn: 'Germany', dialCode: '+49', flag: '🇩🇪', mask: '___ ________' },
+        { code: 'FR', name: 'Франция', nameKa: 'საფრანგეთი', nameEn: 'France', dialCode: '+33', flag: '🇫🇷', mask: '_ __ __ __ __' },
+        { code: 'IT', name: 'Италия', nameKa: 'იტალია', nameEn: 'Italy', dialCode: '+39', flag: '🇮🇹', mask: '___ _______' },
+        { code: 'ES', name: 'Испания', nameKa: 'ესპანეთი', nameEn: 'Spain', dialCode: '+34', flag: '🇪🇸', mask: '___ __ __ __' },
+        { code: 'PL', name: 'Польша', nameKa: 'პოლონეთი', nameEn: 'Poland', dialCode: '+48', flag: '🇵🇱', mask: '___ ___-___' },
+        { code: 'TR', name: 'Турция', nameKa: 'თურქეთი', nameEn: 'Turkey', dialCode: '+90', flag: '🇹🇷', mask: '___ ___-____' },
     ],
+
+    getCurrentLanguage: function() {
+        // Get current language from URL path or document lang attribute
+        const path = window.location.pathname;
+        if (path.startsWith('/ka/')) return 'ka';
+        if (path.startsWith('/en/')) return 'en';
+        return 'ru'; // default
+    },
+
+    getCountryName: function(country) {
+        const lang = this.getCurrentLanguage();
+        if (lang === 'ka') return country.nameKa;
+        if (lang === 'en') return country.nameEn;
+        return country.name;
+    },
 
     init: function(selectElement, inputElement) {
         if (!selectElement || !inputElement) return;
@@ -56,7 +71,8 @@ const phoneInputHandler = {
         this.countries.forEach(country => {
             const option = document.createElement('option');
             option.value = country.code;
-            option.textContent = `${country.flag} ${country.name} ${country.dialCode}`;
+            const countryName = this.getCountryName(country);
+            option.textContent = `${country.flag} ${countryName} ${country.dialCode}`;
             option.dataset.dialCode = country.dialCode;
             option.dataset.mask = country.mask;
             selectElement.appendChild(option);
@@ -123,7 +139,7 @@ const phoneInputHandler = {
     formatPhoneNumber: function(value, mask, dialCode) {
         // Remove dial code for formatting
         const digits = value.replace(dialCode, '').replace(/\D/g, '');
-        
+
         if (!digits) return dialCode + ' ';
 
         // Apply mask
@@ -144,9 +160,9 @@ const phoneInputHandler = {
 
     onKeyDown: function(e, inputElement) {
         const dialCode = inputElement.dataset.dialCode || '+7';
-        
+
         // Prevent deleting the dial code
-        if ((e.key === 'Backspace' || e.key === 'Delete') && 
+        if ((e.key === 'Backspace' || e.key === 'Delete') &&
             inputElement.selectionStart <= dialCode.length + 1) {
             e.preventDefault();
         }
@@ -157,7 +173,7 @@ const phoneInputHandler = {
 
         // Find matching country by dial code
         let matchedCountry = null;
-        
+
         for (const country of this.countries) {
             if (phoneNumber.startsWith(country.dialCode)) {
                 matchedCountry = country;
@@ -184,7 +200,7 @@ const phoneInputHandler = {
     validate: function(inputElement) {
         const value = inputElement.value.replace(/\s/g, '');
         const dialCode = inputElement.dataset.dialCode || '+7';
-        
+
         // Minimum length check (dial code + at least 7 digits)
         return value.length >= dialCode.length + 7;
     }

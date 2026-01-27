@@ -3,30 +3,36 @@
  * Handles password toggle and strength checking for signin/signup pages
  */
 
-/**
- * Toggle password visibility
- * @param {string} inputId - ID of the password input field
- */
-function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
-    
-    const toggle = input.parentElement.querySelector('.password-toggle');
-    if (!toggle) return;
-    
-    const eyeOpen = toggle.querySelector('.eye-open');
-    const eyeClosed = toggle.querySelector('.eye-closed');
-    
-    if (input.type === 'password') {
-        input.type = 'text';
-        if (eyeOpen) eyeOpen.style.display = 'none';
-        if (eyeClosed) eyeClosed.style.display = 'block';
-    } else {
-        input.type = 'password';
-        if (eyeOpen) eyeOpen.style.display = 'block';
-        if (eyeClosed) eyeClosed.style.display = 'none';
-    }
-}
+// Initialize password toggle on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.password-toggle');
+
+    toggleButtons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const passwordField = this.closest('.password-field');
+            if (!passwordField) return;
+
+            const input = passwordField.querySelector('input[type="password"], input[type="text"]');
+            if (!input) return;
+
+            const eyeOpen = this.querySelector('.eye-open');
+            const eyeClosed = this.querySelector('.eye-closed');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (eyeOpen) eyeOpen.style.display = 'none';
+                if (eyeClosed) eyeClosed.style.display = 'inline';
+            } else {
+                input.type = 'password';
+                if (eyeOpen) eyeOpen.style.display = 'inline';
+                if (eyeClosed) eyeClosed.style.display = 'none';
+            }
+        });
+    });
+});
 
 /**
  * Initialize password strength checker
@@ -35,24 +41,24 @@ function togglePassword(inputId) {
 function initPasswordStrength(passwordFieldId, weakText, mediumText, goodText, strongText) {
     const passwordField = document.getElementById(passwordFieldId);
     if (!passwordField) return;
-    
+
     passwordField.addEventListener('input', function(e) {
         const password = e.target.value;
         const strengthBar = document.getElementById('strength-bar');
         const strengthText = document.getElementById('strength-text');
-        
+
         if (!strengthBar || !strengthText) return;
-        
+
         let strength = 0;
         let text = weakText;
-        
+
         // Check password strength criteria
         if (password.length >= 8) strength++;
         if (/[A-Z]/.test(password)) strength++;
         if (/[a-z]/.test(password)) strength++;
         if (/[0-9]/.test(password)) strength++;
         if (/[^A-Za-z0-9]/.test(password)) strength++;
-        
+
         // Set strength level and visual feedback
         if (strength === 0) {
             strengthBar.style.width = '0%';
@@ -75,7 +81,7 @@ function initPasswordStrength(passwordFieldId, weakText, mediumText, goodText, s
             strengthBar.className = 'strength-bar strong';
             text = strongText;
         }
-        
+
         strengthText.textContent = text;
     });
 }
@@ -87,7 +93,7 @@ function initPasswordStrength(passwordFieldId, weakText, mediumText, goodText, s
 function initPasswordStrengthWithRequirements(passwordFieldId, translations) {
     const passwordInput = document.getElementById(passwordFieldId);
     if (!passwordInput) return;
-    
+
     passwordInput.addEventListener('input', function() {
         checkPasswordStrength(this.value, translations);
         checkPasswordRequirements(this.value);
@@ -100,25 +106,25 @@ function initPasswordStrengthWithRequirements(passwordFieldId, translations) {
 function checkPasswordStrength(password, translations) {
     const strengthContainer = document.querySelector('.password-strength-container');
     const strengthText = document.getElementById('strength-text');
-    
+
     if (!strengthContainer || !strengthText) return;
-    
+
     let score = 0;
     let feedback = '';
-    
+
     // Length check
     if (password.length >= 8) score++;
     if (password.length >= 12) score++;
-    
+
     // Character variety checks
     if (/[a-z]/.test(password)) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
-    
+
     // Remove previous strength classes
     strengthContainer.classList.remove('strength-weak', 'strength-fair', 'strength-good', 'strength-strong');
-    
+
     if (password.length === 0) {
         feedback = translations.default || 'Сила пароля';
     } else if (score <= 2) {
@@ -134,7 +140,7 @@ function checkPasswordStrength(password, translations) {
         strengthContainer.classList.add('strength-strong');
         feedback = translations.strong || 'Отличный';
     }
-    
+
     strengthText.textContent = feedback;
 }
 
@@ -148,7 +154,7 @@ function checkPasswordRequirements(password) {
         lowercase: /[a-z]/.test(password),
         number: /[0-9]/.test(password)
     };
-    
+
     Object.keys(requirements).forEach(requirement => {
         const item = document.querySelector(`[data-requirement="${requirement}"]`);
         if (item) {

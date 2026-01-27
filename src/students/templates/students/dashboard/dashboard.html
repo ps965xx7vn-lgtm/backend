@@ -8,16 +8,11 @@
 <link rel="stylesheet" href="{% static 'css/students/dashboard.css' %}?v=20251212-fixed">
 {% endblock %}
 
-
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
 
 {% block content %}
-<!-- Mobile sidebar toggle button -->
-<button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
-    <svg class="icon-menu" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-    </svg>
-</button>
-
 <!-- Sidebar overlay -->
 <div class="sidebar-overlay"></div>
 
@@ -26,7 +21,7 @@
     <aside class="dashboard-sidebar">
         <!-- Пустой блок для отступа на мобильных -->
         <div class="sidebar-spacer"></div>
-        
+
         <!-- User Info -->
         <div class="dashboard-user-info">
             <div class="dashboard-avatar">
@@ -187,11 +182,11 @@
                     <span class="progress-percentage">{{ course_stat.completion_percentage }}%</span>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill {% if course_stat.completion_percentage == 100 %}success{% elif course_stat.completion_percentage >= 75 %}warning{% endif %}" 
+                    <div class="progress-fill {% if course_stat.completion_percentage == 100 %}success{% elif course_stat.completion_percentage >= 75 %}warning{% endif %}"
                          style="width: {{ course_stat.completion_percentage }}%"></div>
                 </div>
                 <div class="progress-stats">
-                    {{ course_stat.completed_lessons }}/{{ course_stat.total_lessons }} {% trans "уроков" %} • 
+                    {{ course_stat.completed_lessons }}/{{ course_stat.total_lessons }} {% trans "уроков" %} •
                     {{ course_stat.completed_steps }}/{{ course_stat.total_steps }} {% trans "шагов" %}
                 </div>
             </div>
@@ -221,14 +216,14 @@
                 <div class="course-content">
                     <h4 class="course-title">{{ course_stat.course.name }}</h4>
                     <p class="course-description">{{ course_stat.course.short_description|default:course_stat.course.description|truncatechars:100 }}</p>
-                    
+
                     <div class="course-progress">
                         <div class="progress-info">
                             <span class="progress-name">{% trans "Прогресс" %}</span>
                             <span class="progress-percentage">{{ course_stat.completion_percentage }}%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill {% if course_stat.completion_percentage == 100 %}success{% elif course_stat.completion_percentage >= 75 %}warning{% endif %}" 
+                            <div class="progress-fill {% if course_stat.completion_percentage == 100 %}success{% elif course_stat.completion_percentage >= 75 %}warning{% endif %}"
                                  style="width: {{ course_stat.completion_percentage }}%"></div>
                         </div>
                     </div>
@@ -300,19 +295,19 @@
                 </h3>
                 <span class="badge badge-primary">{{ submissions_count.total }}</span>
             </div>
-            
+
             <!-- Submissions Stats -->
             <div class="stats-grid">
                 <div class="stat-card warning">
                     <h3 class="stat-value">{{ submissions_count.pending }}</h3>
                     <p class="stat-label">⏳ {% trans "Ожидают проверки" %}</p>
                 </div>
-                
+
                 <div class="stat-card danger">
                     <h3 class="stat-value">{{ submissions_count.changes_requested }}</h3>
                     <p class="stat-label">✏️ {% trans "Требуют доработки" %}</p>
                 </div>
-                
+
                 <div class="stat-card success">
                     <h3 class="stat-value">{{ submissions_count.approved }}</h3>
                     <p class="stat-label">✅ {% trans "Одобрено" %}</p>
@@ -350,7 +345,7 @@
                                 {{ submission.get_status_display }}
                             </span>
                         </div>
-                        
+
                         {% if submission.mentor_comment %}
                         <div style="background: white; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
                             <strong style="color: #ef4444;">{% trans "Комментарий ментора:" %}</strong>
@@ -362,10 +357,10 @@
                             {% endif %}
                         </div>
                         {% endif %}
-                        
+
                         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: #6b7280;">
                             <span>{% trans "Попытка:" %} {{ submission.revision_count|add:1 }}</span>
-                            <a href="{% url 'students:account_lesson_detail' submission.lesson.course.slug submission.lesson.slug %}" 
+                            <a href="{% url 'students:account_lesson_detail' submission.lesson.course.slug submission.lesson.slug %}"
                                class="btn btn-danger btn-sm">
                                 ✏️ {% trans "Исправить работу" %}
                             </a>
@@ -484,7 +479,7 @@
                     </div>
                     <div class="activity-content">
                         <p class="activity-text">
-                            {% trans "Выполнен шаг" %} <strong>{{ progress.step.name }}</strong> 
+                            {% trans "Выполнен шаг" %} <strong>{{ progress.step.name }}</strong>
                             {% trans "в уроке" %} <strong>{{ progress.step.lesson.name }}</strong>
                         </p>
                         <span class="activity-time">{{ progress.completed_at|timesince }} {% trans "назад" %}</span>

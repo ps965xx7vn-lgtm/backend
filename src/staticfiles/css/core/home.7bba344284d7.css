@@ -1,0 +1,848 @@
+/* === РЕВОЛЮЦИОННАЯ ГЛАВНАЯ СТРАНИЦА === */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background: var(--bg-color);
+    transition: all 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* === РЕВОЛЮЦИОННЫЙ HERO === */
+.revolutionary-hero-home {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.revolutionary-hero-home::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.05) 0%, transparent 50%);
+    animation: morphBackground 20s ease-in-out infinite;
+}
+
+.hero-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: floatParticles 15s linear infinite;
+}
+
+.particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+.particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+.particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+.particle:nth-child(4) { left: 40%; animation-delay: 6s; }
+.particle:nth-child(5) { left: 50%; animation-delay: 8s; }
+.particle:nth-child(6) { left: 60%; animation-delay: 10s; }
+.particle:nth-child(7) { left: 70%; animation-delay: 12s; }
+.particle:nth-child(8) { left: 80%; animation-delay: 14s; }
+
+.hero-main-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: white;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.hero-badge-revolutionary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.hero-title-revolutionary {
+    font-size: 4.5rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 32px;
+    background: linear-gradient(45deg, #ffffff, #f0f9ff, #dbeafe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: textShine 3s ease-in-out infinite;
+}
+
+.hero-subtitle-revolutionary {
+    font-size: 1.5rem;
+    opacity: 0.95;
+    margin-bottom: 48px;
+    line-height: 1.7;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-actions-revolutionary {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 64px;
+    flex-wrap: wrap;
+}
+
+.btn-revolutionary-hero {
+    padding: 20px 40px;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 18px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary-hero {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+}
+
+.btn-primary-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary-hero:hover::before {
+    left: 100%;
+}
+
+.btn-primary-hero:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary-hero {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+.btn-secondary-hero:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-4px);
+}
+
+.hero-stats-revolutionary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.stat-card-revolutionary {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 32px 24px;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.stat-card-revolutionary:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-number-revolutionary {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffd700;
+    display: block;
+    margin-bottom: 8px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.stat-label-revolutionary {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* === РЕВОЛЮЦИОННАЯ СЕКЦИЯ ВОЗМОЖНОСТЕЙ === */
+.features-revolutionary {
+    padding: 120px 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    position: relative;
+}
+
+.section-header-revolutionary {
+    text-align: center;
+    margin-bottom: 80px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.section-title-revolutionary {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #2d3748, #4a5568);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+}
+
+.section-subtitle-revolutionary {
+    font-size: 1.25rem;
+    color: #ffffff;
+    line-height: 1.7;
+}
+
+.features-grid-revolutionary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+}
+
+.feature-card-revolutionary {
+    background: white;
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card-revolutionary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    background-size: 200% 100%;
+    animation: gradientShift 3s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feature-card-revolutionary:hover::before {
+    opacity: 1;
+}
+
+.feature-card-revolutionary:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+}
+
+.feature-icon-revolutionary {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+}
+
+.feature-card-revolutionary:hover .feature-icon-revolutionary {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.feature-title-revolutionary {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #2d3748;
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+.feature-description-revolutionary {
+    color: #718096;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+/* === РЕВОЛЮЦИОННЫЕ КУРСЫ === */
+.courses-revolutionary {
+    padding: 120px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.courses-revolutionary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+
+.courses-revolutionary .section-header-revolutionary {
+    color: white;
+}
+
+.courses-revolutionary .section-title-revolutionary {
+    background: linear-gradient(45deg, #ffffff, #f0f9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.courses-revolutionary .section-subtitle-revolutionary {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.courses-grid-revolutionary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.course-card-revolutionary {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.course-card-revolutionary:hover {
+    transform: translateY(-12px) scale(1.02);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+}
+
+.course-image-revolutionary {
+    height: 200px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.course-image-revolutionary .course-image-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.course-badge-revolutionary {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 215, 0, 0.9);
+    color: #1a202c;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.course-content-revolutionary {
+    padding: 32px;
+    color: white;
+}
+
+.course-title-revolutionary {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.3;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.course-description-revolutionary {
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.course-meta-revolutionary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.course-duration-revolutionary,
+.course-lessons-revolutionary {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.course-price-revolutionary {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #ffd700;
+}
+
+.course-rating-revolutionary {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+}
+
+.course-btn-revolutionary {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.course-btn-revolutionary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+/* === СТАТИСТИКА 3D === */
+.stats-3d-revolutionary {
+    padding: 120px 0;
+    background: #1a202c;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-3d-revolutionary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+}
+
+.stats-grid-3d {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-cube-3d {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    perspective: 1000px;
+}
+
+.cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotateCube 20s linear infinite;
+}
+
+.cube-face {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    backdrop-filter: blur(20px);
+    font-weight: 800;
+}
+
+.cube-front { 
+    background: rgba(102, 126, 234, 0.3);
+    transform: rotateY(0deg) translateZ(100px); 
+}
+.cube-back { 
+    background: rgba(139, 92, 246, 0.3);
+    transform: rotateY(180deg) translateZ(100px); 
+}
+.cube-right { 
+    background: rgba(236, 72, 153, 0.3);
+    transform: rotateY(90deg) translateZ(100px); 
+}
+.cube-left { 
+    background: rgba(59, 130, 246, 0.3);
+    transform: rotateY(-90deg) translateZ(100px); 
+}
+
+.cube-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.cube-label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* === CTA РЕВОЛЮЦИОННЫЙ === */
+.cta-revolutionary {
+    padding: 120px 0;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #667eea 100%);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.cta-revolutionary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+
+.cta-content-revolutionary {
+    position: relative;
+    z-index: 2;
+    color: white;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-title-revolutionary {
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    background: linear-gradient(45deg, #ffffff, #f0f9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cta-description-revolutionary {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 48px;
+    line-height: 1.7;
+}
+
+.cta-actions-revolutionary {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* === ТЕМНАЯ ТЕМА === */
+[data-theme="dark"] .revolutionary-hero-home {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
+}
+
+[data-theme="dark"] .features-revolutionary {
+    background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
+}
+
+[data-theme="dark"] .features-revolutionary::before {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent);
+}
+
+[data-theme="dark"] .feature-card-revolutionary {
+    background: #2d3748;
+    border-color: #4a5568;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .feature-card-revolutionary:hover {
+    background: #374151;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .section-title-revolutionary {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="dark"] .section-subtitle-revolutionary {
+    color: #a0aec0;
+}
+
+[data-theme="dark"] .feature-title-revolutionary {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .feature-description-revolutionary {
+    color: #a0aec0;
+}
+
+[data-theme="dark"] .courses-revolutionary {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+}
+
+[data-theme="dark"] .stats-3d-revolutionary {
+    background: #0f1419;
+}
+
+[data-theme="dark"] .cta-revolutionary {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
+}
+
+/* === АНИМАЦИИ === */
+@keyframes morphBackground {
+    0%, 100% { 
+        background-position: 0% 50%; 
+    }
+    50% { 
+        background-position: 100% 50%; 
+    }
+}
+
+@keyframes floatParticles {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes textShine {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes rotateCube {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    25% { transform: rotateX(0deg) rotateY(90deg); }
+    50% { transform: rotateX(0deg) rotateY(180deg); }
+    75% { transform: rotateX(0deg) rotateY(270deg); }
+    100% { transform: rotateX(0deg) rotateY(360deg); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 768px) {
+    .hero-title-revolutionary {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle-revolutionary {
+        font-size: 1.2rem;
+    }
+    
+    .hero-actions-revolutionary {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-stats-revolutionary {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .features-grid-revolutionary {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    
+    .courses-grid-revolutionary {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    
+    .stats-grid-3d {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+    }
+    
+    .stat-cube-3d,
+    .cube,
+    .cube-face {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .cube-front { transform: rotateY(0deg) translateZ(75px); }
+    .cube-back { transform: rotateY(180deg) translateZ(75px); }
+    .cube-right { transform: rotateY(90deg) translateZ(75px); }
+    .cube-left { transform: rotateY(-90deg) translateZ(75px); }
+    
+    .section-title-revolutionary {
+        font-size: 2.5rem;
+    }
+    
+    .cta-title-revolutionary {
+        font-size: 2.5rem;
+    }
+    
+    .cta-actions-revolutionary {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid-3d {
+        grid-template-columns: 1fr;
+    }
+}

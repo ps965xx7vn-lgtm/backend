@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 12:10+0400\n"
+"POT-Creation-Date: 2026-01-27 17:22+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,28 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: authentication/forms.py:70 authentication/templates/auth/auth/signup.html:59
-#: core/forms.py:47 core/forms.py:49
+#: authentication/forms.py:71 authentication/templates/auth/auth/signup.html:59
+#: core/forms.py:49 core/forms.py:51
 #: reviewers/templates/reviewers/settings.html:171
 #: students/templates/students/dashboard/settings.html:172
 msgid "Имя"
 msgstr "სახელი"
 
-#: authentication/forms.py:72 core/templates/core/contacts.html:193
+#: authentication/forms.py:73 core/templates/core/contacts.html:193
 #: core/templates/core/home.html:393
 #: students/templates/students/dashboard/settings.html:174
 msgid "Введите ваше имя"
 msgstr "შეიყვანეთ თქვენი სახელი"
 
-#: authentication/forms.py:76 core/forms.py:51
+#: authentication/forms.py:77 core/forms.py:53
 msgid "Имя обязательно для заполнения."
 msgstr ""
 
-#: authentication/forms.py:77
+#: authentication/forms.py:78
 msgid "Имя не может превышать 30 символов."
 msgstr ""
 
-#: authentication/forms.py:81 authentication/templates/auth/auth/signup.html:75
+#: authentication/forms.py:82 authentication/templates/auth/auth/signup.html:75
 #: core/templates/core/contacts.html:94 core/templates/core/contacts.html:309
 #: core/templates/core/legal/privacy-policy.html:75
 #: core/templates/core/legal/privacy-policy.html:232
@@ -49,22 +49,22 @@ msgstr ""
 msgid "Телефон"
 msgstr "ტელეფონი"
 
-#: authentication/forms.py:87
+#: authentication/forms.py:88
 #, fuzzy
 #| msgid "Введите ваше имя"
 msgid "Введите номер телефона"
 msgstr "შეიყვანეთ თქვენი სახელი"
 
-#: authentication/forms.py:92
+#: authentication/forms.py:93
 msgid "Телефон обязателен для заполнения."
 msgstr ""
 
-#: authentication/forms.py:93
+#: authentication/forms.py:94
 msgid "Введите корректный номер телефона в международном формате."
 msgstr ""
 
-#: authentication/forms.py:97 authentication/forms.py:275
-#: authentication/forms.py:277 authentication/forms.py:339
+#: authentication/forms.py:98 authentication/forms.py:287
+#: authentication/forms.py:288 authentication/forms.py:348
 #: core/templates/core/contacts.html:108
 #: core/templates/core/legal/terms-of-service.html:189
 #: reviewers/templates/reviewers/settings.html:188
@@ -72,156 +72,165 @@ msgstr ""
 msgid "Email"
 msgstr "ელ-ფოსტა"
 
-#: authentication/forms.py:99
+#: authentication/forms.py:100
 msgid "Введите ваш Email"
-msgstr ""
+msgstr "შეიყვანეთ თქვენი Email"
 
-#: authentication/forms.py:102 core/forms.py:71
+#: authentication/forms.py:103 core/forms.py:73
 msgid "Email обязателен для заполнения."
 msgstr ""
 
-#: authentication/forms.py:103 core/forms.py:72 core/forms.py:163
+#: authentication/forms.py:104 core/forms.py:74 core/forms.py:169
 msgid "Введите корректный email адрес."
 msgstr ""
 
-#: authentication/forms.py:107 authentication/forms.py:285
-#: authentication/forms.py:287
+#: authentication/forms.py:108 authentication/forms.py:295
+#: authentication/forms.py:296
 #: authentication/templates/auth/auth/signin.html:71
 #: authentication/templates/auth/auth/signup.html:121
 msgid "Пароль"
-msgstr ""
+msgstr "პაროლი"
 
-#: authentication/forms.py:109
+#: authentication/forms.py:110
 msgid "Введите пароль"
-msgstr ""
+msgstr "შეიყვანეთ პაროლი"
 
-#: authentication/forms.py:111
+#: authentication/forms.py:112
 msgid "Пароль обязателен для заполнения."
 msgstr ""
 
-#: authentication/forms.py:114 authentication/forms.py:116
-#: authentication/templates/auth/auth/signup.html:155
-#: authentication/templates/auth/password-reset/confirm.html:88
+#: authentication/forms.py:115 authentication/forms.py:117
+#: authentication/templates/auth/auth/signup.html:159
+#: authentication/templates/auth/password-reset/confirm.html:87
 msgid "Подтвердите пароль"
-msgstr ""
+msgstr "დაადასტურეთ პაროლი"
 
-#: authentication/forms.py:118
+#: authentication/forms.py:119
 msgid "Подтверждение пароля обязательно."
 msgstr ""
 
-#: authentication/forms.py:122
+#: authentication/forms.py:123
 msgid "Я согласен с условиями использования и политикой конфиденциальности"
 msgstr ""
 
-#: authentication/forms.py:126 authentication/forms.py:194
+#: authentication/forms.py:128 authentication/forms.py:206
 msgid ""
 "Необходимо согласиться с условиями использования и политикой "
 "конфиденциальности."
 msgstr ""
 
-#: authentication/forms.py:147
+#: authentication/forms.py:134
+#: authentication/templates/auth/auth/signup.html:208
+msgid "Отправить email с подтверждением регистрации"
+msgstr "გამოგზავნეთ ელფოსტა რეგისტრაციის დასადასტურებლად"
+
+#: authentication/forms.py:138
+msgid "Отметьте, чтобы получить письмо с ссылкой для подтверждения email"
+msgstr "მონიშნეთ, რომ მიიღოთ წერილი ელფოსტის დასადასტურებელი ბმულით"
+
+#: authentication/forms.py:158
 msgid "Этот адрес электронной почты уже используется."
 msgstr ""
 
-#: authentication/forms.py:178
+#: authentication/forms.py:189
 msgid "Пароли не совпадают."
 msgstr ""
 
-#: authentication/forms.py:219
+#: authentication/forms.py:231
 msgid "Пароль не должен содержать ваш номер телефона."
 msgstr ""
 
-#: authentication/forms.py:224
+#: authentication/forms.py:235
 msgid "Пароль не должен содержать ваш адрес электронной почты."
 msgstr ""
 
-#: authentication/forms.py:242
+#: authentication/forms.py:253
 msgid "Пароль должен содержать не менее 8 символов."
 msgstr ""
 
-#: authentication/forms.py:245
+#: authentication/forms.py:256
 msgid "Пароль не может состоять только из цифр."
 msgstr ""
 
-#: authentication/forms.py:248
+#: authentication/forms.py:259
 msgid "Пароль не может состоять только из букв."
 msgstr ""
 
-#: authentication/forms.py:280 authentication/forms.py:344
+#: authentication/forms.py:290 authentication/forms.py:353
 msgid "Пожалуйста, введите ваш email."
 msgstr ""
 
-#: authentication/forms.py:281 authentication/forms.py:345
+#: authentication/forms.py:291 authentication/forms.py:354
 msgid "Пожалуйста, введите корректный email адрес."
 msgstr ""
 
-#: authentication/forms.py:289
+#: authentication/forms.py:297
 msgid "Пожалуйста, введите ваш пароль."
 msgstr ""
 
-#: authentication/forms.py:292
+#: authentication/forms.py:300
 #: authentication/templates/auth/auth/signin.html:98
 msgid "Запомнить меня"
-msgstr ""
+msgstr "დამიმახსოვრე"
 
-#: authentication/forms.py:315
+#: authentication/forms.py:323
 msgid "Неверный email или пароль."
 msgstr ""
 
-#: authentication/forms.py:341
-#: authentication/templates/auth/auth/email-verification-resend.html:53
+#: authentication/forms.py:350
+#: authentication/templates/auth/auth/email-verification-resend.html:52
 #: core/templates/shared/_footer.html:22
 #: students/templates/students/dashboard/settings.html:187
 msgid "Введите ваш email"
 msgstr ""
 
-#: authentication/forms.py:361 authentication/views.py:357
-#: authentication/views.py:480
+#: authentication/forms.py:370 authentication/views.py:381
+#: authentication/views.py:513
 msgid "Пользователь с таким email не найден."
 msgstr ""
 
-#: authentication/forms.py:377
-#: authentication/templates/auth/password-reset/confirm.html:60
+#: authentication/forms.py:387
+#: authentication/templates/auth/password-reset/confirm.html:59
 msgid "Новый пароль"
 msgstr ""
 
-#: authentication/forms.py:381
+#: authentication/forms.py:391
 #, fuzzy
 #| msgid "Введите ваше имя"
 msgid "Введите новый пароль"
 msgstr "შეიყვანეთ თქვენი სახელი"
 
-#: authentication/forms.py:386
+#: authentication/forms.py:397
 msgid ""
 "Пароль должен содержать минимум 8 символов и не может состоять только из "
 "цифр."
 msgstr ""
 
-#: authentication/forms.py:389
+#: authentication/forms.py:401
 msgid "Подтверждение пароля"
 msgstr ""
 
-#: authentication/forms.py:394
+#: authentication/forms.py:406
 msgid "Подтвердите новый пароль"
 msgstr ""
 
-#: authentication/forms.py:416
+#: authentication/forms.py:428
 msgid "Два введённых пароля не совпадают."
 msgstr ""
 
-#: authentication/forms.py:433
+#: authentication/forms.py:447
 msgid "Пароль слишком короткий. Он должен содержать минимум 8 символов."
 msgstr ""
 
-#: authentication/forms.py:437
+#: authentication/forms.py:453
 msgid "Введённый пароль слишком широко распространён."
 msgstr ""
 
-#: authentication/forms.py:441
+#: authentication/forms.py:457
 msgid "Введённый пароль состоит только из цифр."
 msgstr ""
 
-#: authentication/forms.py:445
+#: authentication/forms.py:463
 msgid "Введённый пароль слишком похож на другую вашу личную информацию."
 msgstr ""
 
@@ -287,245 +296,240 @@ msgid "Свяжитесь с поддержкой"
 msgstr ""
 
 #: authentication/templates/auth/auth/email-verification-resend.html:5
-#: authentication/templates/auth/auth/email-verification-resend.html:20
+#: authentication/templates/auth/auth/email-verification-resend.html:19
 msgid "Повторная отправка письма"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:21
+#: authentication/templates/auth/auth/email-verification-resend.html:20
 msgid "Введите ваш email для повторной отправки письма подтверждения"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:46
+#: authentication/templates/auth/auth/email-verification-resend.html:45
 #: authentication/templates/auth/auth/signin.html:53
 #: authentication/templates/auth/auth/signup.html:102
-#: authentication/templates/auth/password-reset/form.html:53 core/forms.py:67
-#: core/forms.py:69 core/templates/core/contacts.html:222
+#: authentication/templates/auth/password-reset/form.html:53 core/forms.py:69
+#: core/forms.py:71 core/templates/core/contacts.html:222
 #: core/templates/core/home.html:422
 #: core/templates/core/legal/privacy-policy.html:102
 #: core/templates/core/legal/privacy-policy.html:110
 msgid "Email адрес"
 msgstr "ელფოსტის მისამართი"
 
-#: authentication/templates/auth/auth/email-verification-resend.html:65
+#: authentication/templates/auth/auth/email-verification-resend.html:64
 msgid "Отправить письмо повторно"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:75
+#: authentication/templates/auth/auth/email-verification-resend.html:74
 msgid "Не получили письмо?"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:77
+#: authentication/templates/auth/auth/email-verification-resend.html:76
 msgid "Проверьте папку 'Спам' или попробуйте отправить письмо повторно"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:90
+#: authentication/templates/auth/auth/email-verification-resend.html:89
 msgid "Вернуться ко входу"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:109
+#: authentication/templates/auth/auth/email-verification-resend.html:108
 #, fuzzy
 #| msgid "Введите ваше имя"
 msgid "Подтвердите ваш email"
 msgstr "შეიყვანეთ თქვენი სახელი"
 
-#: authentication/templates/auth/auth/email-verification-resend.html:110
+#: authentication/templates/auth/auth/email-verification-resend.html:109
 msgid "Мы отправим вам письмо с инструкциями для активации вашего аккаунта"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:118
+#: authentication/templates/auth/auth/email-verification-resend.html:117
 msgid "Быстрая активация"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:125
+#: authentication/templates/auth/auth/email-verification-resend.html:124
 msgid "Безопасная верификация"
 msgstr ""
 
-#: authentication/templates/auth/auth/email-verification-resend.html:132
+#: authentication/templates/auth/auth/email-verification-resend.html:131
 msgid "Полный доступ"
 msgstr ""
 
 #: authentication/templates/auth/auth/signin.html:5
 msgid "Вход в систему"
-msgstr ""
+msgstr "Ṣისტემაში შესვლა"
 
 #: authentication/templates/auth/auth/signin.html:20
-#, fuzzy
-#| msgid "Добро пожаловать в"
 msgid "Добро пожаловать!"
-msgstr "მოგესალმებით"
+msgstr "გამარჯობა!"
 
 #: authentication/templates/auth/auth/signin.html:21
 msgid "Войдите в свой аккаунт, чтобы продолжить обучение"
-msgstr ""
+msgstr "სწავლის გასაგრძელებლად შეიყვანეთ თქვენს ანგარიშში"
 
-#: authentication/templates/auth/auth/signin.html:101
-msgid "Забыли пароль?"
-msgstr ""
-
-#: authentication/templates/auth/auth/signin.html:107
-#: authentication/templates/auth/auth/signup.html:239
-#: authentication/templates/auth/password-reset/confirm.html:148
+#: authentication/templates/auth/auth/signin.html:104
+#: authentication/templates/auth/auth/signup.html:265
+#: authentication/templates/auth/password-reset/confirm.html:147
 #: blog/templates/blog/article_detail.html:506
-#: core/templates/shared/_footer.html:78 core/templates/shared/_header.html:265
-#: core/templates/shared/_header.html:462
+#: core/templates/shared/_footer.html:78 core/templates/shared/_header.html:274
+#: core/templates/shared/_header.html:471
 msgid "Войти"
 msgstr "შესვლა"
 
-#: authentication/templates/auth/auth/signin.html:115
+#: authentication/templates/auth/auth/signin.html:112
 msgid "или войдите через"
-msgstr ""
+msgstr "ან შეიყვანეთ"
 
-#: authentication/templates/auth/auth/signin.html:139
+#: authentication/templates/auth/auth/signin.html:136
 msgid "Нет аккаунта?"
-msgstr ""
+msgstr "არ გაქვთ ანგარიში?"
 
-#: authentication/templates/auth/auth/signin.html:141
+#: authentication/templates/auth/auth/signin.html:138
 msgid "Зарегистрироваться"
-msgstr ""
+msgstr "რეგისტრაცია"
 
-#: authentication/templates/auth/auth/signin.html:174
-#, fuzzy
-#| msgid "Школа программирования"
+#: authentication/templates/auth/auth/signin.html:142
+msgid "Забыли пароль?"
+msgstr "დაივიწყეთ პაროლი?"
+
+#: authentication/templates/auth/auth/signin.html:144
+#: authentication/templates/auth/email/password-reset.html:34
+msgid "Восстановить пароль"
+msgstr "პაროლის აღდგენა"
+
+#: authentication/templates/auth/auth/signin.html:177
 msgid "Изучайте программирование с PyLand"
-msgstr "პროგრამირების სკოლა"
+msgstr "ისწავლეთ პროგრამირება PyLand-თან ერთად"
 
-#: authentication/templates/auth/auth/signin.html:175
+#: authentication/templates/auth/auth/signin.html:178
 msgid ""
-"Присоединяйтесь к тысячам студентов, которые уже изучают Python, веб-"
-"разработку и Data Science с нашими интерактивными курсами."
-msgstr ""
+"Присоединяйтесь к нашей новой платформе и начните изучать Python, веб-"
+"разработку и Data Science с интерактивными курсами."
+msgstr "შემოგვიერთდით ჩვენს ახალ პლატფორმას და დაიწყეთ Python-ის, ვებ-დეველოპმენტისა და Data Science-ის სწავლა ინტერაქტიული კურსებით."
 
-#: authentication/templates/auth/auth/signin.html:180
-#: core/templates/core/home.html:247 courses/templates/courses/courses.html:67
-msgid "Студентов"
-msgstr ""
+#: authentication/templates/auth/auth/signin.html:183
+msgid "Cтудентов"
+msgstr "სტუდენტი"
 
-#: authentication/templates/auth/auth/signin.html:184
+#: authentication/templates/auth/auth/signin.html:187
 #: core/templates/core/home.html:276 courses/templates/courses/courses.html:63
 msgid "Курсов"
 msgstr "კურსები"
 
-#: authentication/templates/auth/auth/signin.html:188
-#: core/templates/core/home.html:251
-msgid "Успешность"
-msgstr ""
+#: authentication/templates/auth/auth/signin.html:191
+msgid "Год основания"
+msgstr "დაარსების წელი"
 
 #: authentication/templates/auth/auth/signup.html:5
-#: core/templates/shared/_footer.html:79 core/templates/shared/_header.html:268
-#: core/templates/shared/_header.html:455
+#: core/templates/shared/_footer.html:79 core/templates/shared/_header.html:277
+#: core/templates/shared/_header.html:464
 msgid "Регистрация"
 msgstr "რეგისტრაცია"
 
 #: authentication/templates/auth/auth/signup.html:26
 msgid "Создайте аккаунт"
-msgstr ""
+msgstr "შექმენით ანგარიში"
 
 #: authentication/templates/auth/auth/signup.html:27
 msgid "Начните своё путешествие в мир программирования уже сегодня"
-msgstr ""
+msgstr "დააწყეთ თქვენი მოგზაურობა პროგრამირების სამყაროში დღეს"
 
 #: authentication/templates/auth/auth/signup.html:79
 #: core/templates/core/contacts.html:203 core/templates/core/home.html:403
 #: students/templates/students/dashboard/settings.html:222
 #: students/templates/students/dashboard/settings.html:242
-#, fuzzy
-#| msgid "Введите ваше имя"
 msgid "Выберите страну"
-msgstr "შეიყვანეთ თქვენი სახელი"
+msgstr "აირჩიეთ ქვეყანა"
 
-#: authentication/templates/auth/auth/signup.html:143
+#: authentication/templates/auth/auth/signup.html:147
 msgid "Сила пароля"
-msgstr ""
+msgstr "პაროლის სიძლიერე"
 
-#: authentication/templates/auth/auth/signup.html:180
+#: authentication/templates/auth/auth/signup.html:188
 msgid "Я согласен с"
-msgstr ""
+msgstr "ვთანხმდები ვარ"
 
-#: authentication/templates/auth/auth/signup.html:181
+#: authentication/templates/auth/auth/signup.html:189
 msgid "условиями использования"
-msgstr ""
+msgstr "გამოყენების პირობებით"
 
-#: authentication/templates/auth/auth/signup.html:182
+#: authentication/templates/auth/auth/signup.html:190
 #: core/templates/core/contacts.html:266 core/templates/core/home.html:452
 #: core/templates/core/legal/data-processing.html:207
 msgid "и"
 msgstr "და"
 
-#: authentication/templates/auth/auth/signup.html:183
+#: authentication/templates/auth/auth/signup.html:191
 #: core/templates/core/contacts.html:265 core/templates/core/home.html:451
 msgid "политикой конфиденциальности"
-msgstr ""
+msgstr "კონფიდენციალურობის პოლიტიკით"
 
-#: authentication/templates/auth/auth/signup.html:199
+#: authentication/templates/auth/auth/signup.html:225
 msgid "Получать новости о новых курсах и акциях"
-msgstr ""
+msgstr "მივიღოთ სიახლეები ახალი კურსებისა და აქციების შესახებ"
 
-#: authentication/templates/auth/auth/signup.html:205
+#: authentication/templates/auth/auth/signup.html:231
 msgid "Создать аккаунт"
-msgstr ""
+msgstr "ანგარიშის შექმნა"
 
-#: authentication/templates/auth/auth/signup.html:213
+#: authentication/templates/auth/auth/signup.html:239
 msgid "или зарегистрируйтесь через"
-msgstr ""
+msgstr "ან დარეგისტრირდით"
 
-#: authentication/templates/auth/auth/signup.html:237
+#: authentication/templates/auth/auth/signup.html:263
 msgid "Уже есть аккаунт?"
-msgstr ""
+msgstr "უკვე გაქვთ ანგარიში?"
 
-#: authentication/templates/auth/auth/signup.html:269
-#, fuzzy
-#| msgid "Начать обучение"
+#: authentication/templates/auth/auth/signup.html:295
 msgid "Начните своё IT-путешествие"
-msgstr "სურვისის დაწყება"
+msgstr "დაიწყეთ თქვენი IT მოგზაურობა"
 
-#: authentication/templates/auth/auth/signup.html:270
+#: authentication/templates/auth/auth/signup.html:296
 msgid ""
 "Получите доступ к премиальным курсам, интерактивным заданиям и персональной "
 "поддержке от экспертов индустрии."
-msgstr ""
+msgstr "მიიღეთ წვდომა პრემიუმ კურსებზე, ინტერაქტიულ დავალებებსა და ინდუსტრიის ექსპერტების პერსონალურ მხარდაჭერაზე."
 
-#: authentication/templates/auth/auth/signup.html:277
+#: authentication/templates/auth/auth/signup.html:303
 msgid "Сертификаты о прохождении"
-msgstr ""
+msgstr "დამთავრების სერტიფიკატები"
 
-#: authentication/templates/auth/auth/signup.html:283
+#: authentication/templates/auth/auth/signup.html:309
 msgid "Поддержка менторов 24/7"
-msgstr ""
+msgstr "მენტორთა მხარდაჭერა 24/7"
 
-#: authentication/templates/auth/auth/signup.html:289
+#: authentication/templates/auth/auth/signup.html:315
 msgid "Практические проекты"
-msgstr ""
+msgstr "პრაქტიკული პროექტები"
 
-#: authentication/templates/auth/auth/signup.html:295
+#: authentication/templates/auth/auth/signup.html:321
 #: core/templates/core/home.html:142 courses/templates/courses/courses.html:232
 msgid "Помощь в трудоустройстве"
-msgstr ""
+msgstr "დასაქმების დახმარება"
 
-#: authentication/templates/auth/auth/signup.html:332
-#: authentication/templates/auth/auth/signup.html:345
-#: authentication/templates/auth/auth/signup.html:349
-#: authentication/templates/auth/auth/signup.html:379
+#: authentication/templates/auth/auth/signup.html:358
+#: authentication/templates/auth/auth/signup.html:371
+#: authentication/templates/auth/auth/signup.html:375
+#: authentication/templates/auth/auth/signup.html:405
 msgid "Слабый"
-msgstr ""
+msgstr "სუსტი"
 
-#: authentication/templates/auth/auth/signup.html:353
-#: authentication/templates/auth/auth/signup.html:380
+#: authentication/templates/auth/auth/signup.html:379
+#: authentication/templates/auth/auth/signup.html:406
 #: blog/templates/blog/article_detail.html:141
 #: blog/templates/blog/author_detail.html:177
 #: blog/templates/blog/difficulty_list.html:139
-#: core/templates/shared/_header.html:188
+#: core/templates/shared/_header.html:197
 msgid "Средний"
-msgstr ""
+msgstr "საშუალო"
 
-#: authentication/templates/auth/auth/signup.html:357
-#: authentication/templates/auth/auth/signup.html:381
+#: authentication/templates/auth/auth/signup.html:383
+#: authentication/templates/auth/auth/signup.html:407
 msgid "Хороший"
-msgstr ""
+msgstr "კარგი"
 
-#: authentication/templates/auth/auth/signup.html:361
-#: authentication/templates/auth/auth/signup.html:382
+#: authentication/templates/auth/auth/signup.html:387
+#: authentication/templates/auth/auth/signup.html:408
 msgid "Отличный"
-msgstr ""
+msgstr "შესანიშნავი"
 
 #: authentication/templates/auth/email/email-verification.html:10
 msgid "Подтверждение регистрации"
@@ -600,10 +604,6 @@ msgid ""
 "Если это были вы, нажмите на кнопку ниже, чтобы создать новый пароль."
 msgstr ""
 
-#: authentication/templates/auth/email/password-reset.html:34
-msgid "Восстановить пароль"
-msgstr ""
-
 #: authentication/templates/auth/email/password-reset.html:40
 #: core/templates/core/legal/data-processing.html:64
 #: core/templates/core/legal/payment-policy.html:47
@@ -638,80 +638,80 @@ msgstr ""
 msgid "Установить новый пароль"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:21
+#: authentication/templates/auth/password-reset/confirm.html:20
 msgid "Создать новый пароль"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:22
+#: authentication/templates/auth/password-reset/confirm.html:21
 msgid "Введите новый надежный пароль для вашего аккаунта"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:24
+#: authentication/templates/auth/password-reset/confirm.html:23
 msgid "Ссылка недействительна"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:25
+#: authentication/templates/auth/password-reset/confirm.html:24
 msgid "Возможно, вы уже использовали эту ссылку или срок её действия истёк"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:112
+#: authentication/templates/auth/password-reset/confirm.html:111
 msgid "Сохранить пароль"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:121
+#: authentication/templates/auth/password-reset/confirm.html:120
 msgid "Ссылка для сброса пароля недействительна"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:122
+#: authentication/templates/auth/password-reset/confirm.html:121
 #, fuzzy
 #| msgid "Современные инструменты"
 msgid "Возможные причины:"
 msgstr "თანამედროვე ხელსაწყოები"
 
-#: authentication/templates/auth/password-reset/confirm.html:124
+#: authentication/templates/auth/password-reset/confirm.html:123
 msgid "Вы уже использовали эту ссылку"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:125
+#: authentication/templates/auth/password-reset/confirm.html:124
 msgid "Срок действия ссылки истёк"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:126
+#: authentication/templates/auth/password-reset/confirm.html:125
 msgid "Ссылка была введена неправильно"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:133
+#: authentication/templates/auth/password-reset/confirm.html:132
 msgid "Запросить новую ссылку"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:139
+#: authentication/templates/auth/password-reset/confirm.html:138
 msgid "Вернуться на страницу входа"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:146
+#: authentication/templates/auth/password-reset/confirm.html:145
 #: authentication/templates/auth/password-reset/form.html:74
 msgid "Вспомнили пароль?"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:181
+#: authentication/templates/auth/password-reset/confirm.html:180
 msgid "Безопасность вашего аккаунта"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:182
+#: authentication/templates/auth/password-reset/confirm.html:181
 msgid ""
 "Мы используем современные технологии шифрования для защиты ваших данных. "
 "Создайте надежный пароль для максимальной безопасности вашего аккаунта."
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:187
+#: authentication/templates/auth/password-reset/confirm.html:186
 msgid "Шифрование"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:191
+#: authentication/templates/auth/password-reset/confirm.html:190
 msgid "Надежность"
 msgstr ""
 
-#: authentication/templates/auth/password-reset/confirm.html:195
+#: authentication/templates/auth/password-reset/confirm.html:194
 msgid "Защита"
 msgstr ""
 
@@ -750,62 +750,68 @@ msgstr ""
 msgid "Поддержка"
 msgstr "მხარდაჭერა"
 
-#: authentication/views.py:113
+#: authentication/views.py:114
 #, python-brace-format
 msgid ""
 "Ваш email не подтвержден. <a href=\"{url}\">Отправить письмо повторно</a>"
 msgstr ""
 
-#: authentication/views.py:118
+#: authentication/views.py:119
 msgid "Email или пароль введен неверно."
 msgstr ""
 
-#: authentication/views.py:196 authentication/views.py:207
-#: authentication/views.py:459 authentication/views.py:467
+#: authentication/views.py:205 authentication/views.py:219
+#: authentication/views.py:490 authentication/views.py:500
 msgid "Активируйте ваш аккаунт."
 msgstr ""
 
-#: authentication/views.py:215
+#: authentication/views.py:230
 msgid "Ошибка отправки письма подтверждения. Попробуйте позже."
 msgstr ""
 
-#: authentication/views.py:223
+#: authentication/views.py:238
+#, fuzzy
+#| msgid "Регистрация и идентификация Пользователя на платформе"
+msgid "Регистрация завершена. Вы можете войти в систему."
+msgstr "მომხმარებლის რეგისტრაცია და იდენტიფიკაცია პლატფორმაზე"
+
+#: authentication/views.py:246
 msgid "Пожалуйста, подтвердите ваш email для завершения регистрации."
 msgstr ""
 
-#: authentication/views.py:231
+#: authentication/views.py:252
 msgid "Произошла ошибка при регистрации. Попробуйте еще раз."
 msgstr ""
 
-#: authentication/views.py:283
+#: authentication/views.py:303
 msgid "Ваш email успешно подтвержден. Вы можете войти в систему."
 msgstr ""
 
-#: authentication/views.py:288
+#: authentication/views.py:307
 msgid "Ссылка недействительна."
 msgstr ""
 
-#: authentication/views.py:323 authentication/views.py:334
+#: authentication/views.py:346 authentication/views.py:359
 msgid "Инструкция по сбросу пароля"
 msgstr ""
 
-#: authentication/views.py:342 authentication/views.py:349
+#: authentication/views.py:369 authentication/views.py:375
 msgid "Произошла ошибка при отправке письма. Попробуйте позже."
 msgstr ""
 
-#: authentication/views.py:354
+#: authentication/views.py:379
 msgid "Инструкции по сбросу пароля отправлены на ваш email."
 msgstr ""
 
-#: authentication/views.py:390
+#: authentication/views.py:416
 msgid "Пароль успешно изменен. Теперь вы можете войти с новым паролем."
 msgstr ""
 
-#: authentication/views.py:473
+#: authentication/views.py:506
 msgid "Мы отправили повторное письмо для подтверждения вашего email."
 msgstr ""
 
-#: authentication/views.py:477
+#: authentication/views.py:510
 msgid "Ваш email уже подтвержден."
 msgstr ""
 
@@ -868,9 +874,9 @@ msgstr "სურვისის დაწყება"
 
 #: blog/templates/blog/article_detail.html:143
 #: blog/templates/blog/difficulty_list.html:142
-#: core/templates/shared/_header.html:192
+#: core/templates/shared/_header.html:201
 msgid "Продвинутый"
-msgstr ""
+msgstr "განვითარებული"
 
 #: blog/templates/blog/article_detail.html:145
 #: blog/templates/blog/author_detail.html:181
@@ -1047,7 +1053,7 @@ msgstr ""
 msgid "Следующая статья"
 msgstr ""
 
-#: blog/templates/blog/article_detail.html:476 reviewers/forms.py:64
+#: blog/templates/blog/article_detail.html:476 reviewers/forms.py:71
 #: reviewers/templates/reviewers/submission_review.html:206
 msgid "Комментарии"
 msgstr ""
@@ -1243,9 +1249,9 @@ msgstr ""
 #: blog/templates/blog/search_results.html:71
 #: blog/templates/blog/search_results.html:213
 #: blog/templates/blog/tag_detail.html:138 blog/templates/blog/tag_list.html:49
-#: core/templates/shared/_header.html:154
+#: core/templates/shared/_header.html:163
 msgid "Все статьи"
-msgstr ""
+msgstr "ყველა სტატია"
 
 #: blog/templates/blog/article_detail.html:826
 #: blog/templates/blog/category_detail.html:235
@@ -1255,8 +1261,8 @@ msgid "Подписаться"
 msgstr "გამოწერა"
 
 #: blog/templates/blog/article_list.html:6
-#: core/templates/shared/_header.html:144
-#: core/templates/shared/_header.html:371
+#: core/templates/shared/_header.html:153
+#: core/templates/shared/_header.html:380
 msgid "Блог"
 msgstr "ბლოგი"
 
@@ -1289,9 +1295,9 @@ msgstr "სურვისის დაწყება"
 
 #: blog/templates/blog/article_list.html:50
 #: blog/templates/blog/category_list.html:34 blog/templates/blog/home.html:197
-#: core/templates/shared/_header.html:173
+#: core/templates/shared/_header.html:182
 msgid "Категории"
-msgstr ""
+msgstr "კატეგორიები"
 
 #: blog/templates/blog/article_list.html:63
 #: blog/templates/blog/category_detail.html:48
@@ -1474,9 +1480,9 @@ msgid "Все публикации"
 msgstr ""
 
 #: blog/templates/blog/author_detail.html:175
-#: core/templates/shared/_header.html:184
+#: core/templates/shared/_header.html:193
 msgid "Новичок"
-msgstr ""
+msgstr "დამწყები"
 
 #: blog/templates/blog/author_detail.html:179
 #: blog/templates/blog/difficulty_list.html:145
@@ -1514,9 +1520,9 @@ msgid "Распределение статей автора по темам"
 msgstr ""
 
 #: blog/templates/blog/author_list.html:5
-#: core/templates/shared/_header.html:166
+#: core/templates/shared/_header.html:175
 msgid "Авторы"
-msgstr ""
+msgstr "ავტორები"
 
 #: blog/templates/blog/author_list.html:6
 msgid ""
@@ -1543,9 +1549,9 @@ msgid "Авторов"
 msgstr ""
 
 #: blog/templates/blog/author_list.html:69
-#: core/templates/shared/_header.html:158
+#: core/templates/shared/_header.html:167
 msgid "Рекомендуемые"
-msgstr ""
+msgstr "რეკომენდებული"
 
 #: blog/templates/blog/author_list.html:72
 msgid "Рекомендуемые авторы"
@@ -2319,7 +2325,7 @@ msgid "Смотреть результаты"
 msgstr ""
 
 #: blog/templates/blog/search_results.html:84
-#: blog/templates/blog/tag_list.html:77 reviewers/forms.py:255
+#: blog/templates/blog/tag_list.html:77 reviewers/forms.py:272
 msgid "Поиск"
 msgstr ""
 
@@ -2484,9 +2490,9 @@ msgstr ""
 
 #: blog/templates/blog/series_list.html:5
 #: blog/templates/blog/series_list.html:29
-#: core/templates/shared/_header.html:162
+#: core/templates/shared/_header.html:171
 msgid "Серии статей"
-msgstr ""
+msgstr "სტატიების სერიები"
 
 #: blog/templates/blog/series_list.html:6
 msgid ""
@@ -2675,69 +2681,69 @@ msgstr ""
 msgid "Найти статьи"
 msgstr ""
 
-#: core/forms.py:52
+#: core/forms.py:54
 msgid "Имя не может превышать 100 символов."
 msgstr ""
 
-#: core/forms.py:57 core/forms.py:59 core/templates/core/contacts.html:199
+#: core/forms.py:59 core/forms.py:61 core/templates/core/contacts.html:199
 #: core/templates/core/home.html:399
 #: core/templates/core/legal/data-processing.html:80
 msgid "Номер телефона"
 msgstr "ტელეფონის ნომერი"
 
-#: core/forms.py:61
+#: core/forms.py:63
 msgid "Номер телефона обязателен для заполнения."
 msgstr ""
 
-#: core/forms.py:62
+#: core/forms.py:64
 msgid "Номер телефона не может превышать 20 символов."
 msgstr ""
 
-#: core/forms.py:77 core/templates/core/contacts.html:234
+#: core/forms.py:79 core/templates/core/contacts.html:234
 msgid "Тема обращения"
 msgstr ""
 
-#: core/forms.py:79 core/templates/core/contacts.html:237
+#: core/forms.py:81 core/templates/core/contacts.html:237
 #, fuzzy
 #| msgid "Введите ваше имя"
 msgid "Выберите тему"
 msgstr "შეიყვანეთ თქვენი სახელი"
 
-#: core/forms.py:80 core/templates/core/contacts.html:238
+#: core/forms.py:82 core/templates/core/contacts.html:238
 msgid "Вопросы о курсах"
 msgstr ""
 
-#: core/forms.py:81 core/templates/core/contacts.html:136
+#: core/forms.py:83 core/templates/core/contacts.html:136
 #: core/templates/core/contacts.html:239
 msgid "Карьерная консультация"
 msgstr ""
 
-#: core/forms.py:82 core/templates/core/contacts.html:240
+#: core/forms.py:84 core/templates/core/contacts.html:240
 msgid "Техническая поддержка"
 msgstr ""
 
-#: core/forms.py:83 core/templates/core/contacts.html:241
+#: core/forms.py:85 core/templates/core/contacts.html:241
 msgid "Сотрудничество"
 msgstr ""
 
-#: core/forms.py:84 core/templates/core/contacts.html:242
-#: core/templates/shared/_header.html:124
+#: core/forms.py:86 core/templates/core/contacts.html:242
+#: core/templates/shared/_header.html:133
 msgid "Другое"
 msgstr ""
 
-#: core/forms.py:91 core/forms.py:94
+#: core/forms.py:93 core/forms.py:95
 msgid "Напишите свое сообщение"
 msgstr ""
 
-#: core/forms.py:98
+#: core/forms.py:97
 msgid "Сообщение обязательно для заполнения."
 msgstr ""
 
-#: core/forms.py:103
+#: core/forms.py:101
 msgid "Я согласен с Условиями обслуживания и Политикой конфиденциальности"
 msgstr "ვეთანხმები სერვისის პირობებსა და კონფიდენციალურობის პოლიტიკას"
 
-#: core/forms.py:106
+#: core/forms.py:105
 msgid ""
 "Вы должны согласиться с Условиями обслуживания и Политикой "
 "конфиденциальности."
@@ -2747,17 +2753,17 @@ msgstr ""
 msgid "Введите корректный номер телефона."
 msgstr ""
 
-#: core/forms.py:140
+#: core/forms.py:141
 msgid "Номер телефона не соответствует формату выбранной страны."
 msgstr ""
 
-#: core/forms.py:146
+#: core/forms.py:150
 msgid ""
 "Неверный формат номера телефона. Используйте международный формат, например: "
 "+7 999 123 45 67"
 msgstr ""
 
-#: core/forms.py:181
+#: core/forms.py:187
 msgid "Имя не должно содержать цифры."
 msgstr ""
 
@@ -2780,13 +2786,13 @@ msgstr ""
 msgid "Загрузка..."
 msgstr ""
 
-#: core/templates/base.html:82
+#: core/templates/base.html:83
 msgid "Вернуться наверх"
 msgstr ""
 
 #: core/templates/core/about.html:5 core/templates/core/about.html:225
-#: core/templates/shared/_footer.html:75 core/templates/shared/_header.html:204
-#: core/templates/shared/_header.html:379
+#: core/templates/shared/_footer.html:75 core/templates/shared/_header.html:213
+#: core/templates/shared/_header.html:388
 msgid "О нас"
 msgstr "ჩვენ შესახებ"
 
@@ -2825,15 +2831,15 @@ msgstr ""
 msgid "Мой дашборд"
 msgstr ""
 
-#: core/templates/core/about.html:60 core/templates/shared/_header.html:110
-#: core/templates/shared/_header.html:113
-#: core/templates/shared/_header.html:349
+#: core/templates/core/about.html:60 core/templates/shared/_header.html:119
+#: core/templates/shared/_header.html:122
+#: core/templates/shared/_header.html:358
 #: courses/templates/courses/courses.html:100
 #: reviewers/templates/reviewers/submissions_list.html:149
 #: students/templates/students/dashboard/course-list.html:98
 #: students/templates/students/dashboard/lesson-detail.html:78
 msgid "Все курсы"
-msgstr ""
+msgstr "ყველა კურსი"
 
 #: core/templates/core/about.html:68
 msgid "Выпускников"
@@ -2987,8 +2993,8 @@ msgid "Посмотреть все курсы"
 msgstr ""
 
 #: core/templates/core/contacts.html:5 core/templates/shared/_footer.html:76
-#: core/templates/shared/_header.html:209
-#: core/templates/shared/_header.html:386
+#: core/templates/shared/_header.html:218
+#: core/templates/shared/_header.html:395
 msgid "Контакты"
 msgstr "კონტაქტები"
 
@@ -3218,7 +3224,7 @@ msgstr "სურვისის დაწყება"
 #: students/templates/students/dashboard/course-list.html:7
 #: students/templates/students/dashboard/course-list.html:60
 #: students/templates/students/dashboard/course-list.html:81
-#: students/templates/students/dashboard/dashboard.html:69
+#: students/templates/students/dashboard/dashboard.html:64
 #: students/templates/students/dashboard/settings.html:57
 msgid "Мои курсы"
 msgstr ""
@@ -3243,7 +3249,7 @@ msgstr ""
 #: courses/templates/courses/courses.html:56
 #: courses/templates/courses/courses.html:179
 msgid "Возможности"
-msgstr ""
+msgstr "შესაძლებლობები"
 
 #: core/templates/core/home.html:92
 msgid "Почему PyLand — это будущее IT образования?"
@@ -3254,71 +3260,89 @@ msgid ""
 "Мы используем передовые технологии и инновационные методики обучения для "
 "максимально эффективного усвоения материала"
 msgstr ""
+"ჩვენ ვიყენებთ მოწინავე ტექნოლოგიებს და ინოვაციურ სასწავლო მეთოდებს "
+"მაქსიმალურად ეფექტური ათვისებისთვის"
 
 #: core/templates/core/home.html:102 courses/templates/courses/courses.html:192
-#, fuzzy
-#| msgid "Индивидуальный подход"
 msgid "Практический подход"
-msgstr "ინდივიდუალური მიდგომა"
+msgstr "პრაქტიკული მიდგომა"
 
 #: core/templates/core/home.html:104 courses/templates/courses/courses.html:194
 msgid ""
 "Вы учитесь на реальных примерах и задачах. Каждый урок включает практические "
 "упражнения для закрепления материала"
 msgstr ""
+"თქვენ სწავლობთ რეალურ მაგალითებზე და ამოცანებზე. თითოეული გაკვეთილი მოიცავს "
+"პრაქტიკულ სავარჯიშოებს მასალის განმტკიცებისთვის"
+"თქვენ სწავლობთ რეალურ მაგალითებზე და ამოცანებზე. თითოეული გაკვეთილი მოიცავს "
+"პრაქტიკულ სავარჯიშოებს მასალის განმტკიცებისთვის"
 
 #: core/templates/core/home.html:110 courses/templates/courses/courses.html:200
 msgid "Живая поддержка менторов"
-msgstr ""
+msgstr "მენტორების ცოცხალი მხარდაჭერა"
 
 #: core/templates/core/home.html:112 courses/templates/courses/courses.html:202
 msgid ""
 "Опытные разработчики помогут разобраться с любыми вопросами и дадут обратную "
 "связь по вашим проектам"
 msgstr ""
+"გამოცდილი დეველოპერები დაგეხმარებიან ნებისმიერ კითხვაში და მოგაწვდიან უკუკავშირს "
+"თქვენს პროექტებზე"
 
 #: core/templates/core/home.html:118 courses/templates/courses/courses.html:208
-#, fuzzy
-#| msgid "Современные инструменты"
 msgid "Реальные проекты"
-msgstr "თანამედროვე ხელსაწყოები"
+msgstr "რეალური პროექტები"
 
 #: core/templates/core/home.html:120 courses/templates/courses/courses.html:210
 msgid ""
 "Создавайте настоящие приложения и веб-сайты в процессе обучения. Пополняйте "
 "портфолио работами для будущего трудоустройства"
 msgstr ""
+"შექმენით ნამდვილი აპლიკაციები და ვებსაიტები სწავლის პროცესში. შეავსეთ "
+"პორტფოლიო სამუშაოებით მომავალი დასაქმებისთვის"
+"შექმენით ნამდვილი აპლიკაციები და ვებსაიტები სწავლის პროცესში. შეავსეთ "
+"პორტფოლიო სამუშაოებით მომავალი დასაქმებისთვის"
 
 #: core/templates/core/home.html:126 courses/templates/courses/courses.html:216
-#, fuzzy
-#| msgid "Начать обучение"
 msgid "Активное сообщество"
-msgstr "სურვისის დაწყება"
+msgstr "აქტიური საზოგადოება"
 
 #: core/templates/core/home.html:128 courses/templates/courses/courses.html:218
 msgid ""
 "Общайтесь с единомышленниками, обменивайтесь опытом и находите напарников "
 "для совместных проектов"
 msgstr ""
+"ურთიერთობა თანამოაზრეებთან, გაუზიარეთ გამოცდილება და იპოვეთ პარტნიორები "
+"ერთობლივი პროექტებისთვის"
+"ურთიერთობა თანამოაზრეებთან, გაუზიარეთ გამოცდილება და იპოვეთ პარტნიორები "
+"ერთობლივი პროექტებისთვის"
 
 #: core/templates/core/home.html:134 courses/templates/courses/courses.html:224
 msgid "Официальные сертификаты"
-msgstr ""
+msgstr "ოფიციალური სერტიფიკატები"
 
 #: core/templates/core/home.html:136 courses/templates/courses/courses.html:226
 msgid ""
 "Получайте сертификаты о прохождении курсов, которые подтверждают ваши знания "
 "и навыки перед работодателями"
 msgstr ""
+"მიიღეთ კურსების გავლის სერტიფიკატები, რომლებიც ადასტურებენ თქვენს ცოდნას და "
+"უნარებს დამსაქმებლების წინაშე"
+"მიიღეთ კურსების გავლის სერტიფიკატები, რომლებიც ადასტურებენ თქვენს ცოდნას და "
+"უნარებს დამსაქმებლების წინაშე"
 
 #: core/templates/core/home.html:144 courses/templates/courses/courses.html:234
 msgid ""
 "Консультации по составлению резюме, подготовка к собеседованиям и "
 "рекомендации лучшим студентам"
 msgstr ""
+"კონსულტაციები რეზიუმეს შედგენაში, მოსამზადებელი გასაუბრებებისთვის და "
+"რეკომენდაციები საუკეთესო სტუდენტებისთვის"
+"კონსულტაციები რეზიუმეს შედგენაში, მოსამზადებელი გასაუბრებებისთვის და "
+"რეკომენდაციები საუკეთესო სტუდენტებისთვის"
 
-#: core/templates/core/home.html:157 core/templates/shared/_header.html:103
-#: core/templates/shared/_header.html:340
+#: core/templates/core/home.html:157 core/templates/shared/_header.html:112
+#: core/templates/shared/_header.html:349
 #: courses/templates/courses/courses.html:5
 #: courses/templates/courses/courses.html:88
 #: students/templates/students/dashboard/course-detail.html:84
@@ -3336,7 +3360,7 @@ msgid ""
 "Практические курсы от ведущих экспертов индустрии для достижения ваших целей"
 msgstr ""
 
-#: core/templates/core/home.html:183 reviewers/forms.py:227
+#: core/templates/core/home.html:183 reviewers/forms.py:238
 #: reviewers/templates/reviewers/email/new_submission.html:46
 #: reviewers/templates/reviewers/email/review_completed.html:46
 #: reviewers/templates/reviewers/submission_detail.html:115
@@ -3346,20 +3370,18 @@ msgstr ""
 
 #: core/templates/core/home.html:192
 #: students/templates/students/dashboard/course-list.html:180
-#: students/templates/students/dashboard/dashboard.html:194
-#: students/templates/students/dashboard/dashboard.html:237
+#: students/templates/students/dashboard/dashboard.html:189
+#: students/templates/students/dashboard/dashboard.html:232
 msgid "уроков"
 msgstr ""
 
 #: core/templates/core/home.html:196 courses/templates/courses/courses.html:153
 msgid "Бесплатно"
-msgstr ""
+msgstr "უფასო"
 
 #: core/templates/core/home.html:203 courses/templates/courses/courses.html:163
-#, fuzzy
-#| msgid "Начать обучение"
 msgid "Начать изучение"
-msgstr "სურვისის დაწყება"
+msgstr "დაწყების სწავლა"
 
 #: core/templates/core/home.html:215
 msgid "Курсы скоро появятся"
@@ -3375,6 +3397,14 @@ msgstr ""
 
 #: core/templates/core/home.html:238
 msgid "Наши достижения говорят сами за себя"
+msgstr ""
+
+#: core/templates/core/home.html:247 courses/templates/courses/courses.html:67
+msgid "Студентов"
+msgstr "სტუდენტი"
+
+#: core/templates/core/home.html:251
+msgid "Успешность"
 msgstr ""
 
 #: core/templates/core/home.html:255
@@ -3608,25 +3638,24 @@ msgid ""
 "Вы можете отключить cookie в настройках браузера. Это может повлиять на "
 "работу сайта."
 msgstr ""
-"თქვენ შეგიძლიათ გამორთოთ ქუქიები თქვენი ბრაუზერის პარამეტრებში. ეს "
-"შეიძლება იმოქმედოს ვებსაიტის ფუნქციონირებაზე."
+"თქვენ შეგიძლიათ გამორთოთ ქუქიები თქვენი ბრაუზერის პარამეტრებში. ეს შეიძლება "
+"იმოქმედოს ვებსაიტის ფუნქციონირებაზე."
 
 #: core/templates/core/legal/cookies-policy.html:68
 msgid ""
 "В настоящее время платформа не использует сторонние аналитические сервисы "
 "(Google Analytics, Яндекс.Метрика). Вся аналитика ведется внутри платформы."
 msgstr ""
-"ამჟამად პლატფორმა არ იყენებს მესამე მხარის ანალიტიკურ სერვისებს "
-"(Google Analytics, Yandex.Metrica). ყველა ანალიტიკა ტარდება პლატფორმის "
-"შიგნით."
+"ამჟამად პლატფორმა არ იყენებს მესამე მხარის ანალიტიკურ სერვისებს (Google "
+"Analytics, Yandex.Metrica). ყველა ანალიტიკა ტარდება პლატფორმის შიგნით."
 
 #: core/templates/core/legal/cookies-policy.html:69
 msgid ""
 "При интеграции сторонних сервисов в будущем вы будете уведомлены заранее, и "
 "данная политика будет обновлена."
 msgstr ""
-"მესამე მხარის სერვისების მომავალში ინტეგრაციის შემთხვევაში თქვენ "
-"წინასწარ იქნებით შეტყობინებული და ეს პოლიტიკა განახლდება."
+"მესამე მხარის სერვისების მომავალში ინტეგრაციის შემთხვევაში თქვენ წინასწარ "
+"იქნებით შეტყობინებული და ეს პოლიტიკა განახლდება."
 
 #: core/templates/core/legal/data-processing.html:5
 #: core/templates/core/legal/data-processing.html:46
@@ -3675,18 +3704,18 @@ msgid ""
 "(далее — Оператор) в соответствии с Законом Грузии 'О защите персональных "
 "данных'."
 msgstr ""
-"პერსონალურ მონაცემთა დამუშავების ეს თანხმობა (შემდგომში - თანხმობა) "
-"ეძლევა პერსონალურ მონაცემთა სუბიექტს (შემდგომში - მომხმარებელი) PyLand "
-"პლატფორმას (შემდგომში - ოპერატორი) საქართველოს კანონის 'პერსონალურ "
-"მონაცემთა დაცვის შესახებ' შესაბამისად."
+"პერსონალურ მონაცემთა დამუშავების ეს თანხმობა (შემდგომში - თანხმობა) ეძლევა "
+"პერსონალურ მონაცემთა სუბიექტს (შემდგომში - მომხმარებელი) PyLand პლატფორმას "
+"(შემდგომში - ოპერატორი) საქართველოს კანონის 'პერსონალურ მონაცემთა დაცვის "
+"შესახებ' შესაბამისად."
 
 #: core/templates/core/legal/data-processing.html:64
 msgid ""
 "Предоставляя свои персональные данные, вы подтверждаете, что ознакомились с "
 "настоящим Согласием и принимаете его условия."
 msgstr ""
-"თქვენი პერსონალური მონაცემების მიწოდებით თქვენ ადასტურებთ, რომ "
-"გაეცანით ამ თანხმობას და იღებთ მის პირობებს."
+"თქვენი პერსონალური მონაცემების მიწოდებით თქვენ ადასტურებთ, რომ გაეცანით ამ "
+"თანხმობას და იღებთ მის პირობებს."
 
 #: core/templates/core/legal/data-processing.html:67
 msgid "Оператор: PyLand"
@@ -3833,7 +3862,9 @@ msgstr "მომხმარებელს აქვს უფლება:"
 
 #: core/templates/core/legal/data-processing.html:122
 msgid "Получать информацию о наличии и содержании своих персональных данных"
-msgstr "მიიღოს ინფორმაცია თავისი პერსონალური მონაცემების არსებობისა და შინაარსის შესახებ"
+msgstr ""
+"მიიღოს ინფორმაცია თავისი პერსონალური მონაცემების არსებობისა და შინაარსის "
+"შესახებ"
 
 #: core/templates/core/legal/data-processing.html:123
 msgid "Требовать уточнения, блокирования или уничтожения своих данных"
@@ -3875,8 +3906,8 @@ msgstr "პერსონალური მონაცემები ინ�
 msgid ""
 "Данные активных пользователей — в течение всего срока использования платформы"
 msgstr ""
-"აქტიური მომხმარებლების მონაცემები - პლატფორმის გამოყენების მთელი "
-"პერიოდის განმავლობაში"
+"აქტიური მომხმარებლების მონაცემები - პლატფორმის გამოყენების მთელი პერიოდის "
+"განმავლობაში"
 
 #: core/templates/core/legal/data-processing.html:139
 msgid "Данные неактивных пользователей — 3 года с момента последней активности"
@@ -3947,8 +3978,8 @@ msgid ""
 "pyland-school@yandex.com"
 msgstr ""
 "მომხმარებელს აქვს უფლება ნებისმიერ დროს გააუქმოს თანხმობა პერსონალურ "
-"მონაცემთა დამუშავებაზე წერილობითი შეტყობინების გაგზავნით "
-"ოპერატორისთვის მისამართზე: pyland-school@yandex.com"
+"მონაცემთა დამუშავებაზე წერილობითი შეტყობინების გაგზავნით ოპერატორისთვის "
+"მისამართზე: pyland-school@yandex.com"
 
 #: core/templates/core/legal/data-processing.html:165
 #: core/templates/core/legal/refund-policy.html:81
@@ -3975,8 +4006,7 @@ msgid ""
 "Некоторые данные могут быть сохранены в течение срока, установленного "
 "законодательством"
 msgstr ""
-"ზოგიერთი მონაცემი შეიძლება შენახულ იქნეს კანონმდებლობით დადგენილი "
-"ვადით"
+"ზოგიერთი მონაცემი შეიძლება შენახულ იქნეს კანონმდებლობით დადგენილი ვადით"
 
 #: core/templates/core/legal/data-processing.html:175
 #: core/templates/core/legal/privacy-policy.html:217
@@ -4009,6 +4039,7 @@ msgid "Адрес:"
 msgstr "მისამართი:"
 
 #: core/templates/core/legal/data-processing.html:194
+#: core/templates/core/legal/privacy-policy.html:237
 #: core/templates/core/legal/public-offer.html:182
 #: core/templates/core/legal/refund-policy.html:105
 #: core/templates/shared/_footer.html:123
@@ -4073,17 +4104,17 @@ msgid ""
 "Настоящая политика определяет правила оплаты образовательных услуг на "
 "платформе PyLand в соответствии с законодательством Грузии."
 msgstr ""
-"ეს პოლიტიკა განსაზღვრავს საგანმანათლებლო სერვისების გადახდის წესებს "
-"PyLand პლატფორმაზე საქართველოს კანონმდებლობის შესაბამისად."
+"ეს პოლიტიკა განსაზღვრავს საგანმანათლებლო სერვისების გადახდის წესებს PyLand "
+"პლატფორმაზე საქართველოს კანონმდებლობის შესაბამისად."
 
 #: core/templates/core/legal/payment-policy.html:35
 msgid ""
 "Оплата возможна только после регистрации пользователя. Все цены указаны в "
 "лари (GEL), возможна оплата в другой валюте по курсу банка на момент платежа."
 msgstr ""
-"გადახდა შესაძლებელია მხოლოდ მომხმარებლის რეგისტრაციის შემდეგ. ყველა "
-"ფასი მითითებულია ლარში (GEL), გადახდა სხვა ვალუტაში შესაძლებელია "
-"ბანკის კურსით გადახდის მომენტში."
+"გადახდა შესაძლებელია მხოლოდ მომხმარებლის რეგისტრაციის შემდეგ. ყველა ფასი "
+"მითითებულია ლარში (GEL), გადახდა სხვა ვალუტაში შესაძლებელია ბანკის კურსით "
+"გადახდის მომენტში."
 
 #: core/templates/core/legal/payment-policy.html:39
 msgid "В настоящее время на платформе поддерживаются следующие методы оплаты:"
@@ -4094,8 +4125,8 @@ msgid ""
 "Банковские карты (Visa, MasterCard, American Express) - при подключении "
 "платежных шлюзов"
 msgstr ""
-"საბანკო ბარათები (Visa, MasterCard, American Express) - გადახდის "
-"გზების დაკავშირებისას"
+"საბანკო ბარათები (Visa, MasterCard, American Express) - გადახდის გზების "
+"დაკავშირებისას"
 
 #: core/templates/core/legal/payment-policy.html:42
 msgid "Stripe - интеграция планируется"
@@ -4116,8 +4147,7 @@ msgid ""
 "подключения."
 msgstr ""
 "პლატფორმა არ ინახავს საბანკო ბარათის მონაცემებს. ყველა გადახდა გაივლის "
-"სერტიფიცირებულ გადახდის გზებს (PCI DSS Level 1) მათი დაკავშირების "
-"შემდეგ."
+"სერტიფიცირებულ გადახდის გზებს (PCI DSS Level 1) მათი დაკავშირების შემდეგ."
 
 #: core/templates/core/legal/payment-policy.html:53
 msgid "Выберите нужный курс и нажмите 'Оплатить'."
@@ -4132,24 +4162,24 @@ msgid ""
 "После успешной оплаты вы получите электронное подтверждение и доступ к курсу "
 "будет открыт автоматически."
 msgstr ""
-"წარმატებული გადახდის შემდეგ თქვენ მიიღებთ ელექტრონულ დადასტურებას და "
-"კურსზე წვდომა ავტომატურად გაიხსნება."
+"წარმატებული გადახდის შემდეგ თქვენ მიიღებთ ელექტრონულ დადასტურებას და კურსზე "
+"წვდომა ავტომატურად გაიხსნება."
 
 #: core/templates/core/legal/payment-policy.html:57
 msgid ""
 "В случае ошибки оплаты обратитесь в службу поддержки: support@pyland.ge или "
 "по телефону +995 551 00 62 54."
 msgstr ""
-"გადახდის შეცდომის შემთხვევაში დაუკავშირდით მხარდაჭერას: "
-"support@pyland.ge ან ტელეფონით +995 551 00 62 54."
+"გადახდის შეცდომის შემთხვევაში დაუკავშირდით მხარდაჭერას: support@pyland.ge ან "
+"ტელეფონით +995 551 00 62 54."
 
 #: core/templates/core/legal/payment-policy.html:61
 msgid ""
 "Все платежи защищены по стандарту PCI DSS. PyLand не хранит и не "
 "обрабатывает данные банковских карт пользователей."
 msgstr ""
-"ყველა გადახდა დაცულია PCI DSS სტანდარტით. PyLand არ ინახავს და არ "
-"ამუშავებს მომხმარებლების საბანკო ბარათის მონაცემებს."
+"ყველა გადახდა დაცულია PCI DSS სტანდარტით. PyLand არ ინახავს და არ ამუშავებს "
+"მომხმარებლების საბანკო ბარათის მონაცემებს."
 
 #: core/templates/core/legal/payment-policy.html:62
 msgid ""
@@ -4170,9 +4200,9 @@ msgid ""
 "платёжных систем могут быть удержаны согласно их правилам."
 msgstr ""
 "თანხის დაბრუნება შესაძლებელია დაბრუნების პოლიტიკით გათვალისწინებულ "
-"შემთხვევებში. დაბრუნების ვადა - 10 სამუშაო დღემდე განაცხადის "
-"დამტკიცების შემდეგ. ბანკებისა და გადახდის სისტემების საკომისიოები "
-"შეიძლება დაიკავოს მათი წესების შესაბამისად."
+"შემთხვევებში. დაბრუნების ვადა - 10 სამუშაო დღემდე განაცხადის დამტკიცების "
+"შემდეგ. ბანკებისა და გადახდის სისტემების საკომისიოები შეიძლება დაიკავოს მათი "
+"წესების შესაბამისად."
 
 #: core/templates/core/legal/payment-policy.html:67
 msgid ""
@@ -4181,8 +4211,7 @@ msgid ""
 "оплата."
 msgstr ""
 "გადახდის გაუქმების შემთხვევაში მომხმარებლის ინიციატივით ან ტექნიკური "
-"მიზეზების გამო, თანხა უბრუნდება იმავე გზით, როგორც გადახდა "
-"განხორციელდა."
+"მიზეზების გამო, თანხა უბრუნდება იმავე გზით, როგორც გადახდა განხორციელდა."
 
 #: core/templates/core/legal/payment-policy.html:70
 msgid "6. Контакты и поддержка"
@@ -4193,8 +4222,8 @@ msgid ""
 "По всем вопросам, связанным с оплатой, возвратами и безопасностью платежей, "
 "обращайтесь в службу поддержки."
 msgstr ""
-"გადახდასთან, თანხის დაბრუნებასთან და გადახდის უსაფრთხოებასთან "
-"დაკავშირებული ყველა შეკითხვისთვის დაუკავშირდით მხარდაჭერას."
+"გადახდასთან, თანხის დაბრუნებასთან და გადახდის უსაფრთხოებასთან დაკავშირებული "
+"ყველა შეკითხვისთვის დაუკავშირდით მხარდაჭერას."
 
 #: core/templates/core/legal/platform-rules.html:5
 #: core/templates/core/legal/platform-rules.html:28
@@ -4240,24 +4269,24 @@ msgid ""
 "PyLand и регулируют взаимоотношения между пользователями и администрацией."
 msgstr ""
 "ეს წესები განსაზღვრავს PyLand საგანმანათლებლო პლატფორმის გამოყენების "
-"პროცედურას და არეგულირებს ურთიერთობებს მომხმარებლებსა და "
-"ადმინისტრაციას შორის."
+"პროცედურას და არეგულირებს ურთიერთობებს მომხმარებლებსა და ადმინისტრაციას "
+"შორის."
 
 #: core/templates/core/legal/platform-rules.html:37
 msgid ""
 "Регистрируясь на платформе, вы автоматически принимаете данные Правила и "
 "обязуетесь их соблюдать."
 msgstr ""
-"პლატფორმაზე რეგისტრაციით თქვენ ავტომატურად იღებთ ამ წესებს და "
-"ვალდებულებას იღებთ დაიცვათ ისინი."
+"პლატფორმაზე რეგისტრაციით თქვენ ავტომატურად იღებთ ამ წესებს და ვალდებულებას "
+"იღებთ დაიცვათ ისინი."
 
 #: core/templates/core/legal/platform-rules.html:39
 msgid ""
 "Несоблюдение правил может привести к ограничению или блокировке доступа к "
 "платформе без возврата средств."
 msgstr ""
-"წესების დაუცველობამ შეიძლება გამოიწვიოს პლატფორმაზე წვდომის შეზღუდვა "
-"ან დაბლოკვა თანხის დაბრუნების გარეშე."
+"წესების დაუცველობამ შეიძლება გამოიწვიოს პლატფორმაზე წვდომის შეზღუდვა ან "
+"დაბლოკვა თანხის დაბრუნების გარეშე."
 
 #: core/templates/core/legal/platform-rules.html:44
 msgid "2. Учетная запись пользователя"
@@ -4312,8 +4341,8 @@ msgid ""
 "Вы несете полную ответственность за все действия, совершенные под вашим "
 "аккаунтом."
 msgstr ""
-"თქვენ სრულად პასუხისმგებელი ხართ თქვენი ანგარიშის ქვეშ განხორციელებულ "
-"ყველა მოქმედებაზე."
+"თქვენ სრულად პასუხისმგებელი ხართ თქვენი ანგარიშის ქვეშ განხორციელებულ ყველა "
+"მოქმედებაზე."
 
 #: core/templates/core/legal/platform-rules.html:67
 msgid "3. Правила поведения на платформе"
@@ -4579,8 +4608,8 @@ msgid ""
 "Администрация оставляет за собой право принимать решения о санкциях в "
 "индивидуальном порядке в зависимости от тяжести нарушения."
 msgstr ""
-"ადმინისტრაცია იტოვებს უფლებას მიიღოს გადაწყვეტილებები სანქციების "
-"შესახებ ინდივიდუალურად დარღვევის სიმძიმის მიხედვით."
+"ადმინისტრაცია იტოვებს უფლებას მიიღოს გადაწყვეტილებები სანქციების შესახებ "
+"ინდივიდუალურად დარღვევის სიმძიმის მიხედვით."
 
 #: core/templates/core/legal/platform-rules.html:183
 msgid "Апелляция:"
@@ -4591,9 +4620,8 @@ msgid ""
 "Если вы считаете, что ваш аккаунт был заблокирован ошибочно, направьте "
 "апелляцию на email: pyland-school@yandex.com с подробным описанием ситуации."
 msgstr ""
-"თუ თვლით, რომ თქვენი ანგარიში შეცდომით დაიბლოკა, გააგზავნეთ "
-"გასაჩივრება ელფოსტაზე: pyland-school@yandex.com სიტუაციის დეტალური "
-"აღწერით."
+"თუ თვლით, რომ თქვენი ანგარიში შეცდომით დაიბლოკა, გააგზავნეთ გასაჩივრება "
+"ელფოსტაზე: pyland-school@yandex.com სიტუაციის დეტალური აღწერით."
 
 #: core/templates/core/legal/platform-rules.html:188
 msgid "7. Контакты и поддержка"
@@ -4612,8 +4640,7 @@ msgid ""
 "Администрация оставляет за собой право изменять Правила с уведомлением "
 "пользователей"
 msgstr ""
-"ადმინისტრაცია იტოვებს უფლებას შეცვალოს წესები მომხმარებლების "
-"შეტყობინებით"
+"ადმინისტრაცია იტოვებს უფლებას შეცვალოს წესები მომხმარებლების შეტყობინებით"
 
 #: core/templates/core/legal/privacy-policy.html:5
 #: core/templates/core/legal/privacy-policy.html:46
@@ -4741,7 +4768,8 @@ msgstr "სოციალური ავთენტიფიკაცია (
 
 #: core/templates/core/legal/privacy-policy.html:98
 msgid "При входе через Google или GitHub мы получаем следующие данные:"
-msgstr "Google-ის ან GitHub-ის საშუალებით შესვლისას ჩვენ ვიღებთ შემდეგ მონაცემებს:"
+msgstr ""
+"Google-ის ან GitHub-ის საშუალებით შესვლისას ჩვენ ვიღებთ შემდეგ მონაცემებს:"
 
 #: core/templates/core/legal/privacy-policy.html:103
 msgid "Имя и фамилия (если указаны)"
@@ -4772,9 +4800,8 @@ msgid ""
 "Мы НЕ получаем доступ к вашим репозиториям, личным сообщениям или другим "
 "приватным данным. Запрашиваются только базовые публичные данные профиля."
 msgstr ""
-"ჩვენ არ ვიღებთ წვდომას თქვენს რეპოზიტორიებზე, პირად შეტყობინებებზე ან "
-"სხვა პირად მონაცემებზე. მოთხოვნილია მხოლოდ ძირითადი საჯარო პროფილის "
-"მონაცემები."
+"ჩვენ არ ვიღებთ წვდომას თქვენს რეპოზიტორიებზე, პირად შეტყობინებებზე ან სხვა "
+"პირად მონაცემებზე. მოთხოვნილია მხოლოდ ძირითადი საჯარო პროფილის მონაცემები."
 
 #: core/templates/core/legal/privacy-policy.html:120
 msgid ""
@@ -4793,7 +4820,9 @@ msgstr "რეგისტრაცია და ავთენტიფიკ�
 
 #: core/templates/core/legal/privacy-policy.html:127
 msgid "Создание и управление вашим аккаунтом, включая вход через Google/GitHub"
-msgstr "თქვენი ანგარიშის შექმნა და მართვა, მათ შორის Google/GitHub-ის საშუალებით შესვლა"
+msgstr ""
+"თქვენი ანგარიშის შექმნა და მართვა, მათ შორის Google/GitHub-ის საშუალებით "
+"შესვლა"
 
 #: core/templates/core/legal/privacy-policy.html:128
 msgid "Предоставление услуг:"
@@ -4815,7 +4844,9 @@ msgstr "პროგრესის თვალთვალი, კურსე
 
 #: core/templates/core/legal/privacy-policy.html:130
 msgid "Отправка уведомлений об обновлениях, новых уроках, ответах менторов"
-msgstr "შეტყობინებების გაგზავნა განახლებების, ახალი გაკვეთილების, მენტორების პასუხების შესახებ"
+msgstr ""
+"შეტყობინებების გაგზავნა განახლებების, ახალი გაკვეთილების, მენტორების "
+"პასუხების შესახებ"
 
 #: core/templates/core/legal/privacy-policy.html:131
 msgid "Улучшение платформы:"
@@ -4862,16 +4893,16 @@ msgid ""
 "При входе через Google мы обмениваемся данными с Google OAuth 2.0. Google "
 "получает информацию о том, что вы используете нашу платформу."
 msgstr ""
-"Google-ის საშუალებით შესვლისას ჩვენ ვცვლით მონაცემებს Google OAuth "
-"2.0-თან. Google იღებს ინფორმაციას, რომ თქვენ იყენებთ ჩვენს პლატფორმას."
+"Google-ის საშუალებით შესვლისას ჩვენ ვცვლით მონაცემებს Google OAuth 2.0-თან. "
+"Google იღებს ინფორმაციას, რომ თქვენ იყენებთ ჩვენს პლატფორმას."
 
 #: core/templates/core/legal/privacy-policy.html:147
 msgid ""
 "При входе через GitHub мы обмениваемся данными с GitHub OAuth 2.0. GitHub "
 "получает информацию о том, что вы используете нашу платформу."
 msgstr ""
-"GitHub-ის საშუალებით შესვლისას ჩვენ ვცვლით მონაცემებს GitHub OAuth "
-"2.0-თან. GitHub იღებს ინფორმაციას, რომ თქვენ იყენებთ ჩვენს პლატფორმას."
+"GitHub-ის საშუალებით შესვლისას ჩვენ ვცვლით მონაცემებს GitHub OAuth 2.0-თან. "
+"GitHub იღებს ინფორმაციას, რომ თქვენ იყენებთ ჩვენს პლატფორმას."
 
 #: core/templates/core/legal/privacy-policy.html:150
 msgid "Технические провайдеры:"
@@ -4920,9 +4951,9 @@ msgid ""
 "Мы можем раскрыть данные по запросу уполномоченных органов Грузии в случаях, "
 "предусмотренных законом (судебные предписания, расследования)."
 msgstr ""
-"ჩვენ შეგვიძლია გავამჟღავნოთ მონაცემები საქართველოს უფლებამოსილი "
-"ორგანოების მოთხოვნით კანონით გათვალისწინებულ შემთხვევებში (სასამართლო "
-"ბრძანებები, გამოძიებები)."
+"ჩვენ შეგვიძლია გავამჟღავნოთ მონაცემები საქართველოს უფლებამოსილი ორგანოების "
+"მოთხოვნით კანონით გათვალისწინებულ შემთხვევებში (სასამართლო ბრძანებები, "
+"გამოძიებები)."
 
 #: core/templates/core/legal/privacy-policy.html:171
 msgid "5. Cookies и технологии отслеживания"
@@ -4961,8 +4992,8 @@ msgid ""
 "В соответствии с Законом Грузии 'О защите персональных данных' вы имеете "
 "следующие права:"
 msgstr ""
-"საქართველოს კანონის 'პერსონალურ მონაცემთა დაცვის შესახებ' შესაბამისად "
-"თქვენ გაქვთ შემდეგი უფლებები:"
+"საქართველოს კანონის 'პერსონალურ მონაცემთა დაცვის შესახებ' შესაბამისად თქვენ "
+"გაქვთ შემდეგი უფლებები:"
 
 #: core/templates/core/legal/privacy-policy.html:185
 msgid "Доступ:"
@@ -5041,8 +5072,8 @@ msgid ""
 "Если вы считаете, что ваши права нарушены, вы можете подать жалобу в Службу "
 "по защите персональных данных Грузии (Personal Data Protection Service):"
 msgstr ""
-"თუ თვლით, რომ თქვენი უფლებები დარღვეულია, შეგიძლიათ გაასაჩივროთ "
-"საქართველოს პერსონალურ მონაცემთა დაცვის სამსახურში:"
+"თუ თვლით, რომ თქვენი უფლებები დარღვეულია, შეგიძლიათ გაასაჩივროთ საქართველოს "
+"პერსონალურ მონაცემთა დაცვის სამსახურში:"
 
 #: core/templates/core/legal/privacy-policy.html:199
 msgid "Сайт:"
@@ -5154,8 +5185,8 @@ msgid ""
 "Настоящий документ является публичной офертой в соответствии со статьей 389 "
 "Гражданского кодекса Грузии."
 msgstr ""
-"ეს დოკუმენტი არის საჯარო შეთავაზება საქართველოს სამოქალაქო კოდექსის "
-"389-ე მუხლის შესაბამისად."
+"ეს დოკუმენტი არის საჯარო შეთავაზება საქართველოს სამოქალაქო კოდექსის 389-ე "
+"მუხლის შესაბამისად."
 
 #: core/templates/core/legal/public-offer.html:38
 msgid ""
@@ -5165,9 +5196,9 @@ msgid ""
 "изложенных ниже."
 msgstr ""
 "ინდივიდუალური მეწარმე (ИП) ან იურიდიული პირი 'PyLand' (შემდგომში - "
-"კონტრაქტორი) სთავაზობს პირთა შეუზღუდავ წრეს (შემდგომში - "
-"მომხმარებელი/მომხმარებელი) დადოს ხელშეკრულება საგანმანათლებლო "
-"სერვისების მიწოდებაზე ქვემოთ მოცემულ პირობებზე."
+"კონტრაქტორი) სთავაზობს პირთა შეუზღუდავ წრეს (შემდგომში - მომხმარებელი/"
+"მომხმარებელი) დადოს ხელშეკრულება საგანმანათლებლო სერვისების მიწოდებაზე "
+"ქვემოთ მოცემულ პირობებზე."
 
 #: core/templates/core/legal/public-offer.html:40
 msgid "Реквизиты Исполнителя:"
@@ -5193,8 +5224,7 @@ msgstr ""
 msgid ""
 "Онлайн-курсы по программированию (Python, JavaScript, веб-разработка и др.)"
 msgstr ""
-"ონლაინ პროგრამირების კურსები (Python, JavaScript, ვებ-დეველოპმენტი და "
-"სხვა)"
+"ონლაინ პროგრამირების კურსები (Python, JavaScript, ვებ-დეველოპმენტი და სხვა)"
 
 #: core/templates/core/legal/public-offer.html:54
 msgid "Видеоуроки, текстовые материалы, практические задания"
@@ -5202,7 +5232,8 @@ msgstr "ვიდეო გაკვეთილები, ტექსტურ
 
 #: core/templates/core/legal/public-offer.html:55
 msgid "Проверка домашних заданий (в рамках тарифа с менторской поддержкой)"
-msgstr "საშინაო დავალებების შემოწმება (მენტორობის მხარდაჭერის ტარიფის ფარგლებში)"
+msgstr ""
+"საშინაო დავალებების შემოწმება (მენტორობის მხარდაჭერის ტარიფის ფარგლებში)"
 
 #: core/templates/core/legal/public-offer.html:56
 msgid "Менторская поддержка (в рамках соответствующего тарифа)"
@@ -5218,15 +5249,17 @@ msgstr "პერსონალურ პანელზე წვდომა 
 
 #: core/templates/core/legal/public-offer.html:60
 msgid "Услуги оказываются удаленно через интернет в формате онлайн-обучения."
-msgstr "სერვისები მოწოდებულია დისტანციურად ინტერნეტის საშუალებით ონლაინ სწავლების ფორმატში."
+msgstr ""
+"სერვისები მოწოდებულია დისტანციურად ინტერნეტის საშუალებით ონლაინ სწავლების "
+"ფორმატში."
 
 #: core/templates/core/legal/public-offer.html:64
 msgid ""
 "Акцептом (принятием) настоящей оферты считается совершение Пользователем "
 "одного из следующих действий:"
 msgstr ""
-"ამ შეთავაზების მიღებად ითვლება მომხმარებლის მიერ შემდეგი ქმედებებიდან "
-"ერთ-ერთის შესრულება:"
+"ამ შეთავაზების მიღებად ითვლება მომხმარებლის მიერ შემდეგი ქმედებებიდან ერთ-"
+"ერთის შესრულება:"
 
 #: core/templates/core/legal/public-offer.html:66
 msgid "Регистрация на платформе PyLand (создание учетной записи)"
@@ -5245,16 +5278,16 @@ msgid ""
 "Акцепт оферты означает полное и безоговорочное принятие Пользователем всех "
 "условий настоящего договора."
 msgstr ""
-"შეთავაზების მიღება ნიშნავს მომხმარებლის მიერ ამ ხელშეკრულების ყველა "
-"პირობის სრულ და უპირობო მიღებას."
+"შეთავაზების მიღება ნიშნავს მომხმარებლის მიერ ამ ხელშეკრულების ყველა პირობის "
+"სრულ და უპირობო მიღებას."
 
 #: core/templates/core/legal/public-offer.html:71
 msgid ""
 "Договор считается заключенным с момента акцепта и действует до полного "
 "исполнения обязательств сторонами."
 msgstr ""
-"ხელშეკრულება ითვლება დადებულად მიღების მომენტიდან და მოქმედებს "
-"მხარეების მიერ ვალდებულებების სრულ შესრულებამდე."
+"ხელშეკრულება ითვლება დადებულად მიღების მომენტიდან და მოქმედებს მხარეების "
+"მიერ ვალდებულებების სრულ შესრულებამდე."
 
 #: core/templates/core/legal/public-offer.html:76
 msgid "Исполнитель обязуется:"
@@ -5395,16 +5428,15 @@ msgstr "PayPal (ინტეგრაცია მუშავდება)"
 msgid ""
 "Доступ к курсу предоставляется после подтверждения оплаты администрацией."
 msgstr ""
-"კურსზე წვდომა ხორციელდება ადმინისტრაციის მიერ გადახდის დადასტურების "
-"შემდეგ."
+"კურსზე წვდომა ხორციელდება ადმინისტრაციის მიერ გადახდის დადასტურების შემდეგ."
 
 #: core/templates/core/legal/public-offer.html:132
 msgid ""
 "Цены могут изменяться, но уже оплаченные услуги предоставляются по цене на "
 "момент покупки."
 msgstr ""
-"ფასები შეიძლება შეიცვალოს, მაგრამ უკვე გადახდილი სერვისები მიეწოდება "
-"შეძენის მომენტის ფასით."
+"ფასები შეიძლება შეიცვალოს, მაგრამ უკვე გადახდილი სერვისები მიეწოდება შეძენის "
+"მომენტის ფასით."
 
 #: core/templates/core/legal/public-offer.html:134
 #: core/templates/core/legal/refund-policy.html:77
@@ -5437,7 +5469,8 @@ msgstr ""
 
 #: core/templates/core/legal/public-offer.html:141
 msgid "Результаты обучения, зависящие от усилий и способностей Пользователя"
-msgstr "სწავლის შედეგები დამოკიდებულია მომხმარებლის ძალისხმევასა და შესაძლებლობებზე"
+msgstr ""
+"სწავლის შედეგები დამოკიდებულია მომხმარებლის ძალისხმევასა და შესაძლებლობებზე"
 
 #: core/templates/core/legal/public-offer.html:142
 msgid "Действия третьих лиц (взлом аккаунта по вине Пользователя)"
@@ -5445,7 +5478,8 @@ msgstr "მესამე პირების მოქმედებებ�
 
 #: core/templates/core/legal/public-offer.html:143
 msgid "Проблемы с интеграцией сторонних сервисов (Google OAuth, GitHub OAuth)"
-msgstr "მესამე მხარის სერვისების ინტეგრაციის პრობლემები (Google OAuth, GitHub OAuth)"
+msgstr ""
+"მესამე მხარის სერვისების ინტეგრაციის პრობლემები (Google OAuth, GitHub OAuth)"
 
 #: core/templates/core/legal/public-offer.html:145
 msgid "Пользователь несет ответственность за:"
@@ -5470,8 +5504,8 @@ msgid ""
 "законодательства)."
 msgstr ""
 "მხარეები თავისუფლდებიან პასუხისმგებლობისგან ფორს-მაჟორული გარემოებების "
-"შემთხვევაში (სტიქიური უბედურებები, სამხედრო მოქმედებები, "
-"კანონმდებლობის ცვლილებები)."
+"შემთხვევაში (სტიქიური უბედურებები, სამხედრო მოქმედებები, კანონმდებლობის "
+"ცვლილებები)."
 
 #: core/templates/core/legal/public-offer.html:155
 msgid "Договор может быть расторгнут:"
@@ -5481,8 +5515,7 @@ msgstr "ხელშეკრულება შეიძლება შეწ�
 msgid ""
 "По инициативе Пользователя — с возвратом средств согласно Политике возвратов"
 msgstr ""
-"მომხმარებლის ინიციატივით - თანხის დაბრუნებით დაბრუნების პოლიტიკის "
-"შესაბამისად"
+"მომხმარებლის ინიციატივით - თანხის დაბრუნებით დაბრუნების პოლიტიკის შესაბამისად"
 
 #: core/templates/core/legal/public-offer.html:158
 msgid ""
@@ -5501,8 +5534,8 @@ msgid ""
 "Уведомление о расторжении направляется по электронной почте не менее чем за "
 "3 рабочих дня."
 msgstr ""
-"შეწყვეტის შესახებ შეტყობინება იგზავნება ელფოსტით სულ მცირე 3 სამუშაო "
-"დღით ადრე."
+"შეწყვეტის შესახებ შეტყობინება იგზავნება ელფოსტით სულ მცირე 3 სამუშაო დღით "
+"ადრე."
 
 #: core/templates/core/legal/public-offer.html:164
 msgid "8. Применимое право и разрешение споров"
@@ -5517,9 +5550,9 @@ msgid ""
 "Все споры решаются путем переговоров. При недостижении согласия спор "
 "передается в суд по месту нахождения Исполнителя (г. Кутаиси, Грузия)."
 msgstr ""
-"ყველა დავა წყდება მოლაპარაკებით. შეთანხმების მიუღწევლობის შემთხვევაში "
-"დავა წარედგინება სასამართლოს კონტრაქტორის მდებარეობის ადგილზე "
-"(ქუთაისი, საქართველო)."
+"ყველა დავა წყდება მოლაპარაკებით. შეთანხმების მიუღწევლობის შემთხვევაში დავა "
+"წარედგინება სასამართლოს კონტრაქტორის მდებარეობის ადგილზე (ქუთაისი, "
+"საქართველო)."
 
 #: core/templates/core/legal/public-offer.html:168
 msgid "Применимые законы:"
@@ -5626,8 +5659,8 @@ msgid ""
 "При технических проблемах на стороне платформы, делающих невозможным "
 "прохождение курса"
 msgstr ""
-"პლატფორმის მხარეს ტექნიკური პრობლემების შემთხვევაში, რაც შეუძლებელს "
-"ხდის კურსის გავლას"
+"პლატფორმის მხარეს ტექნიკური პრობლემების შემთხვევაში, რაც შეუძლებელს ხდის "
+"კურსის გავლას"
 
 #: core/templates/core/legal/refund-policy.html:48
 msgid "При двойном списании средств (возврат дублирующего платежа)"
@@ -5678,16 +5711,16 @@ msgid ""
 "При нарушении условий использования платформы (передача доступа третьим "
 "лицам, распространение материалов курса)"
 msgstr ""
-"პლატფორმის გამოყენების პირობების დარღვევის შემთხვევაში (წვდომის "
-"გაზიარება მესამე პირებთან, კურსის მასალების გავრცელება)"
+"პლატფორმის გამოყენების პირობების დარღვევის შემთხვევაში (წვდომის გაზიარება "
+"მესამე პირებთან, კურსის მასალების გავრცელება)"
 
 #: core/templates/core/legal/refund-policy.html:67
 msgid ""
 "В особых случаях возможен индивидуальный подход по согласованию с "
 "администрацией платформы."
 msgstr ""
-"განსაკუთრებულ შემთხვევებში შესაძლებელია ინდივიდუალური მიდგომა "
-"პლატფორმის ადმინისტრაციასთან შეთანხმებით."
+"განსაკუთრებულ შემთხვევებში შესაძლებელია ინდივიდუალური მიდგომა პლატფორმის "
+"ადმინისტრაციასთან შეთანხმებით."
 
 #: core/templates/core/legal/refund-policy.html:73
 msgid "Подача заявки:"
@@ -5698,8 +5731,8 @@ msgid ""
 "Отправьте запрос на возврат на email: pyland-school@yandex.com или через "
 "форму обратной связи на сайте"
 msgstr ""
-"გააგზავნეთ თანხის დაბრუნების მოთხოვნა ელფოსტაზე: "
-"pyland-school@yandex.com ან ვებსაიტზე უკუკავშირის ფორმის საშუალებით"
+"გააგზავნეთ თანხის დაბრუნების მოთხოვნა ელფოსტაზე: pyland-school@yandex.com ან "
+"ვებსაიტზე უკუკავშირის ფორმის საშუალებით"
 
 #: core/templates/core/legal/refund-policy.html:74
 msgid "Необходимые данные:"
@@ -5710,8 +5743,8 @@ msgid ""
 "Укажите ФИО, email регистрации, название курса, дату оплаты и причину "
 "возврата"
 msgstr ""
-"მიუთითეთ სრული სახელი, რეგისტრაციის ელფოსტა, კურსის სახელი, გადახდის "
-"თარიღი და დაბრუნების მიზეზი"
+"მიუთითეთ სრული სახელი, რეგისტრაციის ელფოსტა, კურსის სახელი, გადახდის თარიღი "
+"და დაბრუნების მიზეზი"
 
 #: core/templates/core/legal/refund-policy.html:75
 #, fuzzy
@@ -5736,16 +5769,16 @@ msgid ""
 "Деньги возвращаются тем же способом, которым была произведена оплата, в "
 "течение 5-10 рабочих дней после одобрения"
 msgstr ""
-"თანხა უბრუნდება იმავე გზით, როგორც გადახდა განხორციელდა, დამტკიცებიდან "
-"5-10 სამუშაო დღის განმავლობაში"
+"თანხა უბრუნდება იმავე გზით, როგორც გადახდა განხორციელდა, დამტკიცებიდან 5-10 "
+"სამუშაო დღის განმავლობაში"
 
 #: core/templates/core/legal/refund-policy.html:83
 msgid ""
 "Срок зачисления средств на счет зависит от платежной системы и банка (обычно "
 "3-10 рабочих дней)"
 msgstr ""
-"ანგარიშზე თანხების ჩარიცხვის ვადა დამოკიდებულია გადახდის სისტემასა და "
-"ბანკზე (ჩვეულებრივ 3-10 სამუშაო დღე)"
+"ანგარიშზე თანხების ჩარიცხვის ვადა დამოკიდებულია გადახდის სისტემასა და ბანკზე "
+"(ჩვეულებრივ 3-10 სამუშაო დღე)"
 
 #: core/templates/core/legal/refund-policy.html:84
 msgid "Комиссии платежных систем не возвращаются"
@@ -5764,8 +5797,8 @@ msgid ""
 "Возврат не производится за индивидуальные консультации, если услуга оказана "
 "в полном объёме."
 msgstr ""
-"თანხის დაბრუნება არ ხორციელდება ინდივიდუალურ კონსულტაციებზე, თუ "
-"სერვისი სრულად იქნა მიწოდებული."
+"თანხის დაბრუნება არ ხორციელდება ინდივიდუალურ კონსულტაციებზე, თუ სერვისი "
+"სრულად იქნა მიწოდებული."
 
 #: core/templates/core/legal/refund-policy.html:93
 msgid ""
@@ -5773,16 +5806,15 @@ msgid ""
 "(например, передача доступа третьим лицам)."
 msgstr ""
 "თანხის დაბრუნება შეუძლებელია, თუ პირობების დარღვევა გამოწვეული იყო "
-"მომხმარებლის მოქმედებებით (მაგალითად, წვდომის გაზიარება მესამე "
-"პირებთან)."
+"მომხმარებლის მოქმედებებით (მაგალითად, წვდომის გაზიარება მესამე პირებთან)."
 
 #: core/templates/core/legal/refund-policy.html:98
 msgid ""
 "В отдельных случаях возможен частичный возврат по согласованию с "
 "администрацией платформы."
 msgstr ""
-"ინდივიდუალურ შემთხვევებში შესაძლებელია ნაწილობრივი დაბრუნება "
-"პლატფორმის ადმინისტრაციასთან შეთანხმებით."
+"ინდივიდუალურ შემთხვევებში შესაძლებელია ნაწილობრივი დაბრუნება პლატფორმის "
+"ადმინისტრაციასთან შეთანხმებით."
 
 #: core/templates/core/legal/terms-of-service.html:5
 #: core/templates/core/legal/terms-of-service.html:55
@@ -5899,17 +5931,17 @@ msgid ""
 "информацию профиля. Мы НЕ получаем доступ к вашим репозиториям, письмам или "
 "другим приватным данным."
 msgstr ""
-"OAuth-ის (Google/GitHub) გამოყენებისას ჩვენ ვიღებთ მხოლოდ ძირითად "
-"პროფილის ინფორმაციას. ჩვენ არ ვიღებთ წვდომას თქვენს რეპოზიტორიებზე, "
-"ელფოსტებზე ან სხვა პირად მონაცემებზე."
+"OAuth-ის (Google/GitHub) გამოყენებისას ჩვენ ვიღებთ მხოლოდ ძირითად პროფილის "
+"ინფორმაციას. ჩვენ არ ვიღებთ წვდომას თქვენს რეპოზიტორიებზე, ელფოსტებზე ან "
+"სხვა პირად მონაცემებზე."
 
 #: core/templates/core/legal/terms-of-service.html:99
 msgid ""
 "Вы получаете лицензию на использование наших услуг для личных "
 "образовательных целей."
 msgstr ""
-"თქვენ იღებთ ლიცენზიას ჩვენი სერვისების გამოსაყენებლად პირადი "
-"საგანმანათლებლო მიზნებისთვის."
+"თქვენ იღებთ ლიცენზიას ჩვენი სერვისების გამოსაყენებლად პირადი საგანმანათლებლო "
+"მიზნებისთვის."
 
 #: core/templates/core/legal/terms-of-service.html:100
 msgid "Запрещено:"
@@ -5958,9 +5990,8 @@ msgid ""
 "возможен в течение 14 дней согласно Политике возвратов."
 msgstr ""
 "ამჟამად კურსების გადახდა ხორციელდება ადმინისტრაციასთან შეთანხმებით. "
-"ავტომატური გადახდის სისტემის გაშვების შემდეგ თანხის დაბრუნება "
-"შესაძლებელი იქნება 14 დღის განმავლობაში დაბრუნების პოლიტიკის "
-"შესაბამისად."
+"ავტომატური გადახდის სისტემის გაშვების შემდეგ თანხის დაბრუნება შესაძლებელი "
+"იქნება 14 დღის განმავლობაში დაბრუნების პოლიტიკის შესაბამისად."
 
 #: core/templates/core/legal/terms-of-service.html:127
 msgid "За подробной информацией обращайтесь:"
@@ -5987,8 +6018,8 @@ msgid ""
 "Мы можем приостановить или прекратить ваш доступ к платформе при нарушении "
 "условий использования."
 msgstr ""
-"ჩვენ შეგვიძლია შევაჩეროთ ან შევწყვიტოთ თქვენი წვდომა პლატფორმაზე "
-"გამოყენების პირობების დარღვევისთვის."
+"ჩვენ შეგვიძლია შევაჩეროთ ან შევწყვიტოთ თქვენი წვდომა პლატფორმაზე გამოყენების "
+"პირობების დარღვევისთვის."
 
 #: core/templates/core/legal/terms-of-service.html:144
 msgid "Основания для прекращения:"
@@ -6049,8 +6080,8 @@ msgid ""
 "При невозможности урегулирования спор передается в суд по месту нахождения "
 "PyLand (г. Кутаиси, Грузия)"
 msgstr ""
-"მოწესრიგების შეუძლებლობის შემთხვევაში დავა წარედგინება სასამართლოს "
-"PyLand-ის მდებარეობის ადგილზე (ქუთაისი, საქართველო)"
+"მოწესრიგების შეუძლებლობის შემთხვევაში დავა წარედგინება სასამართლოს PyLand-ის "
+"მდებარეობის ადგილზე (ქუთაისი, საქართველო)"
 
 #: core/templates/core/legal/terms-of-service.html:163
 msgid "Претензии направляются на email: pyland-school@yandex.com"
@@ -6074,9 +6105,10 @@ msgstr "გამოიწერეთ ჩვენი სიახლეებ�
 
 #: core/templates/shared/_footer.html:14
 msgid "Получайте новости о курсах, вебинарах и специальных предложениях"
-msgstr "მიიღეთ სიახლეები კურსების, ვებინარებისა და სპეციალური შეთავაზებების შესახებ"
+msgstr ""
+"მიიღეთ სიახლეები კურსების, ვებინარებისა და სპეციალური შეთავაზებების შესახებ"
 
-#: core/templates/shared/_footer.html:51 core/templates/shared/_header.html:89
+#: core/templates/shared/_footer.html:51 core/templates/shared/_header.html:98
 msgid "Школа программирования"
 msgstr "პროგრამირების სკოლა"
 
@@ -6094,8 +6126,8 @@ msgstr ""
 msgid "Быстрые ссылки"
 msgstr "სწრაფი ბმულები"
 
-#: core/templates/shared/_footer.html:74 core/templates/shared/_header.html:98
-#: core/templates/shared/_header.html:329
+#: core/templates/shared/_footer.html:74 core/templates/shared/_header.html:107
+#: core/templates/shared/_header.html:338
 #: reviewers/templates/reviewers/dashboard.html:51
 #: reviewers/templates/reviewers/dashboard.html:98
 #: reviewers/templates/reviewers/history.html:45
@@ -6111,7 +6143,7 @@ msgstr "სწრაფი ბმულები"
 #: reviewers/templates/reviewers/submissions_list.html:45
 #: reviewers/templates/reviewers/submissions_list.html:90
 #: students/templates/students/dashboard/course-list.html:83
-#: students/templates/students/dashboard/dashboard.html:98
+#: students/templates/students/dashboard/dashboard.html:93
 #: students/templates/students/dashboard/settings.html:80
 msgid "Главная"
 msgstr "მთავარი"
@@ -6155,7 +6187,7 @@ msgstr "სერტიფიცირებული სკოლა"
 #: core/templates/shared/_footer.html:241
 #, python-format
 msgid "100%% гарантия качества"
-msgstr ""
+msgstr "100%% ხარისხის გარანტია"
 
 #: core/templates/shared/_footer.html:252
 msgid "Безопасные платежи"
@@ -6169,45 +6201,49 @@ msgstr ""
 msgid "Переключить тему"
 msgstr "შეცვალე თემა"
 
-#: core/templates/shared/_header.html:122
+#: core/templates/shared/_header.html:84
+msgid "Открыть меню дашборда"
+msgstr "გახსენით დაფის მენიუ"
+
+#: core/templates/shared/_header.html:131
 #: courses/templates/courses/courses.html:103
 msgid "Веб-разработка"
-msgstr ""
+msgstr "ვებ-დეველოპმენტი"
 
-#: core/templates/shared/_header.html:151
+#: core/templates/shared/_header.html:160
 msgid "Статьи блога"
-msgstr ""
+msgstr "ბლოგის სტატიები"
 
-#: core/templates/shared/_header.html:170
+#: core/templates/shared/_header.html:179
 msgid "Навигация"
-msgstr ""
+msgstr "ნავიგაცია"
 
-#: core/templates/shared/_header.html:177
+#: core/templates/shared/_header.html:186
 msgid "Теги"
-msgstr ""
+msgstr "თეგები"
 
-#: core/templates/shared/_header.html:181
+#: core/templates/shared/_header.html:190
 msgid "По уровню"
-msgstr ""
+msgstr "დონის მიხედვით"
 
-#: core/templates/shared/_header.html:196
+#: core/templates/shared/_header.html:205
 msgid "Экспертный"
-msgstr ""
+msgstr "ექსპერტული"
 
-#: core/templates/shared/_header.html:244
-#: core/templates/shared/_header.html:439
+#: core/templates/shared/_header.html:253
+#: core/templates/shared/_header.html:448
 #: reviewers/templates/reviewers/dashboard.html:102
 #: students/templates/students/dashboard/course-detail.html:53
 #: students/templates/students/dashboard/course-list.html:52
 #: students/templates/students/dashboard/dashboard.html:5
-#: students/templates/students/dashboard/dashboard.html:61
-#: students/templates/students/dashboard/dashboard.html:102
+#: students/templates/students/dashboard/dashboard.html:56
+#: students/templates/students/dashboard/dashboard.html:97
 #: students/templates/students/dashboard/lesson-detail.html:70
 #: students/templates/students/dashboard/settings.html:49
 msgid "Дашборд"
 msgstr ""
 
-#: core/templates/shared/_header.html:251
+#: core/templates/shared/_header.html:260
 #: reviewers/templates/reviewers/dashboard.html:84
 #: reviewers/templates/reviewers/history.html:78
 #: reviewers/templates/reviewers/settings.html:82
@@ -6218,40 +6254,40 @@ msgstr ""
 #: reviewers/templates/reviewers/submissions_list.html:78
 #: students/templates/students/dashboard/course-detail.html:70
 #: students/templates/students/dashboard/course-list.html:69
-#: students/templates/students/dashboard/dashboard.html:78
+#: students/templates/students/dashboard/dashboard.html:73
 #: students/templates/students/dashboard/settings.html:66
 #: students/templates/students/dashboard/settings.html:84
 msgid "Настройки"
 msgstr ""
 
-#: core/templates/shared/_header.html:259
-#: core/templates/shared/_header.html:446
+#: core/templates/shared/_header.html:268
+#: core/templates/shared/_header.html:455
 msgid "Выйти"
 msgstr ""
 
-#: core/templates/shared/_header.html:274
+#: core/templates/shared/_header.html:283
 msgid "Открыть меню"
 msgstr ""
 
-#: core/templates/shared/_header.html:298
+#: core/templates/shared/_header.html:307
 msgid "Закрыть меню"
 msgstr ""
 
-#: core/templates/shared/_header.html:396
+#: core/templates/shared/_header.html:405
 msgid "Тема"
 msgstr ""
 
-#: core/templates/shared/_header.html:398
+#: core/templates/shared/_header.html:407
 msgid "Светлая тема"
 msgstr ""
 
-#: core/templates/shared/_header.html:404
+#: core/templates/shared/_header.html:413
 #, fuzzy
 #| msgid "Главная страница"
 msgid "Темная тема"
 msgstr "მთავარი გვერდი"
 
-#: core/templates/shared/_header.html:414
+#: core/templates/shared/_header.html:423
 msgid "Язык"
 msgstr ""
 
@@ -6418,159 +6454,161 @@ msgid ""
 "Изучайте программирование с лучшими онлайн курсами Python, JavaScript и "
 "других технологий"
 msgstr ""
+"შეისწავლეთ პროგრამირება Python, JavaScript და სხვა ტექნოლოგიების საუკეთესო "
+"ონლაინ კურსებით"
 
 #: courses/templates/courses/courses.html:30
-#, fuzzy
-#| msgid "Школа программирования"
 msgid "Курсы программирования"
-msgstr "პროგრამირების სკოლა"
+msgstr "პროგრამირების კურსები"
 
 #: courses/templates/courses/courses.html:34
 msgid "Изучайте код"
-msgstr ""
+msgstr "შეისწავლეთ კოდი"
 
 #: courses/templates/courses/courses.html:35
 msgid "с экспертами"
-msgstr ""
+msgstr "ექსპერტებთან ერთად"
 
 #: courses/templates/courses/courses.html:39
 msgid ""
 "Выберите из нашей коллекции курсов и станьте профессиональным разработчиком. "
 "Практические проекты, менторская поддержка и гарантированное трудоустройство."
 msgstr ""
+"აირჩიეთ ჩვენი კურსების კოლექციიდან და გახდით პროფესიონალი დეველოპერი. "
+"პრაქტიკული პროექტები, მენტორების მხარდაჭერა და გარანტირებული დასაქმება."
 
 #: courses/templates/courses/courses.html:51
 msgid "Выбрать курс"
-msgstr ""
+msgstr "აირჩიეთ კურსი"
 
 #: courses/templates/courses/courses.html:71
-#, fuzzy
-#| msgid "Начать обучение"
 msgid "Довольны обучением"
-msgstr "სურვისის დაწყება"
+msgstr "კმაყოფილნი სწავლით"
 
 #: courses/templates/courses/courses.html:91
 msgid "Топовые направления 2025"
-msgstr ""
+msgstr "ტოპ მიმართულებები 2025"
 
 #: courses/templates/courses/courses.html:94
 msgid ""
 "Изучайте самые востребованные технологии будущего с нашими интерактивными "
 "курсами нового поколения"
 msgstr ""
+"შეისწავლეთ მომავლის ყველაზე მოთხოვნადი ტექნოლოგიები ჩვენი ახალი თაობის "
+"ინტერაქტიული კურსებით"
 
 #: courses/templates/courses/courses.html:125
 #: students/templates/students/dashboard/course-list.html:154
 msgid "Новый"
-msgstr ""
+msgstr "ახალი"
 
 #: courses/templates/courses/courses.html:127
 msgid "Хит"
-msgstr ""
+msgstr "ჰიტი"
 
 #: courses/templates/courses/courses.html:137
 msgid "Архив"
-msgstr ""
+msgstr "არქივი"
 
 #: courses/templates/courses/courses.html:141
 msgid "Черновик"
-msgstr ""
+msgstr "მონახაზი"
 
 #: courses/templates/courses/courses.html:182
 msgid "Почему PyLand?"
-msgstr ""
+msgstr "რატომ PyLand?"
 
-#: reviewers/forms.py:63
+#: reviewers/forms.py:70
 #: reviewers/templates/reviewers/submission_review.html:183
 msgid "Статус проверки"
 msgstr ""
 
-#: reviewers/forms.py:65
+#: reviewers/forms.py:72
 msgid "Время проверки (мин)"
 msgstr ""
 
-#: reviewers/forms.py:68
+#: reviewers/forms.py:75
 msgid "Выберите статус: принята или требует доработки"
 msgstr ""
 
-#: reviewers/forms.py:69
+#: reviewers/forms.py:76
 msgid "Подробный отзыв о работе с рекомендациями"
 msgstr ""
 
-#: reviewers/forms.py:70
+#: reviewers/forms.py:77
 msgid "Примерное время затраченное на проверку"
 msgstr ""
 
-#: reviewers/forms.py:124
+#: reviewers/forms.py:129
 msgid "Курсы для проверки"
 msgstr ""
 
-#: reviewers/forms.py:125
+#: reviewers/forms.py:130
 msgid "Выберите курсы, работы по которым вы можете проверять"
 msgstr ""
 
-#: reviewers/forms.py:147 reviewers/templates/reviewers/settings.html:196
+#: reviewers/forms.py:158 reviewers/templates/reviewers/settings.html:196
 #: students/templates/students/dashboard/settings.html:193
 msgid "О себе"
 msgstr ""
 
-#: reviewers/forms.py:148
+#: reviewers/forms.py:159
 msgid "Активен (принимать новые работы)"
 msgstr ""
 
-#: reviewers/forms.py:149
+#: reviewers/forms.py:160
 msgid "Макс. проверок в день"
 msgstr ""
 
-#: reviewers/forms.py:152
+#: reviewers/forms.py:163
 msgid ""
 "Информация о вашем опыте, образовании и экспертизе (минимум 50 символов)"
 msgstr ""
 
-#: reviewers/forms.py:153
+#: reviewers/forms.py:164
 msgid "Если отключено, вы не будете получать новые работы на проверку"
 msgstr ""
 
-#: reviewers/forms.py:154
+#: reviewers/forms.py:166
 msgid "Максимальное количество работ которые можете проверить за день (1-50)"
 msgstr ""
 
-#: reviewers/forms.py:217
+#: reviewers/forms.py:226
 #: reviewers/templates/reviewers/email/review_completed.html:37
 #: reviewers/templates/reviewers/settings.html:331
 #: reviewers/templates/reviewers/submission_detail.html:147
 msgid "Статус"
 msgstr ""
 
-#: reviewers/forms.py:236
+#: reviewers/forms.py:249
 msgid "Дата от"
 msgstr ""
 
-#: reviewers/forms.py:245
+#: reviewers/forms.py:260
 msgid "Дата до"
 msgstr ""
 
-#: reviewers/forms.py:293
+#: reviewers/forms.py:310
 msgid "Приоритет"
 msgstr ""
 
-#: reviewers/forms.py:294
+#: reviewers/forms.py:311
 msgid "Важность данного улучшения"
 msgstr ""
 
-#: reviewers/forms.py:312
+#: reviewers/forms.py:333
 msgid "Название шага"
 msgstr ""
 
-#: reviewers/forms.py:313
+#: reviewers/forms.py:334
 msgid "Описание улучшения"
 msgstr ""
 
-#: reviewers/forms.py:316
+#: reviewers/forms.py:337
 msgid "Краткое название шага улучшения"
 msgstr ""
 
-#: reviewers/forms.py:317
+#: reviewers/forms.py:338
 msgid "Конкретное улучшение которое студент должен внести"
 msgstr ""
 
@@ -6616,7 +6654,7 @@ msgstr ""
 
 #: reviewers/templates/reviewers/dashboard.html:118
 #: reviewers/templates/reviewers/submissions_list.html:173
-#: students/templates/students/dashboard/dashboard.html:308
+#: students/templates/students/dashboard/dashboard.html:303
 msgid "Ожидают проверки"
 msgstr ""
 
@@ -6635,9 +6673,9 @@ msgstr ""
 #: reviewers/templates/reviewers/submissions_list.html:136
 #: reviewers/templates/reviewers/submissions_list.html:197
 #: reviewers/templates/reviewers/submissions_list.html:238
-#: students/templates/students/dashboard/dashboard.html:318
-#: students/templates/students/dashboard/dashboard.html:331
-#: students/templates/students/dashboard/dashboard.html:426
+#: students/templates/students/dashboard/dashboard.html:313
+#: students/templates/students/dashboard/dashboard.html:326
+#: students/templates/students/dashboard/dashboard.html:421
 msgid "Одобрено"
 msgstr ""
 
@@ -6649,8 +6687,8 @@ msgid "Нужны правки"
 msgstr ""
 
 #: reviewers/templates/reviewers/dashboard.html:168
-#: students/templates/students/dashboard/dashboard.html:154
-#: students/templates/students/dashboard/dashboard.html:163
+#: students/templates/students/dashboard/dashboard.html:149
+#: students/templates/students/dashboard/dashboard.html:158
 msgid "Активность за неделю"
 msgstr ""
 
@@ -6713,7 +6751,7 @@ msgstr ""
 #: reviewers/templates/reviewers/dashboard.html:338
 #: students/templates/students/dashboard/course-detail.html:310
 #: students/templates/students/dashboard/course-list.html:196
-#: students/templates/students/dashboard/dashboard.html:490
+#: students/templates/students/dashboard/dashboard.html:485
 #: students/templates/students/dashboard/lesson-detail.html:388
 msgid "назад"
 msgstr ""
@@ -6833,7 +6871,7 @@ msgstr ""
 
 #: reviewers/templates/reviewers/history.html:204
 #: students/templates/students/dashboard/course-list.html:223
-#: students/templates/students/dashboard/dashboard.html:250
+#: students/templates/students/dashboard/dashboard.html:245
 msgid "Подробнее"
 msgstr ""
 
@@ -7212,7 +7250,7 @@ msgstr ""
 
 #: reviewers/templates/reviewers/submission_detail.html:377
 #: reviewers/templates/reviewers/submissions_list.html:126
-#: students/templates/students/dashboard/dashboard.html:328
+#: students/templates/students/dashboard/dashboard.html:323
 msgid "Ожидают"
 msgstr ""
 
@@ -7315,7 +7353,7 @@ msgid "Все"
 msgstr ""
 
 #: reviewers/templates/reviewers/submissions_list.html:145
-#: students/templates/students/dashboard/dashboard.html:346
+#: students/templates/students/dashboard/dashboard.html:341
 msgid "Курс:"
 msgstr ""
 
@@ -7355,29 +7393,29 @@ msgstr ""
 msgid "Сбросить фильтры"
 msgstr ""
 
-#: reviewers/views.py:251 reviewers/views.py:255
+#: reviewers/views.py:260 reviewers/views.py:267
 msgid "Необходимо выбрать статус проверки"
 msgstr ""
 
-#: reviewers/views.py:265 reviewers/views.py:269
+#: reviewers/views.py:286 reviewers/views.py:293
 msgid "Комментарии должны содержать минимум 20 символов"
 msgstr ""
 
-#: reviewers/views.py:361
+#: reviewers/views.py:395
 msgid "Проверка успешно сохранена"
 msgstr ""
 
-#: reviewers/views.py:368
+#: reviewers/views.py:404
 #, fuzzy
 #| msgid "Школа программирования"
 msgid "Ошибка при сохранении проверки"
 msgstr "პროგრამირების სკოლა"
 
-#: reviewers/views.py:417 students/views.py:434
+#: reviewers/views.py:470 students/views.py:474
 msgid "Настройки уведомлений обновлены"
 msgstr ""
 
-#: reviewers/views.py:438
+#: reviewers/views.py:491
 msgid "Настройки успешно обновлены"
 msgstr ""
 
@@ -7393,20 +7431,20 @@ msgstr "მთავარი გვერდი"
 
 #: students/templates/students/dashboard/course-detail.html:121
 #: students/templates/students/dashboard/course-list.html:139
-#: students/templates/students/dashboard/dashboard.html:212
+#: students/templates/students/dashboard/dashboard.html:207
 msgid "Завершен"
 msgstr ""
 
 #: students/templates/students/dashboard/course-detail.html:126
 #: students/templates/students/dashboard/course-list.html:99
 #: students/templates/students/dashboard/course-list.html:144
-#: students/templates/students/dashboard/dashboard.html:214
+#: students/templates/students/dashboard/dashboard.html:209
 msgid "В процессе"
 msgstr ""
 
 #: students/templates/students/dashboard/course-detail.html:131
 #: students/templates/students/dashboard/course-list.html:149
-#: students/templates/students/dashboard/dashboard.html:216
+#: students/templates/students/dashboard/dashboard.html:211
 #, fuzzy
 #| msgid "Начать обучение"
 msgid "Начат"
@@ -7419,7 +7457,7 @@ msgid "Не начат"
 msgstr "სურვისის დაწყება"
 
 #: students/templates/students/dashboard/course-detail.html:145
-#: students/templates/students/dashboard/dashboard.html:142
+#: students/templates/students/dashboard/dashboard.html:137
 msgid "Общий прогресс"
 msgstr ""
 
@@ -7453,8 +7491,8 @@ msgstr ""
 
 #: students/templates/students/dashboard/course-detail.html:219
 #: students/templates/students/dashboard/course-list.html:186
-#: students/templates/students/dashboard/dashboard.html:195
-#: students/templates/students/dashboard/dashboard.html:238
+#: students/templates/students/dashboard/dashboard.html:190
+#: students/templates/students/dashboard/dashboard.html:233
 msgid "шагов"
 msgstr ""
 
@@ -7521,7 +7559,7 @@ msgstr ""
 
 #: students/templates/students/dashboard/course-detail.html:387
 #: students/templates/students/dashboard/course-list.html:166
-#: students/templates/students/dashboard/dashboard.html:227
+#: students/templates/students/dashboard/dashboard.html:222
 #: students/templates/students/dashboard/lesson-detail.html:694
 msgid "Прогресс"
 msgstr ""
@@ -7568,7 +7606,7 @@ msgid "Повторить"
 msgstr ""
 
 #: students/templates/students/dashboard/course-list.html:216
-#: students/templates/students/dashboard/dashboard.html:246
+#: students/templates/students/dashboard/dashboard.html:241
 msgid "Продолжить"
 msgstr ""
 
@@ -7598,96 +7636,96 @@ msgstr ""
 msgid "Курсов в процессе"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:92
+#: students/templates/students/dashboard/dashboard.html:87
 #, fuzzy
 #| msgid "Добро пожаловать в"
 msgid "Добро пожаловать"
 msgstr "მოგესალმებით"
 
-#: students/templates/students/dashboard/dashboard.html:94
+#: students/templates/students/dashboard/dashboard.html:89
 #, fuzzy
 #| msgid "Добро пожаловать в"
 msgid "Добро пожаловать в дашборд!"
 msgstr "მოგესალმებით"
 
-#: students/templates/students/dashboard/dashboard.html:118
+#: students/templates/students/dashboard/dashboard.html:113
 msgid "Активных курсов"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:130
+#: students/templates/students/dashboard/dashboard.html:125
 msgid "Выполнено шагов"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:171
-#: students/templates/students/dashboard/dashboard.html:181
+#: students/templates/students/dashboard/dashboard.html:166
+#: students/templates/students/dashboard/dashboard.html:176
 msgid "Прогресс по курсам"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:244
+#: students/templates/students/dashboard/dashboard.html:239
 #, fuzzy
 #| msgid "Начать обучение"
 msgid "Начать"
 msgstr "სურვისის დაწყება"
 
-#: students/templates/students/dashboard/dashboard.html:265
+#: students/templates/students/dashboard/dashboard.html:260
 #, fuzzy
 #| msgid "Современные инструменты"
 msgid "Избранные статьи"
 msgstr "თანამედროვე ხელსაწყოები"
 
-#: students/templates/students/dashboard/dashboard.html:299
+#: students/templates/students/dashboard/dashboard.html:294
 msgid "Мои работы"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:313
-#: students/templates/students/dashboard/dashboard.html:325
+#: students/templates/students/dashboard/dashboard.html:308
+#: students/templates/students/dashboard/dashboard.html:320
 msgid "Требуют доработки"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:356
+#: students/templates/students/dashboard/dashboard.html:351
 #: students/templates/students/dashboard/lesson-detail.html:517
 msgid "Комментарий ментора:"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:367
+#: students/templates/students/dashboard/dashboard.html:362
 #: students/templates/students/dashboard/lesson-detail.html:550
 msgid "Попытка:"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:370
+#: students/templates/students/dashboard/dashboard.html:365
 msgid "Исправить работу"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:377
+#: students/templates/students/dashboard/dashboard.html:372
 msgid "Нет работ, требующих доработки"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:396
+#: students/templates/students/dashboard/dashboard.html:391
 #: students/templates/students/dashboard/lesson-detail.html:590
 msgid "Отправлено:"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:407
+#: students/templates/students/dashboard/dashboard.html:402
 msgid "Нет работ, ожидающих проверки"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:437
+#: students/templates/students/dashboard/dashboard.html:432
 msgid "Пока нет одобренных работ"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:447
+#: students/templates/students/dashboard/dashboard.html:442
 msgid "Достижения"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:475
+#: students/templates/students/dashboard/dashboard.html:470
 msgid "Последняя активность"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:487
+#: students/templates/students/dashboard/dashboard.html:482
 msgid "Выполнен шаг"
 msgstr ""
 
-#: students/templates/students/dashboard/dashboard.html:488
+#: students/templates/students/dashboard/dashboard.html:483
 msgid "в уроке"
 msgstr ""
 
@@ -8162,60 +8200,60 @@ msgstr ""
 msgid "Удалить аккаунт навсегда"
 msgstr ""
 
-#: students/views.py:391
+#: students/views.py:420
 msgid "Этот email уже используется"
 msgstr ""
 
-#: students/views.py:403
+#: students/views.py:436
 msgid "Неверный формат номера телефона. Пожалуйста, введите корректный номер."
 msgstr ""
 
-#: students/views.py:407
+#: students/views.py:445
 msgid ""
 "Неверный формат номера телефона. Используйте международный формат, например: "
 "+79991234567"
 msgstr ""
 
-#: students/views.py:423
+#: students/views.py:463
 msgid "Профиль успешно обновлен"
 msgstr ""
 
-#: students/views.py:443
+#: students/views.py:483
 msgid "Настройки приватности обновлены"
 msgstr ""
 
-#: students/views.py:456
+#: students/views.py:496
 msgid "Пароль успешно изменен"
 msgstr ""
 
-#: students/views.py:460
+#: students/views.py:500
 msgid "Новые пароли не совпадают"
 msgstr ""
 
-#: students/views.py:462
+#: students/views.py:502
 msgid "Текущий пароль неверен"
 msgstr ""
 
-#: students/views.py:483
+#: students/views.py:524
 msgid "Аватар успешно удален"
 msgstr ""
 
-#: students/views.py:485
+#: students/views.py:526
 msgid "Аватар не найден"
 msgstr ""
 
-#: students/views.py:488
+#: students/views.py:530
 msgid "Ошибка при удалении аватара"
 msgstr ""
 
-#: students/views.py:582
+#: students/views.py:639
 msgid "Данные успешно экспортированы"
 msgstr ""
 
-#: students/views.py:602
+#: students/views.py:661
 msgid "Неверное подтверждение. Введите 'УДАЛИТЬ' для подтверждения."
 msgstr ""
 
-#: students/views.py:607
+#: students/views.py:667
 msgid "Неверный пароль. Удаление отменено."
 msgstr ""

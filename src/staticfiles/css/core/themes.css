@@ -20,9 +20,14 @@ html, body {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: var(--white);
+  background: var(--bg-color);
   border-bottom: 1px solid var(--gray-200);
   transition: all var(--transition-normal);
+}
+
+[data-theme="dark"] .header {
+  background: #0f172a;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .header-top {
@@ -65,15 +70,24 @@ html, body {
 
 .header-main {
   padding: var(--spacing-4) 0;
-  background: var(--white);
+  background: var(--bg-color);
   backdrop-filter: blur(10px);
 }
 
+[data-theme="dark"] .header-main {
+  background: #0f172a;
+}
+
 [data-sticky].scrolled {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-color);
   backdrop-filter: blur(10px);
   border-bottom-color: var(--gray-300);
   box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] [data-sticky].scrolled {
+  background: #0f172a;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .header-content {
@@ -3801,6 +3815,8 @@ html, body {
   max-width: 100vw;
   overflow-x: hidden;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1; /* Ниже header и mobile menu */
 }
 
 .auth-container {
@@ -3946,6 +3962,11 @@ html, body {
   position: relative;
 }
 
+.password-field input[type="password"],
+.password-field input[type="text"] {
+  padding-right: 3rem;
+}
+
 .password-toggle {
   position: absolute;
   right: 0.875rem;
@@ -3958,15 +3979,36 @@ html, body {
   padding: 0.25rem;
   border-radius: 4px;
   transition: color 0.3s ease;
+  z-index: 10;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .password-toggle:hover {
   color: var(--primary-500);
 }
 
+.password-toggle svg {
+  pointer-events: none;
+}
+
+.password-toggle .eye-closed {
+  display: none;
+}
+
 /* Password Strength */
+.password-strength-container {
+  margin-top: 0.75rem;
+}
+
 .password-strength {
-  margin-top: 0.5rem;
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 
 .strength-label {
@@ -3976,11 +4018,27 @@ html, body {
 }
 
 .strength-bar {
-  height: 4px;
-  background: var(--border-color);
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
   border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 0.25rem;
+  background: var(--border-color);
+}
+
+.strength-bar.weak { 
+  background: var(--error-500); 
+}
+
+.strength-bar.medium { 
+  background: var(--warning-500); 
+}
+
+.strength-bar.good { 
+  background: var(--primary-500); 
+}
+
+.strength-bar.strong { 
+  background: var(--success-500); 
 }
 
 .strength-fill {
@@ -3997,6 +4055,7 @@ html, body {
 .strength-text {
   font-size: 0.75rem;
   color: var(--text-muted);
+  margin-top: 0.25rem;
 }
 
 /* Messages */
@@ -4183,6 +4242,8 @@ html, body {
 }
 
 .social-divider span {
+  position: relative;
+  z-index: 1;
   background: var(--bg-primary);
   padding: 0 1rem;
   color: var(--text-muted);

@@ -21,17 +21,16 @@ class DashboardManager {
 
     // Инициализация боковой панели
     initSidebar() {
-        // Проверяем, есть ли уже кнопка в HTML (для совместимости)
-        let mobileToggle = document.querySelector('.mobile-sidebar-toggle');
+        // Находим кнопку дашборда (может быть в header или создана динамически)
+        let mobileToggle = document.querySelector('.dashboard-menu-btn');
         if (!mobileToggle) {
-            mobileToggle = document.createElement('button');
-            mobileToggle.className = 'mobile-sidebar-toggle';
-            mobileToggle.innerHTML = `
-                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            `;
-            document.body.appendChild(mobileToggle);
+            // Fallback: ищем старый класс для совместимости
+            mobileToggle = document.querySelector('.mobile-sidebar-toggle');
+        }
+
+        if (!mobileToggle) {
+            console.warn('Dashboard menu button not found');
+            return;
         }
 
         // Проверяем, есть ли уже overlay в HTML
@@ -53,7 +52,7 @@ class DashboardManager {
     updateActiveNavLink() {
         const currentPath = window.location.pathname;
         const navLinks = document.querySelectorAll('.dashboard-nav-link');
-        
+
         navLinks.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === currentPath) {
@@ -75,10 +74,10 @@ class DashboardManager {
 
         // Получаем данные из data-атрибутов
         const dailyActivity = window.dashboardData?.dailyActivity || [];
-        
+
         // Проверяем, есть ли активность
         const hasActivity = dailyActivity.length > 0 && dailyActivity.some(day => day.completed_steps > 0);
-        
+
         // Если нет активности, показываем заглушку
         if (!hasActivity) {
             chartContainer.innerHTML = `
@@ -188,7 +187,7 @@ class DashboardManager {
 
         // Данные прогресса курсов
         const courseProgress = window.dashboardData?.courseProgress || [];
-        
+
         // Если нет курсов, показываем заглушку
         if (courseProgress.length === 0) {
             chartContainer.innerHTML = `
@@ -310,7 +309,7 @@ class DashboardManager {
     // Инициализация модальных окон
     initModals() {
         const modalTriggers = document.querySelectorAll('[data-modal]');
-        
+
         modalTriggers.forEach(trigger => {
             trigger.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -341,13 +340,13 @@ class DashboardManager {
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        
+
         // Анимация появления
         const modalContent = modal.querySelector('.modal-content');
         if (modalContent) {
             modalContent.style.transform = 'scale(0.9) translateY(-20px)';
             modalContent.style.opacity = '0';
-            
+
             setTimeout(() => {
                 modalContent.style.transform = 'scale(1) translateY(0)';
                 modalContent.style.opacity = '1';
@@ -375,7 +374,7 @@ class DashboardManager {
     // Инициализация подсказок
     initTooltips() {
         const tooltipElements = document.querySelectorAll('[data-tooltip]');
-        
+
         tooltipElements.forEach(element => {
             let tooltip = null;
 
@@ -419,7 +418,7 @@ class DashboardManager {
             transition: opacity 0.2s ease;
             white-space: nowrap;
         `;
-        
+
         setTimeout(() => {
             tooltip.style.opacity = '1';
         }, 10);
@@ -431,7 +430,7 @@ class DashboardManager {
     positionTooltip(tooltip, element, event = null) {
         const rect = element.getBoundingClientRect();
         const tooltipRect = tooltip.getBoundingClientRect();
-        
+
         let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
         let top = rect.top - tooltipRect.height - 8;
 
@@ -440,7 +439,7 @@ class DashboardManager {
         if (left + tooltipRect.width > window.innerWidth - 8) {
             left = window.innerWidth - tooltipRect.width - 8;
         }
-        
+
         if (top < 8) {
             top = rect.bottom + 8;
         }
@@ -452,7 +451,7 @@ class DashboardManager {
     // Инициализация анимаций при скролле
     initAnimations() {
         const animatedElements = document.querySelectorAll('.stat-card, .course-card, .achievement-card');
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
@@ -480,25 +479,25 @@ class DashboardManager {
 
             return;
         }
-        
+
         // Флаг для предотвращения множественных запросов
         let isProcessing = false;
-        
+
         stepCheckboxes.forEach((checkbox, index) => {
 
             // Удаляем старые обработчики если есть
             const newCheckbox = checkbox.cloneNode(true);
             checkbox.parentNode.replaceChild(newCheckbox, checkbox);
-            
+
             newCheckbox.addEventListener('change', async (e) => {
                 // Предотвращаем множественные запросы
                 if (isProcessing) {
 
                     return;
                 }
-                
+
                 isProcessing = true;
-                
+
                 const stepId = e.target.dataset.stepId;
                 const courseSlug = e.target.dataset.courseSlug;
                 const lessonSlug = e.target.dataset.lessonSlug;
@@ -516,7 +515,7 @@ class DashboardManager {
                 const currentPath = window.location.pathname;
                 const langMatch = currentPath.match(/^\/(ru|en|ka)\//);
                 const langPrefix = langMatch ? `/${langMatch[1]}` : '/ru';
-                
+
                 const url = `${langPrefix}/students/courses/${courseSlug}/lessons/${lessonSlug}/steps/${stepId}/toggle/`;
 
                 try {
@@ -543,9 +542,9 @@ class DashboardManager {
                                 stepCard.classList.remove('completed');
                             }
                         }
-                        
+
                         this.updateProgress(data);
-                        
+
                         // Проверяем, все ли шаги урока выполнены
                         if (data.lesson_progress && data.lesson_progress.is_completed && isCompleted) {
                             window.showNotification(
@@ -579,11 +578,11 @@ class DashboardManager {
 
         // Обновляем прогресс бары урока (на странице урока)
         const lessonProgressBar = document.querySelector('.lesson-progress-fill:not([data-lesson-id])');
-        
+
         if (lessonProgressBar && data.lesson_progress) {
             lessonProgressBar.style.width = `${data.lesson_progress.completion_percentage}%`;
         }
-        
+
         // Обновляем прогресс конкретного урока на странице курса
         if (data.lesson_progress) {
             const lessonId = data.lesson_progress.lesson_id || this.getCurrentLessonId();
@@ -592,7 +591,7 @@ class DashboardManager {
                 const lessonProgressBars = document.querySelectorAll(`.lesson-progress-fill[data-lesson-id="${lessonId}"]`);
                 lessonProgressBars.forEach(bar => {
                     bar.style.width = `${data.lesson_progress.completion_percentage}%`;
-                    
+
                     // Обновляем классы для цвета
                     bar.classList.remove('success', 'warning');
                     if (data.lesson_progress.is_completed) {
@@ -601,7 +600,7 @@ class DashboardManager {
                         bar.classList.add('warning');
                     }
                 });
-                
+
                 // Обновляем текст прогресса
                 const progressTexts = document.querySelectorAll(`.lesson-progress-text[data-lesson-id="${lessonId}"]`);
                 progressTexts.forEach(text => {
@@ -610,7 +609,7 @@ class DashboardManager {
                     if (completedSpan) completedSpan.textContent = data.lesson_progress.completed_steps;
                     if (totalSpan) totalSpan.textContent = data.lesson_progress.total_steps;
                 });
-                
+
                 // Обновляем процент
                 const percentageTexts = document.querySelectorAll(`.lesson-progress-percentage[data-lesson-id="${lessonId}"]`);
                 percentageTexts.forEach(pct => {
@@ -619,10 +618,10 @@ class DashboardManager {
 
             }
         }
-        
+
         // Обновляем прогресс курса
         const courseProgressBar = document.querySelector('.course-progress-fill');
-        
+
         if (courseProgressBar && data.course_progress) {
             courseProgressBar.style.width = `${data.course_progress.completion_percentage}%`;
         }
@@ -630,11 +629,11 @@ class DashboardManager {
         // Обновляем счетчики шагов урока
         const completedStepsElement = document.querySelector('.lesson-completed-steps');
         const totalStepsElement = document.querySelector('.lesson-total-steps');
-        
+
         if (completedStepsElement && data.lesson_progress) {
             completedStepsElement.textContent = data.lesson_progress.completed_steps;
         }
-        
+
         if (totalStepsElement && data.lesson_progress) {
             totalStepsElement.textContent = data.lesson_progress.total_steps;
         }
@@ -665,7 +664,7 @@ class DashboardManager {
             }
         }
     }
-    
+
     // Получить ID текущего урока из URL
     getCurrentLessonId() {
         const match = window.location.pathname.match(/\/lessons\/([^\/]+)/);
@@ -697,7 +696,7 @@ class DashboardManager {
             const langMatch = currentPath.match(/^\/(ru|en|ka)\//);
             const langPrefix = langMatch ? `/${langMatch[1]}` : '/ru';
             const pathMatch = currentPath.match(/courses\/([^\/]+)\/lessons\/([^\/]+)/);
-            
+
             if (!pathMatch) {
 
                 return;
@@ -734,13 +733,13 @@ class DashboardManager {
                 if (response.ok && data.success) {
                     errorsDiv.innerHTML = '';
                     urlInput.classList.remove('error');
-                    
+
                     // Показываем уведомление об успехе
                     this.showNotification(data.message, 'success');
-                    
+
                     // Очищаем форму
                     urlInput.value = '';
-                    
+
                     // Показываем информацию об отправленной работе
                     form.innerHTML = `
                         <div class="submission-success">
@@ -757,11 +756,11 @@ class DashboardManager {
                 } else {
                     // Показываем ошибку
                     let errorMessage = data.error || 'Произошла ошибка при отправке работы';
-                    
+
                     if (data.errors && data.errors.lesson_url) {
                         errorMessage = data.errors.lesson_url.join(', ');
                     }
-                    
+
                     errorsDiv.innerHTML = `<div class="error-message">${errorMessage}</div>`;
                     urlInput.classList.add('error');
                     this.showNotification(errorMessage, 'error');
@@ -822,7 +821,7 @@ class DashboardManager {
 
     // Получение CSRF токена
     getCSRFToken() {
-        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
                document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || '';
     }
 }
@@ -838,7 +837,7 @@ const DashboardUtils = {
     formatTime(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
-        
+
         if (hours > 0) {
             return `${hours}ч ${minutes}м`;
         }
@@ -915,30 +914,30 @@ window.showNotification = function(message, type = 'info') {
 function initSubmissionTabs() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
-    
+
     if (tabButtons.length === 0) return;
-    
+
     tabButtons.forEach(button => {
         button.addEventListener('click', function() {
             const targetTab = this.dataset.tab;
-            
+
             // Remove active class from all buttons
             tabButtons.forEach(btn => {
                 btn.classList.remove('active');
                 btn.style.borderBottomColor = 'transparent';
                 btn.style.color = '#6b7280';
             });
-            
+
             // Add active class to clicked button
             this.classList.add('active');
             this.style.borderBottomColor = '#3b82f6';
             this.style.color = '#3b82f6';
-            
+
             // Hide all tab contents
             tabContents.forEach(content => {
                 content.style.display = 'none';
             });
-            
+
             // Show target tab content
             const targetContent = document.getElementById(targetTab + '-tab');
             if (targetContent) {
