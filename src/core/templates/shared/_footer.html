@@ -2,7 +2,8 @@
 {% load i18n %}
 
 <footer class="footer" id="footer">
-    <!-- Newsletter Section -->
+    <!-- Newsletter Section (показывать только если пользователь не подписан) -->
+    {% if not user.is_authenticated or not user.has_active_newsletter_subscription %}
     <div class="footer-newsletter">
         <div class="container">
             <div class="newsletter-content">
@@ -16,13 +17,16 @@
                 </div>
                 <form class="newsletter-form" data-newsletter>
                     <div class="form-group form-inline">
-                        <input 
-                            type="email" 
-                            class="form-input newsletter-input" 
-                            placeholder="{% trans 'Введите ваш email' %}" 
+                        {% if not user.is_authenticated %}
+                        <input
+                            type="email"
+                            class="form-input newsletter-input"
+                            name="email"
+                            placeholder="{% trans 'Введите ваш email' %}"
                             required
                             data-validate="email"
                         >
+                        {% endif %}
                         <button type="submit" class="btn btn-primary newsletter-btn">
                             {% trans "Подписаться" %}
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
@@ -34,6 +38,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <!-- Main Footer -->
     <div class="footer-main">
@@ -123,7 +128,7 @@
                                 <div class="contact-value">{% trans "Грузия, г. Кутаиси, ул. Абашидзе 8, офис 83" %}</div>
                             </div>
                         </div>
-                        
+
                     <div class="contact-item">
                         <div class="contact-icon">
                             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="min-width: 24px;">
@@ -220,7 +225,7 @@
                         <a href="{% url 'core:platform_rules' %}" class="footer-link-small">{% trans "Правила платформы" %}</a>
                     </div>
                 </div>
-                
+
                 <div class="footer-badges">
                     <div class="badge-item">
                         <div class="badge-icon">
@@ -230,7 +235,7 @@
                         </div>
                         <span>{% trans "Сертифицированная школа" %}</span>
                     </div>
-                    
+
                     <div class="badge-item">
                         <div class="badge-icon">
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
@@ -240,7 +245,7 @@
                         </div>
                         <span>{% trans "100% гарантия качества" %}</span>
                     </div>
-                    
+
                     <div class="badge-item">
                         <div class="badge-icon">
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">

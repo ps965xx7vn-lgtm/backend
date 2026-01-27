@@ -899,17 +899,7 @@ function initHeader() {
     newsletterForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const emailInput = newsletterForm.querySelector('input[type="email"]');
       const submitBtn = newsletterForm.querySelector('button[type="submit"]');
-
-      // Валидация email для незарегистрированных
-      if (emailInput && !emailInput.value.trim()) {
-        if (window.notificationManager) {
-          window.notificationManager.show('Пожалуйста, введите email', 'warning', 3000);
-        }
-        return;
-      }
-
       const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = '<div class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></div>';
       submitBtn.disabled = true;
@@ -924,19 +914,12 @@ function initHeader() {
         const currentLang = window.location.pathname.split('/')[1] || 'ru';
         const subscribeUrl = `/${currentLang}/blog/newsletter/subscribe/`;
 
-        // Формируем данные для отправки
-        const formData = new URLSearchParams();
-        if (emailInput) {
-          formData.append('email', emailInput.value.trim());
-        }
-
         const response = await fetch(subscribeUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'X-CSRFToken': csrfToken
           },
-          body: formData.toString(),
           credentials: 'same-origin'
         });
 
@@ -945,10 +928,6 @@ function initHeader() {
         if (data.success) {
           if (window.notificationManager) {
             window.notificationManager.show(data.message, 'success', 5000);
-          }
-          // Очищаем поле email
-          if (emailInput) {
-            emailInput.value = '';
           }
           // Скрываем блок подписки после успешной подписки
           const newsletterSection = newsletterForm.closest('.footer-newsletter');

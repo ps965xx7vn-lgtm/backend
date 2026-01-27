@@ -174,6 +174,24 @@ class User(AbstractUser):
         """
         return self.role_name == role_name
 
+    def has_active_newsletter_subscription(self) -> bool:
+        """
+        Проверить есть ли у пользователя активная подписка на рассылку.
+
+        Returns:
+            bool: True если есть активная подписка, иначе False
+
+        Example:
+            >>> if not user.has_active_newsletter_subscription():
+            ...     show_newsletter_signup()
+        """
+        try:
+            return (
+                hasattr(self, "newsletter_subscription") and self.newsletter_subscription.is_active
+            )
+        except Exception:
+            return False
+
     class Meta:
         verbose_name: str = "Пользователь"
         verbose_name_plural: str = "Пользователи"

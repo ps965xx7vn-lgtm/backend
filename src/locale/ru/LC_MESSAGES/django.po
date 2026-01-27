@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-27 16:58+0400\n"
+"POT-Creation-Date: 2026-01-27 19:10+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgstr ""
 #: core/templates/core/legal/privacy-policy.html:75
 #: core/templates/core/legal/privacy-policy.html:232
 #: core/templates/core/legal/terms-of-service.html:193
-#: core/templates/shared/_footer.html:134
+#: core/templates/shared/_footer.html:139
 #: students/templates/students/dashboard/settings.html:239
 msgid "Телефон"
 msgstr ""
@@ -179,7 +179,7 @@ msgstr ""
 
 #: authentication/forms.py:350
 #: authentication/templates/auth/auth/email-verification-resend.html:52
-#: core/templates/shared/_footer.html:22
+#: core/templates/shared/_footer.html:25
 #: students/templates/students/dashboard/settings.html:187
 msgid "Введите ваш email"
 msgstr ""
@@ -246,6 +246,7 @@ msgid "Ваш email адрес успешно подтвержден. Тепер
 msgstr ""
 
 #: authentication/templates/auth/auth/email-verification-confirm.html:62
+#: blog/views.py:1669
 #, fuzzy
 #| msgid "Добро пожаловать в"
 msgid "Добро пожаловать в PyLand!"
@@ -367,7 +368,7 @@ msgstr ""
 #: authentication/templates/auth/auth/signup.html:265
 #: authentication/templates/auth/password-reset/confirm.html:147
 #: blog/templates/blog/article_detail.html:506
-#: core/templates/shared/_footer.html:78 core/templates/shared/_header.html:274
+#: core/templates/shared/_footer.html:83 core/templates/shared/_header.html:274
 #: core/templates/shared/_header.html:471
 msgid "Войти"
 msgstr ""
@@ -421,7 +422,7 @@ msgid "Год основания"
 msgstr "Школа программирования"
 
 #: authentication/templates/auth/auth/signup.html:5
-#: core/templates/shared/_footer.html:79 core/templates/shared/_header.html:277
+#: core/templates/shared/_footer.html:84 core/templates/shared/_header.html:277
 #: core/templates/shared/_header.html:464
 msgid "Регистрация"
 msgstr ""
@@ -747,7 +748,7 @@ msgid "Минуты на почте"
 msgstr ""
 
 #: authentication/templates/auth/password-reset/form.html:127
-#: core/templates/core/home.html:259 core/templates/shared/_footer.html:61
+#: core/templates/core/home.html:259 core/templates/shared/_footer.html:66
 #: courses/templates/courses/courses.html:75
 msgid "Поддержка"
 msgstr ""
@@ -1248,7 +1249,7 @@ msgstr ""
 #: blog/templates/blog/article_detail.html:826
 #: blog/templates/blog/category_detail.html:235
 #: blog/templates/blog/tag_detail.html:231
-#: core/templates/shared/_footer.html:27
+#: core/templates/shared/_footer.html:31
 msgid "Подписаться"
 msgstr ""
 
@@ -1899,7 +1900,7 @@ msgid "Простота"
 msgstr ""
 
 #: blog/templates/blog/difficulty_list.html:108
-#: core/templates/shared/_footer.html:65
+#: core/templates/shared/_footer.html:70
 msgid "Практика"
 msgstr ""
 
@@ -2655,6 +2656,48 @@ msgstr ""
 msgid "Найти статьи"
 msgstr ""
 
+#: blog/views.py:1620
+#, python-format
+msgid "Попробуйте снова через %(minutes)s минут"
+msgstr "Попробуйте снова через %(minutes)s минут"
+
+#: blog/views.py:1635
+msgid "Email обязателен"
+msgstr "Email обязателен"
+
+#: blog/views.py:1640
+msgid "Некорректный формат email"
+msgstr "Некорректный формат email"
+
+#: blog/views.py:1660
+msgid "Этот email уже есть в списке рассылки"
+msgstr "Этот email уже есть в списке рассылки"
+
+#: blog/views.py:1670
+#, python-format
+msgid ""
+"Привет, %(name)s!\n"
+"\n"
+"Спасибо за подписку на блог PyLand. Теперь ты будешь первым узнавать о новых "
+"статьях и уроках программирования."
+msgstr ""
+"Привет, %(name)s!\n"
+"\n"
+"Спасибо за подписку на блог PyLand. Теперь ты будешь первым узнавать о новых "
+"статьях и уроках программирования."
+
+#: blog/views.py:1670
+msgid "друг"
+msgstr "друг"
+
+#: blog/views.py:1679
+msgid "Спасибо за подписку!"
+msgstr "Спасибо за подписку!"
+
+#: blog/views.py:1684
+msgid "Произошла ошибка. Попробуйте позже."
+msgstr "Произошла ошибка. Попробуйте позже."
+
 #: core/forms.py:54
 msgid "Имя не может превышать 100 символов."
 msgstr ""
@@ -2765,7 +2808,7 @@ msgid "Вернуться наверх"
 msgstr ""
 
 #: core/templates/core/about.html:5 core/templates/core/about.html:225
-#: core/templates/shared/_footer.html:75 core/templates/shared/_header.html:213
+#: core/templates/shared/_footer.html:80 core/templates/shared/_header.html:213
 #: core/templates/shared/_header.html:388
 msgid "О нас"
 msgstr ""
@@ -2962,7 +3005,7 @@ msgstr ""
 msgid "Посмотреть все курсы"
 msgstr ""
 
-#: core/templates/core/contacts.html:5 core/templates/shared/_footer.html:76
+#: core/templates/core/contacts.html:5 core/templates/shared/_footer.html:81
 #: core/templates/shared/_header.html:218
 #: core/templates/shared/_header.html:395
 msgid "Контакты"
@@ -3127,7 +3170,7 @@ msgstr ""
 #: core/templates/core/legal/privacy-policy.html:79
 #: core/templates/core/legal/privacy-policy.html:236
 #: core/templates/core/legal/terms-of-service.html:197
-#: core/templates/shared/_footer.html:122
+#: core/templates/shared/_footer.html:127
 msgid "Адрес"
 msgstr ""
 
@@ -3934,7 +3977,7 @@ msgstr ""
 #: core/templates/core/legal/privacy-policy.html:237
 #: core/templates/core/legal/public-offer.html:182
 #: core/templates/core/legal/refund-policy.html:105
-#: core/templates/shared/_footer.html:123
+#: core/templates/shared/_footer.html:128
 msgid "Грузия, г. Кутаиси, ул. Абашидзе 8, офис 83"
 msgstr ""
 
@@ -3968,7 +4011,7 @@ msgstr ""
 
 #: core/templates/core/legal/payment-policy.html:5
 #: core/templates/core/legal/payment-policy.html:27
-#: core/templates/shared/_footer.html:219
+#: core/templates/shared/_footer.html:224
 msgid "Правила оплаты"
 msgstr ""
 
@@ -4491,7 +4534,7 @@ msgstr ""
 
 #: core/templates/core/legal/privacy-policy.html:5
 #: core/templates/core/legal/privacy-policy.html:46
-#: core/templates/shared/_footer.html:82 core/templates/shared/_footer.html:213
+#: core/templates/shared/_footer.html:87 core/templates/shared/_footer.html:218
 msgid "Политика конфиденциальности"
 msgstr ""
 
@@ -4951,7 +4994,7 @@ msgstr ""
 
 #: core/templates/core/legal/public-offer.html:5
 #: core/templates/core/legal/public-offer.html:30
-#: core/templates/shared/_footer.html:218
+#: core/templates/shared/_footer.html:223
 msgid "Публичная оферта"
 msgstr ""
 
@@ -5361,7 +5404,7 @@ msgstr ""
 
 #: core/templates/core/legal/refund-policy.html:5
 #: core/templates/core/legal/refund-policy.html:27
-#: core/templates/shared/_footer.html:216
+#: core/templates/shared/_footer.html:221
 msgid "Политика возвратов"
 msgstr ""
 
@@ -5558,7 +5601,7 @@ msgstr ""
 
 #: core/templates/core/legal/terms-of-service.html:5
 #: core/templates/core/legal/terms-of-service.html:55
-#: core/templates/shared/_footer.html:214
+#: core/templates/shared/_footer.html:219
 msgid "Условия использования"
 msgstr ""
 
@@ -5695,7 +5738,7 @@ msgid "Все материалы защищены авторским право�
 msgstr ""
 
 #: core/templates/core/legal/terms-of-service.html:112
-#: core/templates/shared/_footer.html:211
+#: core/templates/shared/_footer.html:216
 msgid "Все права защищены."
 msgstr ""
 
@@ -5816,30 +5859,30 @@ msgstr ""
 msgid "Дата вступления в силу: 12 декабря 2025"
 msgstr ""
 
-#: core/templates/shared/_footer.html:11
+#: core/templates/shared/_footer.html:12
 msgid "Подпишитесь на нашу рассылку"
 msgstr ""
 
-#: core/templates/shared/_footer.html:14
+#: core/templates/shared/_footer.html:15
 msgid "Получайте новости о курсах, вебинарах и специальных предложениях"
 msgstr ""
 
-#: core/templates/shared/_footer.html:51 core/templates/shared/_header.html:98
+#: core/templates/shared/_footer.html:56 core/templates/shared/_header.html:98
 msgid "Школа программирования"
 msgstr "Школа программирования"
 
-#: core/templates/shared/_footer.html:56
+#: core/templates/shared/_footer.html:61
 msgid ""
 "Современная онлайн школа программирования с персональным подходом к каждому "
 "студенту. Изучайте Python, JavaScript и другие технологии с лучшими "
 "преподавателями."
 msgstr ""
 
-#: core/templates/shared/_footer.html:72
+#: core/templates/shared/_footer.html:77
 msgid "Быстрые ссылки"
 msgstr ""
 
-#: core/templates/shared/_footer.html:74 core/templates/shared/_header.html:107
+#: core/templates/shared/_footer.html:79 core/templates/shared/_header.html:107
 #: core/templates/shared/_header.html:338
 #: reviewers/templates/reviewers/dashboard.html:51
 #: reviewers/templates/reviewers/dashboard.html:98
@@ -5861,48 +5904,48 @@ msgstr ""
 msgid "Главная"
 msgstr ""
 
-#: core/templates/shared/_footer.html:81
+#: core/templates/shared/_footer.html:86
 msgid "Пользовательское соглашение"
 msgstr ""
 
-#: core/templates/shared/_footer.html:83
+#: core/templates/shared/_footer.html:88
 msgid "Обработка персональных данных"
 msgstr ""
 
-#: core/templates/shared/_footer.html:89
+#: core/templates/shared/_footer.html:94
 msgid "Популярные курсы"
 msgstr ""
 
-#: core/templates/shared/_footer.html:105
+#: core/templates/shared/_footer.html:110
 msgid "Нет доступных курсов"
 msgstr ""
 
-#: core/templates/shared/_footer.html:112
+#: core/templates/shared/_footer.html:117
 msgid "Контактная информация"
 msgstr ""
 
-#: core/templates/shared/_footer.html:215
+#: core/templates/shared/_footer.html:220
 msgid "Обработка данных"
 msgstr ""
 
-#: core/templates/shared/_footer.html:217
+#: core/templates/shared/_footer.html:222
 msgid "Cookie"
 msgstr ""
 
-#: core/templates/shared/_footer.html:220
+#: core/templates/shared/_footer.html:225
 msgid "Правила платформы"
 msgstr ""
 
-#: core/templates/shared/_footer.html:231
+#: core/templates/shared/_footer.html:236
 msgid "Сертифицированная школа"
 msgstr ""
 
-#: core/templates/shared/_footer.html:241
+#: core/templates/shared/_footer.html:246
 #, python-format
 msgid "100%% гарантия качества"
 msgstr ""
 
-#: core/templates/shared/_footer.html:252
+#: core/templates/shared/_footer.html:257
 msgid "Безопасные платежи"
 msgstr ""
 

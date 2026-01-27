@@ -902,7 +902,8 @@ function initHeader() {
       const emailInput = newsletterForm.querySelector('input[type="email"]');
       const submitBtn = newsletterForm.querySelector('button[type="submit"]');
 
-      if (!emailInput.value.trim()) {
+      // Валидация email для незарегистрированных
+      if (emailInput && !emailInput.value.trim()) {
         if (window.notificationManager) {
           window.notificationManager.show('Пожалуйста, введите email', 'warning', 3000);
         }
@@ -914,15 +915,58 @@ function initHeader() {
       submitBtn.disabled = true;
 
       try {
-        // Здесь должен быть AJAX запрос к серверу
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Имитация запроса
+        // Получаем CSRF токен
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                         document.querySelector('meta[name="csrf-token"]')?.content ||
+                         getCookie('csrftoken');
 
-        if (window.notificationManager) {
-          window.notificationManager.show('Спасибо за подписку!', 'success', 5000);
+        // Определяем язык из URL
+        const currentLang = window.location.pathname.split('/')[1] || 'ru';
+        const subscribeUrl = `/${currentLang}/blog/newsletter/subscribe/`;
+
+        // Формируем данные для отправки
+        const formData = new URLSearchParams();
+        if (emailInput) {
+          formData.append('email', emailInput.value.trim());
         }
 
-        emailInput.value = '';
+        const response = await fetch(subscribeUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken
+          },
+          body: formData.toString(),
+          credentials: 'same-origin'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          if (window.notificationManager) {
+            window.notificationManager.show(data.message, 'success', 5000);
+          }
+          // Очищаем поле email
+          if (emailInput) {
+            emailInput.value = '';
+          }
+          // Скрываем блок подписки после успешной подписки
+          const newsletterSection = newsletterForm.closest('.footer-newsletter');
+          if (newsletterSection) {
+            newsletterSection.style.transition = 'opacity 0.3s, transform 0.3s';
+            newsletterSection.style.opacity = '0';
+            newsletterSection.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+              newsletterSection.remove();
+            }, 300);
+          }
+        } else {
+          if (window.notificationManager) {
+            window.notificationManager.show(data.message, 'warning', 5000);
+          }
+        }
       } catch (error) {
+        console.error('Newsletter subscription error:', error);
         if (window.notificationManager) {
           window.notificationManager.show('Произошла ошибка. Попробуйте позже.', 'error', 5000);
         }

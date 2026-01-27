@@ -397,47 +397,6 @@ html, body {
   border-color: var(--gray-100);
 }
 
-.newsletter-auth-prompt {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-2);
-  margin-top: var(--spacing-4);
-}
-
-.newsletter-auth-prompt .btn {
-  padding: var(--spacing-3) var(--spacing-6);
-  font-size: 0.95rem;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.newsletter-auth-prompt .btn-primary {
-  background: var(--white);
-  color: var(--primary-600);
-  border: 2px solid var(--white);
-}
-
-.newsletter-auth-prompt .btn-primary:hover {
-  background: var(--gray-100);
-  color: var(--primary-700);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.newsletter-auth-prompt .btn-outline {
-  background: transparent;
-  color: var(--white);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.newsletter-auth-prompt .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--white);
-  transform: translateY(-2px);
-}
-
 .footer-main {
   padding: var(--spacing-16) 0 var(--spacing-12);
 }
@@ -1267,7 +1226,7 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-opacity="0.1"/><stop offset="100%" stop-opacity="0"/></radialGradient></defs><circle cx="25%" cy="25%" r="25%" fill="url(%23a)"/><circle cx="75%" cy="75%" r="25%" fill="url(%23a)"/></svg>') center/cover;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-opacity="0.1"/><stop offset="100%" stop-opacity="0"/></radialGradient></defs><circle cx="25%" cy="25%" r="25%" fill="url(%23a)"/><circle cx="75%" cy="75%" r="25%" fill="url("#a#a")"/></svg>') center/cover;
   opacity: 0.3;
 }
 

@@ -13,6 +13,7 @@ from django.db.models import Count, F, Max, Q, Sum, Value
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.generic import DetailView, ListView, TemplateView, View
 from taggit.models import Tag
 
@@ -1589,8 +1590,8 @@ class NewsletterSubscribeView(View):
     """
     API endpoint для подписки на рассылку блога.
 
-    Обрабатывает POST-запросы с email и опциональным именем,
-    создает подписку или возобновляет неактивную, отправляет приветственное письмо.
+    Поддерживает подписку как для анонимных пользователей (по email),
+    так и для зарегистрированных. Включает защиту от спама с блокировкой на 5 минут.
     """
 
     def post(self, request: Any) -> JsonResponse:
@@ -1598,9 +1599,7 @@ class NewsletterSubscribeView(View):
         Обрабатывает подписку на рассылку.
 
         Args:
-            request: HTTP-запрос с полями:
-                - email (str): Email подписчика (обязательно)
-                - name (str): Имя подписчика (опционально)
+            request: HTTP-запрос с полем email (для анонимных)
 
         Returns:
             JsonResponse: JSON с ключами:
@@ -1608,56 +1607,94 @@ class NewsletterSubscribeView(View):
                 - message (str): Сообщение для пользователя
         """
         try:
-            email = request.POST.get("email", "").strip()
-            name = request.POST.get("name", "").strip()
+            # Проверка блокировки от спама (5 минут после последней попытки)
+            last_attempt_time = request.session.get("newsletter_last_attempt")
+            if last_attempt_time:
+                from datetime import datetime, timedelta
 
-            # Валидация email
-            if not email:
-                logger.warning("Попытка подписки без email")
-                return JsonResponse({"success": False, "message": "Email обязателен"})
+                last_attempt = datetime.fromisoformat(last_attempt_time)
+                if datetime.now() - last_attempt < timedelta(minutes=5):
+                    remaining_seconds = int(
+                        (timedelta(minutes=5) - (datetime.now() - last_attempt)).total_seconds()
+                    )
+                    remaining_minutes = remaining_seconds // 60
+                    logger.warning(f"Блокировка подписки (осталось {remaining_minutes} мин)")
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "message": _("Попробуйте снова через %(minutes)s минут")
+                            % {"minutes": remaining_minutes},
+                        }
+                    )
 
-            # Базовая валидация формата email
-            if "@" not in email or "." not in email.split("@")[-1]:
-                logger.warning(f"Некорректный формат email: {email}")
-                return JsonResponse({"success": False, "message": "Некорректный формат email"})
+            # Получаем email и имя в зависимости от авторизации
+            if request.user.is_authenticated:
+                user = request.user
+                email = user.email
+                name = f"{user.first_name} {user.last_name}".strip() or user.email.split("@")[0]
+            else:
+                email = request.POST.get("email", "").strip()
+                name = request.POST.get("name", "").strip()
+
+                # Валидация email для анонимных пользователей
+                if not email:
+                    logger.warning("Попытка подписки без email")
+                    return JsonResponse({"success": False, "message": _("Email обязателен")})
+
+                # Базовая валидация формата email
+                if "@" not in email or "." not in email.split("@")[-1]:
+                    logger.warning(f"Некорректный формат email: {email}")
+                    return JsonResponse(
+                        {"success": False, "message": _("Некорректный формат email")}
+                    )
 
             # Создание или получение подписки
-            subscription, created = Newsletter.objects.get_or_create(
-                email=email, defaults={"name": name, "is_active": True}
-            )
-
-            if created:
-                logger.info(f"Новая подписка: {email} (имя: {name or 'не указано'})")
-
-                # Отправка приветственного письма
-                try:
-                    send_mail(
-                        subject="Добро пожаловать в PyLand!",
-                        message=f"Привет, {name or 'друг'}!\n\nСпасибо за подписку на блог PyLand. Теперь ты будешь первым узнавать о новых статьях и уроках программирования.",
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[email],
-                        fail_silently=True,
-                    )
-                    logger.info(f"Приветственное письмо отправлено: {email}")
-                except Exception as e:
-                    logger.error(f"Ошибка отправки приветственного письма для {email}: {e}")
-
-                return JsonResponse({"success": True, "message": "Спасибо за подписку!"})
-
+            defaults = {"name": name, "is_active": True}
+            if request.user.is_authenticated:
+                defaults["user"] = request.user
+                subscription, created = Newsletter.objects.get_or_create(
+                    email=email, defaults=defaults
+                )
             else:
-                if subscription.is_active:
-                    logger.info(f"Попытка повторной подписки (уже активна): {email}")
-                    return JsonResponse({"success": False, "message": "Вы уже подписаны"})
-                else:
-                    subscription.is_active = True
-                    subscription.save()
-                    logger.info(f"Подписка возобновлена: {email}")
-                    return JsonResponse({"success": True, "message": "Подписка возобновлена!"})
+                subscription, created = Newsletter.objects.get_or_create(
+                    email=email, defaults=defaults
+                )
+
+            if not created:
+                # Email уже есть в базе - устанавливаем блокировку
+                from datetime import datetime
+
+                request.session["newsletter_last_attempt"] = datetime.now().isoformat()
+                logger.info(f"Попытка повторной подписки: {email}")
+                return JsonResponse(
+                    {"success": False, "message": _("Этот email уже есть в списке рассылки")}
+                )
+
+            # Успешная подписка
+            logger.info(f"Новая подписка: {email} (имя: {name or 'не указано'})")
+
+            # Отправка приветственного письма
+            try:
+                send_mail(
+                    subject=_("Добро пожаловать в PyLand!"),
+                    message=_(
+                        "Привет, %(name)s!\n\nСпасибо за подписку на блог PyLand. Теперь ты будешь первым узнавать о новых статьях и уроках программирования."
+                    )
+                    % {"name": name or _("друг")},
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=True,
+                )
+                logger.info(f"Приветственное письмо отправлено: {email}")
+            except Exception as e:
+                logger.error(f"Ошибка отправки приветственного письма для {email}: {e}")
+
+            return JsonResponse({"success": True, "message": _("Спасибо за подписку!")})
 
         except Exception as e:
             logger.error(f"Ошибка при подписке на рассылку: {e}", exc_info=True)
             return JsonResponse(
-                {"success": False, "message": "Произошла ошибка. Попробуйте позже."},
+                {"success": False, "message": _("Произошла ошибка. Попробуйте позже.")},
                 status=500,
             )
 

@@ -397,6 +397,47 @@ html, body {
   border-color: var(--gray-100);
 }
 
+.newsletter-auth-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
+}
+
+.newsletter-auth-prompt .btn {
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.newsletter-auth-prompt .btn-primary {
+  background: var(--white);
+  color: var(--primary-600);
+  border: 2px solid var(--white);
+}
+
+.newsletter-auth-prompt .btn-primary:hover {
+  background: var(--gray-100);
+  color: var(--primary-700);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.newsletter-auth-prompt .btn-outline {
+  background: transparent;
+  color: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.newsletter-auth-prompt .btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--white);
+  transform: translateY(-2px);
+}
+
 .footer-main {
   padding: var(--spacing-16) 0 var(--spacing-12);
 }
@@ -969,7 +1010,7 @@ html, body {
 }
 
 .language-flag.en {
-  background-image: 
+  background-image:
     linear-gradient(45deg, transparent 40%, #d80027 40%, #d80027 60%, transparent 60%),
     linear-gradient(-45deg, transparent 40%, #d80027 40%, #d80027 60%, transparent 60%),
     linear-gradient(to bottom, #012169 33%, #ffffff 33%, #ffffff 66%, #012169 66%);
@@ -1272,11 +1313,11 @@ html, body {
 /* === СОВРЕМЕННЫЙ HERO БЛОК === */
 .modern-hero-section {
   min-height: 80vh;
-  background: linear-gradient(135deg, 
-    var(--primary-50) 0%, 
-    var(--primary-100) 25%, 
-    var(--secondary-50) 50%, 
-    var(--accent-50) 75%, 
+  background: linear-gradient(135deg,
+    var(--primary-50) 0%,
+    var(--primary-100) 25%,
+    var(--secondary-50) 50%,
+    var(--accent-50) 75%,
     var(--primary-50) 100%);
   background-size: 400% 400%;
   animation: gradientShift 8s ease-in-out infinite;
@@ -1618,11 +1659,11 @@ html, body {
 
 /* Темная тема для современного hero */
 [data-theme="dark"] .modern-hero-section {
-  background: linear-gradient(135deg, 
-    var(--gray-900) 0%, 
-    var(--gray-800) 25%, 
-    var(--primary-900) 50%, 
-    var(--gray-800) 75%, 
+  background: linear-gradient(135deg,
+    var(--gray-900) 0%,
+    var(--gray-800) 25%,
+    var(--primary-900) 50%,
+    var(--gray-800) 75%,
     var(--gray-900) 100%);
 }
 
@@ -1651,11 +1692,11 @@ html, body {
 .modern-stats-section {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, 
-    var(--gray-900) 0%, 
-    var(--primary-900) 25%, 
-    var(--secondary-900) 50%, 
-    var(--accent-900) 75%, 
+  background: linear-gradient(135deg,
+    var(--gray-900) 0%,
+    var(--primary-900) 25%,
+    var(--secondary-900) 50%,
+    var(--accent-900) 75%,
     var(--gray-900) 100%);
   background-size: 400% 400%;
   animation: statsGradientFlow 12s ease-in-out infinite;
@@ -1973,11 +2014,11 @@ html, body {
 
 /* Светлая тема для блока статистики */
 [data-theme="light"] .modern-stats-section {
-  background: linear-gradient(135deg, 
-    var(--gray-50) 0%, 
-    var(--primary-50) 25%, 
-    var(--secondary-50) 50%, 
-    var(--accent-50) 75%, 
+  background: linear-gradient(135deg,
+    var(--gray-50) 0%,
+    var(--primary-50) 25%,
+    var(--secondary-50) 50%,
+    var(--accent-50) 75%,
     var(--gray-100) 100%);
 }
 
@@ -2048,15 +2089,15 @@ html, body {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .modern-stat-card {
     padding: 2rem;
   }
-  
+
   .stat-number-modern {
     font-size: 2.5rem;
   }
-  
+
   .achievement-highlights {
     flex-direction: column;
     align-items: center;
@@ -2874,19 +2915,19 @@ html, body {
   .contact-methods-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .modern-contact-form {
     padding: 2rem;
   }
-  
+
   .faq-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .social-links-modern {
     justify-content: center;
   }
@@ -3129,7 +3170,7 @@ html, body {
   .dashboard {
     background: var(--gray-900);
   }
-  
+
   .dashboard-header,
   .stat-card,
   .course-progress-card,
@@ -3137,7 +3178,7 @@ html, body {
     background: var(--gray-800);
     border-color: var(--gray-700);
   }
-  
+
   .dashboard-title,
   .stat-card-value,
   .course-progress-title,
@@ -3145,41 +3186,41 @@ html, body {
   .activity-title {
     color: var(--gray-100);
   }
-  
+
   .dashboard-subtitle,
   .stat-card-label,
   .skill-progress-percentage,
   .activity-description {
     color: var(--gray-400);
   }
-  
+
   .stat-card-icon {
     background: var(--primary-900);
     color: var(--primary-400);
   }
-  
+
   .course-progress-stat {
     background: var(--gray-700);
   }
-  
+
   .activity-feed-header {
     background: var(--gray-700);
   }
-  
+
   .activity-item:hover {
     background: var(--gray-700);
   }
-  
+
   .activity-icon.success {
     background: var(--success-900);
     color: var(--success-400);
   }
-  
+
   .activity-icon.info {
     background: var(--primary-900);
     color: var(--primary-400);
   }
-  
+
   .activity-icon.warning {
     background: var(--warning-900);
     color: var(--warning-400);
@@ -3191,52 +3232,52 @@ html, body {
   .dashboard {
     padding: var(--spacing-4);
   }
-  
+
   .dashboard-header {
     padding: var(--spacing-4);
     margin-bottom: var(--spacing-4);
   }
-  
+
   .dashboard-title {
     font-size: var(--text-2xl);
   }
-  
+
   .dashboard-subtitle {
     font-size: var(--text-base);
   }
-  
+
   .dashboard-stats {
     grid-template-columns: 1fr;
     gap: var(--spacing-4);
     margin-bottom: var(--spacing-6);
   }
-  
+
   .stat-card {
     padding: var(--spacing-4);
   }
-  
+
   .stat-card-value {
     font-size: var(--text-2xl);
   }
-  
+
   .hero-section {
     padding: var(--spacing-8) 0;
     margin-bottom: var(--spacing-6);
   }
-  
+
   .hero-title {
     font-size: var(--text-3xl);
   }
-  
+
   .hero-subtitle {
     font-size: var(--text-lg);
   }
-  
+
   .course-progress-header,
   .course-progress-body {
     padding: var(--spacing-4);
   }
-  
+
   .course-progress-stats {
     grid-template-columns: 1fr;
     gap: var(--spacing-3);
@@ -3262,7 +3303,7 @@ html, body {
 }
 
 .glow-on-hover:hover {
-  box-shadow: 
+  box-shadow:
     0 0 20px var(--primary-400),
     0 4px 20px rgba(0, 0, 0, 0.1);
 }
@@ -3280,9 +3321,9 @@ html, body {
   width: 100%;
   height: 100%;
   background: linear-gradient(
-    90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.3), 
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
     transparent
   );
   transition: left 0.5s;
@@ -3356,12 +3397,12 @@ html, body {
   .nav-dropdown-menu {
     min-width: 360px;
   }
-  
+
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-8);
   }
-  
+
   .newsletter-content {
     flex-direction: column;
     text-align: center;
@@ -3373,54 +3414,54 @@ html, body {
   .header-top {
     display: none;
   }
-  
+
   .main-nav {
     display: none;
   }
-  
+
   .mobile-menu-toggle {
     display: flex;
   }
-  
+
   .header-actions {
     gap: var(--spacing-2);
   }
-  
+
   .header-actions .btn {
     font-size: var(--text-xs);
     padding: var(--spacing-2);
   }
-  
+
   .logo-text {
     display: none;
   }
-  
+
   .main-content {
     margin-top: 80px;
   }
-  
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-6);
   }
-  
+
   .footer-stats {
     justify-content: space-around;
   }
-  
+
   .newsletter-content {
     padding: 0 var(--spacing-4);
   }
-  
+
   .newsletter-title {
     font-size: var(--text-xl);
   }
-  
+
   .footer-bottom-content {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .footer-badges {
     flex-direction: column;
     gap: var(--spacing-3);
@@ -3431,28 +3472,28 @@ html, body {
   .header-content {
     gap: var(--spacing-4);
   }
-  
+
   .logo-icon svg {
     width: 28px;
     height: 28px;
   }
-  
+
   .back-to-top {
     bottom: var(--spacing-4);
     right: var(--spacing-4);
     width: 44px;
     height: 44px;
   }
-  
+
   .newsletter-form {
     max-width: none;
   }
-  
+
   .form-inline {
     flex-direction: column;
     gap: var(--spacing-3);
   }
-  
+
   .newsletter-btn {
     width: 100%;
   }
@@ -3769,17 +3810,17 @@ html, body {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
+
     .office-content {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
-    
+
     .contact-method-card,
     .contact-form {
         padding: 2rem 1.5rem;
@@ -3793,7 +3834,7 @@ html, body {
     .office-info-section {
         padding: 3rem 0;
     }
-    
+
     .contact-method-card,
     .contact-form {
         padding: 1.5rem 1rem;
@@ -4025,20 +4066,20 @@ html, body {
   background: var(--border-color);
 }
 
-.strength-bar.weak { 
-  background: var(--error-500); 
+.strength-bar.weak {
+  background: var(--error-500);
 }
 
-.strength-bar.medium { 
-  background: var(--warning-500); 
+.strength-bar.medium {
+  background: var(--warning-500);
 }
 
-.strength-bar.good { 
-  background: var(--primary-500); 
+.strength-bar.good {
+  background: var(--primary-500);
 }
 
-.strength-bar.strong { 
-  background: var(--success-500); 
+.strength-bar.strong {
+  background: var(--success-500);
 }
 
 .strength-fill {
@@ -4462,11 +4503,11 @@ html, body {
     gap: 2rem;
     max-width: 500px;
   }
-  
+
   .auth-visual-side {
     display: none; /* Скрываем визуальную сторону на планшетах и мобильных */
   }
-  
+
   .auth-form-side {
     max-width: 100%;
   }
@@ -4476,36 +4517,36 @@ html, body {
   .modern-auth-section {
     padding: 1rem 0;
   }
-  
+
   .auth-form-container {
     padding: 2rem 1.5rem;
     border-radius: 16px;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .social-buttons {
     grid-template-columns: 1fr;
   }
-  
+
   .auth-options {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .visual-text {
     text-align: left;
   }
-  
+
   .visual-text h2 {
     font-size: 1.75rem;
   }

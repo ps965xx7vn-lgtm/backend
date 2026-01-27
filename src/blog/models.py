@@ -712,15 +712,26 @@ class Newsletter(models.Model):
     Подписка на рассылку блога.
 
     Управляет email-подписками пользователей на новости и обновления блога.
+    Поддерживает как анонимные подписки, так и подписки зарегистрированных пользователей.
     Поддерживает деактивацию подписки без удаления записи.
 
     Attributes:
+        user: Связь с пользователем (опционально, если подписан зарегистрированный)
         email: Уникальный email адрес подписчика
         name: Имя подписчика (опционально)
         is_active: Активна ли подписка
         created_at: Дата подписки
     """
 
+    user = models.OneToOneField(
+        "authentication.User",
+        on_delete=models.CASCADE,
+        related_name="newsletter_subscription",
+        verbose_name="Пользователь",
+        help_text="Пользователь с подпиской на рассылку",
+        null=True,
+        blank=True,
+    )
     email = models.EmailField(
         unique=True, verbose_name="Email", help_text="Email адрес для подписки"
     )
