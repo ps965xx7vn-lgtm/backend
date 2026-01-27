@@ -1,0 +1,59 @@
+/* Django Messages Styles */
+.messages-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+}
+
+.messages-container .alert {
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    color: white;
+    font-weight: 500;
+    animation: slideInRight 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.messages-container .alert-success {
+    background: #10b981;
+}
+
+.messages-container .alert-error {
+    background: #ef4444;
+}
+
+.messages-container .alert-warning {
+    background: #f59e0b;
+}
+
+.messages-container .alert-info {
+    background: #3b82f6;
+}
+
+.messages-container .alert-icon {
+    font-size: 20px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Hide animation */
+.messages-container.hide {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease-out;
+}

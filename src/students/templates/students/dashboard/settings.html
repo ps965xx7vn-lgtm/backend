@@ -126,7 +126,7 @@
                     <form class="settings-form" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" name="profile_submit" value="1">
-                        
+
                         <!-- Avatar Upload -->
                         <div class="avatar-upload-section">
                             <div class="current-avatar">
@@ -150,8 +150,8 @@
                                     </label>
                                     <input type="file" id="avatar-input" name="avatar" accept="image/*" class="avatar-input-hidden">
                                     {% if request.user.student.avatar %}
-                                    <button type="button" 
-                                            class="btn btn-outline-danger btn-sm" 
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm"
                                             id="remove-avatar"
                                             data-delete-url="{% url 'students:delete_avatar' %}"
                                             data-user-email="{{ request.user.email }}"
@@ -170,12 +170,12 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="first_name" class="form-label">{% trans "Имя" %}</label>
-                                <input type="text" id="first_name" name="first_name" class="form-input" 
+                                <input type="text" id="first_name" name="first_name" class="form-input"
                                        value="{{ request.user.first_name }}" placeholder="{% trans 'Введите ваше имя' %}">
                             </div>
                             <div class="form-group">
                                 <label for="last_name" class="form-label">{% trans "Фамилия" %}</label>
-                                <input type="text" id="last_name" name="last_name" class="form-input" 
+                                <input type="text" id="last_name" name="last_name" class="form-input"
                                        value="{{ request.user.last_name }}" placeholder="{% trans 'Введите вашу фамилию' %}">
                             </div>
                         </div>
@@ -183,7 +183,7 @@
                         <!-- Email -->
                         <div class="form-group">
                             <label for="email" class="form-label">{% trans "Email" %}</label>
-                            <input type="email" id="email" name="email" class="form-input" 
+                            <input type="email" id="email" name="email" class="form-input"
                                    value="{{ request.user.email }}" placeholder="{% trans 'Введите ваш email' %}">
                             <small class="form-help">{% trans "Email используется для входа в систему и получения уведомлений" %}</small>
                         </div>
@@ -191,7 +191,7 @@
                         <!-- Bio -->
                         <div class="form-group">
                             <label for="bio" class="form-label">{% trans "О себе" %}</label>
-                            <textarea id="bio" name="bio" class="form-textarea" rows="4" 
+                            <textarea id="bio" name="bio" class="form-textarea" rows="4"
                                       placeholder="{% trans 'Расскажите немного о себе...' %}">{{ request.user.student.bio }}</textarea>
                             <small class="form-help">{% trans "Краткое описание о вас (максимум 500 символов)" %}</small>
                         </div>
@@ -200,7 +200,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="birthday" class="form-label">{% trans "Дата рождения" %}</label>
-                                <input type="date" id="birthday" name="birthday" class="form-input" 
+                                <input type="date" id="birthday" name="birthday" class="form-input"
                                        value="{{ request.user.student.birthday|date:'Y-m-d' }}">
                             </div>
                             <div class="form-group">
@@ -229,7 +229,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="city" class="form-label">{% trans "Город" %}</label>
-                                <input type="text" id="city" name="city" class="form-input" 
+                                <input type="text" id="city" name="city" class="form-input"
                                        value="{{ request.user.student.city }}" placeholder="{% trans 'Введите ваш город' %}">
                             </div>
                         </div>
@@ -246,8 +246,8 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
-                                <input type="tel" id="phone" name="phone" class="phone-number-input" 
-                                       value="{{ request.user.student.phone }}" 
+                                <input type="tel" id="phone" name="phone" class="phone-number-input"
+                                       value="{{ request.user.student.phone }}"
                                        placeholder="{% trans 'Введите ваш телефон' %}"
                                        autocomplete="tel">
                             </div>
@@ -363,10 +363,10 @@
                     <form class="settings-form" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="notification_submit" value="1">
-                        
+
                         <div class="notification-group">
                             <h4>{% trans "Email уведомления" %}</h4>
-                            
+
                             <div class="notification-item">
                                 <div class="notification-item-wrapper">
                                     <div class="notification-item-icon">
@@ -499,10 +499,10 @@
                     <form class="settings-form" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="privacy_submit" value="1">
-                        
+
                         <div class="privacy-group">
                             <h4>{% trans "Видимость профиля" %}</h4>
-                            
+
                             <div class="privacy-item">
                                 <div class="privacy-item-wrapper">
                                     <div class="privacy-item-icon">
@@ -589,7 +589,7 @@
 
                     <div class="privacy-group">
                         <h4>{% trans "Управление данными" %}</h4>
-                        
+
                         <div class="data-management-item">
                             <div class="data-info">
                                 <h5>{% trans "Экспорт данных" %}</h5>
@@ -608,7 +608,7 @@
                                 <h5>{% trans "Удаление аккаунта" %}</h5>
                                 <p>{% trans "Навсегда удалить ваш аккаунт и все данные" %}</p>
                             </div>
-                            <button type="button" class="btn btn-outline-danger" onclick="openDeleteModal()">
+                            <button type="button" class="btn btn-outline-danger" data-action="open-delete-modal">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
@@ -624,11 +624,11 @@
 
 <!-- Delete Account Modal -->
 <div id="delete-account-modal" class="modal">
-    <div class="modal-overlay" onclick="closeDeleteModal()"></div>
+    <div class="modal-overlay" data-action="close-delete-modal"></div>
     <div class="modal-content">
         <div class="modal-header">
             <h3>{% trans "Удаление аккаунта" %}</h3>
-            <button class="modal-close" onclick="closeDeleteModal()">
+            <button class="modal-close" data-action="close-delete-modal">
                 <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -660,7 +660,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" onclick="closeDeleteModal()">
+                <button type="button" class="btn btn-outline-secondary" data-action="close-delete-modal">
                     {% trans "Отмена" %}
                 </button>
                 <button type="submit" class="btn btn-danger" id="confirm-delete" disabled>
@@ -680,4 +680,3 @@
 <script src="{% static 'js/students/dashboard.js' %}"></script>
 <script src="{% static 'js/students/settings.js' %}"></script>
 {% endblock %}
-

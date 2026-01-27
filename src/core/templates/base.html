@@ -7,23 +7,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PyLand - {% trans "Онлайн школа программирования" %}{% endblock %}</title>
-    
+
     <!-- Meta tags -->
     <meta name="description" content="{% block description %}{% trans 'PyLand - современная онлайн школа программирования с лучшими курсами Python, JavaScript, и других технологий' %}{% endblock %}">
     <meta name="keywords" content="{% block keywords %}{% trans 'программирование, Python, JavaScript, курсы, онлайн обучение, веб-разработка' %}{% endblock %}">
     <meta name="author" content="PyLand">
     <meta name="csrf-token" content="{{ csrf_token }}">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/icons/favicon.png' %}">
     <link rel="shortcut icon" type="image/png" href="{% static 'images/icons/favicon.png' %}">
     <link rel="apple-touch-icon" href="{% static 'images/icons/favicon.png' %}">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/core/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/components.css' %}">
@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="{% static 'css/core/desktop-nav.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/mobile-menu.css' %}">
     <link rel="stylesheet" href="{% static 'css/core/messages.css' %}">
-    
+
     <!-- Extra CSS for specific pages -->
     {% block extra_css %}{% endblock %}
 </head>
@@ -48,8 +48,9 @@
     </div>
 
     <!-- Header -->
+    {% block header %}
     {% include 'shared/_header.html' %}
-
+    {% endblock %}
     <!-- Main Content -->
     <main id="main-content" class="main-content">
         <!-- Django Messages -->
@@ -65,7 +66,7 @@
             {% endfor %}
         </div>
         {% endif %}
-        
+
         {% block content %}{% endblock %}
     </main>
 
@@ -91,7 +92,7 @@
     <script src="{% static 'js/core/desktop-nav.js' %}" defer></script>
     <script src="{% static 'js/core/mobile-menu.js' %}" defer></script>
     <script src="{% static 'js/core/messages.js' %}" defer></script>
-    
+
     <!-- Extra JavaScript for specific pages -->
     {% block extra_js %}{% endblock %}
 </body>

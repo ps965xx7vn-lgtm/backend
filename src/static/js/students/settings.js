@@ -46,6 +46,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Delete account confirmation
     initDeleteAccountConfirmation();
+
+    // Delete modal handlers with data-action
+    document.querySelectorAll('[data-action="open-delete-modal"]').forEach(btn => {
+        btn.addEventListener('click', openDeleteModal);
+    });
+
+    document.querySelectorAll('[data-action="close-delete-modal"]').forEach(el => {
+        el.addEventListener('click', closeDeleteModal);
+    });
 });
 
 /**
@@ -54,13 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function initAvatarDeletion() {
     const removeAvatarBtn = document.getElementById('remove-avatar');
     const avatarInput = document.getElementById('avatar-input');
-    
+
     if (!removeAvatarBtn) return;
 
     removeAvatarBtn.addEventListener('click', function() {
         const deleteAvatarUrl = removeAvatarBtn.dataset.deleteUrl;
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-        
+
         if (confirm(removeAvatarBtn.dataset.confirmMessage || 'Вы уверены, что хотите удалить фото профиля?')) {
             // Send AJAX request to delete avatar
             fetch(deleteAvatarUrl, {
@@ -83,15 +92,15 @@ function initAvatarDeletion() {
                     if (avatarInput) {
                         avatarInput.value = '';
                     }
-                    
+
                     // Hide delete button
                     removeAvatarBtn.style.display = 'none';
-                    
+
                     // Show success notification
                     if (typeof showNotification === 'function') {
                         showNotification(data.message || 'Аватар успешно удален', 'success');
                     }
-                    
+
                     // Reload page to update UI
                     setTimeout(() => location.reload(), 1500);
                 } else {
@@ -133,18 +142,18 @@ function initDeleteAccountConfirmation() {
 /**
  * Открыть модальное окно удаления аккаунта
  */
-window.openDeleteModal = function() {
+function openDeleteModal() {
     const modal = document.getElementById('delete-account-modal');
     if (modal) {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
-};
+}
 
 /**
  * Закрыть модальное окно удаления аккаунта
  */
-window.closeDeleteModal = function() {
+function closeDeleteModal() {
     const modal = document.getElementById('delete-account-modal');
     if (modal) {
         modal.classList.remove('active');
@@ -159,4 +168,4 @@ window.closeDeleteModal = function() {
             }
         }
     }
-};
+}

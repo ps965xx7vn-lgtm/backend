@@ -3,7 +3,6 @@
 {% load i18n %}
 
 {% block title %}PyLand - {% trans "Повторная отправка письма" %}{% endblock %}
-
 {% block content %}
 <!-- Modern Auth Section -->
 <section class="modern-auth-section">
@@ -35,7 +34,7 @@
                 <!-- Form -->
                 <form method="post" class="modern-auth-form" novalidate>
                     {% csrf_token %}
-                    
+
                     <!-- Email Field -->
                     <div class="form-group">
                         <label for="email" class="form-label">
@@ -45,10 +44,10 @@
                             </svg>
                             {% trans "Email адрес" %}
                         </label>
-                        <input 
-                            type="email" 
-                            name="email" 
-                            id="email" 
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
                             class="form-control"
                             placeholder="{% trans 'Введите ваш email' %}"
                             required
@@ -108,7 +107,7 @@
                 </div>
                 <h2>{% trans "Подтвердите ваш email" %}</h2>
                 <p>{% trans "Мы отправим вам письмо с инструкциями для активации вашего аккаунта" %}</p>
-                
+
                 <div class="auth-visual-features">
                     <div class="feature-item">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
