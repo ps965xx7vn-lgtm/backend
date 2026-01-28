@@ -501,26 +501,6 @@
                         <input type="hidden" name="privacy_submit" value="1">
 
                         <div class="privacy-group">
-                            <h4>{% trans "Видимость профиля" %}</h4>
-
-                            <div class="privacy-item">
-                                <div class="privacy-item-wrapper">
-                                    <div class="privacy-item-icon">
-                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="privacy-info">
-                                        <h5>{% trans "Видимость профиля" %}</h5>
-                                        <p>{% trans "Кто может видеть ваш профиль" %}</p>
-                                    </div>
-                                </div>
-                                <select name="profile_visibility" class="form-select">
-                                    <option value="public" {% if profile.profile_visibility == 'public' %}selected{% endif %}>{% trans "Публичный" %}</option>
-                                    <option value="students" {% if profile.profile_visibility == 'students' %}selected{% endif %}>{% trans "Только студенты" %}</option>
-                                    <option value="private" {% if profile.profile_visibility == 'private' %}selected{% endif %}>{% trans "Приватный" %}</option>
-                                </select>
-                            </div>
 
                             <div class="privacy-item">
                                 <div class="privacy-item-wrapper">
