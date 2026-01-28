@@ -18,7 +18,7 @@
         const toggleBtn = document.querySelector('[data-mobile-toggle]');
         const closeBtn = document.querySelector('[data-mobile-close-btn]');
         const overlay = document.querySelector('[data-mobile-close]');
-        
+
         if (!sidebar || !toggleBtn) return;
 
         // Toggle sidebar
@@ -59,7 +59,7 @@
                 e.preventDefault();
                 const targetId = toggle.getAttribute('data-toggle');
                 const submenu = document.querySelector(`[data-submenu="${targetId}"]`);
-                
+
                 if (submenu) {
                     toggle.classList.toggle('active');
                     submenu.classList.toggle('active');
@@ -67,29 +67,51 @@
             });
         });
 
-        // Theme switcher
+        // Theme switcher - используем глобальный ThemeManager для корректной работы уведомлений
         const themeOptions = document.querySelectorAll('.mobile-theme-option');
         themeOptions.forEach(option => {
             option.addEventListener('click', () => {
                 const theme = option.getAttribute('data-theme-icon');
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('theme', theme);
+                // Используем ThemeManager если доступен
+                if (window.themeManager) {
+                    window.themeManager.applyTheme(theme, true);
+                } else {
+                    // Fallback если ThemeManager еще не инициализирован
+                    document.documentElement.setAttribute('data-theme', theme);
+                    localStorage.setItem('theme', theme);
+                }
             });
         });
 
-        // Language switcher
+        // Language switcher - интеграция с LanguageManager для реального переключения языка
         const langBtns = document.querySelectorAll('.mobile-lang-btn');
         langBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                const langCode = btn.getAttribute('data-lang');
+
+                // Визуальное обновление кнопок
                 langBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                // Language switching would be handled by Django
-                // This just updates the UI state
+
+                // Используем LanguageManager для переключения языка через Django
+                if (window.languageManager) {
+                    window.languageManager.changeLanguage(langCode);
+                } else {
+                    // Fallback: прямое переключение если LanguageManager не готов
+                    localStorage.setItem('language', langCode);
+                    sessionStorage.setItem('language_changed', langCode);
+
+                    const currentPath = window.location.pathname;
+                    const pathWithoutLang = currentPath.replace(/^\/[a-z]{2}\//, '/');
+                    const newPath = `/${langCode}${pathWithoutLang}`;
+                    window.location.href = newPath + window.location.search;
+                }
             });
         });
 
         // Set active language on load
-        const currentLang = document.documentElement.lang || 'ru';
+        // Извлекаем первые 2 символа языка (например, 'ru' из 'ru-RU' или 'en' из 'en-US')
+        const currentLang = (document.documentElement.lang || 'ru').split('-')[0];
         const activeLangBtn = document.querySelector(`.mobile-lang-btn[data-lang="${currentLang}"]`);
         if (activeLangBtn) {
             activeLangBtn.classList.add('active');

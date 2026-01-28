@@ -320,6 +320,15 @@
     border-radius: 8px;
     transition: all 0.3s ease;
     color: var(--text-secondary);
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.mobile-theme-option:focus {
+    outline: none;
 }
 
 [data-theme="light"] .mobile-theme-option[data-theme-icon="light"],
@@ -349,11 +358,17 @@
     font-size: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-lang-btn:hover {
     border-color: #0ea5e9;
     transform: scale(1.05);
+}
+
+.mobile-lang-btn:focus {
+    outline: none;
 }
 
 .mobile-lang-btn.active {
@@ -444,12 +459,12 @@
     .mobile-menu-btn {
         display: flex;
     }
-    
+
     /* Hide desktop navigation */
     .main-nav {
         display: none;
     }
-    
+
     /* Hide desktop user actions */
     .header-actions {
         display: none;

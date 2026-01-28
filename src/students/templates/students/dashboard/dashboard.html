@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load dashboard_filters %}
 
 {% block title %}{% trans "Дашборд" %} - {{ profile.user.email }} - PyLand{% endblock %}
 
@@ -40,7 +41,7 @@
                     {% endif %}
                 </h3>
                 <p class="dashboard-user-role">
-                    {{ profile.role.name|default:"Студент" }}
+                    {{ profile.role.name|default:"student"|translate_role }}
                 </p>
             </div>
         </div>
@@ -504,7 +505,13 @@ window.dashboardData = {
             color: "{% if course_stat.completion_percentage == 100 %}#10b981{% elif course_stat.completion_percentage >= 75 %}#f59e0b{% elif course_stat.completion_percentage >= 50 %}#3b82f6{% else %}#ef4444{% endif %}"
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
-    ]
+    ],
+    translations: {
+        noActivityTitle: "{% trans 'Нет активности за последнюю неделю' %}",
+        noActivityText: "{% trans 'Начните выполнять задания, чтобы увидеть вашу статистику' %}",
+        noCoursesTitle: "{% trans 'Нет активных курсов' %}",
+        noCoursesText: "{% trans 'Запишитесь на курс, чтобы начать обучение' %}"
+    }
 };
 </script>
 {% endblock %}

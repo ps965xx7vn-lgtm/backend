@@ -176,13 +176,22 @@ class ThemeManager {
     this.setupToggle();
   }
 
-  applyTheme(theme) {
+  applyTheme(theme, showNotification = false) {
     document.documentElement.setAttribute('data-theme', theme);
     this.currentTheme = theme;
     localStorage.setItem('theme', theme);
 
     // Обновить все кнопки переключения темы
     this.updateToggleButtons();
+
+    // Показать уведомление если запрошено
+    if (showNotification && window.notificationManager && window.djangoTranslations) {
+      const themeName = theme === 'light' ?
+        window.djangoTranslations.lightTheme :
+        window.djangoTranslations.darkTheme;
+      const message = `${window.djangoTranslations.themeChanged}: ${themeName}`;
+      window.notificationManager.show(message, 'success', 2000);
+    }
   }
 
   updateToggleButtons() {
@@ -209,19 +218,13 @@ class ThemeManager {
 
   toggle() {
     const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-    this.applyTheme(newTheme);
+    this.applyTheme(newTheme, true);
 
     // Плавная анимация переключения
     document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
     setTimeout(() => {
       document.body.style.transition = '';
     }, 300);
-
-    // Показать уведомление
-    if (window.notificationManager) {
-      const themeName = newTheme === 'light' ? 'Светлая' : 'Темная';
-      window.notificationManager.show(`Тема изменена на: ${themeName}`, 'success', 2000);
-    }
   }
 
   setupToggle() {

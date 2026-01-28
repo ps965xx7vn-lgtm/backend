@@ -422,13 +422,13 @@
                     <div class="mobile-control">
                         <div class="mobile-control-label">{% trans "Язык" %}</div>
                         <div class="mobile-language-btns">
-                            <button class="mobile-lang-btn {% if LANGUAGE_CODE == 'ru' %}active{% endif %}" data-lang="ru" aria-label="Русский">
+                            <button class="mobile-lang-btn {% if LANGUAGE_CODE|slice:':2' == 'ru' %}active{% endif %}" data-lang="ru" aria-label="Русский">
                                 🇷🇺
                             </button>
-                            <button class="mobile-lang-btn {% if LANGUAGE_CODE == 'ka' %}active{% endif %}" data-lang="ka" aria-label="ქართული">
+                            <button class="mobile-lang-btn {% if LANGUAGE_CODE|slice:':2' == 'ka' %}active{% endif %}" data-lang="ka" aria-label="ქართული">
                                 🇬🇪
                             </button>
-                            <button class="mobile-lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}" data-lang="en" aria-label="English">
+                            <button class="mobile-lang-btn {% if LANGUAGE_CODE|slice:':2' == 'en' %}active{% endif %}" data-lang="en" aria-label="English">
                                 🇬🇧
                             </button>
                         </div>

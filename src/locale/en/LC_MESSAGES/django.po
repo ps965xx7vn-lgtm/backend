@@ -8343,3 +8343,15 @@ msgstr "Invalid confirmation. Enter 'DELETE' to confirm."
 #: students/views.py:667
 msgid "Неверный пароль. Удаление отменено."
 msgstr "Invalid password. Deletion cancelled."
+
+#: core/templates/base.html
+msgid "Тема изменена на"
+msgstr "Theme changed to"
+
+#: core/templates/base.html
+msgid "Светлая"
+msgstr "Light"
+
+#: core/templates/base.html
+msgid "Темная"
+msgstr "Dark"

@@ -80,13 +80,14 @@ class DashboardManager {
 
         // Если нет активности, показываем заглушку
         if (!hasActivity) {
+            const translations = window.dashboardData?.translations || {};
             chartContainer.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; color: var(--gray-500); text-align: center; padding: 2rem;">
                     <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.4; margin-bottom: 1rem;">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
-                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--gray-700);">Нет активности за последнюю неделю</p>
-                    <p style="font-size: 0.875rem; color: var(--gray-500);">Начните выполнять задания, чтобы увидеть вашу статистику</p>
+                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--gray-700);">${translations.noActivityTitle}</p>
+                    <p style="font-size: 0.875rem; color: var(--gray-500);">${translations.noActivityText}</p>
                 </div>
             `;
             return;
@@ -190,13 +191,14 @@ class DashboardManager {
 
         // Если нет курсов, показываем заглушку
         if (courseProgress.length === 0) {
+            const translations = window.dashboardData?.translations || {};
             chartContainer.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; color: var(--gray-500); text-align: center; padding: 2rem;">
                     <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.5; margin-bottom: 1rem;">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
-                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem;">Нет активных курсов</p>
-                    <p style="font-size: 0.875rem;">Запишитесь на курс, чтобы начать обучение</p>
+                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem;">${translations.noCoursesTitle}</p>
+                    <p style="font-size: 0.875rem;">${translations.noCoursesText}</p>
                 </div>
             `;
             return;

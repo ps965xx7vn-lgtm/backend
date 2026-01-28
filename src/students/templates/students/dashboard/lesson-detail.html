@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load markdownify %}
 {% load markdown_filters %}
+{% load dashboard_filters %}
 
 {% block title %}{{ lesson.name }} - {{ course.name }} - PyLand{% endblock %}
 
@@ -11,6 +12,10 @@
 <link rel="stylesheet" href="{% static 'css/students/course-list.css' %}?v=20251212-progress">
 <link rel="stylesheet" href="{% static 'css/students/markdown.css' %}">
 <link rel="stylesheet" href="{% static 'css/students/code-blocks.css' %}">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
 {% endblock %}
 
 {% block content %}
@@ -29,7 +34,7 @@
     <aside class="dashboard-sidebar">
         <!-- Пустой блок для отступа на мобильных -->
         <div class="sidebar-spacer"></div>
-        
+
         <!-- User Info -->
         <div class="dashboard-user-info">
             <div class="dashboard-avatar">
@@ -48,7 +53,7 @@
                     {% endif %}
                 </h3>
                 <p class="dashboard-user-role">
-                    {{ request.user.role.name|default:"Студент" }}
+                    {{ request.user.role.name|default:"student"|translate_role }}
                 </p>
             </div>
         </div>
@@ -59,13 +64,12 @@
                 <h4 class="course-nav-title">{% trans "Навигация по курсу" %}</h4>
                 <div class="course-nav-subtitle">{{ course.name }}</div>
             </div>
-            
+
             <ul class="dashboard-nav-list">
                 <li class="dashboard-nav-item">
                     <a href="{% url 'students:account_dashboard' request.user.student.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
                         {% trans "Дашборд" %}
                     </a>
@@ -144,7 +148,7 @@
                 <span class="progress-percentage">{{ lesson_progress.completion_percentage }}%</span>
             </div>
             <div class="progress-bar progress-bar-large">
-                <div class="progress-fill lesson-progress-fill {% if lesson_progress.completion_percentage == 100 %}success{% elif lesson_progress.completion_percentage >= 50 %}warning{% endif %}" 
+                <div class="progress-fill lesson-progress-fill {% if lesson_progress.completion_percentage == 100 %}success{% elif lesson_progress.completion_percentage >= 50 %}warning{% endif %}"
                      style="width: {{ lesson_progress.completion_percentage }}%"></div>
             </div>
             <div class="progress-stats">
@@ -194,8 +198,8 @@
                 <div class="step-card {% if step_data.is_completed %}completed{% endif %}" data-step-id="{{ step_data.step.id }}">
                     <div class="step-header">
                         <div class="step-checkbox-container" onclick="event.stopPropagation()">
-                            <input type="checkbox" 
-                                   class="step-checkbox" 
+                            <input type="checkbox"
+                                   class="step-checkbox"
                                    {% if step_data.is_completed %}checked{% endif %}
                                    data-step-id="{{ step_data.step.id }}"
                                    data-course-slug="{{ course.slug }}"
@@ -299,8 +303,8 @@
                         <!-- Step Image -->
                         {% if step_data.step.image %}
                         <div class="step-body step-image-wrapper">
-                            <img src="{{ step_data.step.image.url }}" 
-                                 alt="{{ step_data.step.name }}" 
+                            <img src="{{ step_data.step.image.url }}"
+                                 alt="{{ step_data.step.name }}"
                                  class="step-image">
                         </div>
                         {% endif %}
@@ -392,7 +396,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                
+
                 <!-- Шаги доработки от ментора -->
                 {% if existing_submission and existing_submission.improvements.exists %}
                 {% for improvement in existing_submission.improvements.all %}
@@ -409,8 +413,8 @@
                         </div>
                         {% else %}
                         <div class="step-checkbox-container" onclick="event.stopPropagation()">
-                            <input type="checkbox" 
-                                   class="step-checkbox improvement-step-checkbox" 
+                            <input type="checkbox"
+                                   class="step-checkbox improvement-step-checkbox"
                                    data-improvement-id="{{ improvement.id }}"
                                    id="improvement-step-{{ improvement.id }}">
                             <div class="step-checkbox-custom">
@@ -478,7 +482,7 @@
                     {{ existing_submission.get_status_icon }} {{ existing_submission.get_status_display }}
                 </span>
             </div>
-            
+
             {% if existing_submission.status == 'approved' %}
             <!-- Approved -->
             <div class="submission-success submission-approved">
@@ -489,7 +493,7 @@
                 </div>
                 <h4>✅ {% trans "Работа одобрена!" %}</h4>
                 <p class="submission-link-text">
-                    {% trans "Ссылка:" %} 
+                    {% trans "Ссылка:" %}
                     <a href="{{ existing_submission.lesson_url }}" target="_blank" rel="noopener" class="submission-link">
                         {{ existing_submission.lesson_url }}
                     </a>
@@ -498,7 +502,7 @@
                 <p class="submission-mentor">{% trans "Проверил:" %} {{ existing_submission.mentor.user.get_full_name|default:existing_submission.mentor.user.email }}</p>
                 {% endif %}
                 <p class="submission-time">{% trans "Одобрено:" %} {{ existing_submission.reviewed_at|date:"d.m.Y H:i" }}</p>
-                
+
                 {% if existing_submission.review and existing_submission.review.comments %}
                 <div class="submission-comment-box" style="margin-top: 1rem; text-align: left;">
                     <strong class="submission-comment-title">{% trans "Комментарий проверяющего:" %}</strong>
@@ -506,12 +510,12 @@
                 </div>
                 {% endif %}
             </div>
-            
+
             {% elif existing_submission.status == 'changes_requested' %}
             <!-- Changes Requested -->
             <div class="submission-warning submission-changes-requested">
                 <h4 class="submission-warning-title">✏️ {% trans "Требуются доработки" %}</h4>
-                
+
                 {% if existing_submission.mentor_comment %}
                 <div class="submission-comment-box">
                     <strong class="submission-comment-title">{% trans "Комментарий ментора:" %}</strong>
@@ -521,7 +525,7 @@
                     {% endif %}
                 </div>
                 {% endif %}
-                
+
                 {% if existing_submission.mentor %}
                 <p class="submission-info-text">
                     <strong>{% trans "Проверил:" %}</strong> {{ existing_submission.mentor.user.get_full_name|default:existing_submission.mentor.user.email }}
@@ -532,7 +536,7 @@
                     <strong>{% trans "Дата проверки:" %}</strong> {{ existing_submission.reviewed_at|date:"d.m.Y H:i" }}
                 </p>
                 {% endif %}
-                
+
                 {% if existing_submission.improvement_steps_list.exists %}
                 <div class="submission-steps-notice">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -541,15 +545,15 @@
                     <span>{% trans "Ментор добавил шаги для доработки в раздел шагов урока выше (красные блоки)" %}</span>
                 </div>
                 {% endif %}
-                
+
                 <p class="submission-info-text">
-                    <strong>{% trans "Текущая ссылка:" %}</strong> 
+                    <strong>{% trans "Текущая ссылка:" %}</strong>
                     <a href="{{ existing_submission.lesson_url }}" target="_blank" class="submission-link">{{ existing_submission.lesson_url }}</a>
                 </p>
                 <p class="submission-info-text">
                     <strong>{% trans "Попытка:" %}</strong> {{ existing_submission.revision_count|add:1 }}
                 </p>
-                
+
                 {% if existing_submission.improvement_steps_list.exists %}
                 <div class="improvement-progress-notice">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -566,7 +570,7 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_resubmit_url">{% trans "Новая ссылка на исправленную работу" %}</label>
-                        <input type="url" name="lesson_url" id="id_resubmit_url" class="form-control" 
+                        <input type="url" name="lesson_url" id="id_resubmit_url" class="form-control"
                                value="{{ existing_submission.lesson_url }}"
                                placeholder="https://github.com/username/repository" required>
                         <div id="resubmission-errors" class="form-errors"></div>
@@ -576,7 +580,7 @@
                     </button>
                 </form>
             </div>
-            
+
             {% else %}
             <!-- Pending -->
             <div class="submission-success">
@@ -588,19 +592,19 @@
                 <h4>{% trans "Работа отправлена на проверку!" %}</h4>
                 <p>{% trans "Ссылка на GitHub:" %} <a href="{{ existing_submission.lesson_url }}" target="_blank" rel="noopener">{{ existing_submission.lesson_url }}</a></p>
                 <p class="submission-time">{% trans "Отправлено:" %} {{ existing_submission.submitted_at|date:"d.m.Y H:i" }}</p>
-                
+
                 <!-- Edit button -->
                 <button type="button" class="btn btn-secondary btn-edit-submission" data-form-id="edit-form-pending">
                     ✏️ {% trans "Изменить ссылку" %}
                 </button>
-                
+
                 <!-- Hidden edit form -->
                 <form id="edit-form-pending" class="submission-resubmit-form" style="display: none;"
                       data-submit-url="{% url 'students:account_lesson_submit' course_slug=lesson.course.slug lesson_slug=lesson.slug %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_edit_url_pending">{% trans "Новая ссылка" %}</label>
-                        <input type="url" name="lesson_url" id="id_edit_url_pending" class="form-control" 
+                        <input type="url" name="lesson_url" id="id_edit_url_pending" class="form-control"
                                value="{{ existing_submission.lesson_url }}" placeholder="https://github.com/username/repository" required>
                         <div id="edit-errors-pending" class="form-errors"></div>
                     </div>
@@ -616,10 +620,10 @@
             <div class="progress-header">
                 <h3 class="progress-title">{% trans "Отправить выполненную работу" %}</h3>
             </div>
-            
+
             <form id="lesson-submission-form" class="lesson-submission-form">
                 {% csrf_token %}
-                
+
                 <div class="form-group form-group-spaced">
                     <label for="id_lesson_url" class="form-label">
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -627,10 +631,10 @@
                         </svg>
                         {{ submission_form.lesson_url.label }}
                     </label>
-                    <input type="url" 
-                           name="lesson_url" 
+                    <input type="url"
+                           name="lesson_url"
                            id="id_lesson_url"
-                           class="form-control" 
+                           class="form-control"
                            placeholder="https://github.com/username/repository"
                            pattern="https://github\.com/.*"
                            title="Введите ссылку на GitHub репозиторий"

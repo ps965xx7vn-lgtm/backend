@@ -8408,3 +8408,32 @@ msgstr "არასწორი დადასტურება. შეიყ
 #: students/views.py:667
 msgid "Неверный пароль. Удаление отменено."
 msgstr "არასწორი პაროლი. წაშლა გაუქმებულია."
+
+#: students/templates/students/dashboard/dashboard.html
+msgid "Нет активности за последнюю неделю"
+msgstr "ბოლო კვირის განმავლობაში აქტივობა არ არის"
+
+#: students/templates/students/dashboard/dashboard.html
+msgid "Начните выполнять задания, чтобы увидеть вашу статистику"
+msgstr "დაიწყეთ დავალებების შესრულება თქვენი სტატისტიკის სანახავად"
+
+#: students/templates/students/dashboard/dashboard.html
+msgid "Нет активных курсов"
+msgstr "აქტიური კურსები არ არის"
+
+#: students/templates/students/dashboard/dashboard.html
+msgid "Запишитесь на курс, чтобы начать обучение"
+msgstr "ჩაეწერეთ კურსზე სწავლის დასაწყებად"
+
+#: core/templates/base.html
+msgid "Тема изменена на"
+msgstr "თემა შეიცვალა"
+
+#: core/templates/base.html
+msgid "Светлая"
+msgstr "ღია"
+
+#: core/templates/base.html
+msgid "Темная"
+msgstr "მუქი"
+

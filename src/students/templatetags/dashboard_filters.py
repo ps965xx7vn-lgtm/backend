@@ -1,6 +1,32 @@
 from django import template
+from django.utils.translation import gettext as _
 
 register = template.Library()
+
+
+@register.filter
+def translate_role(role_name):
+    """
+    Перевод названия роли пользователя.
+    """
+    if not role_name:
+        return _("Студент")
+
+    # Словарь переводов для ролей
+    role_translations = {
+        "student": _("Студент"),
+        "mentor": _("Ментор"),
+        "reviewer": _("Ревьюер"),
+        "manager": _("Менеджер"),
+        "admin": _("Администратор"),
+        "support": _("Поддержка"),
+    }
+
+    # Нормализуем название роли к lowercase
+    role_key = role_name.lower()
+
+    # Возвращаем перевод или оригинальное значение
+    return role_translations.get(role_key, role_name)
 
 
 @register.filter

@@ -14,6 +14,10 @@
 <link rel="stylesheet" href="{% static 'css/students/code-blocks.css' %}">
 {% endblock %}
 
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
 {% block content %}
 <div class="dashboard-layout">
     <!-- Sidebar -->
@@ -36,7 +40,7 @@
                     {% endif %}
                 </h3>
                 <p class="dashboard-user-role">
-                    {{ request.user.role.name|default:"Студент" }}
+                    {{ request.user.role.name|default:"student"|translate_role }}
                 </p>
             </div>
         </div>
@@ -47,8 +51,7 @@
                 <li class="dashboard-nav-item">
                     <a href="{% url 'students:account_dashboard' request.user.student.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
                         {% trans "Дашборд" %}
                     </a>
@@ -139,14 +142,14 @@
             </div>
             <div class="course-content">
                 <div class="course-description markdown-content">{{ course.description|markdownify }}</div>
-                
+
                 <div class="course-progress">
                     <div class="progress-info">
                         <span class="progress-name">{% trans "Общий прогресс" %}</span>
                         <span class="progress-percentage">{{ course_progress.completion_percentage }}%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill course-progress-fill {% if course_progress.completion_percentage == 100 %}success{% elif course_progress.completion_percentage >= 75 %}warning{% endif %}" 
+                        <div class="progress-fill course-progress-fill {% if course_progress.completion_percentage == 100 %}success{% elif course_progress.completion_percentage >= 75 %}warning{% endif %}"
                              style="width: {{ course_progress.completion_percentage }}%"></div>
                     </div>
                 </div>
@@ -221,11 +224,11 @@
                             <span class="lesson-progress-percentage" data-lesson-id="{{ lesson_stat.lesson.id }}">{{ lesson_stat.completion_percentage }}%</span>
                         </div>
                         <div class="lesson-progress-bar">
-                            <div class="progress-fill lesson-progress-fill {% if lesson_stat.is_completed %}success{% elif lesson_stat.completion_percentage >= 50 %}warning{% endif %}" 
+                            <div class="progress-fill lesson-progress-fill {% if lesson_stat.is_completed %}success{% elif lesson_stat.completion_percentage >= 50 %}warning{% endif %}"
                                  data-lesson-id="{{ lesson_stat.lesson.id }}"
                                  style="width: {{ lesson_stat.completion_percentage }}%"></div>
                         </div>
-                        
+
                         <!-- Submission status badge -->
                         {% if lesson_stat.submission %}
                             {% if lesson_stat.submission.status == 'approved' %}
@@ -320,8 +323,8 @@
                             {% for step in lesson_stat.steps %}
                             <div class="step-item {% if step.is_completed %}completed{% endif %}">
                                 <div class="step-checkbox-container">
-                                    <input type="checkbox" 
-                                           class="step-checkbox" 
+                                    <input type="checkbox"
+                                           class="step-checkbox"
                                            {% if step.is_completed %}checked{% endif %}
                                            data-step-id="{{ step.step.id }}"
                                            data-course-slug="{{ course.slug }}"
