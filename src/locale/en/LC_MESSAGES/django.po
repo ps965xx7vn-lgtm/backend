@@ -3851,8 +3851,8 @@ msgstr "Address: Georgia, Kutaisi, Abashidze str. 8, office 83"
 
 #: core/templates/core/legal/data-processing.html:69
 #: core/templates/core/legal/public-offer.html:44
-msgid "Email: pyland-school@yandex.com"
-msgstr "Email: pyland-school@yandex.com"
+msgid "Email: pylandschool@gmail.com"
+msgstr "Email: pylandschool@gmail.com"
 
 #: core/templates/core/legal/data-processing.html:74
 msgid "Пользователь дает согласие на обработку следующих персональных данных:"
@@ -4006,10 +4006,10 @@ msgstr "To exercise their rights"
 
 #: core/templates/core/legal/data-processing.html:130
 msgid ""
-"направьте запрос на email: pyland-school@yandex.com или через форму обратной"
+"направьте запрос на email: pylandschool@gmail.com или через форму обратной"
 " связи."
 msgstr ""
-"send a request to email: pyland-school@yandex.com or via the feedback form."
+"send a request to email: pylandschool@gmail.com or via the feedback form."
 
 #: core/templates/core/legal/data-processing.html:135
 msgid "5. Срок хранения персональных данных"
@@ -4092,7 +4092,7 @@ msgstr "7. Withdrawal of consent for personal data processing"
 msgid ""
 "Пользователь вправе в любой момент отозвать свое согласие на обработку "
 "персональных данных, направив письменное уведомление Оператору по адресу: "
-"pyland-school@yandex.com"
+"pylandschool@gmail.com"
 msgstr ""
 "The User has the right to withdraw consent for personal data processing at "
 "any time by sending a written notice to the Operator at: pyland-"
@@ -4727,10 +4727,10 @@ msgstr "Appeal:"
 #: core/templates/core/legal/platform-rules.html:184
 msgid ""
 "Если вы считаете, что ваш аккаунт был заблокирован ошибочно, направьте "
-"апелляцию на email: pyland-school@yandex.com с подробным описанием ситуации."
+"апелляцию на email: pylandschool@gmail.com с подробным описанием ситуации."
 msgstr ""
 "If you believe your account was blocked by mistake, send an appeal to email:"
-" pyland-school@yandex.com with a detailed description of the situation."
+" pylandschool@gmail.com with a detailed description of the situation."
 
 #: core/templates/core/legal/platform-rules.html:188
 msgid "7. Контакты и поддержка"
@@ -5822,10 +5822,10 @@ msgstr "Submitting a Request:"
 
 #: core/templates/core/legal/refund-policy.html:73
 msgid ""
-"Отправьте запрос на возврат на email: pyland-school@yandex.com или через "
+"Отправьте запрос на возврат на email: pylandschool@gmail.com или через "
 "форму обратной связи на сайте"
 msgstr ""
-"Send a refund request to email: pyland-school@yandex.com or via the feedback"
+"Send a refund request to email: pylandschool@gmail.com or via the feedback"
 " form on the website"
 
 #: core/templates/core/legal/refund-policy.html:74
@@ -6172,8 +6172,8 @@ msgstr ""
 "location (Kutaisi, Georgia)"
 
 #: core/templates/core/legal/terms-of-service.html:163
-msgid "Претензии направляются на email: pyland-school@yandex.com"
-msgstr "Claims should be sent to email: pyland-school@yandex.com"
+msgid "Претензии направляются на email: pylandschool@gmail.com"
+msgstr "Claims should be sent to email: pylandschool@gmail.com"
 
 #: core/templates/core/legal/terms-of-service.html:167
 msgid "Применимое законодательство:"

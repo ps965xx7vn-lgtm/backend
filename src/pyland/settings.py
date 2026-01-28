@@ -209,6 +209,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# Время действия ссылки для сброса пароля (в секундах)
+# 86400 секунд = 24 часа (соответствует тексту в email-шаблоне)
+PASSWORD_RESET_TIMEOUT = 86400
+
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "social_core.backends.github.GithubOAuth2",

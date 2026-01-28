@@ -23,22 +23,22 @@
             <div class="particle"></div>
             <div class="particle"></div>
         </div>
-        
+
         <div class="container">
             <div class="hero-main-content">
                 <div class="hero-badge-revolutionary animate-fade-in">
                     <span>📞</span>
                     <span>{% trans "Свяжитесь с нами" %}</span>
                 </div>
-                
+
                 <h1 class="hero-title-revolutionary animate-fade-in delay-1">
                     {% trans "Готовы помочь вам начать путь в IT" %}
                 </h1>
-                
+
                 <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
                     {% trans "Наша команда экспертов готова ответить на любые вопросы о курсах, карьере в программировании и выборе подходящего направления обучения." %}
                 </p>
-                
+
                 <div class="hero-actions-revolutionary animate-fade-in delay-3">
                     <a href="#contact-form" class="btn-revolutionary-hero btn-primary-hero">
                         <span>✉️</span>
@@ -49,7 +49,7 @@
                         <span>{% trans "Позвонить сейчас" %}</span>
                     </a>
                 </div>
-                
+
                 <div class="hero-stats-revolutionary animate-fade-in delay-4">
                     <div class="stat-card-revolutionary">
                         <span class="stat-number-revolutionary">< 15</span>
@@ -87,7 +87,7 @@
                     {% trans "Мы всегда на связи и готовы помочь вам в выборе курса и развитии карьеры" %}
                 </p>
             </div>
-            
+
             <div class="features-grid-revolutionary">
                 <div class="feature-card-revolutionary animate-fade-in delay-1">
                     <div class="feature-icon-revolutionary">📞</div>
@@ -102,7 +102,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="feature-card-revolutionary animate-fade-in delay-3">
                     <div class="feature-icon-revolutionary">✉️</div>
                     <h3 class="feature-title-revolutionary">{% trans "Email" %}</h3>
@@ -110,13 +110,13 @@
                         {% trans "Подробные ответы на сложные вопросы в письменном виде. Отвечаем в течение дня." %}
                     </p>
                     <div style="margin-top: 20px;">
-                        <a href="mailto:pyland-school@yandex.com" class="btn-revolutionary-hero btn-primary-hero" style="font-size: 14px; padding: 12px 24px; text-decoration: none;">
+                        <a href="mailto:pylandschool@gmail.com" class="btn-revolutionary-hero btn-primary-hero" style="font-size: 14px; padding: 12px 24px; text-decoration: none;">
                             <span>📧</span>
-                            <span>pyland-school@yandex.com</span>
+                            <span>pylandschool@gmail.com</span>
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="feature-card-revolutionary animate-fade-in delay-4">
                     <div class="feature-icon-revolutionary">🎥</div>
                     <h3 class="feature-title-revolutionary">{% trans "Видеозвонок" %}</h3>
@@ -130,7 +130,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="feature-card-revolutionary animate-fade-in delay-5">
                     <div class="feature-icon-revolutionary">💼</div>
                     <h3 class="feature-title-revolutionary">{% trans "Карьерная консультация" %}</h3>
@@ -144,7 +144,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="feature-card-revolutionary animate-fade-in delay-5">
                     <div class="feature-icon-revolutionary">🌐</div>
                     <h3 class="feature-title-revolutionary">{% trans "Онлайн встреча" %}</h3>
@@ -177,23 +177,23 @@
                     {% trans "Заполните форму, и мы свяжемся с вами в течение дня" %}
                 </p>
             </div>
-            
+
             <div class="contact-form-card">
                 <form method="post" id="contactForm">
                     {% csrf_token %}
-                    
+
                     <div class="contact-form-grid">
                         <div class="contact-form-group">
                             <label class="contact-form-label">
                                 {% trans "Ваше имя" %} <span class="contact-form-required">*</span>
                             </label>
-                            <input type="text" 
-                                   name="first_name" 
+                            <input type="text"
+                                   name="first_name"
                                    class="contact-form-input"
                                    placeholder="{% trans 'Введите ваше имя' %}"
                                    required>
                         </div>
-                        
+
                         <div class="contact-form-group">
                             <label class="contact-form-label">
                                 {% trans "Номер телефона" %} <span class="contact-form-required">*</span>
@@ -207,8 +207,8 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
-                                <input type="tel" 
-                                       name="phone_number" 
+                                <input type="tel"
+                                       name="phone_number"
                                        class="phone-number-input"
                                        placeholder="+7 (___) ___-__-__"
                                        required
@@ -216,19 +216,19 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="contact-form-group contact-form-group-full">
                         <label class="contact-form-label">
                             {% trans "Email адрес" %} <span class="contact-form-required">*</span>
                         </label>
-                        <input type="email" 
-                               name="email" 
+                        <input type="email"
+                               name="email"
                                class="contact-form-input"
                                placeholder="{% trans 'example@email.com' %}"
                                required
                                autocomplete="email">
                     </div>
-                    
+
                     <div class="contact-form-group contact-form-group-full">
                         <label class="contact-form-label">
                             {% trans "Тема обращения" %}
@@ -242,32 +242,32 @@
                             <option value="other">{% trans "Другое" %}</option>
                         </select>
                     </div>
-                    
+
                     <div class="contact-form-group contact-form-group-full">
                         <label class="contact-form-label">
                             {% trans "Ваше сообщение" %} <span class="contact-form-required">*</span>
                         </label>
-                        <textarea name="message" 
-                                  rows="6" 
+                        <textarea name="message"
+                                  rows="6"
                                   class="contact-form-textarea"
                                   placeholder="{% trans 'Расскажите подробнее о вашем вопросе или запросе...' %}"
                                   required></textarea>
                     </div>
-                    
+
                     <div class="contact-form-agreement">
-                        <input type="checkbox" 
-                               name="agree_terms" 
+                        <input type="checkbox"
+                               name="agree_terms"
                                id="agree_terms"
                                class="contact-form-checkbox"
                                required>
                         <label for="agree_terms" class="contact-form-agreement-text">
-                            {% trans "Я соглашаюсь с" %} 
-                            <a href="{% url 'core:privacy_policy' %}" class="contact-form-agreement-link">{% trans "политикой конфиденциальности" %}</a> 
-                            {% trans "и" %} 
+                            {% trans "Я соглашаюсь с" %}
+                            <a href="{% url 'core:privacy_policy' %}" class="contact-form-agreement-link">{% trans "политикой конфиденциальности" %}</a>
+                            {% trans "и" %}
                             <a href="{% url 'core:data_processing' %}" class="contact-form-agreement-link">{% trans "обработкой персональных данных" %}</a>
                         </label>
                     </div>
-                    
+
                     <button type="submit" class="contact-form-submit">
                         <svg class="contact-form-submit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -294,7 +294,7 @@
                     {% trans "Онлайн школа программирования доступна 24/7 из любой точки мира" %}
                 </p>
             </div>
-            
+
             <div class="features-grid-revolutionary" style="grid-template-columns: repeat(4, 1fr);">
                 <!-- Address -->
                 <div class="feature-card-revolutionary animate-fade-in delay-1">
@@ -302,7 +302,7 @@
                     <h4 class="feature-title-revolutionary">{% trans "Адрес" %}</h4>
                     <p class="feature-description-revolutionary">{% trans "Грузия, г. Кутаиси" %}<br>{% trans "ул. Абашидзе, д. 8, офис 83" %}</p>
                 </div>
-                
+
                 <!-- Phone -->
                 <div class="feature-card-revolutionary animate-fade-in delay-2">
                     <div class="feature-icon-revolutionary">📞</div>
@@ -311,16 +311,16 @@
                         <a href="tel:+995551006254" style="color: var(--primary-600); text-decoration: none;">+995 551 00 62 54</a>
                     </p>
                 </div>
-                
+
                 <!-- Email -->
                 <div class="feature-card-revolutionary animate-fade-in delay-3">
                     <div class="feature-icon-revolutionary">✉️</div>
                     <h4 class="feature-title-revolutionary">Email</h4>
                     <p class="feature-description-revolutionary">
-                        <a href="mailto:pyland-school@yandex.com" style="color: var(--primary-600); text-decoration: none;">pyland-school@yandex.com</a>
+                        <a href="mailto:pylandschool@gmail.com" style="color: var(--primary-600); text-decoration: none;">pylandschool@gmail.com</a>
                     </p>
                 </div>
-                
+
                 <!-- Map Links -->
                 <div class="feature-card-revolutionary animate-fade-in delay-4">
                     <div class="feature-icon-revolutionary">🗺️</div>

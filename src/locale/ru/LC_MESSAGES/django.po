@@ -3689,7 +3689,7 @@ msgstr ""
 
 #: core/templates/core/legal/data-processing.html:69
 #: core/templates/core/legal/public-offer.html:44
-msgid "Email: pyland-school@yandex.com"
+msgid "Email: pylandschool@gmail.com"
 msgstr ""
 
 #: core/templates/core/legal/data-processing.html:74
@@ -3841,7 +3841,7 @@ msgstr ""
 
 #: core/templates/core/legal/data-processing.html:130
 msgid ""
-"направьте запрос на email: pyland-school@yandex.com или через форму обратной "
+"направьте запрос на email: pylandschool@gmail.com или через форму обратной "
 "связи."
 msgstr ""
 
@@ -3922,7 +3922,7 @@ msgstr ""
 msgid ""
 "Пользователь вправе в любой момент отозвать свое согласие на обработку "
 "персональных данных, направив письменное уведомление Оператору по адресу: "
-"pyland-school@yandex.com"
+"pylandschool@gmail.com"
 msgstr ""
 
 #: core/templates/core/legal/data-processing.html:165
@@ -4511,7 +4511,7 @@ msgstr ""
 #: core/templates/core/legal/platform-rules.html:184
 msgid ""
 "Если вы считаете, что ваш аккаунт был заблокирован ошибочно, направьте "
-"апелляцию на email: pyland-school@yandex.com с подробным описанием ситуации."
+"апелляцию на email: pylandschool@gmail.com с подробным описанием ситуации."
 msgstr ""
 
 #: core/templates/core/legal/platform-rules.html:188
@@ -5529,7 +5529,7 @@ msgstr ""
 
 #: core/templates/core/legal/refund-policy.html:73
 msgid ""
-"Отправьте запрос на возврат на email: pyland-school@yandex.com или через "
+"Отправьте запрос на возврат на email: pylandschool@gmail.com или через "
 "форму обратной связи на сайте"
 msgstr ""
 
@@ -5844,7 +5844,7 @@ msgid ""
 msgstr ""
 
 #: core/templates/core/legal/terms-of-service.html:163
-msgid "Претензии направляются на email: pyland-school@yandex.com"
+msgid "Претензии направляются на email: pylandschool@gmail.com"
 msgstr ""
 
 #: core/templates/core/legal/terms-of-service.html:167
