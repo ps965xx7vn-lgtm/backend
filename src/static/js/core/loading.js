@@ -1,40 +1,63 @@
 /**
- * Loading Overlay Manager
- * Управляет показом/скрытием экрана загрузки
+ * Modern Code Preloader Manager
+ * Управляет показом/скрытием современного экрана загрузки
  */
 
 (function() {
     'use strict';
 
-    // Функция для скрытия loading overlay
+    let isHiding = false;
+
+    // Функция для скрытия preloader с плавной анимацией
     function hideLoadingOverlay() {
+        if (isHiding) return;
+
         const loadingOverlay = document.getElementById('loading-overlay');
         if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) {
+            isHiding = true;
+
+            // Добавляем класс hiding для плавного исчезновения
             loadingOverlay.classList.add('hiding');
+
+            // Удаляем элемент через 500мс после начала анимации
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
                 loadingOverlay.classList.remove('hiding');
-            }, 300);
+                isHiding = false;
+            }, 500);
         }
+    }
+
+    // Минимальное время показа прелоадера для плавности (800мс)
+    const minDisplayTime = 800;
+    const startTime = Date.now();
+
+    function hideWithMinTime() {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, minDisplayTime - elapsed);
+
+        setTimeout(hideLoadingOverlay, remaining);
     }
 
     // Скрываем по DOMContentLoaded
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(hideLoadingOverlay, 500);
-        });
+        document.addEventListener('DOMContentLoaded', hideWithMinTime);
     } else {
         // DOM уже загружен
-        setTimeout(hideLoadingOverlay, 100);
+        hideWithMinTime();
     }
 
     // Fallback: скрываем по window.load (полная загрузка всех ресурсов)
     window.addEventListener('load', function() {
-        setTimeout(hideLoadingOverlay, 100);
+        setTimeout(hideLoadingOverlay, 200);
     });
 
-    // Emergency fallback: скрываем через 3 секунды в любом случае
-    setTimeout(hideLoadingOverlay, 3000);
+    // Emergency fallback: скрываем через 4 секунды в любом случае
+    setTimeout(() => {
+        if (!isHiding) {
+            hideLoadingOverlay();
+        }
+    }, 4000);
 
     // Экспорт для использования из других модулей
     window.LoadingManager = {
@@ -42,6 +65,7 @@
         show: function() {
             const loadingOverlay = document.getElementById('loading-overlay');
             if (loadingOverlay) {
+                isHiding = false;
                 loadingOverlay.classList.remove('hidden', 'hiding');
             }
         }

@@ -39,11 +39,54 @@
 </head>
 
 <body>
-    <!-- Loading Overlay -->
+    <!-- Modern Code Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <div class="spinner"></div>
-            <p>{% trans "Загрузка..." %}</p>
+        <div class="preloader-container">
+            <!-- Animated Logo -->
+            <div class="preloader-logo">
+                <div class="logo-brackets">
+                    <span class="bracket left">&lt;</span>
+                    <span class="logo-text">PyLand</span>
+                    <span class="bracket right">/&gt;</span>
+                </div>
+            </div>
+
+            <!-- Code Animation -->
+            <div class="code-animation">
+                <div class="code-line">
+                    <span class="keyword">def</span> <span class="function">learn_python</span>()<span class="punctuation">:</span>
+                </div>
+                <div class="code-line indent">
+                    <span class="keyword">while</span> <span class="variable">True</span><span class="punctuation">:</span>
+                </div>
+                <div class="code-line indent-2">
+                    <span class="function">code</span>()  <span class="comment"># 🚀</span>
+                </div>
+                <div class="code-line indent-2">
+                    <span class="function">grow</span>()  <span class="comment"># 📈</span>
+                </div>
+                <div class="code-line indent-2">
+                    <span class="function">succeed</span>()  <span class="comment"># ✨</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="preloader-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <p class="loading-text">{% trans "Загружаем твоё будущее..." %}</p>
+            </div>
+
+            <!-- Floating Particles -->
+            <div class="preloader-particles">
+                <span class="particle">01</span>
+                <span class="particle">10</span>
+                <span class="particle">11</span>
+                <span class="particle">00</span>
+                <span class="particle">{ }</span>
+                <span class="particle">[ ]</span>
+            </div>
         </div>
     </div>
 
