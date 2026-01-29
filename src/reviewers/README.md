@@ -60,8 +60,7 @@ from reviewers.models import Review
 review = Review.objects.create(
     submission=submission,
     reviewer=reviewer_user,
-    status='approved',  # или 'needs_work', 'rejected'
-    rating=4.5,
+    status='approved',  # или 'needs_work'
     comments='Отличная работа! Несколько замечаний...',
     time_spent=30  # минуты
 )
@@ -70,8 +69,7 @@ review = Review.objects.create(
 **Поля:**
 - `submission` - FK к LessonSubmission (courses app)
 - `reviewer` - FK к User (кто проверил)
-- `status` - Статус: approved / needs_work / rejected
-- `rating` - Оценка 0.0-5.0
+- `status` - Статус: approved / needs_work
 - `comments` - Общий комментарий
 - `time_spent` - Время на проверку (минуты)
 - `created_at`, `updated_at` - Временные метки
@@ -168,14 +166,12 @@ def create_review(request):
 Форма для создания проверки.
 
 **Поля:**
-- `status` - ChoiceField (approved/needs_work/rejected)
-- `rating` - FloatField (0.0-5.0)
+- `status` - ChoiceField (approved/needs_work)
 - `comments` - CharField (Textarea)
 - `time_spent` - IntegerField (минуты)
 
 **Валидация:**
-- Rating должен быть 0.0-5.0
-- Comments обязательны для needs_work/rejected
+- Comments обязательны для needs_work
 - Time spent >= 1 минута
 
 ### 2. **StudentImprovementForm**
@@ -281,7 +277,6 @@ Base URL: `/api/reviewers/`
 ```json
 {
   "status": "approved",
-  "rating": 4.5,
   "comments": "Хорошая работа!",
   "time_spent": 25,
   "improvements": [
@@ -318,7 +313,6 @@ from reviewers.cache_utils import get_reviewer_stats
 stats = get_reviewer_stats(request.user.id)
 # {
 #   'total_reviews': 150,
-#   'avg_rating': 4.3,
 #   'pending_count': 5
 # }
 ```
@@ -440,25 +434,10 @@ class ReviewForm(forms.ModelForm):
     Форма для создания/редактирования проверки.
 
     Валидация:
-    - status: approved / needs_work / rejected
-    - rating: 0.0-5.0 (обязательно для approved)
+    - status: approved / needs_work
     - comments: мин. 10 символов
     - time_spent: > 0 минут
     """
-
-    def clean_rating(self):
-        rating = self.cleaned_data.get('rating')
-        status = self.cleaned_data.get('status')
-
-        if status == 'approved' and not rating:
-            raise ValidationError(
-                'Для одобрения обязательна оценка'
-            )
-
-        if rating and not (0 <= rating <= 5):
-            raise ValidationError('Оценка должна быть от 0 до 5')
-
-        return rating
 
     def clean_comments(self):
         comments = self.cleaned_data.get('comments', '')

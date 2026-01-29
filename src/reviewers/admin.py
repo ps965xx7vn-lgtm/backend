@@ -19,64 +19,6 @@ from .models import (  # ReviewerProfile moved to authentication.models as Revie
 )
 
 # ReviewerProfile moved to authentication.models as Reviewer - admin registration handled in authentication/admin.py
-# @admin.register(ReviewerProfile)
-# class ReviewerProfileAdmin(admin.ModelAdmin):
-#     """Административная панель для профилей ревьюеров."""
-#
-#     list_display = [
-#         'user_email',
-#         'role_badge',
-#         'is_active',
-#         'rating',
-#         'total_reviews',
-#         'courses_count',
-#         'registered_at'
-#     ]
-#     list_filter = ['is_active', 'registered_at', 'courses']
-#     search_fields = ['user__email', 'user__first_name', 'user__last_name', 'bio']
-#     filter_horizontal = ['courses']
-#     readonly_fields = ['total_reviews', 'average_review_time', 'registered_at', 'updated_at']
-#
-#     fieldsets = (
-#         ('Основная информация', {
-#             'fields': ('user', 'bio', 'expertise_areas')
-#         }),
-#         ('Курсы и статус', {
-#             'fields': ('courses', 'is_active')
-#         }),
-#         ('Статистика', {
-#             'fields': ('rating', 'total_reviews', 'average_review_time'),
-#             'classes': ('collapse',)
-#         }),
-#         ('Метаданные', {
-#             'fields': ('registered_at', 'updated_at'),
-#             'classes': ('collapse',)
-#         }),
-#     )
-#
-#     def user_email(self, obj):
-#         return obj.user.email
-#     user_email.short_description = 'Email'
-#     user_email.admin_order_field = 'user__email'
-#
-#     def role_badge(self, obj):
-#         role = obj.get_role_display()
-#         colors = {
-#             'Ревьюер': '#10b981',
-#             'Ментор': '#3b82f6',
-#             'Проверяющий': '#6b7280'
-#         }
-#         color = colors.get(role, '#6b7280')
-#         return format_html(
-#             '<span style="background-color: {}; color: white; padding: 3px 10px; border-radius: 3px;">{}</span>',
-#             color,
-#             role
-#         )
-#     role_badge.short_description = 'Роль'
-#
-#     def courses_count(self, obj):
-#         return obj.courses.count()
-#     courses_count.short_description = 'Курсов'
 
 
 class ImprovementStepInline(admin.TabularInline):
@@ -138,18 +80,19 @@ class ReviewAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("reviewed_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+    @admin.display(description="Работа")
     def submission_info(self, obj):
         submission = obj.lesson_submission
         return f"{submission.lesson.name} — {submission.student.user.email}"
 
-    submission_info.short_description = "Работа"
-
+    @admin.display(
+        description="Ревьюер",
+        ordering="reviewer__user__email",
+    )
     def reviewer_email(self, obj):
         return obj.reviewer.user.email if obj.reviewer else "Не указан"
 
-    reviewer_email.short_description = "Ревьюер"
-    reviewer_email.admin_order_field = "reviewer__user__email"
-
+    @admin.display(description="Статус")
     def status_badge(self, obj):
         colors = {"approved": "#10b981", "needs_work": "#f59e0b", "rejected": "#ef4444"}
         color = colors.get(obj.status, "#6b7280")
@@ -158,8 +101,6 @@ class ReviewAdmin(admin.ModelAdmin):
             color,
             obj.get_status_display(),
         )
-
-    status_badge.short_description = "Статус"
 
 
 @admin.register(LessonSubmission)
@@ -237,20 +178,19 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
 
         super().save_model(request, obj, form, change)
 
+    @admin.display(description="Студент")
     def student_link(self, obj):
         """Ссылка на студента"""
         url = reverse("admin:authentication_student_change", args=[obj.student.id])
         return format_html('<a href="{}">{}</a>', url, obj.student.user.email)
 
-    student_link.short_description = "Студент"
-
+    @admin.display(description="Урок")
     def lesson_link(self, obj):
         """Ссылка на урок"""
         url = reverse("admin:courses_lesson_change", args=[obj.lesson.id])
         return format_html('<a href="{}">{}</a>', url, obj.lesson.name)
 
-    lesson_link.short_description = "Урок"
-
+    @admin.display(description="Статус")
     def status_badge(self, obj):
         """Цветной бейдж статуса"""
         colors = {
@@ -267,8 +207,7 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
             obj.get_status_display(),
         )
 
-    status_badge.short_description = "Статус"
-
+    @admin.display(description="Попытка")
     def revision_count_display(self, obj):
         """Отображение попытки"""
         if obj.revision_count > 0:
@@ -278,8 +217,7 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
             )
         return format_html('<span style="color: #10b981;">Первая попытка</span>')
 
-    revision_count_display.short_description = "Попытка"
-
+    @admin.display(description="Действие")
     def review_link(self, obj):
         """Ссылка на страницу проверки работы"""
         url = reverse("admin:reviewers_lessonsubmission_change", args=[obj.id])
@@ -294,8 +232,7 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
             url,
         )
 
-    review_link.short_description = "Действие"
-
+    @admin.display(description="Репозиторий")
     def github_link(self, obj):
         """Кликабельная ссылка на GitHub репозиторий"""
         return format_html(
@@ -308,8 +245,7 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
             obj.lesson_url,
         )
 
-    github_link.short_description = "Репозиторий"
-
+    @admin.display(description="Информация")
     def submission_info(self, obj):
         """Информация о работе"""
         return format_html(
@@ -345,9 +281,8 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
             ),
         )
 
-    submission_info.short_description = "Информация"
-
     # Admin Actions
+    @admin.action(description="✅ Одобрить")
     def mark_approved(self, request, queryset):
         """Одобрить работы"""
         from django.utils import timezone
@@ -363,8 +298,7 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
 
         self.message_user(request, f"Одобрено: {updated} работ(ы)")
 
-    mark_approved.short_description = "✅ Одобрить"
-
+    @admin.action(description="✏️ Вернуть на доработку")
     def mark_changes_requested(self, request, queryset):
         """Вернуть на доработку (требуется добавить комментарий вручную)"""
         from django.utils import timezone
@@ -383,8 +317,6 @@ class LessonSubmissionAdmin(admin.ModelAdmin):
             f"Возвращено на доработку: {updated} работ(ы). Не забудьте добавить комментарии к каждой работе!",
             level="warning",
         )
-
-    mark_changes_requested.short_description = "✏️ Вернуть на доработку"
 
     def get_queryset(self, request):
         """Оптимизация запросов"""
@@ -414,6 +346,7 @@ class StudentImprovementAdmin(admin.ModelAdmin):
     search_fields = ["improvement_text", "title", "lesson_submission__lesson__name"]
     readonly_fields = ["created_at", "completed_at"]
 
+    @admin.display(description="Работа")
     def review_info(self, obj):
         if obj.review:
             submission = obj.review.lesson_submission
@@ -423,8 +356,6 @@ class StudentImprovementAdmin(admin.ModelAdmin):
                 f"{obj.lesson_submission.lesson.name} — {obj.lesson_submission.student.user.email}"
             )
         return "Нет связи"
-
-    review_info.short_description = "Работа"
 
 
 @admin.register(ReviewerNotification)
@@ -442,8 +373,9 @@ class ReviewerNotificationAdmin(admin.ModelAdmin):
         ("Статус", {"fields": ("is_read", "created_at")}),
     )
 
+    @admin.display(
+        description="Ревьюер",
+        ordering="reviewer__user__email",
+    )
     def reviewer_email(self, obj):
         return obj.reviewer.user.email
-
-    reviewer_email.short_description = "Ревьюер"
-    reviewer_email.admin_order_field = "reviewer__user__email"

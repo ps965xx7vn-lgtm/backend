@@ -19,7 +19,6 @@ from __future__ import annotations
 import logging
 import uuid
 
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 
@@ -42,7 +41,6 @@ class Review(models.Model):
         reviewer: Проверяющий (ReviewerProfile)
         status: Статус проверки (approved/needs_work/rejected)
         comments: Общие комментарии к работе
-        rating: Оценка работы (1-5)
         time_spent: Время затраченное на проверку (минуты)
         reviewed_at: Время проверки
     """
@@ -69,13 +67,6 @@ class Review(models.Model):
     comments = models.TextField(
         verbose_name="Комментарии проверяющего",
         help_text="Общие комментарии и рекомендации по работе",
-    )
-    rating = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
-        null=True,
-        blank=True,
-        verbose_name="Оценка работы",
-        help_text="Оценка от 1 до 5",
     )
     time_spent = models.PositiveIntegerField(
         default=0,

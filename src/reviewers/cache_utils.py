@@ -16,7 +16,6 @@ import logging
 from typing import Any
 
 from django.core.cache import cache
-from django.db.models import Avg
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
@@ -37,7 +36,6 @@ def get_reviewer_stats(reviewer_id: Any) -> dict[str, Any]:
             'total_reviews': int,
             'pending_count': int,
             'reviewed_today': int,
-            'avg_rating': float,
         }
     """
     cache_key = f"reviewer_stats:{reviewer_id}"
@@ -69,19 +67,10 @@ def get_reviewer_stats(reviewer_id: Any) -> dict[str, Any]:
             reviewer=reviewer, reviewed_at__gte=today_start
         ).count()
 
-        # Средний рейтинг
-        avg_rating = (
-            Review.objects.filter(reviewer=reviewer, rating__isnull=False).aggregate(
-                avg=Avg("rating")
-            )["avg"]
-            or 0
-        )
-
         stats = {
             "total_reviews": total_reviews,
             "pending_count": pending_count,
             "reviews_today": reviewed_today,  # Изменено с 'reviewed_today' для соответствия шаблону
-            "avg_rating": round(float(avg_rating), 1) if avg_rating else 0.0,
         }
 
         # Сохраняем в кэш
@@ -97,7 +86,6 @@ def get_reviewer_stats(reviewer_id: Any) -> dict[str, Any]:
             "total_reviews": 0,
             "pending_count": 0,
             "reviews_today": 0,  # Изменено с 'reviewed_today' для соответствия шаблону
-            "avg_rating": 0.0,
         }
 
 

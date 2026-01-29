@@ -92,16 +92,14 @@ def send_new_submission_notification(
 
             if result == 1:
                 success_count += 1
-                logger.info(f"Уведомление отправлено на {email} " f"для работы {submission_id}")
+                logger.info(f"Уведомление отправлено на {email} для работы {submission_id}")
             else:
                 failed_count += 1
-                logger.warning(f"Отправка email вернула 0 для {email} " f"(работа {submission_id})")
+                logger.warning(f"Отправка email вернула 0 для {email} (работа {submission_id})")
 
         except Exception as e:
             failed_count += 1
-            logger.error(
-                f"Не удалось отправить email на {email} " f"для работы {submission_id}: {e}"
-            )
+            logger.error(f"Не удалось отправить email на {email} для работы {submission_id}: {e}")
 
     total = len(reviewer_emails)
     result = {
@@ -130,7 +128,6 @@ def send_review_completed_notification(
     status: str,
     status_text: str,
     status_emoji: str,
-    rating: int = None,
     comments: str = "",
     improvements: list[str] = None,
     header_color: str = "#10b981",
@@ -151,7 +148,6 @@ def send_review_completed_notification(
         status: Статус проверки (approved/needs_work)
         status_text: Текст статуса на русском
         status_emoji: Эмодзи для статуса
-        rating: Оценка работы (1-5)
         comments: Комментарии ревьюера
         improvements: Список рекомендаций по улучшению
         header_color: Цвет заголовка
@@ -178,7 +174,6 @@ def send_review_completed_notification(
                 "status": status,
                 "status_text": status_text,
                 "status_emoji": status_emoji,
-                "rating": rating,
                 "comments": comments,
                 "improvements": improvements,
                 "submission_url": f"{settings.SITE_URL}/students/submissions/{submission_id}/",
@@ -225,14 +220,13 @@ def send_review_completed_notification(
             return {"success": True, "email": student_email}
         else:
             logger.warning(
-                f"Отправка email студенту {student_email} вернула 0 " f"(работа {submission_id})"
+                f"Отправка email студенту {student_email} вернула 0 (работа {submission_id})"
             )
             return {"success": False, "email": student_email}
 
     except Exception as e:
         logger.error(
-            f"Ошибка отправки уведомления студенту {student_email} "
-            f"для работы {submission_id}: {e}"
+            f"Ошибка отправки уведомления студенту {student_email} для работы {submission_id}: {e}"
         )
         # Повторяем попытку через 60 секунд
         raise self.retry(exc=e, countdown=60) from e

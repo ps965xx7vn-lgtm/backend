@@ -111,7 +111,6 @@ def notify_student_on_review(sender, instance: Review, created: bool, **kwargs):
                 status=instance.status,
                 status_text=status_text,
                 status_emoji=status_emoji,
-                rating=None,  # Оценка не используется
                 comments=instance.comments,
                 improvements=improvements,
                 header_color=header_color,
@@ -147,7 +146,6 @@ def notify_student_on_review(sender, instance: Review, created: bool, **kwargs):
                         "status": instance.status,
                         "status_text": status_text,
                         "status_emoji": status_emoji,
-                        "rating": None,
                         "comments": instance.comments,
                         "improvements": improvements,
                         "submission_url": f"{settings.SITE_URL}/students/submissions/{submission.id}/",
