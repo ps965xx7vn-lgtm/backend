@@ -436,9 +436,24 @@ class StepAdmin(admin.ModelAdmin):
                     "description",
                     "actions",
                     "self_check",
-                    "repair_description",
+                    "self_check_items",
                     "image",
                 )
+            },
+        ),
+        (
+            "Помощь студентам",
+            {
+                "fields": ("troubleshooting_help",),
+                "description": "Подсказки, которые видят студенты при возникновении проблем",
+            },
+        ),
+        (
+            "Административные поля",
+            {
+                "fields": ("repair_description",),
+                "classes": ("collapse",),
+                "description": "Служебные поля для администратора (не видны студентам)",
             },
         ),
         ("Статистика", {"fields": ("step_stats",), "classes": ("collapse",)}),

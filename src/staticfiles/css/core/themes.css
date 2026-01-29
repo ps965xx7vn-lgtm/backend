@@ -673,20 +673,29 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Loading Overlay */
+/* Modern Code Preloader - Ultra Modern Edition */
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--white);
+  background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+  background-size: 400% 400%;
+  animation: preloaderGradientFlow 15s ease infinite;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
   opacity: 1;
-  transition: opacity var(--transition-normal);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+@keyframes preloaderGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .loading-overlay.hiding {
@@ -697,28 +706,395 @@ html, body {
   display: none;
 }
 
-.loading-spinner {
+.preloader-container {
   text-align: center;
+  position: relative;
+  z-index: 2;
+  max-width: 500px;
+  padding: 2rem;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--gray-200);
-  border-top: 3px solid var(--primary-600);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto var(--spacing-4);
+/* Animated Logo */
+.preloader-logo {
+  margin-bottom: 3rem;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.logo-brackets {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Monaco', 'Menlo', monospace;
 }
 
-.loading-spinner p {
-  color: var(--gray-600);
-  font-size: var(--text-sm);
+.bracket {
+  display: inline-block;
+  color: #fbbf24;
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+  animation: preloaderBracketGlow 2s ease-in-out infinite;
+}
+
+.bracket.left {
+  animation-delay: 0s;
+}
+
+.bracket.right {
+  animation-delay: 1s;
+}
+
+.logo-text {
+  background: linear-gradient(120deg, #fbbf24, #fff, #f59e0b);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 3px;
+  animation: preloaderShimmer 3s linear infinite;
+}
+
+@keyframes preloaderShimmer {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes preloaderBracketGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.8));
+  }
+}
+
+/* Code Animation - Modern Terminal */
+.code-animation {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
+  font-size: 0.95rem;
+  text-align: left;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.code-animation::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  background-size: 200% 100%;
+  animation: preloaderBorderGlow 3s linear infinite;
+}
+
+@keyframes preloaderBorderGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 200% 50%; }
+}
+
+.code-line {
+  margin: 0.6rem 0;
+  color: #e2e8f0;
+  opacity: 0;
+  animation: preloaderFadeInCode 0.5s ease forwards;
+  line-height: 1.6;
+  position: relative;
+}
+
+.code-line::before {
+  content: '▸';
+  position: absolute;
+  left: -1.2rem;
+  color: #fbbf24;
+  opacity: 0;
+  animation: preloaderBlinkCursor 1s step-end infinite;
+}
+
+.code-line:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.code-line:nth-child(1)::before {
+  animation-delay: 0.2s;
+}
+
+.code-line:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.code-line:nth-child(2)::before {
+  animation-delay: 0.5s;
+}
+
+.code-line:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+.code-line:nth-child(3)::before {
+  animation-delay: 0.8s;
+}
+
+.code-line:nth-child(4) {
+  animation-delay: 1.1s;
+}
+
+.code-line:nth-child(4)::before {
+  animation-delay: 1.1s;
+}
+
+.code-line:nth-child(5) {
+  animation-delay: 1.4s;
+}
+
+.code-line:nth-child(5)::before {
+  animation-delay: 1.4s;
+}
+
+@keyframes preloaderFadeInCode {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes preloaderBlinkCursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.indent {
+  padding-left: 2rem;
+}
+
+.indent-2 {
+  padding-left: 4rem;
+}
+
+.keyword {
+  color: #c678dd;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(198, 120, 221, 0.3);
+}
+
+.function {
+  color: #61afef;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(97, 175, 239, 0.3);
+}
+
+.variable {
+  color: #e5c07b;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(229, 192, 123, 0.3);
+}
+
+.punctuation {
+  color: #abb2bf;
+}
+
+.comment {
+  color: #7c8696;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Progress Bar */
+.preloader-progress {
+  margin-top: 2.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  max-width: 350px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0 auto 1.2rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%);
+  animation: preloaderShimmerProgress 2s infinite;
+}
+
+@keyframes preloaderShimmerProgress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899, #8b5cf6, #fbbf24);
+  background-size: 300% 100%;
+  border-radius: 20px;
+  animation: preloaderProgressAnimation 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  box-shadow:
+    0 0 20px rgba(251, 191, 36, 0.5),
+    0 0 40px rgba(251, 191, 36, 0.3);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  filter: blur(10px);
+  animation: preloaderGlow 1s ease-in-out infinite;
+}
+
+@keyframes preloaderGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes preloaderProgressAnimation {
+  0% {
+    width: 20%;
+    background-position: 0% 50%;
+  }
+  50% {
+    width: 70%;
+    background-position: 100% 50%;
+  }
+  100% {
+    width: 95%;
+    background-position: 200% 50%;
+  }
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  opacity: 0.95;
+}
+
+@keyframes preloaderTextPulse {
+  0%, 100% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+/* Floating Particles - Enhanced */
+.preloader-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.preloader-particles .particle {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: 'JetBrains Mono', 'Monaco', 'Menlo', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  animation: preloaderFloatParticle 15s linear infinite;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.preloader-particles .particle:nth-child(1) {
+  left: 10%;
+  top: 20%;
+  animation-duration: 10s;
+  animation-delay: 0s;
+}
+
+.preloader-particles .particle:nth-child(2) {
+  left: 80%;
+  top: 40%;
+  animation-duration: 13s;
+  animation-delay: 1.5s;
+  font-size: 1.8rem;
+}
+
+.preloader-particles .particle:nth-child(3) {
+  left: 50%;
+  top: 10%;
+  animation-duration: 8s;
+  animation-delay: 0.8s;
+  font-size: 1.3rem;
+}
+
+.preloader-particles .particle:nth-child(4) {
+  left: 20%;
+  top: 70%;
+  animation-duration: 16s;
+  animation-delay: 2.5s;
+  font-size: 1.6rem;
+}
+
+.preloader-particles .particle:nth-child(5) {
+  left: 70%;
+  top: 80%;
+  animation-duration: 12s;
+  animation-delay: 1s;
+}
+
+.preloader-particles .particle:nth-child(6) {
+  left: 40%;
+  top: 60%;
+  animation-duration: 14s;
+  animation-delay: 0.3s;
+  font-size: 1.4rem;
+}
+
+@keyframes preloaderFloatParticle {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+    transform: translateY(-10vh) rotate(45deg) scale(1);
+  }
+  90% {
+    opacity: 0.6;
+    transform: translateY(-90vh) rotate(315deg) scale(1);
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg) scale(0.8);
+    opacity: 0;
+  }
 }
 
 /* Back to Top Button */

@@ -398,8 +398,21 @@ class Step(models.Model):
     self_check = models.TextField(
         blank=True, help_text="Проверка себя", verbose_name="Проверка себя"
     )
-    repair_description = models.CharField(
-        max_length=200, blank=True, help_text="Описание ремонта", verbose_name="Описание ремонта"
+    self_check_items = models.JSONField(
+        blank=True,
+        null=True,
+        help_text="Список чекбоксов для самопроверки (JSON массив строк)",
+        verbose_name="Чекбоксы самопроверки",
+    )
+    troubleshooting_help = models.TextField(
+        blank=True,
+        help_text="Подсказки для студента при возникновении проблем (показывается студентам)",
+        verbose_name="Помощь при трудностях",
+    )
+    repair_description = models.TextField(
+        blank=True,
+        help_text="Примечания администратора при необходимости правок (НЕ показывается студентам)",
+        verbose_name="Примечания администратора",
     )
     image = models.ImageField(
         upload_to="steps/",

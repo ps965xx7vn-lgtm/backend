@@ -223,8 +223,8 @@ def account_dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpRe
                     {
                         "type": "continue",
                         "title": f'Продолжить "{lesson_stat["lesson"].name}"',
-                        "description": f'Прогресс: {lesson_stat["completion_percentage"]}%',
-                        "url": f'/account/courses/{course_stat["course"].slug}/lessons/{lesson_stat["lesson"].slug}/',
+                        "description": f"Прогресс: {lesson_stat['completion_percentage']}%",
+                        "url": f"/account/courses/{course_stat['course'].slug}/lessons/{lesson_stat['lesson'].slug}/",
                         "priority": "high",
                     }
                 )
@@ -237,8 +237,8 @@ def account_dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpRe
                     {
                         "type": "start",
                         "title": f'Начать "{lesson_stat["lesson"].name}"',
-                        "description": f'Курс: {course_stat["course"].name}',
-                        "url": f'/account/courses/{course_stat["course"].slug}/lessons/{lesson_stat["lesson"].slug}/',
+                        "description": f"Курс: {course_stat['course'].name}",
+                        "url": f"/account/courses/{course_stat['course'].slug}/lessons/{lesson_stat['lesson'].slug}/",
                         "priority": "medium",
                     }
                 )
@@ -904,6 +904,29 @@ def account_lesson_detail_view(
         profile.courses.add(course)
         logger.info(f"Student {profile.user.email} auto-enrolled to course {course.name}")
 
+    # ВАЖНО: Проверяем доступ к уроку - предыдущий урок должен быть одобрен
+    # Урок 1 всегда доступен
+    if lesson.lesson_number > 1:
+        prev_lesson = (
+            lesson.course.lessons.filter(lesson_number__lt=lesson.lesson_number)
+            .order_by("-lesson_number")
+            .first()
+        )
+        if prev_lesson:
+            prev_submission = LessonSubmission.objects.filter(
+                student=profile, lesson=prev_lesson
+            ).first()
+            # Если предыдущий урок не одобрен - доступ закрыт
+            if not prev_submission or prev_submission.status != "approved":
+                from django.contrib import messages
+
+                messages.warning(
+                    request,
+                    f"🔒 Урок '{lesson.name}' заблокирован. "
+                    f"Сначала завершите и отправьте на проверку урок {prev_lesson.lesson_number}: '{prev_lesson.name}'",
+                )
+                return redirect("students:account_course_detail", course_slug=course.slug)
+
     raw_steps = lesson.steps.all()
     form = LessonSubmissionForm()
 
@@ -958,6 +981,11 @@ def account_lesson_detail_view(
             is_completed=False
         ).count()
 
+    # Проверяем доступность следующего урока (только если текущий урок одобрен)
+    next_lesson_available = False
+    if next_lesson and existing_submission and existing_submission.status == "approved":
+        next_lesson_available = True
+
     return render(
         request,
         "students/dashboard/lesson-detail.html",
@@ -973,6 +1001,7 @@ def account_lesson_detail_view(
             "estimated_time": lesson_progress.get("total_steps", 0) * 5,  # 5 мин на шаг
             "prev_lesson": prev_lesson,
             "next_lesson": next_lesson,
+            "next_lesson_available": next_lesson_available,
             "incomplete_improvements_count": incomplete_improvements,
         },
     )
@@ -1223,8 +1252,22 @@ def toggle_step_progress(request, course_slug, lesson_slug, step_id):
         profile=profile, step=step, defaults={"is_completed": False}
     )
 
-    # Переключаем статус
-    step_progress.is_completed = not step_progress.is_completed
+    # Проверяем параметр completed из тела запроса
+    try:
+        import json
+
+        body = json.loads(request.body.decode("utf-8"))
+        completed = body.get("completed")
+        if completed is not None:
+            # Устанавливаем явно переданное значение
+            step_progress.is_completed = completed
+        else:
+            # Переключаем статус (старое поведение для обратной совместимости)
+            step_progress.is_completed = not step_progress.is_completed
+    except (json.JSONDecodeError, AttributeError):
+        # Переключаем статус если тело запроса пустое или невалидное
+        step_progress.is_completed = not step_progress.is_completed
+
     step_progress.completed_at = timezone.now() if step_progress.is_completed else None
     step_progress.save()
 

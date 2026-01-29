@@ -44,6 +44,12 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 
 PHONENUMBER_DEFAULT_REGION = "GE"
 
+# === MODELTRANSLATION ===
+MODELTRANSLATION_DEFAULT_LANGUAGE = "ru"
+MODELTRANSLATION_LANGUAGES = ("ru", "en", "ka")
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("ru", "en")
+MODELTRANSLATION_PREPOPULATE_LANGUAGE = "ru"
+
 # === SITES / DOMAINS ===
 SITE_ID = 1
 
@@ -77,6 +83,8 @@ TEMPLATES = [
 ]
 # === APPS ===
 INSTALLED_APPS = [
+    # Modeltranslation (MUST be before admin)
+    "modeltranslation",
     # Django core
     "django.contrib.admin",
     "django.contrib.auth",

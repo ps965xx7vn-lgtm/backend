@@ -1,0 +1,223 @@
+{
+  "ru": {
+    "name": "Основы Python",
+    "short_description": "Изучите основы программирования на Python с нуля",
+    "description": "Полный курс для начинающих программистов. Вы изучите базовый синтаксис Python, структуры данных, функции и объектно-ориентированное программирование.",
+    "category": "python",
+    "price": 0,
+    "status": "active",
+    "lessons": [
+      {
+        "name": "Введение в Python",
+        "short_description": "Первые шаги в программировании на Python",
+        "steps": [
+          {
+            "name": "Установка Python",
+            "description": "В этом шаге вы установите Python на свой компьютер и настроите среду разработки.",
+            "actions": "1. Скачайте Python с официального сайта\n2. Запустите установщик\n3. Отметьте 'Add Python to PATH'\n4. Нажмите 'Install Now'",
+            "self_check": "Откройте терминал и выполните команду: python --version\nВы должны увидеть версию Python 3.x",
+            "repair_description": "Если команда не работает, переустановите Python с галочкой 'Add to PATH'"
+          },
+          {
+            "name": "Первая программа Hello World",
+            "description": "Напишем самую простую программу на Python - вывод текста на экран.",
+            "actions": "1. Откройте текстовый редактор\n2. Напишите: print('Hello, World!')\n3. Сохраните файл как hello.py\n4. Запустите: python hello.py",
+            "self_check": "Программа должна вывести: Hello, World!",
+            "repair_description": "Проверьте синтаксис и кавычки"
+          },
+          {
+            "name": "Переменные и типы данных",
+            "description": "Изучим, как хранить данные в переменных и какие типы данных существуют в Python.",
+            "actions": "1. Создайте переменную: name = 'Иван'\n2. Создайте число: age = 25\n3. Создайте дробное число: height = 1.75\n4. Выведите их: print(name, age, height)",
+            "self_check": "Попробуйте создать свои переменные разных типов",
+            "repair_description": "Названия переменных не должны начинаться с цифр"
+          },
+          {
+            "name": "Работа со строками",
+            "description": "Научимся работать с текстом: объединение, форматирование, методы строк.",
+            "actions": "1. Объединение: full_name = first + ' ' + last\n2. Форматирование: message = f'Привет, {name}!'\n3. Методы: text.upper(), text.lower(), text.strip()",
+            "self_check": "Создайте строку с вашим именем и преобразуйте её в верхний регистр",
+            "repair_description": "Используйте кавычки для строк"
+          },
+          {
+            "name": "Числа и арифметика",
+            "description": "Изучим математические операции в Python.",
+            "actions": "1. Сложение: a + b\n2. Вычитание: a - b\n3. Умножение: a * b\n4. Деление: a / b\n5. Целочисленное деление: a // b\n6. Остаток: a % b\n7. Степень: a ** b",
+            "self_check": "Вычислите площадь круга с радиусом 5 (π * r²)",
+            "repair_description": "Для π используйте: import math; math.pi"
+          },
+          {
+            "name": "Условные операторы if-else",
+            "description": "Научимся принимать решения в программе на основе условий.",
+            "actions": "1. Простое условие:\nif age >= 18:\n    print('Совершеннолетний')\n2. С альтернативой:\nif age >= 18:\n    print('Взрослый')\nelse:\n    print('Ребёнок')\n3. Множественные условия:\nif score >= 90:\n    grade = 'A'\nelif score >= 80:\n    grade = 'B'\nelse:\n    grade = 'C'",
+            "self_check": "Напишите программу, которая проверяет, положительное число или отрицательное",
+            "repair_description": "Не забывайте о двоеточии после условия и отступах"
+          },
+          {
+            "name": "Циклы: for и while",
+            "description": "Изучим, как повторять действия многократно.",
+            "actions": "1. Цикл for:\nfor i in range(5):\n    print(i)\n\n2. Цикл while:\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n3. Перебор списка:\nfor item in ['a', 'b', 'c']:\n    print(item)",
+            "self_check": "Выведите числа от 1 до 10 используя цикл",
+            "repair_description": "Следите за отступами и не забывайте увеличивать счётчик в while"
+          },
+          {
+            "name": "Списки (Lists)",
+            "description": "Научимся работать со списками - упорядоченными коллекциями элементов.",
+            "actions": "1. Создание: numbers = [1, 2, 3, 4, 5]\n2. Доступ: first = numbers[0]\n3. Добавление: numbers.append(6)\n4. Удаление: numbers.remove(3)\n5. Срезы: first_three = numbers[:3]",
+            "self_check": "Создайте список с названиями 5 фруктов и выведите второй элемент",
+            "repair_description": "Индексы начинаются с 0"
+          },
+          {
+            "name": "Словари (Dictionaries)",
+            "description": "Изучим словари - структуру данных для хранения пар ключ-значение.",
+            "actions": "1. Создание:\nperson = {\n    'name': 'Иван',\n    'age': 25,\n    'city': 'Москва'\n}\n2. Доступ: person['name']\n3. Добавление: person['email'] = 'ivan@mail.ru'\n4. Удаление: del person['age']",
+            "self_check": "Создайте словарь с информацией о себе (имя, возраст, хобби)",
+            "repair_description": "Ключи в кавычках, значения зависят от типа"
+          },
+          {
+            "name": "Функции",
+            "description": "Научимся создавать собственные функции для повторного использования кода.",
+            "actions": "1. Простая функция:\ndef greet():\n    print('Привет!')\n\n2. С параметрами:\ndef greet(name):\n    print(f'Привет, {name}!')\n\n3. С возвратом значения:\ndef add(a, b):\n    return a + b\n\nresult = add(5, 3)",
+            "self_check": "Создайте функцию, которая вычисляет площадь прямоугольника",
+            "repair_description": "Не забывайте return для возврата значения"
+          }
+        ]
+      },
+      {
+        "name": "Работа с данными",
+        "short_description": "Чтение и запись файлов, обработка данных",
+        "steps": [
+          {
+            "name": "Чтение и запись файлов",
+            "description": "Научимся работать с файлами: читать и записывать данные.",
+            "actions": "1. Запись:\nwith open('file.txt', 'w') as f:\n    f.write('Привет, мир!')\n\n2. Чтение:\nwith open('file.txt', 'r') as f:\n    content = f.read()\n    print(content)",
+            "self_check": "Создайте файл со списком ваших любимых книг",
+            "repair_description": "Используйте with для автоматического закрытия файла"
+          }
+        ]
+      }
+    ]
+  },
+  "en": {
+    "name": "Python Basics",
+    "short_description": "Learn Python programming from scratch",
+    "description": "Complete course for beginners. You will learn basic Python syntax, data structures, functions, and object-oriented programming.",
+    "category": "python",
+    "price": 0,
+    "status": "active",
+    "lessons": [
+      {
+        "name": "Introduction to Python",
+        "short_description": "First steps in Python programming",
+        "steps": [
+          {
+            "name": "Installing Python",
+            "description": "In this step, you will install Python on your computer and set up the development environment.",
+            "actions": "1. Download Python from the official website\n2. Run the installer\n3. Check 'Add Python to PATH'\n4. Click 'Install Now'",
+            "self_check": "Open terminal and run: python --version\nYou should see Python 3.x version",
+            "repair_description": "If the command doesn't work, reinstall Python with 'Add to PATH' checked"
+          },
+          {
+            "name": "First Hello World Program",
+            "description": "Let's write the simplest Python program - printing text to screen.",
+            "actions": "1. Open text editor\n2. Type: print('Hello, World!')\n3. Save as hello.py\n4. Run: python hello.py",
+            "self_check": "Program should output: Hello, World!",
+            "repair_description": "Check syntax and quotes"
+          },
+          {
+            "name": "Variables and Data Types",
+            "description": "Learn how to store data in variables and what data types exist in Python.",
+            "actions": "1. Create variable: name = 'John'\n2. Create number: age = 25\n3. Create float: height = 1.75\n4. Print them: print(name, age, height)",
+            "self_check": "Try creating your own variables of different types",
+            "repair_description": "Variable names shouldn't start with numbers"
+          },
+          {
+            "name": "Working with Strings",
+            "description": "Learn to work with text: concatenation, formatting, string methods.",
+            "actions": "1. Concatenation: full_name = first + ' ' + last\n2. Formatting: message = f'Hello, {name}!'\n3. Methods: text.upper(), text.lower(), text.strip()",
+            "self_check": "Create a string with your name and convert it to uppercase",
+            "repair_description": "Use quotes for strings"
+          },
+          {
+            "name": "Numbers and Arithmetic",
+            "description": "Learn mathematical operations in Python.",
+            "actions": "1. Addition: a + b\n2. Subtraction: a - b\n3. Multiplication: a * b\n4. Division: a / b\n5. Integer division: a // b\n6. Remainder: a % b\n7. Power: a ** b",
+            "self_check": "Calculate circle area with radius 5 (π * r²)",
+            "repair_description": "For π use: import math; math.pi"
+          },
+          {
+            "name": "Conditional Statements if-else",
+            "description": "Learn to make decisions in your program based on conditions.",
+            "actions": "1. Simple condition:\nif age >= 18:\n    print('Adult')\n2. With alternative:\nif age >= 18:\n    print('Adult')\nelse:\n    print('Child')\n3. Multiple conditions:\nif score >= 90:\n    grade = 'A'\nelif score >= 80:\n    grade = 'B'\nelse:\n    grade = 'C'",
+            "self_check": "Write a program that checks if a number is positive or negative",
+            "repair_description": "Don't forget colons after conditions and indentation"
+          },
+          {
+            "name": "Loops: for and while",
+            "description": "Learn how to repeat actions multiple times.",
+            "actions": "1. For loop:\nfor i in range(5):\n    print(i)\n\n2. While loop:\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n3. Iterating list:\nfor item in ['a', 'b', 'c']:\n    print(item)",
+            "self_check": "Print numbers from 1 to 10 using a loop",
+            "repair_description": "Watch indentation and remember to increment counter in while"
+          },
+          {
+            "name": "Lists",
+            "description": "Learn to work with lists - ordered collections of elements.",
+            "actions": "1. Creation: numbers = [1, 2, 3, 4, 5]\n2. Access: first = numbers[0]\n3. Append: numbers.append(6)\n4. Remove: numbers.remove(3)\n5. Slicing: first_three = numbers[:3]",
+            "self_check": "Create a list with 5 fruit names and print the second element",
+            "repair_description": "Indices start from 0"
+          },
+          {
+            "name": "Dictionaries",
+            "description": "Learn dictionaries - data structure for storing key-value pairs.",
+            "actions": "1. Creation:\nperson = {\n    'name': 'John',\n    'age': 25,\n    'city': 'New York'\n}\n2. Access: person['name']\n3. Add: person['email'] = 'john@mail.com'\n4. Delete: del person['age']",
+            "self_check": "Create a dictionary with info about yourself (name, age, hobby)",
+            "repair_description": "Keys in quotes, values depend on type"
+          },
+          {
+            "name": "Functions",
+            "description": "Learn to create your own functions for code reuse.",
+            "actions": "1. Simple function:\ndef greet():\n    print('Hello!')\n\n2. With parameters:\ndef greet(name):\n    print(f'Hello, {name}!')\n\n3. With return:\ndef add(a, b):\n    return a + b\n\nresult = add(5, 3)",
+            "self_check": "Create a function that calculates rectangle area",
+            "repair_description": "Remember return to return a value"
+          }
+        ]
+      },
+      {
+        "name": "Working with Data",
+        "short_description": "Reading and writing files, data processing",
+        "steps": [
+          {
+            "name": "Reading and Writing Files",
+            "description": "Learn to work with files: read and write data.",
+            "actions": "1. Writing:\nwith open('file.txt', 'w') as f:\n    f.write('Hello, world!')\n\n2. Reading:\nwith open('file.txt', 'r') as f:\n    content = f.read()\n    print(content)",
+            "self_check": "Create a file with a list of your favorite books",
+            "repair_description": "Use with for automatic file closing"
+          }
+        ]
+      }
+    ]
+  },
+  "ka": {
+    "name": "Python-ის საფუძვლები",
+    "short_description": "ისწავლეთ Python პროგრამირება ნულიდან",
+    "description": "სრული კურსი დამწყებთათვის. თქვენ შეისწავლით Python-ის ძირითად სინტაქსს, მონაცემთა სტრუქტურებს, ფუნქციებს და ობიექტზე ორიენტირებულ პროგრამირებას.",
+    "category": "python",
+    "price": 0,
+    "status": "active",
+    "lessons": [
+      {
+        "name": "Python-ის შესავალი",
+        "short_description": "პირველი ნაბიჯები Python პროგრამირებაში",
+        "steps": [
+          {
+            "name": "Python-ის დაინსტალირება",
+            "description": "ამ ნაბიჯში თქვენ დააინსტალირებთ Python-ს თქვენს კომპიუტერზე და მოამზადებთ განვითარების გარემოს.",
+            "actions": "1. ჩამოტვირთეთ Python ოფიციალური ვებსაიტიდან\n2. გაუშვით ინსტალერი\n3. მონიშნეთ 'Add Python to PATH'\n4. დააჭირეთ 'Install Now'",
+            "self_check": "გახსენით ტერმინალი და შეასრულეთ: python --version\nთქვენ უნდა დაინახოთ Python 3.x ვერსია",
+            "repair_description": "თუ ბრძანება არ მუშაობს, გადააინსტალირეთ Python 'Add to PATH'-ით"
+          }
+        ]
+      }
+    ]
+  }
+}

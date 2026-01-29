@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="{% static 'css/students/course-list.css' %}?v=20251212-progress">
 <link rel="stylesheet" href="{% static 'css/students/markdown.css' %}">
 <link rel="stylesheet" href="{% static 'css/students/code-blocks.css' %}">
+<link rel="stylesheet" href="{% static 'css/students/self-check-items.css' %}?v=20250129">
 {% endblock %}
 
 {% block header %}
@@ -131,12 +132,21 @@
                 </a>
                 {% endif %}
                 {% if next_lesson %}
-                <a href="{% url 'students:account_lesson_detail' course.slug next_lesson.slug %}" class="btn btn-primary">
-                    {% trans "Следующий урок" %}
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
+                    {% if next_lesson_available %}
+                    <a href="{% url 'students:account_lesson_detail' course.slug next_lesson.slug %}" class="btn btn-primary">
+                        {% trans "Следующий урок" %}
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    {% else %}
+                    <button class="btn btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;" title="{% trans 'Завершите текущий урок и отправьте работу на проверку' %}">
+                        🔒 {% trans "Следующий урок" %}
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </button>
+                    {% endif %}
                 {% endif %}
             </div>
         </header>
@@ -286,7 +296,37 @@
                         </div>
                         {% endif %}
 
-                        {% if step_data.step.self_check %}
+                        {% if step_data.step.self_check_items %}
+                        <div class="step-body step-self-check">
+                            <h5 class="step-section-title">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {% trans "Проверь себя" %}
+                            </h5>
+                            <div class="step-section-content">
+                                <div class="self-check-items" data-step-id="{{ step_data.step.id }}">
+                                    {% for item in step_data.step.self_check_items %}
+                                    <label class="self-check-item">
+                                        <input type="checkbox" class="self-check-checkbox" data-index="{{ forloop.counter0 }}">
+                                        <span class="checkbox-text">{{ item }}</span>
+                                    </label>
+                                    {% endfor %}
+                                    <div class="self-check-progress">
+                                        <span class="progress-text">
+                                            <span class="checked-count">0</span> / <span class="total-count">{{ step_data.step.self_check_items|length }}</span> {% trans "выполнено" %}
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-primary btn-next-step" style="display: none; margin-top: 1rem;"
+                                            data-step-id="{{ step_data.step.id }}"
+                                            data-course-slug="{{ course.slug }}"
+                                            data-lesson-slug="{{ lesson.slug }}">
+                                        {% trans "Следующий шаг" %} →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% elif step_data.step.self_check %}
                         <div class="step-body step-self-check">
                             <h5 class="step-section-title">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,6 +336,28 @@
                             </h5>
                             <div class="step-section-content markdown-content">
                                 {{ step_data.step.self_check|markdownify }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Troubleshooting Help для студентов (аккордеон) -->
+                        {% if step_data.step.troubleshooting_help %}
+                        <div class="step-troubleshooting-accordion" data-accordion-step="{{ step_data.step.id }}-troubleshooting">
+                            <div class="step-accordion-header troubleshooting-header">
+                                <h5>
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    {% trans "❓ Если возникли трудности - нажми сюда" %}
+                                </h5>
+                                <svg class="accordion-toggle-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                            <div class="step-accordion-content" style="display: none;">
+                                <div class="markdown-content troubleshooting-content">
+                                    {{ step_data.step.troubleshooting_help|markdownify }}
+                                </div>
                             </div>
                         </div>
                         {% endif %}

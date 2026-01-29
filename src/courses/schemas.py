@@ -94,6 +94,11 @@ class StepOut(BaseModel):
     name: str
     step_number: int
     description: str | None = None
+    actions: str | None = None
+    self_check: str | None = None
+    self_check_items: list[str] | None = None
+    troubleshooting_help: str | None = None
+    submission_field: str | None = None
 
     model_config = {"from_attributes": True}
 

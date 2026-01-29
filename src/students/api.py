@@ -420,3 +420,59 @@ def deactivate_account(request) -> MessageSchema:
     logger.info(f"Account deactivated: {user.email}")
 
     return MessageSchema(message="Account deactivated successfully")
+
+
+@router.post("/complete-step/{step_id}/", response=MessageSchema, auth=JWTAuth())
+@transaction.atomic
+def complete_step(request, step_id: str) -> MessageSchema:
+    """
+    Отметить шаг как выполненный.
+
+    Args:
+        step_id: UUID шага
+
+    Returns:
+        MessageSchema: Подтверждение выполнения
+    """
+    from uuid import UUID
+
+    from django.utils import timezone
+
+    from courses.models import Step
+    from reviewers.models import StepProgress
+    from students.cache_utils import safe_cache_delete
+
+    try:
+        step_uuid = UUID(step_id)
+        step = Step.objects.get(id=step_uuid)
+    except (ValueError, Step.DoesNotExist):
+        raise HttpError(404, "Step not found")
+
+    # Получаем или создаём запись прогресса
+    progress, created = StepProgress.objects.get_or_create(
+        profile=request.user.student,
+        step=step,
+        defaults={"is_completed": True, "completed_at": timezone.now()},
+    )
+
+    if not created and not progress.is_completed:
+        progress.is_completed = True
+        progress.completed_at = timezone.now()
+        progress.save(update_fields=["is_completed", "completed_at"])
+
+    # Инвалидируем кэш прогресса
+    lesson = step.lesson
+    course = lesson.course
+    profile = request.user.student
+
+    lesson.invalidate_progress_cache(profile)
+    course.invalidate_progress_cache(profile)
+
+    # Инвалидируем кэш страниц
+    safe_cache_delete(f"user_courses_stats_{profile.id}")
+    safe_cache_delete(f"dashboard_stats_{profile.id}")
+    safe_cache_delete(f"course_detail_{course.id}_{profile.id}")
+
+    logger.info(f"Step completed: {step.name} by {request.user.email}")
+
+    return MessageSchema(message="Step marked as completed")

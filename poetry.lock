@@ -912,6 +912,22 @@ Django = "*"
 markdown = "*"
 
 [[package]]
+name = "django-modeltranslation"
+version = "0.19.19"
+description = "Translates Django models using a registration approach."
+optional = false
+python-versions = "<4,>=3.10"
+groups = ["main"]
+files = [
+    {file = "django_modeltranslation-0.19.19-py3-none-any.whl", hash = "sha256:55ac2ce47486b9e8ca18b155f7705170a53b7e1346bf7bf89304e99787486e8f"},
+    {file = "django_modeltranslation-0.19.19.tar.gz", hash = "sha256:26dd8454f19540a2eb05e303608a2d89dd80aacb75ab95f8ea272cf4324d2644"},
+]
+
+[package.dependencies]
+django = ">=5.1"
+typing-extensions = ">=4.0.1"
+
+[[package]]
 name = "django-ninja"
 version = "1.4.3"
 description = "Django Ninja - Fast Django REST framework"
@@ -3400,4 +3416,4 @@ dev = ["black (>=19.3b0) ; python_version >= \"3.6\"", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "ef19eb1b452e243267abf9d12a848bc0a34e64a44307a49ca60eb40b688cdcde"
+content-hash = "3261e2c2d2464ea32e99a8d6621705bca46404b48531857d830f60cc76195b7d"

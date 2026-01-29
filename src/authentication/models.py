@@ -136,10 +136,6 @@ class User(AbstractUser):
 
     objects: CustomUserManager = CustomUserManager()
 
-    # Отключаем Django groups и user_permissions - используем role-based систему с permissions
-    groups = None
-    user_permissions = None
-
     def __str__(self) -> str:
         """Строковое представление пользователя."""
         return self.email
@@ -191,6 +187,38 @@ class User(AbstractUser):
             )
         except Exception:
             return False
+
+    def has_perm(self, perm: str, obj: Any = None) -> bool:
+        """
+        Проверка прав доступа для Django admin.
+
+        Суперпользователи имеют все права.
+        is_staff пользователи получают базовые права для admin панели.
+
+        Args:
+            perm: Название разрешения
+            obj: Необязательный объект для проверки прав
+
+        Returns:
+            bool: True если пользователь имеет право
+        """
+        if self.is_active and self.is_superuser:
+            return True
+        return False
+
+    def has_module_perms(self, app_label: str) -> bool:
+        """
+        Проверка прав доступа к модулю Django admin.
+
+        Args:
+            app_label: Название приложения Django
+
+        Returns:
+            bool: True если пользователь имеет право на модуль
+        """
+        if self.is_active and self.is_superuser:
+            return True
+        return False
 
     class Meta:
         verbose_name: str = "Пользователь"
