@@ -1,0 +1,88 @@
+{% load i18n %}
+<div style="background-color: #f7f7f7; padding: 40px 0; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div style="background-color: #10b981; border-radius: 10px 10px 0 0; color: #ffffff; padding: 30px; margin: 0 auto; max-width: 600px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="color: white;">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-size: 24px; font-weight: bold;">PyLand</span>
+    </div>
+    <h2 style="margin: 0; font-size: 28px;">{% trans "Добро пожаловать!" %} 🎉</h2>
+  </div>
+
+  <div style="margin: 0 auto; padding: 40px; background-color: #ffffff; max-width: 600px; text-align: left; border-radius: 0 0 10px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <p style="font-size: 18px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+      {% trans "Привет" %}, <strong>{{ name|default:"друг" }}</strong>!
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6; color: #555; margin-bottom: 20px;">
+      {% trans "Спасибо за подписку на блог PyLand!" %} 🚀
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6; color: #555; margin-bottom: 30px;">
+      {% trans "Теперь ты будешь первым узнавать о:" %}
+    </p>
+
+    <div style="background-color: #f8fafc; padding: 25px; border-radius: 8px; border-left: 4px solid #10b981; margin: 30px 0;">
+      <ul style="margin: 0; padding-left: 20px;">
+        <li style="font-size: 15px; line-height: 2; color: #334155;">
+          <strong>📝 {% trans "Новых статьях и уроках" %}</strong> — {% trans "про Python, Django и веб-разработку" %}
+        </li>
+        <li style="font-size: 15px; line-height: 2; color: #334155;">
+          <strong>💡 {% trans "Советах и трюках" %}</strong> — {% trans "от опытных разработчиков" %}
+        </li>
+        <li style="font-size: 15px; line-height: 2; color: #334155;">
+          <strong>🎁 {% trans "Специальных предложениях" %}</strong> — {% trans "эксклюзивно для подписчиков" %}
+        </li>
+        <li style="font-size: 15px; line-height: 2; color: #334155;">
+          <strong>🚀 {% trans "Новых курсах" %}</strong> — {% trans "раньше всех" %}
+        </li>
+      </ul>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+      <a href="{{ site_url }}/blog/"
+         style="display: inline-block;
+                padding: 16px 32px;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: #ffffff;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+                transition: all 0.2s ease;">
+        {% trans "Читать блог" %} 📖
+      </a>
+    </div>
+
+    <hr style="border: none; height: 1px; background-color: #e2e8f0; margin: 30px 0;">
+
+    <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+      <p style="font-size: 14px; line-height: 1.6; color: #92400e; margin: 0;">
+        <strong>💪 {% trans "Совет от команды:" %}</strong><br>
+        {% trans "Добавь наш email в адресную книгу, чтобы письма не попадали в спам!" %}
+      </p>
+    </div>
+
+    <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin: 20px 0 10px 0;">
+      {% trans "Мы рады видеть тебя в нашем сообществе!" %}
+    </p>
+
+    <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 0;">
+      {% trans "С уважением," %}<br>
+      <strong>{% trans "Команда PyLand" %}</strong>
+    </p>
+  </div>
+
+  <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+    <p style="margin-bottom: 10px;">
+      {% trans "Не хочешь больше получать письма?" %}
+      <a href="{{ unsubscribe_url }}" style="color: #64748b; text-decoration: underline;">{% trans "Отписаться" %}</a>
+    </p>
+    <p style="margin: 0;">
+      {% trans "Это автоматическое письмо, пожалуйста, не отвечайте на него." %}<br>
+      {% trans "Если у вас есть вопросы, свяжитесь с нами через форму обратной связи на сайте." %}
+    </p>
+  </div>
+</div>

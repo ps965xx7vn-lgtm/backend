@@ -59,7 +59,7 @@ class Command(BaseCommand):
             # Проверяем, существует ли уже пользователь
             if User.objects.filter(email=user_data["email"]).exists():
                 self.stdout.write(
-                    f'Пользователь {user_data["email"]} уже существует, пропускаем...'
+                    f"Пользователь {user_data['email']} уже существует, пропускаем..."
                 )
                 continue
 

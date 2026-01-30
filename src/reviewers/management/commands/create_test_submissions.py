@@ -131,7 +131,7 @@ class Command(BaseCommand):
                 student=student,
                 lesson=lesson,
                 defaults={
-                    "lesson_url": f"{url}-{i+1}",
+                    "lesson_url": f"{url}-{i + 1}",
                     "status": status,
                 },
             )
@@ -145,12 +145,12 @@ class Command(BaseCommand):
                 status_icon = "⏳" if status == "pending" else "✅" if status == "approved" else "✏️"
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"{status_icon} Работа {i+1}: {lesson.course.name} → {lesson.name} ({status})"
+                        f"{status_icon} Работа {i + 1}: {lesson.course.name} → {lesson.name} ({status})"
                     )
                 )
             else:
                 self.stdout.write(
-                    self.style.WARNING(f"⚠ Работа {i+1}: уже существует для {lesson.name}")
+                    self.style.WARNING(f"⚠ Работа {i + 1}: уже существует для {lesson.name}")
                 )
 
         self.stdout.write("")

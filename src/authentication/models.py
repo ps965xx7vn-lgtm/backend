@@ -172,7 +172,11 @@ class User(AbstractUser):
 
     def has_active_newsletter_subscription(self) -> bool:
         """
-        Проверить есть ли у пользователя активная подписка на рассылку.
+        Проверить есть ли у пользователя активная подписка на email уведомления.
+
+        Note:
+            Использует централизованную систему notifications.Subscription
+            с типом 'email_notifications'
 
         Returns:
             bool: True если есть активная подписка, иначе False
@@ -182,9 +186,11 @@ class User(AbstractUser):
             ...     show_newsletter_signup()
         """
         try:
-            return (
-                hasattr(self, "newsletter_subscription") and self.newsletter_subscription.is_active
-            )
+            from notifications.models import Subscription
+
+            return Subscription.objects.filter(
+                email=self.email, subscription_type="email_notifications", is_active=True
+            ).exists()
         except Exception:
             return False
 

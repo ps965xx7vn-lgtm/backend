@@ -78,8 +78,7 @@ class Command(BaseCommand):
             )
 
             logger.info(
-                f"Создан суперадмин: {email} "
-                f"(ID: {user.id}, is_superuser: True, is_staff: True)"
+                f"Создан суперадмин: {email} (ID: {user.id}, is_superuser: True, is_staff: True)"
             )
 
             self.stdout.write(

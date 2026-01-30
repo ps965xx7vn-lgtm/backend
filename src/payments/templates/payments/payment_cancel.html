@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Оплата отменена" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/payments/checkout.css' %}">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="payment-result-container">
+    <div class="payment-result-card cancelled">
+        <div class="payment-result-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+
+        <h1 class="payment-result-title">{% trans "Оплата отменена" %}</h1>
+
+        <p class="payment-result-message">
+            {% trans "Вы отменили оплату курса" %} <strong>{{ course.name }}</strong>
+        </p>
+
+        <div class="payment-details">
+            <div class="payment-detail-row">
+                <span class="label">{% trans "ID платежа" %}:</span>
+                <span class="value mono">{{ payment.id }}</span>
+            </div>
+            <div class="payment-detail-row">
+                <span class="label">{% trans "Статус" %}:</span>
+                <span class="value">{{ payment.get_status_display }}</span>
+            </div>
+        </div>
+
+        <div class="payment-info-box">
+            <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p>{% trans "Деньги не были списаны с вашего счёта. Вы можете попробовать оплатить ещё раз в любое время." %}</p>
+        </div>
+
+        <div class="payment-actions">
+            <a href="{% url 'payments:checkout' course_slug=course.slug %}" class="btn-primary">
+                {% trans "Попробовать снова" %}
+            </a>
+
+            <a href="{% url 'courses:course_detail' course_slug=course.slug %}" class="btn-secondary">
+                {% trans "Вернуться к курсу" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

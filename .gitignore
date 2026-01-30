@@ -122,6 +122,45 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Redis dump
+dump.rdb
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Logs
+logs/
+*.log
+
+# Media files (uploads)
+media/
+
+# Static files (collected)
+staticfiles/
+
+# Local scripts (temporary utilities)
+*_migration.py
+*_import.py
+fix_*.py
+add_*.py
+check_*.py
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
 # IDEs
 .vscode/
 .idea/

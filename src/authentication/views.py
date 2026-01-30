@@ -56,6 +56,7 @@ def signin_view(request: HttpRequest) -> HttpResponse:
 
     Обрабатывает аутентификацию пользователя с проверкой подтверждения email.
     Поддерживает перенаправление на next URL после успешного входа.
+    Авторизованные пользователи автоматически перенаправляются на главную.
 
     Args:
         request: HTTP запрос Django (GET для отображения формы, POST для входа)
@@ -87,6 +88,11 @@ def signin_view(request: HttpRequest) -> HttpResponse:
         → Redirect to /dashboard если email подтвержден
         → Ошибка с ссылкой на resend_verification если не подтвержден
     """
+    # Редирект авторизованных пользователей
+    if request.user.is_authenticated:
+        logger.info(f"Авторизованный пользователь {request.user.email} перенаправлен с signin")
+        return redirect("/")
+
     next_url = request.GET.get("next") or request.POST.get("next") or "/"
     if request.method == "POST":
         form = UserLoginForm(request.POST)
@@ -133,6 +139,7 @@ def signup_view(request: HttpRequest) -> HttpResponse:
 
     Создает User с уникальным username (UUID), Profile через сигнал,
     и отправляет письмо с ссылкой активации через Celery или синхронно (fallback).
+    Авторизованные пользователи автоматически перенаправляются на главную.
 
     Args:
         request: HTTP запрос Django (GET для формы, POST для регистрации)
@@ -172,6 +179,10 @@ def signup_view(request: HttpRequest) -> HttpResponse:
         → Отправляется email с /account/verify-email-confirm/{uidb64}/{token}/
         → Redirect на signin с сообщением "Подтвердите email"
     """
+    # Редирект авторизованных пользователей
+    if request.user.is_authenticated:
+        logger.info(f"Авторизованный пользователь {request.user.email} перенаправлен с signup")
+        return redirect("/")
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -243,7 +254,13 @@ def signup_view(request: HttpRequest) -> HttpResponse:
                 if email_sent:
                     messages.success(
                         request,
-                        _("Пожалуйста, подтвердите ваш email для завершения регистрации."),
+                        mark_safe(
+                            _(
+                                "Пожалуйста, подтвердите ваш email для завершения регистрации.<br>"
+                                "<strong>Вы автоматически подписаны на все уведомления.</strong><br>"
+                                "Вы можете управлять подписками в настройках вашего профиля."
+                            )
+                        ),
                     )
                     return redirect("authentication:signin")
 

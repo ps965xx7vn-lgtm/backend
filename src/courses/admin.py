@@ -241,7 +241,7 @@ class CourseAdmin(admin.ModelAdmin):
     @admin.display(description="Студентов")
     def students_count(self, obj):
         """Количество студентов"""
-        count = obj.students.count()
+        count = obj.student_enrollments.count()
         return format_html('<span style="color: #10b981; font-weight: bold;">👥 {}</span>', count)
 
     @admin.display(description="Статистика")
@@ -252,7 +252,7 @@ class CourseAdmin(admin.ModelAdmin):
 
         lessons_count = obj.lessons.count()
         steps_count = Step.objects.filter(lesson__course=obj).count()
-        students_count = obj.students.count()
+        students_count = obj.student_enrollments.count()
         submissions_count = LessonSubmission.objects.filter(lesson__course=obj).count()
 
         # Прогресс студентов
@@ -305,7 +305,7 @@ class CourseAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         """Оптимизация запросов"""
         qs = super().get_queryset(request)
-        return qs.prefetch_related("lessons", "students")
+        return qs.prefetch_related("lessons", "student_enrollments")
 
 
 @admin.register(Lesson)

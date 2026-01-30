@@ -26,20 +26,20 @@
             <div class="particle"></div>
             <div class="particle"></div>
         </div>
-        
+
         <div class="container">
             <div class="hero-main-content">
                 <div class="hero-badge-revolutionary animate-fade-in">
                     <span>🎯</span>
                     <span>{% trans "Популярный курс" %}</span>
                 </div>
-                
+
                 <h1 class="hero-title-revolutionary animate-fade-in delay-1">{{ course.name }}</h1>
-                
+
                 <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
                     {{ course.short_description|default:course.description|truncatewords:25 }}
                 </p>
-                
+
                 <div class="hero-actions-revolutionary animate-fade-in delay-3">
                     {% if has_access %}
                         <a href="#curriculum" class="btn-revolutionary-hero btn-primary-hero">
@@ -47,17 +47,24 @@
                             <span>{% trans "Продолжить обучение" %}</span>
                         </a>
                     {% else %}
-                        <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
-                            <span>🎯</span>
-                            <span>{% trans "Записаться на курс" %}</span>
-                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'payments:checkout' course_slug=course.slug %}" class="btn-revolutionary-hero btn-primary-hero">
+                                <span>💳</span>
+                                <span>{% trans "Купить курс" %}</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'authentication:login' %}?next={% url 'payments:checkout' course_slug=course.slug %}" class="btn-revolutionary-hero btn-primary-hero">
+                                <span>🎯</span>
+                                <span>{% trans "Войти и купить" %}</span>
+                            </a>
+                        {% endif %}
                     {% endif %}
                     <a href="#curriculum" class="btn-revolutionary-hero btn-secondary-hero">
                         <span>📋</span>
                         <span>{% trans "Посмотреть программу" %}</span>
                     </a>
                 </div>
-                
+
                 <div class="hero-stats-revolutionary animate-fade-in delay-4">
                     <div class="stat-card-revolutionary">
                         <span class="stat-number-revolutionary">{{ course.rating|floatformat:1 }}⭐</span>
@@ -95,14 +102,14 @@
                     {% trans "Подробная программа курса с практическими заданиями и проектами" %}
                 </p>
             </div>
-            
+
             <!-- Табы -->
             <div class="course-tabs-container">
                 <button class="tab-btn active" data-tab="overview">{% trans "Обзор" %}</button>
                 <button class="tab-btn" data-tab="curriculum">{% trans "Программа" %}</button>
                 <button class="tab-btn" data-tab="reviews">{% trans "Отзывы" %}</button>
             </div>
-            
+
             <div class="features-grid-revolutionary">
                 <!-- Overview Tab -->
                 <div class="tab-content active" id="overview">
@@ -112,7 +119,7 @@
                         <div class="article-text-revolutionary course-description-content">
                             {{ course.description|markdownify|default:"Этот курс предназначен для изучения современных технологий программирования. Вы получите практические навыки и знания, необходимые для успешной карьеры в IT." }}
                         </div>
-                        
+
                         <h4 class="course-learning-title">{% trans "Что вы изучите:" %}</h4>
                         <ul class="course-learning-list">
                             <li class="course-learning-item">
@@ -138,7 +145,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <!-- Curriculum Tab -->
                 <div class="tab-content" id="curriculum-content">
                     {% for lesson in lessons %}
@@ -155,7 +162,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                
+
                 <!-- Reviews Tab -->
                 <div class="tab-content" id="reviews-content">
                     <div class="feature-card-revolutionary reviews-empty-card">
@@ -185,7 +192,7 @@
                     {% trans "Посмотрите, какой код вы будете писать в рамках курса" %}
                 </p>
             </div>
-            
+
             <div class="code-examples-grid">
                 <!-- Python Example -->
                 <div class="code-block">
@@ -285,7 +292,7 @@
                     {% trans "Продолжите свое обучение с этими курсами" %}
                 </p>
             </div>
-            
+
             <div class="features-grid-revolutionary">
                 {% for other_course in courses %}
                 <a href="{{ other_course.get_absolute_url }}" class="feature-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:2 }}" style="text-decoration: none; color: inherit;">

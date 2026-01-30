@@ -213,9 +213,9 @@ def create_subscription(request, data: SubscriptionSchema):
         }
     """
     try:
-        subscription, created = Subscription.objects.get_or_create(
+        subscription, created = Subscription.subscribe(
             email=data.email,
-            defaults={"is_active": True},
+            subscription_type="email_notifications",  # Общая подписка на все уведомления
         )
 
         if not created and not subscription.is_active:

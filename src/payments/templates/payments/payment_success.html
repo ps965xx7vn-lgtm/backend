@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Оплата успешна" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/payments/checkout.css' %}">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="payment-result-container">
+    <div class="payment-result-card success">
+        <div class="payment-result-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+
+        <h1 class="payment-result-title">{% trans "Оплата успешна!" %}</h1>
+
+        <p class="payment-result-message">
+            {% trans "Поздравляем! Вы успешно записаны на курс" %} <strong>{{ course.name }}</strong>
+        </p>
+
+        <div class="payment-details">
+            <div class="payment-detail-row">
+                <span class="label">{% trans "ID платежа" %}:</span>
+                <span class="value mono">{{ payment.id }}</span>
+            </div>
+            <div class="payment-detail-row">
+                <span class="label">{% trans "Сумма" %}:</span>
+                <span class="value">{{ payment.amount }} {{ payment.currency }}</span>
+            </div>
+            <div class="payment-detail-row">
+                <span class="label">{% trans "Дата" %}:</span>
+                <span class="value">{{ payment.payment_date|date:"d.m.Y H:i" }}</span>
+            </div>
+            <div class="payment-detail-row">
+                <span class="label">{% trans "Способ оплаты" %}:</span>
+                <span class="value">{{ payment.get_payment_method_display }}</span>
+            </div>
+        </div>
+
+        <div class="success-next-steps">
+            <h3>{% trans "Что дальше?" %}</h3>
+            <ul>
+                <li>{% trans "Начните изучать материалы курса" %}</li>
+                <li>{% trans "Выполняйте практические задания" %}</li>
+                <li>{% trans "Отслеживайте свой прогресс в личном кабинете" %}</li>
+            </ul>
+        </div>
+
+        <div class="payment-actions">
+            <a href="{% url 'students:account_course_detail' slug=course.slug %}" class="btn-primary">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                {% trans "Начать обучение" %}
+            </a>
+
+            <a href="{% url 'students:account_dashboard' request.user.student.id %}" class="btn-secondary">
+                {% trans "Мой дашборд" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

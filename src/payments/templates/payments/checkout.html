@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Оформление заказа" %} - {{ course.name }} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/payments/checkout.css' %}">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="checkout-wrapper">
+        <!-- Левая колонка - информация о курсе -->
+        <div class="checkout-course-info">
+            <div class="checkout-course-card">
+                {% if course.image %}
+                <img src="{{ course.image.url }}" alt="{{ course.name }}" class="checkout-course-image">
+                {% endif %}
+
+                <div class="checkout-course-details">
+                    <h2 class="checkout-course-title">{{ course.name }}</h2>
+
+                    {% if course.description_short %}
+                    <p class="checkout-course-description">{{ course.description_short }}</p>
+                    {% endif %}
+
+                    <div class="checkout-course-meta">
+                        <div class="checkout-meta-item">
+                            <svg class="checkout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                            <span>{% trans "Уроков" %}: {{ course.lessons.count }}</span>
+                        </div>
+
+                        <div class="checkout-meta-item">
+                            <svg class="checkout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>{% trans "Длительность" %}: {{ course.duration_hours }}ч</span>
+                        </div>
+                    </div>
+
+                    <!-- Цены в разных валютах -->
+                    <div class="checkout-prices">
+                        <h3>{% trans "Стоимость курса" %}:</h3>
+                        <div class="checkout-price-list">
+                            {% for currency_code, amount in prices.items %}
+                            <div class="checkout-price-item">
+                                <span class="currency-label">{{ currency_code }}:</span>
+                                <span class="price-value">{{ amount }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка - форма оплаты -->
+        <div class="checkout-form-section">
+            <div class="checkout-form-card">
+                <h2 class="checkout-form-title">{% trans "Выберите способ оплаты" %}</h2>
+
+                {% if pending_payment %}
+                <div class="alert alert-info">
+                    <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>{% trans "У вас есть незавершенная оплата этого курса" %}</span>
+                </div>
+                {% endif %}
+
+                <form method="post" id="checkoutForm" class="checkout-form">
+                    {% csrf_token %}
+
+                    <!-- Выбор валюты -->
+                    <div class="form-group">
+                        <label for="{{ form.currency.id_for_label }}" class="form-label">
+                            {{ form.currency.label }}
+                        </label>
+                        {{ form.currency }}
+                        {% if form.currency.help_text %}
+                        <small class="form-text">{{ form.currency.help_text }}</small>
+                        {% endif %}
+                        {% if form.currency.errors %}
+                        <div class="form-error">{{ form.currency.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Выбор метода оплаты -->
+                    <div class="form-group">
+                        <label class="form-label">{{ form.payment_method.label }}</label>
+                        <div class="payment-methods">
+                            {% for value, label in form.payment_method.field.choices %}
+                            <div class="payment-method-option">
+                                <input type="radio"
+                                       name="{{ form.payment_method.name }}"
+                                       value="{{ value }}"
+                                       id="payment_{{ value }}"
+                                       class="payment-radio"
+                                       {% if forloop.first %}checked{% endif %}>
+                                <label for="payment_{{ value }}" class="payment-label">
+                                    <div class="payment-method-content">
+                                        {% if value == 'cloudpayments' %}
+                                        <div class="payment-logo">
+                                            <svg class="payment-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                            </svg>
+                                        </div>
+                                        {% elif value == 'tbc_georgia' %}
+                                        <div class="payment-logo tbc-logo">
+                                            <svg class="payment-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                            </svg>
+                                        </div>
+                                        {% endif %}
+                                        <div class="payment-info">
+                                            <div class="payment-name">{{ label }}</div>
+                                            <div class="payment-description">
+                                                {% if value == 'cloudpayments' %}
+                                                {% trans "Оплата картой через CloudPayments" %}
+                                                {% elif value == 'tbc_georgia' %}
+                                                {% trans "Оплата через TBC Bank (Грузия)" %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="payment-checkmark">
+                                        <svg fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                        </svg>
+                                    </div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.payment_method.errors %}
+                        <div class="form-error">{{ form.payment_method.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Согласия -->
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form.terms_accepted }}
+                            <label for="{{ form.terms_accepted.id_for_label }}" class="form-check-label">
+                                {{ form.terms_accepted.label }}
+                            </label>
+                        </div>
+                        {% if form.terms_accepted.errors %}
+                        <div class="form-error">{{ form.terms_accepted.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form.privacy_accepted }}
+                            <label for="{{ form.privacy_accepted.id_for_label }}" class="form-check-label">
+                                {{ form.privacy_accepted.label }}
+                            </label>
+                        </div>
+                        {% if form.privacy_accepted.errors %}
+                        <div class="form-error">{{ form.privacy_accepted.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Кнопка оплаты -->
+                    <div class="checkout-actions">
+                        <button type="submit" class="btn-checkout-primary">
+                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                            {% trans "Перейти к оплате" %}
+                        </button>
+
+                        <a href="{% url 'courses:course_detail' course_slug=course.slug %}" class="btn-checkout-secondary">
+                            {% trans "Отменить" %}
+                        </a>
+                    </div>
+
+                    <!-- Безопасность -->
+                    <div class="checkout-security">
+                        <svg class="security-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        <span>{% trans "Безопасная оплата. Данные карты не сохраняются." %}</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/payments/checkout.js' %}"></script>
+{% endblock %}

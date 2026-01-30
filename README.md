@@ -79,23 +79,73 @@ python manage.py runserver
 ```text
 backend/
 ├── src/                          # Django приложение
-│   ├── authentication/          # Пользователи, роли, JWT auth
-│   ├── students/                # Функционал для студентов
-│   ├── courses/                 # Курсы, уроки, задания
-│   ├── blog/                    # Статьи, комментарии, реакции
-│   ├── reviewers/               # Ревью и обратная связь
-│   ├── certificates/            # Сертификаты о завершении
-│   ├── payments/                # Платежи
-│   ├── notifications/           # Email/SMS/Telegram уведомления
-│   ├── core/                    # Общие функции, health checks
-│   ├── pyland/                  # Настройки Django
+│   ├── authentication/          # 🔐 Пользователи, роли, JWT auth (с автоподпиской)
+│   ├── students/                # 👨‍🎓 Функционал для студентов
+│   ├── courses/                 # 📚 Курсы, уроки, задания
+│   ├── blog/                    # 📝 Статьи, комментарии, реакции
+│   ├── reviewers/               # ✅ Ревью и обратная связь
+│   ├── certificates/            # 🎓 Сертификаты о завершении
+│   ├── payments/                # 💳 Система оплаты (CloudPayments, TBC Bank)
+│   ├── notifications/           # 📧 Централизованная система подписок + уведомления
+│   ├── core/                    # 🛠️ Общие функции, health checks, middleware
+│   ├── pyland/                  # ⚙️ Настройки Django
+│   ├── static/                  # 🎨 CSS, JS, изображения
+│   ├── locale/                  # 🌐 Переводы (ru, en, ka)
 │   └── manage.py
-├── .github/workflows/           # CI/CD конфигурация
-├── Dockerfile                   # Production образ
-├── docker-compose.yml           # Локальная разработка
-├── pyproject.toml              # Poetry зависимости
-└── README.md                   # Эта инструкция
-```text
+├── docs/                        # 📖 Документация
+│   ├── deployment/              # Деплой и production
+│   ├── development/             # Разработка
+│   ├── examples/                # Примеры и гайды
+│   └── getting-started/         # Быстрый старт
+├── .github/workflows/           # 🤖 CI/CD конфигурация
+├── Dockerfile                   # 🐳 Production образ
+├── docker-compose.yml           # 🐳 Локальная разработка
+├── pyproject.toml              # 📦 Poetry зависимости
+├── CHANGELOG.md                # 📋 История изменений
+└── README.md                   # 📄 Эта инструкция
+```
+
+### 🎯 Ключевые приложения
+
+#### 💳 Payments
+**Система оплаты курсов** с поддержкой двух платежных провайдеров:
+- **CloudPayments** (Россия) - USD, RUB
+- **TBC Bank** (Грузия) - GEL
+- Автоматическая конвертация валют
+- Красивый checkout с респонсивным дизайном
+- Автоматическое зачисление на курс после оплаты
+- 📚 [Подробная документация](src/payments/README.md)
+
+#### 📝 Blog
+**Полнофункциональный блог** с продвинутыми возможностями:
+- 149 unit тестов, Redis кэширование
+- Nested comments (до 3 уровней)
+- Реакции, закладки, прогресс чтения
+- SEO оптимизация (meta-tags, schema.org, sitemap)
+- Newsletter подписки через централизованную систему notifications
+
+#### 📧 Notifications
+**Централизованная система уведомлений и подписок:**
+- Единое хранение всех подписок (email, course_updates, reminders и т.д.)
+- Типы подписок полностью соответствуют настройкам Student модели
+- Многоканальная отправка: Email, SMS (Twilio), Telegram Bot
+- Celery задачи для асинхронной обработки
+- 📚 [Документация системы](docs/NOTIFICATIONS_PURPOSE.md)
+- 📚 [Подробности приложения](src/notifications/README.md)
+
+#### 👨‍🎓 Students
+**Личный кабинет студента:**
+- Dashboard с прогрессом по курсам
+- Управление профилем и аватаром
+- Настройки уведомлений (6 типов)
+- История покупок
+
+#### 📚 Courses
+**Система курсов:**
+- Иерархия: Course → Lesson → Step
+- Submissions с workflow статусами
+- Прогресс отслеживание
+- Integration с payments для зачисления
 ---
 
 ## 🔄 Git Workflow (Ветки и CI)
@@ -468,15 +518,16 @@ pre-commit autoupdate
 **Основные endpoints:**
 
 - `/api/auth/*` - Аутентификация (JWT)
-- `/api/blog/*` - Блог (статьи, комментарии)
+- `/api/blog/*` - Блог (статьи, комментарии, newsletter)
 - `/api/courses/*` - Курсы и уроки
-- `/api/students/*` - Студенты
+- `/api/students/*` - Студенты и профили
+- `/api/payments/*` - Платежи (TODO - webhooks)
 - `/api/health/` - Health check (liveness)
 - `/api/readiness/` - Readiness check (БД + Redis)
 
 ---
 
-## 🚧 Production Readiness (~40%)
+## 🚧 Production Readiness (~45%)
 
 **Готово:**
 
@@ -485,6 +536,9 @@ pre-commit autoupdate
 - ✅ Health checks для k8s
 - ✅ Pre-commit hooks
 - ✅ Security checks (bandit, safety)
+- ✅ Payment system (CloudPayments, TBC Bank)
+- ✅ Newsletter HTML emails
+- ✅ Multi-currency support (USD, GEL, RUB)
 
 **В процессе (план на k8s):**
 
@@ -492,6 +546,12 @@ pre-commit autoupdate
 - ⏳ GitHub Actions → GHCR (Docker registry)
 - ⏳ Observability (Prometheus, Grafana, Loki)
 - ⏳ Autoscaling (HPA)
+- ⏳ Payment webhooks integration (CloudPayments, TBC)
+- ⏳ SMTP production setup для emails
+
+**См. также:**
+- 📋 [CHANGELOG.md](CHANGELOG.md) - Последние изменения (30.01.2026)
+- 💳 [Payments README](src/payments/README.md) - Документация системы оплаты
 
 ---
 

@@ -64,7 +64,8 @@ def course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
 
     if request.user.is_authenticated:
         try:
-            has_access = course.students.filter(user=request.user).exists()
+            # Используем правильный related_name из модели Student
+            has_access = course.student_enrollments.filter(user=request.user).exists()
         except Exception:
             has_access = False
 

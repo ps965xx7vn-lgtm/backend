@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Обработка платежа" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/payments/checkout.css' %}">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="payment-result-container">
+    <div class="payment-result-card processing">
+        <div class="payment-result-icon">
+            <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
+        </div>
+
+        <h1 class="payment-result-title">{% trans "Обработка платежа" %}</h1>
+
+        <p class="payment-result-message">
+            {% trans "Пожалуйста, подождите. Идёт подготовка платежа..." %}
+        </p>
+
+        <div class="payment-details">
+            <div class="payment-detail-row">
+                <span class="label">{% trans "Курс" %}:</span>
+                <span class="value">{{ course.name }}</span>
+            </div>
+            <div class="payment-detail-row">
+                <span class="label">{% trans "Сумма" %}:</span>
+                <span class="value">{{ payment.amount }} {{ payment.currency }}</span>
+            </div>
+            <div class="payment-detail-row">
+                <span class="label">{% trans "Способ оплаты" %}:</span>
+                <span class="value">{{ payment.get_payment_method_display }}</span>
+            </div>
+        </div>
+
+        <div class="payment-info-box">
+            <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p>{% trans "В продакшене здесь произойдёт автоматическое перенаправление на страницу платежной системы." %}</p>
+        </div>
+
+        <div class="payment-actions">
+            <a href="{% url 'courses:course_detail' course_slug=course.slug %}" class="btn-secondary">
+                {% trans "Вернуться к курсу" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

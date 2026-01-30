@@ -22,23 +22,23 @@
         <div class="particle"></div>
         <div class="particle"></div>
     </div>
-    
+
     <div class="container">
         <div class="hero-main-content">
             <div class="hero-badge-revolutionary animate-fade-in">
                 <span>🎓</span>
                 <span>{% trans "Курсы программирования" %}</span>
             </div>
-            
+
             <h1 class="hero-title-revolutionary animate-fade-in delay-1">
                 {% trans "Изучайте код" %}
                 <br>{% trans "с экспертами" %}
             </h1>
-            
+
             <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
                 {% trans "Выберите из нашей коллекции курсов и станьте профессиональным разработчиком. Практические проекты, менторская поддержка и гарантированное трудоустройство." %}
             </p>
-            
+
             <div class="hero-actions-revolutionary animate-fade-in delay-3">
                 {% if not user.is_authenticated %}
                     <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
@@ -56,7 +56,7 @@
                     <span>{% trans "Возможности" %}</span>
                 </a>
             </div>
-            
+
             <div class="hero-stats-revolutionary animate-fade-in delay-4">
                 <div class="stat-card-revolutionary">
                     <span class="stat-number-revolutionary">{{ courses.count|default:"8" }}+</span>
@@ -94,7 +94,7 @@
                 {% trans "Изучайте самые востребованные технологии будущего с нашими интерактивными курсами нового поколения" %}
             </p>
         </div>
-        
+
         <!-- Фильтры курсов -->
         <div class="courses-filter-revolutionary">
             <button class="filter-btn active" data-filter="all">{% trans "Все курсы" %}</button>
@@ -159,10 +159,25 @@
                             ⭐ {{ course.rating|default:"5.0" }}
                         </div>
                     </div>
-                    <div class="course-btn-revolutionary">
-                        <span>{% trans "Начать изучение" %}</span>
-                        <span>→</span>
-                    </div>
+
+                    {% if course.price > 0 %}
+                        <div class="course-action-buttons" style="margin-top: 16px; display: flex; gap: 8px; align-items: center;">
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'payments:checkout' course_slug=course.slug %}" class="course-buy-btn" style="flex: 1; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 12px; font-weight: 600; text-decoration: none; transition: transform 0.2s;">
+                                    💳 {% trans "Купить курс" %}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'authentication:login' %}?next={% url 'payments:checkout' course_slug=course.slug %}" class="course-buy-btn" style="flex: 1; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 12px; font-weight: 600; text-decoration: none; transition: transform 0.2s;">
+                                    🔐 {% trans "Войти и купить" %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="course-btn-revolutionary">
+                            <span>{% trans "Начать изучение" %}</span>
+                            <span>→</span>
+                        </div>
+                    {% endif %}
                 </div>
             </a>
             {% endfor %}
@@ -185,7 +200,7 @@
                 {% trans "Мы используем передовые технологии и инновационные методики обучения для максимально эффективного усвоения материала" %}
             </p>
         </div>
-        
+
         <div class="features-grid-revolutionary">
             <div class="feature-card-revolutionary animate-fade-in delay-3">
                 <div class="feature-icon-revolutionary">🎯</div>
@@ -194,7 +209,7 @@
                     {% trans "Вы учитесь на реальных примерах и задачах. Каждый урок включает практические упражнения для закрепления материала" %}
                 </p>
             </div>
-            
+
             <div class="feature-card-revolutionary animate-fade-in delay-4">
                 <div class="feature-icon-revolutionary">🌐</div>
                 <h3 class="feature-title-revolutionary">{% trans "Живая поддержка менторов" %}</h3>
@@ -202,7 +217,7 @@
                     {% trans "Опытные разработчики помогут разобраться с любыми вопросами и дадут обратную связь по вашим проектам" %}
                 </p>
             </div>
-            
+
             <div class="feature-card-revolutionary animate-fade-in delay-5">
                 <div class="feature-icon-revolutionary">🚀</div>
                 <h3 class="feature-title-revolutionary">{% trans "Реальные проекты" %}</h3>
@@ -210,7 +225,7 @@
                     {% trans "Создавайте настоящие приложения и веб-сайты в процессе обучения. Пополняйте портфолио работами для будущего трудоустройства" %}
                 </p>
             </div>
-            
+
             <div class="feature-card-revolutionary animate-fade-in delay-6">
                 <div class="feature-icon-revolutionary">👥</div>
                 <h3 class="feature-title-revolutionary">{% trans "Активное сообщество" %}</h3>
@@ -218,7 +233,7 @@
                     {% trans "Общайтесь с единомышленниками, обменивайтесь опытом и находите напарников для совместных проектов" %}
                 </p>
             </div>
-            
+
             <div class="feature-card-revolutionary animate-fade-in delay-3">
                 <div class="feature-icon-revolutionary">🎓</div>
                 <h3 class="feature-title-revolutionary">{% trans "Официальные сертификаты" %}</h3>
@@ -226,7 +241,7 @@
                     {% trans "Получайте сертификаты о прохождении курсов, которые подтверждают ваши знания и навыки перед работодателями" %}
                 </p>
             </div>
-            
+
             <div class="feature-card-revolutionary animate-fade-in delay-4">
                 <div class="feature-icon-revolutionary">💼</div>
                 <h3 class="feature-title-revolutionary">{% trans "Помощь в трудоустройстве" %}</h3>

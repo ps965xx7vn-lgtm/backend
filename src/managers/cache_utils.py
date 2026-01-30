@@ -132,7 +132,6 @@ def cache_feedback_stats(timeout: int = 600):
             try:
                 cached_data = cache.get(cache_key)
                 if cached_data is not None:
-
                     return cached_data
             except Exception as e:
                 logger.warning(f"Cache GET error: {e}. Proceeding without cache.")
@@ -182,7 +181,6 @@ def cache_feedback_list(timeout: int = 300):
             try:
                 cached_data = cache.get(cache_key)
                 if cached_data is not None:
-
                     return cached_data
             except Exception as e:
                 logger.warning(f"Cache GET error: {e}. Proceeding without cache.")

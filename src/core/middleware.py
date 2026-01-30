@@ -112,8 +112,7 @@ class CoreRateLimitMiddleware:
                     {
                         "error": "Rate limit exceeded",
                         "message": (
-                            f"Превышен лимит запросов. "
-                            f"Попробуйте снова через {retry_after} секунд."
+                            f"Превышен лимит запросов. Попробуйте снова через {retry_after} секунд."
                         ),
                         "retry_after": retry_after,
                         "limit": max_requests,
@@ -175,14 +174,14 @@ class CoreRateLimitMiddleware:
             '192.168.1.1'
         """
         # Проверяем X-Forwarded-For (может содержать цепочку прокси)
-        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        x_forwarded_for = request.headers.get("x-forwarded-for")
         if x_forwarded_for:
             # Берем первый IP (реальный клиент)
             ip = x_forwarded_for.split(",")[0].strip()
             return ip
 
         # Проверяем X-Real-IP (nginx)
-        x_real_ip = request.META.get("HTTP_X_REAL_IP")
+        x_real_ip = request.headers.get("x-real-ip")
         if x_real_ip:
             return x_real_ip.strip()
 

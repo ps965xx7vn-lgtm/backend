@@ -328,7 +328,9 @@ def subscribe(request: HttpRequest) -> HttpResponse:
             if form.is_valid():
                 email = form.cleaned_data["email"]
                 try:
-                    obj, created = Subscription.objects.get_or_create(email=email)
+                    subscription, created = Subscription.subscribe(
+                        email=email, subscription_type="email_notifications"
+                    )
                     if created:
                         logger.info(f"Новая подписка на рассылку: {email}")
                         messages.success(request, "Вы успешно подписались!")
@@ -350,7 +352,7 @@ def subscribe(request: HttpRequest) -> HttpResponse:
         logger.error(f"Критическая ошибка при обработке подписки: {e}")
         messages.error(request, "Произошла ошибка. Попробуйте позже.")
 
-    return redirect(request.META.get("HTTP_REFERER", "/"))
+    return redirect(request.headers.get("referer", "/"))
 
 
 def terms_of_service(request: HttpRequest) -> HttpResponse:

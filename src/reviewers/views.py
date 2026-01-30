@@ -273,9 +273,7 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
                         "limit_reached": stats.get("reviews_today", 0)
                         >= reviewer.max_reviews_per_day,
                         "progress_percentage": (
-                            int(
-                                stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100
-                            )
+                            int(stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100)
                             if reviewer.max_reviews_per_day > 0
                             else 0
                         ),
@@ -299,9 +297,7 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
                         "limit_reached": stats.get("reviews_today", 0)
                         >= reviewer.max_reviews_per_day,
                         "progress_percentage": (
-                            int(
-                                stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100
-                            )
+                            int(stats.get("reviews_today", 0) / reviewer.max_reviews_per_day * 100)
                             if reviewer.max_reviews_per_day > 0
                             else 0
                         ),
@@ -750,9 +746,9 @@ def statistics_view(request: HttpRequest) -> HttpResponse:
 
         # Форматируем диапазон недели
         if week_start.month == week_end.month:
-            week_label = f"{week_start.day}-{week_end.day} {['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'][week_start.month-1]}"
+            week_label = f"{week_start.day}-{week_end.day} {['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'][week_start.month - 1]}"
         else:
-            week_label = f"{week_start.day} {['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'][week_start.month-1]} - {week_end.day} {['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'][week_end.month-1]}"
+            week_label = f"{week_start.day} {['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'][week_start.month - 1]} - {week_end.day} {['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'][week_end.month - 1]}"
 
         weekly_speed.append(
             {

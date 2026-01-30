@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.core.mail import mail_admins, send_mail
+from django.core.mail import mail_admins
 from django.core.paginator import Paginator
 from django.db.models import Count, F, Max, Q, Sum, Value
 from django.http import Http404, JsonResponse
@@ -17,9 +17,11 @@ from django.utils.translation import gettext as _
 from django.views.generic import DetailView, ListView, TemplateView, View
 from taggit.models import Tag
 
+from notifications.models import Subscription
+
 from .cache_utils import cache_article_list, cache_category_list, cache_page_data, cache_stats
 from .forms import CommentForm
-from .models import Article, ArticleReaction, Author, Category, Comment, Newsletter, Series
+from .models import Article, ArticleReaction, Author, Category, Comment, Series
 
 logger = logging.getLogger(__name__)
 
@@ -176,7 +178,9 @@ class BlogHomeView(TemplateView):
 
             # Добавляем подписчиков (не кешируется - часто меняется)
             try:
-                stats["total_subscribers"] = Newsletter.objects.filter(is_active=True).count()
+                stats["total_subscribers"] = Subscription.objects.filter(
+                    subscription_type="email_notifications", is_active=True
+                ).count()
             except Exception as e:
                 logger.error(f"Ошибка подсчета подписчиков: {e}")
                 stats["total_subscribers"] = 0
@@ -1639,26 +1643,22 @@ class NewsletterSubscribeView(View):
                 # Валидация email для анонимных пользователей
                 if not email:
                     logger.warning("Попытка подписки без email")
-                    return JsonResponse({"success": False, "message": _("Email обязателен")})
+                    return JsonResponse({"success": False, "message": _("Введите email адрес")})
 
                 # Базовая валидация формата email
                 if "@" not in email or "." not in email.split("@")[-1]:
                     logger.warning(f"Некорректный формат email: {email}")
                     return JsonResponse(
-                        {"success": False, "message": _("Некорректный формат email")}
+                        {"success": False, "message": _("Некорректный формат email адреса")}
                     )
 
-            # Создание или получение подписки
-            defaults = {"name": name, "is_active": True}
-            if request.user.is_authenticated:
-                defaults["user"] = request.user
-                subscription, created = Newsletter.objects.get_or_create(
-                    email=email, defaults=defaults
-                )
-            else:
-                subscription, created = Newsletter.objects.get_or_create(
-                    email=email, defaults=defaults
-                )
+            # Создание или получение подписки (через notifications.Subscription)
+            subscription, created = Subscription.subscribe(
+                email=email,
+                subscription_type="email_notifications",  # Подписка на все email уведомления
+                user=request.user if request.user.is_authenticated else None,
+                preferences={"name": name, "source": "blog"} if name else {"source": "blog"},
+            )
 
             if not created:
                 # Email уже есть в базе - устанавливаем блокировку
@@ -1667,7 +1667,10 @@ class NewsletterSubscribeView(View):
                 request.session["newsletter_last_attempt"] = datetime.now().isoformat()
                 logger.info(f"Попытка повторной подписки: {email}")
                 return JsonResponse(
-                    {"success": False, "message": _("Этот email уже есть в списке рассылки")}
+                    {
+                        "success": False,
+                        "message": _("✉️ Этот email уже подписан на рассылку. Проверьте почту!"),
+                    }
                 )
 
             # Успешная подписка
@@ -1675,21 +1678,62 @@ class NewsletterSubscribeView(View):
 
             # Отправка приветственного письма
             try:
-                send_mail(
-                    subject=_("Добро пожаловать в PyLand!"),
-                    message=_(
-                        "Привет, %(name)s!\n\nСпасибо за подписку на блог PyLand. Теперь ты будешь первым узнавать о новых статьях и уроках программирования."
-                    )
-                    % {"name": name or _("друг")},
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=True,
+                from django.core.mail import EmailMultiAlternatives
+                from django.template.loader import render_to_string
+
+                # Получаем текущий домен
+                site_url = request.build_absolute_uri("/")
+                unsubscribe_url = request.build_absolute_uri(
+                    f"/blog/newsletter/unsubscribe/?email={email}"
                 )
+
+                # Рендерим HTML шаблон
+                html_content = render_to_string(
+                    "blog/email/newsletter-welcome.html",
+                    {
+                        "name": name or _("друг"),
+                        "email": email,
+                        "site_url": site_url.rstrip("/"),
+                        "unsubscribe_url": unsubscribe_url,
+                    },
+                )
+
+                # Текстовая версия для клиентов без HTML
+                text_content = _(
+                    "Привет, %(name)s!\n\n"
+                    "Спасибо за подписку на блог PyLand! 🚀\n\n"
+                    "Теперь ты будешь первым узнавать о:\n"
+                    "• Новых статьях и уроках программирования\n"
+                    "• Советах и трюках от экспертов\n"
+                    "• Специальных предложениях и акциях\n\n"
+                    "Мы рады видеть тебя в нашем сообществе!\n\n"
+                    "С уважением,\n"
+                    "Команда PyLand"
+                ) % {"name": name or _("друг")}
+
+                # Создаем письмо с HTML и текстовой версией
+                email_message = EmailMultiAlternatives(
+                    subject=_("Добро пожаловать в PyLand! 🎉"),
+                    body=text_content,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[email],
+                )
+                email_message.attach_alternative(html_content, "text/html")
+                email_message.send(fail_silently=True)
+
                 logger.info(f"Приветственное письмо отправлено: {email}")
             except Exception as e:
                 logger.error(f"Ошибка отправки приветственного письма для {email}: {e}")
 
-            return JsonResponse({"success": True, "message": _("Спасибо за подписку!")})
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": _(
+                        "🎉 Отлично! Вы подписаны на рассылку.\n"
+                        "Проверьте почту — мы отправили приветственное письмо!"
+                    ),
+                }
+            )
 
         except Exception as e:
             logger.error(f"Ошибка при подписке на рассылку: {e}", exc_info=True)
@@ -1727,7 +1771,9 @@ class NewsletterUnsubscribeView(View):
                 return JsonResponse({"success": False, "message": "Email обязателен"})
 
             try:
-                subscription = Newsletter.objects.get(email=email)
+                subscription = Subscription.objects.get(
+                    email=email, subscription_type="email_notifications"
+                )
 
                 if not subscription.is_active:
                     logger.info(f"Попытка отписки неактивной подписки: {email}")
@@ -1738,7 +1784,7 @@ class NewsletterUnsubscribeView(View):
                 logger.info(f"Отписка выполнена: {email}")
                 return JsonResponse({"success": True, "message": "Вы отписались от рассылки"})
 
-            except Newsletter.DoesNotExist:
+            except Subscription.DoesNotExist:
                 logger.warning(f"Попытка отписки несуществующего email: {email}")
                 return JsonResponse({"success": False, "message": "Email не найден"})
 

@@ -569,5 +569,5 @@ Git - основа современной разработки программ�
                     step_number=step_num,
                     description=step_data["description"],
                     actions=step_data["actions"],
-                    self_check=f'Убедитесь, что вы выполнили: {step_data["actions"]}',
+                    self_check=f"Убедитесь, что вы выполнили: {step_data['actions']}",
                 )

@@ -96,6 +96,10 @@ def create_user_student(sender: Any, instance: Any, created: bool, **kwargs: Any
                 logger.warning(
                     f"Неизвестная роль '{role_name}', создан Student профиль для {instance.email}"
                 )
+
+            # Автоматическая подписка на все типы уведомлений
+            subscribe_user_to_notifications(instance)
+
         except Exception as e:
             logger.error(f"Ошибка создания профиля для {instance.email}: {e}")
 
@@ -152,3 +156,64 @@ def save_user_student(sender: Any, instance: Any, created: bool, **kwargs: Any) 
             logger.warning(f"Создан отсутствующий профиль Support для {instance.email}")
     except Exception as e:
         logger.error(f"Ошибка создания отсутствующего профиля для {instance.email}: {e}")
+
+
+def subscribe_user_to_notifications(user: Any) -> None:
+    """
+    Автоматически подписывает пользователя на все типы уведомлений при регистрации.
+
+    Создает подписки для всех типов уведомлений из настроек Student модели:
+    - email_notifications (Все email уведомления) - включено
+    - course_updates (Обновления курсов) - включено
+    - lesson_reminders (Напоминания о уроках) - включено
+    - achievement_alerts (Уведомления о достижениях) - включено
+    - weekly_summary (Еженедельная сводка) - включено
+    - marketing_emails (Маркетинговые письма) - выключено
+
+    Args:
+        user: Экземпляр пользователя User
+
+    Returns:
+        None
+
+    Example:
+        >>> user = User.objects.create_user(email='user@example.com', password='pass')
+        >>> subscribe_user_to_notifications(user)
+        # Создано 6 подписок (5 активных, 1 неактивная)
+
+    Note:
+        Подписки соответствуют полям Student модели для единообразия.
+        Пользователь может управлять подписками в настройках дашборда.
+    """
+    try:
+        from notifications.models import Subscription
+
+        # Все типы подписок с дефолтными значениями (как в Student модели)
+        subscription_types = [
+            ("email_notifications", True),  # По умолчанию включено
+            ("course_updates", True),  # По умолчанию включено
+            ("lesson_reminders", True),  # По умолчанию включено
+            ("achievement_alerts", True),  # По умолчанию включено
+            ("weekly_summary", True),  # По умолчанию включено
+            ("marketing_emails", False),  # По умолчанию выключено
+        ]
+
+        created_count = 0
+        for subscription_type, is_active in subscription_types:
+            _, created = Subscription.objects.get_or_create(
+                email=user.email,
+                subscription_type=subscription_type,
+                defaults={
+                    "is_active": is_active,
+                    "preferences": {"source": "auto_registration", "user_id": user.id},
+                },
+            )
+            if created:
+                created_count += 1
+
+        logger.info(
+            f"Пользователь {user.email} подписан на {created_count} типов уведомлений "
+            f"({sum(1 for _, active in subscription_types if active)} активных)"
+        )
+    except Exception as e:
+        logger.error(f"Ошибка подписки пользователя {user.email} на уведомления: {e}")

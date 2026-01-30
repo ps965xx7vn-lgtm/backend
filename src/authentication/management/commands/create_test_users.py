@@ -122,7 +122,7 @@ class Command(BaseCommand):
                 if User.objects.filter(email=user_data["email"]).exists():
                     skipped_count += 1
                     self.stdout.write(
-                        self.style.WARNING(f'○ Пользователь уже существует: {user_data["email"]}')
+                        self.style.WARNING(f"○ Пользователь уже существует: {user_data['email']}")
                     )
                     continue
 
