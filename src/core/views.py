@@ -153,10 +153,11 @@ def home(request: HttpRequest) -> HttpResponse:
         role_name = getattr(request.user.role, "name", None)
         if role_name == "student":
             return redirect("students:dashboard", user_uuid=request.user.student.id)
-        elif role_name in ("reviewer", "mentor"):
-            return redirect("reviewers:dashboard")
-        elif role_name in ("manager", "admin"):
-            return redirect("managers:dashboard")
+        elif role_name == "reviewer":
+            return redirect("reviewers:dashboard", user_uuid=request.user.reviewer.id)
+        elif role_name in ("mentor", "manager", "admin"):
+            # Для ролей без отдельных профилей используем общий редиректор
+            return redirect("core:dashboard")
         else:
             # Для пользователей без роли или с неизвестной ролью
             return redirect("students:dashboard", user_uuid=request.user.student.id)
@@ -333,10 +334,11 @@ def about(request: HttpRequest) -> HttpResponse:
         role_name = getattr(request.user.role, "name", None)
         if role_name == "student":
             return redirect("students:dashboard", user_uuid=request.user.student.id)
-        elif role_name in ("reviewer", "mentor"):
-            return redirect("reviewers:dashboard")
-        elif role_name in ("manager", "admin"):
-            return redirect("managers:dashboard")
+        elif role_name == "reviewer":
+            return redirect("reviewers:dashboard", user_uuid=request.user.reviewer.id)
+        elif role_name in ("mentor", "manager", "admin"):
+            # Для ролей без отдельных профилей используем общий редиректор
+            return redirect("core:dashboard")
         else:
             return redirect("students:dashboard", user_uuid=request.user.student.id)
 

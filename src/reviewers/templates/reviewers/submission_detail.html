@@ -21,7 +21,7 @@
 <div class="dashboard-layout">
     <aside class="dashboard-sidebar">
         <div class="sidebar-spacer"></div>
-        
+
         <div class="dashboard-user-info">
             <div class="dashboard-avatar">
                 {% if request.user.student.avatar %}
@@ -39,7 +39,7 @@
         <nav class="dashboard-nav">
             <ul class="dashboard-nav-list">
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:dashboard' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:dashboard' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
@@ -47,7 +47,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:submissions' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:submissions' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -55,7 +55,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:history' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:history' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -63,7 +63,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:statistics' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:statistics' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
@@ -71,7 +71,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:settings' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:settings' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -87,7 +87,7 @@
         <div class="dashboard-header">
             <div>
                 <h1 class="dashboard-title">{% trans "Детали работы" %}</h1>
-                <div class="dashboard-breadcrumb"><a href="{% url 'reviewers:dashboard' %}">{% trans "Главная" %}</a> / <a href="{% url 'reviewers:submissions' %}">{% trans "Работы" %}</a> / <span>{% trans "Детали" %}</span></div>
+                <div class="dashboard-breadcrumb"><a href="{% url 'reviewers:dashboard' reviewer.id %}">{% trans "Главная" %}</a> / <a href="{% url 'reviewers:submissions' reviewer.id %}">{% trans "Работы" %}</a> / <span>{% trans "Детали" %}</span></div>
             </div>
         </div>
 
@@ -229,7 +229,7 @@
                             <p class="comments-text">{{ submission.review.comments }}</p>
                         </div>
                         {% endif %}
-                        
+
                         {% if submission.improvements.exists %}
                             <div class="improvements-history-section-detail">
                                 <div class="improvements-history-header-detail">
@@ -244,7 +244,7 @@
                                     </div>
                                     <p class="history-subtitle-detail">{% trans "Нажмите на улучшение, чтобы развернуть детали." %}</p>
                                 </div>
-                                
+
                                 <div class="improvements-accordion-detail">
                                     {% for improvement in submission.improvements.all %}
                                     <div class="accordion-item-detail {% if improvement.is_completed %}completed{% endif %}">
@@ -309,7 +309,7 @@
                                 </div>
                                 <h3>{% trans "Работа ожидает проверки" %}</h3>
                                 <p>{% trans "Эта работа еще не была проверена. Вы можете начать проверку прямо сейчас." %}</p>
-                                <a href="{% url 'reviewers:submission_review' submission.id %}" class="btn btn-primary btn-lg">
+                                <a href="{% url 'reviewers:submission_review' reviewer.id submission.id %}" class="btn btn-primary btn-lg">
                                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                                     </svg>

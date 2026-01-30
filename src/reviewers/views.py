@@ -39,12 +39,13 @@ logger = logging.getLogger(__name__)
 
 @login_required
 @require_any_role(["reviewer", "mentor"], redirect_url="/")
-def dashboard_view(request: HttpRequest) -> HttpResponse:
+def dashboard_view(request: HttpRequest, user_uuid: UUID) -> HttpResponse:
     """
     Главная страница ревьюера с статистикой и ожидающими работами.
 
     Args:
         request: HTTP запрос
+        user_uuid: UUID профиля ревьюера
 
     Returns:
         HttpResponse: Отрендеренная страница dashboard
@@ -135,12 +136,13 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
 
 @login_required
 @require_any_role(["reviewer", "mentor"], redirect_url="/")
-def submissions_list_view(request: HttpRequest) -> HttpResponse:
+def submissions_list_view(request: HttpRequest, user_uuid: UUID) -> HttpResponse:
     """
     Список работ на проверку с фильтрами и пагинацией.
 
     Args:
         request: HTTP запрос
+        user_uuid: UUID профиля ревьюера
 
     Returns:
         HttpResponse: Отрендеренная страница со списком работ
@@ -226,12 +228,15 @@ def submissions_list_view(request: HttpRequest) -> HttpResponse:
 @login_required
 @require_any_role(["reviewer", "mentor"], redirect_url="/")
 @max_reviews_per_day_check
-def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpResponse:
+def submission_review_view(
+    request: HttpRequest, user_uuid: UUID, submission_id: UUID
+) -> HttpResponse:
     """
     Проверка конкретной работы студента.
 
     Args:
         request: HTTP запрос
+        user_uuid: UUID профиля ревьюера
         submission_id: UUID работы для проверки
 
     Returns:
@@ -393,7 +398,7 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
                 f"Ревьюер {reviewer.user.email} проверил работу {submission_id} со статусом {status}"
             )
 
-            return redirect("reviewers:submissions")
+            return redirect("reviewers:submissions", user_uuid=reviewer.id)
 
         except Exception as e:
             logger.error(f"Error saving review: {e}")
@@ -442,12 +447,13 @@ def submission_review_view(request: HttpRequest, submission_id: UUID) -> HttpRes
 
 @login_required
 @require_any_role(["reviewer", "mentor"], redirect_url="/")
-def settings_view(request: HttpRequest) -> HttpResponse:
+def settings_view(request: HttpRequest, user_uuid: UUID) -> HttpResponse:
     """
     Настройки профиля ревьюера.
 
     Args:
         request: HTTP запрос
+        user_uuid: UUID профиля ревьюера
 
     Returns:
         HttpResponse: Форма настроек (GET) или редирект после сохранения (POST)
@@ -465,7 +471,7 @@ def settings_view(request: HttpRequest) -> HttpResponse:
             invalidate_reviewer_cache(reviewer.id)
             messages.success(request, _("Настройки уведомлений обновлены"))
             logger.info(f"Ревьюер {reviewer.user.email} обновил настройки уведомлений")
-            return redirect("reviewers:settings")
+            return redirect("reviewers:settings", user_uuid=reviewer.id)
         else:
             # Обновляем данные профиля
             request.user.first_name = request.POST.get("first_name", "")
@@ -486,7 +492,7 @@ def settings_view(request: HttpRequest) -> HttpResponse:
             invalidate_reviewer_cache(reviewer.id)
             messages.success(request, _("Настройки успешно обновлены"))
             logger.info(f"Reviewer {reviewer.user.email} updated settings")
-            return redirect("reviewers:settings")
+            return redirect("reviewers:settings", user_uuid=reviewer.id)
     else:
         form = ReviewerProfileForm(instance=reviewer)
 
@@ -527,12 +533,13 @@ def api_pending_count(request: HttpRequest) -> JsonResponse:
 
 @login_required
 @require_any_role(["reviewer", "mentor"], redirect_url="/")
-def history_view(request: HttpRequest) -> HttpResponse:
+def history_view(request: HttpRequest, user_uuid: UUID) -> HttpResponse:
     """
     История проверок ревьюера.
 
     Args:
         request: HTTP запрос
+        user_uuid: UUID профиля ревьюера
 
     Returns:
         HttpResponse: Отрендеренная страница истории
@@ -609,12 +616,13 @@ def history_view(request: HttpRequest) -> HttpResponse:
 
 @login_required
 @require_any_role(["reviewer", "mentor"], redirect_url="/")
-def statistics_view(request: HttpRequest) -> HttpResponse:
+def statistics_view(request: HttpRequest, user_uuid: UUID) -> HttpResponse:
     """
     Статистика работы ревьюера.
 
     Args:
         request: HTTP запрос
+        user_uuid: UUID профиля ревьюера
 
     Returns:
         HttpResponse: Отрендеренная страница статистики
@@ -788,12 +796,15 @@ def statistics_view(request: HttpRequest) -> HttpResponse:
 
 @login_required
 @require_any_role(["reviewer", "mentor"], redirect_url="/")
-def submission_detail_view(request: HttpRequest, submission_id: UUID) -> HttpResponse:
+def submission_detail_view(
+    request: HttpRequest, user_uuid: UUID, submission_id: UUID
+) -> HttpResponse:
     """
     Детальная информация о работе студента.
 
     Args:
         request: HTTP запрос
+        user_uuid: UUID профиля ревьюера
         submission_id: UUID работы
 
     Returns:

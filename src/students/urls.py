@@ -19,22 +19,22 @@ app_name = "students"
 urlpatterns = [
     # Dashboard и профиль
     path("dashboard/<uuid:user_uuid>/", views.dashboard_view, name="dashboard"),
-    path("settings/", views.settings_view, name="settings"),
+    path("settings/<uuid:user_uuid>/", views.settings_view, name="settings"),
     path("avatar/delete/", views.delete_avatar_view, name="delete_avatar"),
     # Курсы и обучение
-    path("courses/", views.courses_view, name="courses"),
+    path("courses/<uuid:user_uuid>/", views.courses_view, name="courses"),
     path(
-        "courses/<slug:course_slug>/",
+        "courses/<uuid:user_uuid>/<slug:course_slug>/",
         views.course_detail_view,
         name="course_detail",
     ),
     path(
-        "courses/<slug:course_slug>/lessons/<slug:lesson_slug>/",
+        "courses/<uuid:user_uuid>/<slug:course_slug>/lessons/<slug:lesson_slug>/",
         views.lesson_detail_view,
         name="lesson_detail",
     ),
     path(
-        "courses/<slug:course_slug>/lessons/<slug:lesson_slug>/submit/",
+        "courses/<uuid:user_uuid>/<slug:course_slug>/lessons/<slug:lesson_slug>/submit/",
         views.lesson_submit_view,
         name="lesson_submit",
     ),

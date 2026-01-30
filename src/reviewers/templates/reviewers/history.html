@@ -20,7 +20,7 @@
 <div class="dashboard-layout">
     <aside class="dashboard-sidebar">
         <div class="sidebar-spacer"></div>
-        
+
         <div class="dashboard-user-info">
             <div class="dashboard-avatar">
                 {% if request.user.student.avatar %}
@@ -38,7 +38,7 @@
         <nav class="dashboard-nav">
             <ul class="dashboard-nav-list">
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:dashboard' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:dashboard' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:submissions' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:submissions' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -54,7 +54,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:history' %}" class="dashboard-nav-link active">
+                    <a href="{% url 'reviewers:history' reviewer.id %}" class="dashboard-nav-link active">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -62,7 +62,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:statistics' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:statistics' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
@@ -70,7 +70,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:settings' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:settings' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -143,7 +143,7 @@
                         <span class="review-separator">•</span>
                         <span class="review-course">{{ review.lesson_submission.lesson.course.name }}</span>
                     </p>
-                    
+
                     {% if review.comments %}
                     <div class="review-comments-box">
                         <p class="review-comments-text">{{ review.comments }}</p>
@@ -200,14 +200,14 @@
                         {% endif %}
                         {% endwith %}
                     </div>
-                    <a href="{% url 'reviewers:submission_detail' review.lesson_submission.id %}" class="btn btn-secondary btn-sm">
+                    <a href="{% url 'reviewers:submission_detail' reviewer.id review.lesson_submission.id %}" class="btn btn-secondary btn-sm">
                         {% trans "Подробнее" %}
                     </a>
                 </div>
             </div>
             {% endfor %}
         </div>
-        
+
         <!-- Pagination -->
         {% if page_obj.has_other_pages %}
         <div class="pagination-wrapper">
@@ -238,11 +238,11 @@
                         </svg>
                     </span>
                 {% endif %}
-                
+
                 <span class="pagination-current">
                     {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
                 </span>
-                
+
                 {% if page_obj.has_next %}
                     <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn" title="{% trans 'Следующая' %}">
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -269,7 +269,7 @@
             </div>
         </div>
         {% endif %}
-        
+
         {% else %}
         <div class="empty-state" style="margin-top: 3rem;">
             <div class="empty-icon">
@@ -279,7 +279,7 @@
             </div>
             <h3 class="empty-title">{% trans "Нет проверок" %}</h3>
             <p class="empty-message">{% trans "Вы ещё не проверяли работы" %}</p>
-            <a href="{% url 'reviewers:submissions' %}" class="btn btn-primary">{% trans "К работам" %}</a>
+            <a href="{% url 'reviewers:submissions' reviewer.id %}" class="btn btn-primary">{% trans "К работам" %}</a>
         </div>
         {% endif %}
     </main>

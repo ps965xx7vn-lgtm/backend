@@ -20,7 +20,7 @@
 <div class="dashboard-layout">
     <aside class="dashboard-sidebar">
         <div class="sidebar-spacer"></div>
-        
+
         <div class="dashboard-user-info">
             <div class="dashboard-avatar">
                 {% if request.user.student.avatar %}
@@ -38,7 +38,7 @@
         <nav class="dashboard-nav">
             <ul class="dashboard-nav-list">
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:dashboard' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:dashboard' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:submissions' %}" class="dashboard-nav-link active">
+                    <a href="{% url 'reviewers:submissions' reviewer.id %}" class="dashboard-nav-link active">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -54,7 +54,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:history' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:history' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -62,7 +62,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:statistics' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:statistics' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
@@ -70,7 +70,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'reviewers:settings' %}" class="dashboard-nav-link">
+                    <a href="{% url 'reviewers:settings' reviewer.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -87,8 +87,8 @@
             <div>
                 <h1 class="dashboard-title">{% trans "Проверка работы" %}</h1>
                 <div class="dashboard-breadcrumb">
-                    <a href="{% url 'reviewers:dashboard' %}">{% trans "Главная" %}</a> / 
-                    <a href="{% url 'reviewers:submissions' %}">{% trans "Работы" %}</a> / 
+                    <a href="{% url 'reviewers:dashboard' reviewer.id %}">{% trans "Главная" %}</a> /
+                    <a href="{% url 'reviewers:submissions' reviewer.id %}">{% trans "Работы" %}</a> /
                     <span>{% trans "Проверка" %}</span>
                 </div>
             </div>
@@ -141,7 +141,7 @@
         <!-- Submission Info Card -->
         <div class="review-info-card">
             <h2>📋 {% trans "Информация о работе" %}</h2>
-            
+
             <div class="review-info-grid">
                 <div class="review-info-item">
                     <div class="review-info-label">{% trans "Курс" %}</div>
@@ -171,7 +171,7 @@
         <!-- Review Form (только если лимит НЕ достигнут) -->
         <form method="post" id="reviewForm" class="review-form-card">
             {% csrf_token %}
-            
+
             {% if form_errors %}
                 <div class="review-error-message">
                     {{ form_errors }}
@@ -208,19 +208,19 @@
                     <label for="comments" class="review-form-label">
                         {% trans "Подробные комментарии к работе" %} <span class="review-required">*</span>
                     </label>
-                    <textarea 
-                        name="comments" 
-                        id="comments" 
+                    <textarea
+                        name="comments"
+                        id="comments"
                         class="review-form-textarea"
-                        placeholder="{% trans 'Опишите что сделано хорошо, что нужно улучшить...' %}" 
-                        required 
+                        placeholder="{% trans 'Опишите что сделано хорошо, что нужно улучшить...' %}"
+                        required
                         minlength="20"
                     ></textarea>
                     <div class="review-char-counter">
                         <span id="charCount">0</span> / 20 {% trans "мин" %}
                     </div>
                 </div>
-                
+
                 <!-- Hidden field for time tracking -->
                 <input type="hidden" name="review_start_time" id="review_start_time" value="{{ now|date:'U' }}">
             </div>
@@ -229,11 +229,11 @@
             <div class="review-form-section" id="improvementsSection">
                 <h2>💡 {% trans "Предложения по улучшению" %} <span class="review-improvements-required review-improvements-required-hidden">{% trans "(обязательно)" %}</span></h2>
                 <p class="review-help-text">{% trans "Добавьте конкретные предложения по улучшению работы (максимум 10 пунктов)" %}</p>
-                
+
                 <div id="improvementsContainer" class="review-improvements-container">
                     <!-- Improvements will be added here dynamically -->
                 </div>
-                
+
                 <button type="button" id="addImprovementBtn" class="btn btn-secondary btn-add-improvement">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
@@ -244,7 +244,7 @@
 
             <!-- Form Actions -->
             <div class="review-form-actions">
-                <a href="{% url 'reviewers:submission_detail' submission.id %}" class="btn btn-outline">
+                <a href="{% url 'reviewers:submission_detail' reviewer.id submission.id %}" class="btn btn-outline">
                     {% trans "Отмена" %}
                 </a>
                 <button type="submit" class="btn btn-success">
@@ -269,7 +269,7 @@
                 </div>
                 <p class="history-subtitle">{% trans "Улучшения из предыдущих проверок. Нажмите на улучшение, чтобы развернуть детали." %}</p>
             </div>
-            
+
             <div class="improvements-accordion">
                     {% for improvement in submission.improvements.all %}
                     <div class="accordion-item {% if improvement.is_completed %}completed{% endif %}">
@@ -321,16 +321,16 @@
                     {% endfor %}
                 </div>
             </div>
-            
+
             <script>
             function toggleAccordion(button) {
                 console.log('toggleAccordion called');
                 const item = button.closest('.accordion-item');
                 const content = item.querySelector('.accordion-content');
                 const wasActive = item.classList.contains('active');
-                
+
                 console.log('Item:', item, 'Was active:', wasActive);
-                
+
                 // Close all accordion items
                 document.querySelectorAll('.accordion-item.active').forEach(i => {
                     i.classList.remove('active');
@@ -339,7 +339,7 @@
                         c.style.maxHeight = null;
                     }
                 });
-                
+
                 // Open clicked item if it wasn't active
                 if (!wasActive) {
                     item.classList.add('active');
@@ -350,7 +350,7 @@
                     console.log('Opening item, height:', content.scrollHeight);
                 }
             }
-            
+
             // Auto-adjust content height on window resize
             window.addEventListener('resize', function() {
                 document.querySelectorAll('.accordion-item.active .accordion-content').forEach(content => {

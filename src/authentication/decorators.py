@@ -603,12 +603,17 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
         # Роль: mentor - проверка работ и менторство
         elif role == "mentor":
             logger.info(f"Redirecting {request.user.email} (mentor) to reviewers dashboard")
-            return redirect(reverse("reviewers:dashboard"))
+            return redirect(reverse("managers:dashboard"))
 
         # Роль: reviewer - проверка работ студентов
         elif role == "reviewer":
-            logger.info(f"Redirecting {request.user.email} (reviewer) to reviewers dashboard")
-            return redirect(reverse("reviewers:dashboard"))
+            try:
+                reviewer = request.user.reviewer
+                logger.info(f"Redirecting {request.user.email} (reviewer) to reviewers dashboard")
+                return redirect(reverse("reviewers:dashboard", kwargs={"user_uuid": reviewer.id}))
+            except Exception as e:
+                logger.error(f"Error getting reviewer profile for {request.user.email}: {e}")
+                return redirect(reverse("core:home"))
 
         # Роль: support - поддержка через managers dashboard
         elif role == "support":
