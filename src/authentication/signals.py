@@ -17,13 +17,52 @@ import logging
 from typing import Any
 
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save
+from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 
-from authentication.models import Student
+from authentication.models import Role, Student
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
+
+
+@receiver(post_migrate)
+def create_default_roles(sender: Any, **kwargs: Any) -> None:
+    """
+    Автоматически создает роли при применении миграций.
+
+    Создает все роли из Role.RoleChoices если их еще нет в базе данных.
+    Срабатывает после каждого выполнения migrate.
+
+    Args:
+        sender: Класс приложения (отправитель сигнала)
+        **kwargs: Дополнительные аргументы сигнала Django
+
+    Returns:
+        None
+    """
+    if sender.name != "authentication":
+        return
+
+    try:
+        default_roles = Role.get_default_roles()
+        created_count = 0
+
+        for role_value, description in default_roles.items():
+            role, created = Role.objects.get_or_create(
+                name=role_value, defaults={"description": description}
+            )
+            if created:
+                created_count += 1
+                logger.info(f"Создана роль: {role.get_name_display()}")
+
+        if created_count > 0:
+            logger.info(f"Инициализация ролей завершена. Создано: {created_count}")
+        else:
+            logger.debug("Все роли уже существуют в базе данных")
+
+    except Exception as e:
+        logger.error(f"Ошибка при создании ролей: {e}")
 
 
 @receiver(post_save, sender=User)
@@ -128,6 +167,10 @@ def save_user_student(sender: Any, instance: Any, created: bool, **kwargs: Any) 
     """
     # Пропускаем только что созданных пользователей - для них профиль уже создан
     if created:
+        return
+
+    # Пропускаем при loaddata и других операциях, где raw=True
+    if kwargs.get("raw", False):
         return
 
     from authentication.models import Admin, Manager, Mentor, Reviewer, Support

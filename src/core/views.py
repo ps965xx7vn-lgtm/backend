@@ -118,7 +118,9 @@ def get_privacy_page_data():
 
 def home(request: HttpRequest) -> HttpResponse:
     """
-    Главная (лендинг) страница сайта - ДОСТУПНА ВСЕМ.
+    Главная (лендинг) страница сайта - только для неавторизованных пользователей.
+
+    Авторизованные пользователи автоматически перенаправляются на дашборд их роли.
 
     Отображает:
     - Топ-4 курса с наибольшим количеством уроков
@@ -134,7 +136,7 @@ def home(request: HttpRequest) -> HttpResponse:
         request: HttpRequest объект Django
 
     Returns:
-        HttpResponse с отрендеренным шаблоном core/home.html
+        HttpResponse с отрендеренным шаблоном core/home.html или редирект на дашборд
 
     Template context:
         form: FeedbackForm - форма обратной связи
@@ -146,6 +148,19 @@ def home(request: HttpRequest) -> HttpResponse:
         >>> assert 'form' in response.context_data
         >>> assert len(response.context_data['courses']) <= 4
     """
+    # Редирект авторизованных пользователей на их дашборд
+    if request.user.is_authenticated:
+        role_name = getattr(request.user.role, "name", None)
+        if role_name == "student":
+            return redirect("students:dashboard", user_uuid=request.user.student.id)
+        elif role_name in ("reviewer", "mentor"):
+            return redirect("reviewers:dashboard")
+        elif role_name in ("manager", "admin"):
+            return redirect("managers:dashboard")
+        else:
+            # Для пользователей без роли или с неизвестной ролью
+            return redirect("students:dashboard", user_uuid=request.user.student.id)
+
     try:
         if request.method == "POST":
             logger.info(f"POST request received on home page. Data: {request.POST}")
@@ -293,7 +308,9 @@ def contacts(request: HttpRequest) -> HttpResponse:
 
 def about(request: HttpRequest) -> HttpResponse:
     """
-    Страница "О нас" с информацией о компании и команде.
+    Страница "О нас" с информацией о компании и команде - только для неавторизованных.
+
+    Авторизованные пользователи автоматически перенаправляются на дашборд их роли.
 
     Отображает:
     - Миссию и видение компании
@@ -305,12 +322,24 @@ def about(request: HttpRequest) -> HttpResponse:
         request: HttpRequest объект Django
 
     Returns:
-        HttpResponse с отрендеренным шаблоном core/about.html
+        HttpResponse с отрендеренным шаблоном core/about.html или редирект на дашборд
 
     Example:
         >>> response = about(request)
         >>> assert response.status_code == 200
     """
+    # Редирект авторизованных пользователей на их дашборд
+    if request.user.is_authenticated:
+        role_name = getattr(request.user.role, "name", None)
+        if role_name == "student":
+            return redirect("students:dashboard", user_uuid=request.user.student.id)
+        elif role_name in ("reviewer", "mentor"):
+            return redirect("reviewers:dashboard")
+        elif role_name in ("manager", "admin"):
+            return redirect("managers:dashboard")
+        else:
+            return redirect("students:dashboard", user_uuid=request.user.student.id)
+
     return render(request, "core/about.html")
 
 

@@ -255,25 +255,22 @@ class Role(models.Model):
         description: Подробное описание роли и её полномочий
     """
 
-    # Константы для ролей
-    STUDENT: str = "student"
-    MENTOR: str = "mentor"
-    REVIEWER: str = "reviewer"
-    MANAGER: str = "manager"
-    ADMIN: str = "admin"
-    SUPPORT: str = "support"
+    class RoleChoices(models.TextChoices):
+        """Выбор роли пользователя с читаемыми названиями."""
 
-    ROLE_CHOICES: list[tuple[str, str]] = [
-        (STUDENT, "Студент"),
-        (MENTOR, "Ментор"),
-        (REVIEWER, "Ревьюер"),
-        (MANAGER, "Менеджер"),
-        (ADMIN, "Администратор"),
-        (SUPPORT, "Поддержка"),
-    ]
+        STUDENT = "student", "Студент"
+        MENTOR = "mentor", "Ментор"
+        REVIEWER = "reviewer", "Ревьюер"
+        MANAGER = "manager", "Менеджер"
+        ADMIN = "admin", "Администратор"
+        SUPPORT = "support", "Поддержка"
 
     name: str = models.CharField(
-        max_length=50, unique=True, choices=ROLE_CHOICES, help_text="Название роли"
+        max_length=50,
+        unique=True,
+        choices=RoleChoices.choices,
+        default=RoleChoices.STUDENT,
+        help_text="Название роли",
     )
     description: str = models.TextField(blank=True, help_text="Описание роли")
 
@@ -290,12 +287,12 @@ class Role(models.Model):
             dict: Словарь {название_роли: описание}
         """
         return {
-            cls.STUDENT: "Студент - проходит курсы, изучает материалы, выполняет задания, отслеживает прогресс",
-            cls.MENTOR: "Ментор - ведет курсы, консультирует студентов, проверяет задания, дает обратную связь",
-            cls.REVIEWER: "Ревьюер - специализируется на проверке работ студентов, оставляет детальные комментарии и рекомендации",
-            cls.MANAGER: "Менеджер - управляет платформой через dashboard: курсы, пользователи, статистика, настройки",
-            cls.ADMIN: "Администратор - полный доступ к системе через Django Admin, управление всеми данными и пользователями",
-            cls.SUPPORT: "Поддержка - обрабатывает обращения пользователей, решает технические вопросы, управляет тикетами",
+            cls.RoleChoices.STUDENT: "Студент - проходит курсы, изучает материалы, выполняет задания, отслеживает прогресс",
+            cls.RoleChoices.MENTOR: "Ментор - ведет курсы, консультирует студентов, проверяет задания, дает обратную связь",
+            cls.RoleChoices.REVIEWER: "Ревьюер - специализируется на проверке работ студентов, оставляет детальные комментарии и рекомендации",
+            cls.RoleChoices.MANAGER: "Менеджер - управляет платформой через dashboard: курсы, пользователи, статистика, настройки",
+            cls.RoleChoices.ADMIN: "Администратор - полный доступ к системе через Django Admin, управление всеми данными и пользователями",
+            cls.RoleChoices.SUPPORT: "Поддержка - обрабатывает обращения пользователей, решает технические вопросы, управляет тикетами",
         }
 
     class Meta:

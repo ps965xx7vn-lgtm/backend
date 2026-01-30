@@ -563,7 +563,7 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
     - manager → managers:dashboard (управление платформой)
     - mentor → reviewers:dashboard (проверка работ + менторство)
     - reviewer → reviewers:dashboard (проверка работ)
-    - student → students:account_dashboard (личный кабинет студента)
+    - student → students:dashboard (личный кабинет студента)
     - support → managers:dashboard (поддержка пользователей)
     - is_staff → managers:dashboard (персонал платформы)
     - Без роли → core:home (главная страница)
@@ -620,9 +620,7 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
             try:
                 student = request.user.student
                 logger.info(f"Redirecting {request.user.email} (student) to student dashboard")
-                return redirect(
-                    reverse("students:account_dashboard", kwargs={"user_uuid": student.id})
-                )
+                return redirect(reverse("students:dashboard", kwargs={"user_uuid": student.id}))
             except Exception as e:
                 logger.error(f"Error getting student profile for {request.user.email}: {e}")
                 return redirect(reverse("core:home"))

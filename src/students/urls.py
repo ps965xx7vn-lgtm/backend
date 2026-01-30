@@ -1,15 +1,13 @@
 """
 Students URL Configuration
 
-Маршруты для приложения личного кабинета студента:
-- Dashboard и статистика прогресса
-- Настройки профиля и аватара
-- Просмотр и прохождение курсов
-- Отправка работ на проверку
-- Управление замечаниями ревьюеров
-- Экспорт данных и удаление аккаунта
+Маршруты для приложения личного кабинета студента.
+Структура аналогична reviewers app для консистентности.
 
 Все маршруты требуют авторизации и роль 'student'.
+
+Автор: Pyland Team
+Дата: 2025
 """
 
 from django.urls import path
@@ -20,26 +18,27 @@ app_name = "students"
 
 urlpatterns = [
     # Dashboard и профиль
-    path("dashboard/<uuid:user_uuid>/", views.account_dashboard_view, name="account_dashboard"),
-    path("settings/", views.account_settings_view, name="account_settings"),
+    path("dashboard/<uuid:user_uuid>/", views.dashboard_view, name="dashboard"),
+    path("settings/", views.settings_view, name="settings"),
     path("avatar/delete/", views.delete_avatar_view, name="delete_avatar"),
     # Курсы и обучение
-    path("courses/", views.account_courses_view, name="account_courses"),
+    path("courses/", views.courses_view, name="courses"),
     path(
         "courses/<slug:course_slug>/",
-        views.account_course_detail_view,
-        name="account_course_detail",
+        views.course_detail_view,
+        name="course_detail",
     ),
     path(
         "courses/<slug:course_slug>/lessons/<slug:lesson_slug>/",
-        views.account_lesson_detail_view,
-        name="account_lesson_detail",
+        views.lesson_detail_view,
+        name="lesson_detail",
     ),
     path(
         "courses/<slug:course_slug>/lessons/<slug:lesson_slug>/submit/",
-        views.account_lesson_submit_view,
-        name="account_lesson_submit",
+        views.lesson_submit_view,
+        name="lesson_submit",
     ),
+    # API endpoints
     path(
         "api/toggle-improvement/<uuid:improvement_id>/",
         views.toggle_improvement_view,

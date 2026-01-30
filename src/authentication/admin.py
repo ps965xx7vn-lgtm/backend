@@ -78,7 +78,14 @@ class CustomUserAdmin(BaseUserAdmin):
                 "description": "Используется role-based система доступа. is_staff - только для Django Admin.",
             },
         ),
-        ("Уведомления", {"fields": ("email_is_verified",), "classes": ("collapse",)}),
+        (
+            "Верификация email",
+            {
+                "fields": ("email_is_verified",),
+                "classes": ("collapse",),
+                "description": "Подтверждение email адреса пользователя",
+            },
+        ),
         ("Важные даты", {"fields": ("last_login", "date_joined"), "classes": ("collapse",)}),
     )
 
@@ -91,8 +98,10 @@ class CustomUserAdmin(BaseUserAdmin):
                     "email",
                     "first_name",
                     "last_name",
+                    "username",
                     "password1",
                     "password2",
+                    "role",
                     "is_active",
                     "email_is_verified",
                 ),
@@ -100,13 +109,16 @@ class CustomUserAdmin(BaseUserAdmin):
         ),
     )
 
+    @admin.display(description="Имя")
     def full_name_display(self, obj):
         """Отображение полного имени"""
         name = f"{obj.first_name} {obj.last_name}".strip()
         return name if name else "-"
 
-    full_name_display.short_description = "Имя"
-
+    @admin.display(
+        description="Роль",
+        ordering="role",
+    )
     def role_display(self, obj):
         """Красивое отображение роли пользователя"""
         if obj.role:
@@ -127,23 +139,20 @@ class CustomUserAdmin(BaseUserAdmin):
             )
         return format_html('<span style="color: #999;">Не назначена</span>')
 
-    role_display.short_description = "Роль"
-    role_display.admin_order_field = "role"
-
+    @admin.display(description="Email")
     def email_verified_status(self, obj):
         """Красивое отображение статуса верификации email"""
         if obj.email_is_verified:
             return format_html('<span style="color: green; font-weight: bold;">✓</span>')
         return format_html('<span style="color: red; font-weight: bold;">✗</span>')
 
-    email_verified_status.short_description = "Email"
-
+    @admin.display(
+        description="Дата регистрации",
+        ordering="date_joined",
+    )
     def date_joined_short(self, obj):
         """Короткое отображение даты регистрации"""
         return obj.date_joined.strftime("%d.%m.%Y")
-
-    date_joined_short.short_description = "Дата регистрации"
-    date_joined_short.admin_order_field = "date_joined"
 
 
 @admin.register(Role)
@@ -167,6 +176,10 @@ class RoleAdmin(admin.ModelAdmin):
         ("Статистика", {"fields": ("users_count", "users_with_role"), "classes": ("collapse",)}),
     )
 
+    @admin.display(
+        description="Роль",
+        ordering="name",
+    )
     def name_display(self, obj):
         """Красивое отображение названия роли"""
         role_colors = {
@@ -185,24 +198,20 @@ class RoleAdmin(admin.ModelAdmin):
             obj.get_name_display(),
         )
 
-    name_display.short_description = "Роль"
-    name_display.admin_order_field = "name"
-
+    @admin.display(description="Описание")
     def description_short(self, obj):
         """Краткое описание роли"""
         if obj.description:
             return obj.description[:50] + "..." if len(obj.description) > 50 else obj.description
         return "-"
 
-    description_short.short_description = "Описание"
-
+    @admin.display(description="Пользователей")
     def users_count(self, obj):
         """Количество пользователей с этой ролью"""
         count = obj.users.count()
         return f"{count} пользователей" if count != 1 else "1 пользователь"
 
-    users_count.short_description = "Пользователей"
-
+    @admin.display(description="Пользователи с этой ролью")
     def users_with_role(self, obj):
         """Подробный список пользователей с этой ролью"""
         users = obj.users.all()
@@ -215,8 +224,7 @@ class RoleAdmin(admin.ModelAdmin):
         html += "</ul>"
         return format_html(html)
 
-    users_with_role.short_description = "Пользователи с этой ролью"
-
+    @admin.display(description="Permissions")
     def permissions_list(self, obj):
         """Отображение всех permissions для этой роли"""
         from django.contrib.auth.models import Permission
@@ -258,8 +266,6 @@ class RoleAdmin(admin.ModelAdmin):
         except ContentType.DoesNotExist:
             return "Модель не найдена"
 
-    permissions_list.short_description = "Permissions"
-
 
 @admin.register(ExpertiseArea)
 class ExpertiseAreaAdmin(admin.ModelAdmin):
@@ -274,17 +280,15 @@ class ExpertiseAreaAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("created_at",), "classes": ("collapse",)}),
     )
 
+    @admin.display(description="Менторов")
     def mentors_count(self, obj):
         """Количество менторов с этой экспертизой"""
         return obj.mentors.count()
 
-    mentors_count.short_description = "Менторов"
-
+    @admin.display(description="Ревьюеров")
     def reviewers_count(self, obj):
         """Количество ревьюеров с этой экспертизой"""
         return obj.reviewers.count()
-
-    reviewers_count.short_description = "Ревьюеров"
 
 
 @admin.register(Student)
@@ -349,19 +353,21 @@ class StudentAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+    @admin.display(
+        description="Email пользователя",
+        ordering="user__email",
+    )
     def user_email(self, obj):
         return obj.user.email
 
-    user_email.short_description = "Email пользователя"
-    user_email.admin_order_field = "user__email"
-
+    @admin.display(
+        description="Роль",
+        ordering="user__role",
+    )
     def user_role_display(self, obj):
         if obj.user and obj.user.role:
             return obj.user.role.get_name_display()
         return "-"
-
-    user_role_display.short_description = "Роль"
-    user_role_display.admin_order_field = "user__role"
 
 
 @admin.register(Reviewer)
@@ -392,12 +398,14 @@ class ReviewerAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("registered_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+    @admin.display(
+        description="Email",
+        ordering="user__email",
+    )
     def user_email(self, obj):
         return obj.user.email
 
-    user_email.short_description = "Email"
-    user_email.admin_order_field = "user__email"
-
+    @admin.display(description="Роль")
     def role_badge(self, obj):
         role = obj.get_role_display()
         colors = {"Ревьюер": "#10b981", "Ментор": "#3b82f6", "Проверяющий": "#6b7280"}
@@ -408,12 +416,9 @@ class ReviewerAdmin(admin.ModelAdmin):
             role,
         )
 
-    role_badge.short_description = "Роль"
-
+    @admin.display(description="Курсов")
     def courses_count(self, obj):
         return obj.courses.count()
-
-    courses_count.short_description = "Курсов"
 
 
 @admin.register(Mentor)
@@ -433,16 +438,16 @@ class MentorAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("registered_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+    @admin.display(
+        description="Email",
+        ordering="user__email",
+    )
     def user_email(self, obj):
         return obj.user.email
 
-    user_email.short_description = "Email"
-    user_email.admin_order_field = "user__email"
-
+    @admin.display(description="Курсов")
     def courses_count(self, obj):
         return obj.courses.count()
-
-    courses_count.short_description = "Курсов"
 
 
 @admin.register(Manager)
@@ -460,11 +465,12 @@ class ManagerAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("registered_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+    @admin.display(
+        description="Email",
+        ordering="user__email",
+    )
     def user_email(self, obj):
         return obj.user.email
-
-    user_email.short_description = "Email"
-    user_email.admin_order_field = "user__email"
 
 
 @admin.register(Admin)
@@ -482,11 +488,12 @@ class AdminAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("registered_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+    @admin.display(
+        description="Email",
+        ordering="user__email",
+    )
     def user_email(self, obj):
         return obj.user.email
-
-    user_email.short_description = "Email"
-    user_email.admin_order_field = "user__email"
 
 
 @admin.register(Support)
@@ -504,8 +511,9 @@ class SupportAdmin(admin.ModelAdmin):
         ("Метаданные", {"fields": ("registered_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+    @admin.display(
+        description="Email",
+        ordering="user__email",
+    )
     def user_email(self, obj):
         return obj.user.email
-
-    user_email.short_description = "Email"
-    user_email.admin_order_field = "user__email"

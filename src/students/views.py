@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-def account_dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
+def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
     """
     Улучшенный дашборд с детальной аналитикой прогресса обучения.
     """
@@ -380,7 +380,7 @@ def account_dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpRe
 
 
 @login_required
-def account_settings_view(request: HttpRequest) -> HttpResponse:
+def settings_view(request: HttpRequest) -> HttpResponse:
     """
     Отображает страницу настроек профиля пользователя.
 
@@ -418,7 +418,7 @@ def account_settings_view(request: HttpRequest) -> HttpResponse:
                     request.user.email = email
                 else:
                     messages.error(request, _("Этот email уже используется"))
-                    return redirect("students:account_settings")
+                    return redirect("students:settings")
             request.user.save()
 
             # Update profile fields
@@ -436,7 +436,7 @@ def account_settings_view(request: HttpRequest) -> HttpResponse:
                                 "Неверный формат номера телефона. Пожалуйста, введите корректный номер."
                             ),
                         )
-                        return redirect("students:account_settings")
+                        return redirect("students:settings")
                     profile.phone = phone
                 except Exception:
                     messages.error(
@@ -445,7 +445,7 @@ def account_settings_view(request: HttpRequest) -> HttpResponse:
                             "Неверный формат номера телефона. Используйте международный формат, например: +79991234567"
                         ),
                     )
-                    return redirect("students:account_settings")
+                    return redirect("students:settings")
             if birthday:
                 profile.birthday = birthday
             if gender:
@@ -501,7 +501,7 @@ def account_settings_view(request: HttpRequest) -> HttpResponse:
                 else:
                     messages.error(request, _("Текущий пароль неверен"))
 
-        return redirect("students:account_settings")
+        return redirect("students:settings")
 
     context = {
         "profile": profile,
@@ -660,12 +660,12 @@ def delete_account(request: HttpRequest) -> HttpResponse:
             messages.error(
                 request, _("Неверное подтверждение. Введите 'УДАЛИТЬ' для подтверждения.")
             )
-            return redirect("students:account_settings")
+            return redirect("students:settings")
 
         # Проверяем пароль
         if not request.user.check_password(password):
             messages.error(request, _("Неверный пароль. Удаление отменено."))
-            return redirect("students:account_settings")
+            return redirect("students:settings")
 
         # Сохраняем email для сообщения
         user_email = request.user.email
@@ -682,14 +682,14 @@ def delete_account(request: HttpRequest) -> HttpResponse:
             return redirect("core:home")
         except Exception as e:
             messages.error(request, _(f"Ошибка при удалении аккаунта: {str(e)}"))
-            return redirect("students:account_settings")
+            return redirect("students:settings")
 
     # Если GET запрос, перенаправляем на настройки
-    return redirect("students:account_settings")
+    return redirect("students:settings")
 
 
 @login_required
-def account_courses_view(request: HttpRequest) -> HttpResponse:
+def courses_view(request: HttpRequest) -> HttpResponse:
     """
     Отображает страницу со списком курсов пользователя.
     Использует кэширование для оптимизации производительности.
@@ -781,7 +781,7 @@ def account_courses_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def account_course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
+def course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
     """
     Отображает детальную страницу курса для текущего пользователя.
 
@@ -889,9 +889,7 @@ def account_course_detail_view(request: HttpRequest, course_slug: str) -> HttpRe
 
 
 @login_required
-def account_lesson_detail_view(
-    request: HttpRequest, course_slug: str, lesson_slug: str
-) -> HttpResponse:
+def lesson_detail_view(request: HttpRequest, course_slug: str, lesson_slug: str) -> HttpResponse:
     """
     Просмотр информации об уроке.
     """
@@ -925,7 +923,7 @@ def account_lesson_detail_view(
                     f"🔒 Урок '{lesson.name}' заблокирован. "
                     f"Сначала завершите и отправьте на проверку урок {prev_lesson.lesson_number}: '{prev_lesson.name}'",
                 )
-                return redirect("students:account_course_detail", course_slug=course.slug)
+                return redirect("students:course_detail", course_slug=course.slug)
 
     raw_steps = lesson.steps.all()
     form = LessonSubmissionForm()
@@ -1008,7 +1006,7 @@ def account_lesson_detail_view(
 
 
 @login_required
-def account_lesson_submit_view(request, course_slug, lesson_slug):
+def lesson_submit_view(request, course_slug, lesson_slug):
     """
     AJAX обработка отправки работы на проверку.
     """
