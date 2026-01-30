@@ -30,8 +30,8 @@ urlpatterns = [
     path("contacts/", views.contacts, name="contacts"),
     path("about/", views.about, name="about"),
     path(
-        "dashboard/", views.home, name="dashboard"
-    ),  # Роутер dashboard по ролям (декоратор на home)
+        "dashboard/", views.dashboard_redirect, name="dashboard"
+    ),  # Роутер dashboard по ролям (декоратор на dashboard_redirect)
     # Юридические страницы
     path("terms-of-service/", views.terms_of_service, name="terms_of_service"),
     path("privacy-policy/", views.privacy_policy, name="privacy_policy"),

@@ -20,18 +20,19 @@
                         +995 551 00 62 54
                     </a>
                 </div>
+                {% get_current_language as CURRENT_LANGUAGE %}
                 <div class="header-controls">
                     <!-- Language Switcher -->
                     <div class="language-switcher" data-dropdown>
                         <button class="language-btn" aria-label="{% trans 'Выбрать язык' %}" data-dropdown-trigger>
                             <span class="flag" data-current-flag>
-                                {% if LANGUAGE_CODE == 'ru' %}🇷🇺
-                                {% elif LANGUAGE_CODE == 'ka' %}🇬🇪
+                                {% if CURRENT_LANGUAGE == 'ru' %}🇷🇺
+                                {% elif CURRENT_LANGUAGE == 'ka' %}🇬🇪
                                 {% else %}🇬🇧{% endif %}
                             </span>
                             <span class="language-text" data-current-lang>
-                                {% if LANGUAGE_CODE == 'ru' %}РУ
-                                {% elif LANGUAGE_CODE == 'ka' %}ქარ
+                                {% if CURRENT_LANGUAGE == 'ru' %}РУ
+                                {% elif CURRENT_LANGUAGE == 'ka' %}ქარ
                                 {% else %}EN{% endif %}
                             </span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
@@ -44,7 +45,7 @@
                             {% for language in language_list %}
                                 {% language language.code %}
                                 <a href="{% url 'core:home' %}" class="language-option" data-lang="{{ language.code }}"
-                                   {% if language.code == LANGUAGE_CODE %}data-current="true"{% endif %}>
+                                   {% if language.code == CURRENT_LANGUAGE %}data-current="true"{% endif %}>
                                     <span class="flag">
                                         {% if language.code == 'ru' %}🇷🇺
                                         {% elif language.code == 'en' %}🇬🇧
@@ -422,13 +423,14 @@
                     <div class="mobile-control">
                         <div class="mobile-control-label">{% trans "Язык" %}</div>
                         <div class="mobile-language-btns">
-                            <button class="mobile-lang-btn {% if LANGUAGE_CODE|slice:':2' == 'ru' %}active{% endif %}" data-lang="ru" aria-label="Русский">
+                            {% get_current_language as CURRENT_LANGUAGE %}
+                            <button class="mobile-lang-btn {% if CURRENT_LANGUAGE == 'ru' %}active{% endif %}" data-lang="ru" aria-label="Русский">
                                 🇷🇺
                             </button>
-                            <button class="mobile-lang-btn {% if LANGUAGE_CODE|slice:':2' == 'ka' %}active{% endif %}" data-lang="ka" aria-label="ქართული">
+                            <button class="mobile-lang-btn {% if CURRENT_LANGUAGE == 'ka' %}active{% endif %}" data-lang="ka" aria-label="ქართული">
                                 🇬🇪
                             </button>
-                            <button class="mobile-lang-btn {% if LANGUAGE_CODE|slice:':2' == 'en' %}active{% endif %}" data-lang="en" aria-label="English">
+                            <button class="mobile-lang-btn {% if CURRENT_LANGUAGE == 'en' %}active{% endif %}" data-lang="en" aria-label="English">
                                 🇬🇧
                             </button>
                         </div>

@@ -116,10 +116,9 @@ def get_privacy_page_data():
     }
 
 
-@redirect_to_role_dashboard
 def home(request: HttpRequest) -> HttpResponse:
     """
-    Главная (лендинг) страница сайта.
+    Главная (лендинг) страница сайта - ДОСТУПНА ВСЕМ.
 
     Отображает:
     - Топ-4 курса с наибольшим количеством уроков
@@ -207,6 +206,27 @@ def home(request: HttpRequest) -> HttpResponse:
             "core/home.html",
             {"form": FeedbackForm(), "courses": [], "features": []},
         )
+
+
+@redirect_to_role_dashboard
+def dashboard_redirect(request: HttpRequest) -> HttpResponse:
+    """
+    Роутер для /dashboard/ - перенаправляет пользователей в их дашборды по ролям.
+
+    Неавторизованные пользователи → signin
+    Student → students:dashboard
+    Manager/Admin → managers:dashboard
+    Reviewer → reviewers:dashboard
+    Mentor → mentors:dashboard
+
+    Args:
+        request: HttpRequest объект Django
+
+    Returns:
+        HttpResponse с редиректом на соответствующий dashboard
+    """
+    # Декоратор @redirect_to_role_dashboard сделает всю работу
+    pass
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
