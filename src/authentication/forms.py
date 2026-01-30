@@ -130,14 +130,6 @@ class UserRegisterForm(forms.ModelForm):
         },
     )
 
-    show_notifications: forms.BooleanField = forms.BooleanField(
-        label=_("Отправить email с подтверждением регистрации"),
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
-        required=False,
-        initial=True,
-        help_text=_("Отметьте, чтобы получить письмо с ссылкой для подтверждения email"),
-    )
-
     class Meta:
         model = User
         fields = ["email", "password", "first_name", "phone_number"]
@@ -160,17 +152,20 @@ class UserRegisterForm(forms.ModelForm):
 
     def clean_password(self) -> str:
         """
-        Проверяет сложность пароля (длина, буквы + цифры).
+        Проверяет сложность пароля через Django валидаторы.
 
         Returns:
             Валидированный пароль
 
         Raises:
-            ValidationError: Если пароль слишком короткий или простой
+            ValidationError: Если пароль не соответствует требованиям Django
         """
         password = self.cleaned_data.get("password")
         if password:
-            self.validate_password_strength(password)
+            try:
+                validate_password(password)
+            except ValidationError as error:
+                raise ValidationError(error.messages) from error
         return password
 
     def clean_confirm_password(self) -> str:
@@ -235,28 +230,6 @@ class UserRegisterForm(forms.ModelForm):
                     _("Пароль не должен содержать ваш адрес электронной почты."),
                 )
         return cleaned_data
-
-    def validate_password_strength(self, password: str) -> None:
-        """
-        Проверяет сложность пароля по правилам безопасности.
-
-        Args:
-            password: Проверяемый пароль
-
-        Raises:
-            ValidationError: Если пароль не соответствует требованиям:
-                - Минимум 8 символов
-                - Должен содержать буквы и цифры (не только цифры или буквы)
-        """
-        if len(password) < 8:
-            logger.warning(f"Попытка регистрации с коротким паролем (длина: {len(password)})")
-            raise ValidationError(_("Пароль должен содержать не менее 8 символов."))
-        if password.isdigit():
-            logger.warning("Попытка регистрации с паролем только из цифр")
-            raise ValidationError(_("Пароль не может состоять только из цифр."))
-        if password.isalpha():
-            logger.warning("Попытка регистрации с паролем только из букв")
-            raise ValidationError(_("Пароль не может состоять только из букв."))
 
 
 class UserLoginForm(forms.Form):

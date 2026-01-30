@@ -138,14 +138,6 @@
                                 {% for error in form.password.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
-
-                        <!-- Password Strength Indicator -->
-                        <div class="password-strength-container">
-                            <div class="password-strength">
-                                <div class="strength-bar" id="strength-bar"></div>
-                            </div>
-                            <div class="strength-text" id="strength-text">{% trans "Сила пароля" %}</div>
-                        </div>
                     </div>
 
                     <!-- Confirm Password Field -->
@@ -197,33 +189,6 @@
                                 {% for error in form.agree_to_terms.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
-                    </div>
-
-                    <!-- Email Updates -->
-                    <div class="form-group">
-                        <div class="auth-options">
-                            <label class="checkbox-wrapper">
-                                {{ form.show_notifications }}
-                                <span class="checkmark"></span>
-                                <span class="checkbox-text">{% trans "Отправить email с подтверждением регистрации" %}</span>
-                            </label>
-                        </div>
-                        {% if form.show_notifications.help_text %}
-                            <small class="form-text text-muted">{{ form.show_notifications.help_text }}</small>
-                        {% endif %}
-                        {% if form.show_notifications.errors %}
-                            <div class="form-error visible">
-                                {% for error in form.show_notifications.errors %}{{ error }}{% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="auth-options">
-                        <label class="checkbox-wrapper">
-                            <input type="checkbox" name="email_updates">
-                            <span class="checkmark"></span>
-                            <span class="checkbox-text">{% trans "Получать новости о новых курсах и акциях" %}</span>
-                        </label>
                     </div>
 
                     <!-- Submit Button -->
@@ -327,86 +292,9 @@
     </div>
 </section>
 
-<script>
-function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    const toggle = input.parentElement.querySelector('.password-toggle');
-    const eyeOpen = toggle.querySelector('.eye-open');
-    const eyeClosed = toggle.querySelector('.eye-closed');
-
-    if (input.type === 'password') {
-        input.type = 'text';
-        eyeOpen.style.display = 'none';
-        eyeClosed.style.display = 'block';
-    } else {
-        input.type = 'password';
-        eyeOpen.style.display = 'block';
-        eyeClosed.style.display = 'none';
-    }
-}
-
-// Password strength checker
-document.addEventListener('DOMContentLoaded', function() {
-    const passwordField = document.getElementById('{{ form.password.id_for_label }}');
-    if (passwordField) {
-        passwordField.addEventListener('input', function(e) {
-            const password = e.target.value;
-            const strengthBar = document.getElementById('strength-bar');
-            const strengthText = document.getElementById('strength-text');
-
-            let strength = 0;
-            let text = '{% trans "Слабый" %}';
-
-            // Check password strength
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[a-z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^A-Za-z0-9]/.test(password)) strength++;
-
-            // Set strength level
-            if (strength === 0) {
-                strengthBar.style.width = '0%';
-                strengthBar.className = 'strength-bar';
-                text = '{% trans "Слабый" %}';
-            } else if (strength <= 2) {
-                strengthBar.style.width = '25%';
-                strengthBar.className = 'strength-bar weak';
-                text = '{% trans "Слабый" %}';
-            } else if (strength <= 3) {
-                strengthBar.style.width = '50%';
-                strengthBar.className = 'strength-bar medium';
-                text = '{% trans "Средний" %}';
-            } else if (strength <= 4) {
-                strengthBar.style.width = '75%';
-                strengthBar.className = 'strength-bar good';
-                text = '{% trans "Хороший" %}';
-            } else {
-                strengthBar.style.width = '100%';
-                strengthBar.className = 'strength-bar strong';
-                text = '{% trans "Отличный" %}';
-            }
-
-            strengthText.textContent = text;
-        });
-    }
-});
-</script>
+<script src="{% static 'js/students/auth.js' %}"></script>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/core/phone-input.js' %}"></script>
-<script src="{% static 'js/students/auth.js' %}"></script>
-<script>
-// Initialize password strength checker with translated strings
-document.addEventListener('DOMContentLoaded', function() {
-    initPasswordStrength(
-        '{{ form.password.id_for_label }}',
-        '{% trans "Слабый" %}',
-        '{% trans "Средний" %}',
-        '{% trans "Хороший" %}',
-        '{% trans "Отличный" %}'
-    );
-});
-</script>
 {% endblock %}

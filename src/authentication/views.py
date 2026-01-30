@@ -194,6 +194,13 @@ def signup_view(request: HttpRequest) -> HttpResponse:
                 user.set_password(password)
                 user.save()
 
+                # Сохраняем номер телефона в профиль Student
+                phone_number = form.cleaned_data.get("phone_number")
+                if phone_number:
+                    user.student.phone = phone_number
+                    user.student.save()
+                    logger.info(f"Номер телефона сохранен для {user.email}: {phone_number}")
+
                 token = default_token_generator.make_token(user)
                 uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
                 activation_url = request.build_absolute_uri(
@@ -203,66 +210,43 @@ def signup_view(request: HttpRequest) -> HttpResponse:
                     )
                 )
 
-                # Проверяем, нужно ли отправлять email уведомление
-                show_notifications = form.cleaned_data.get("show_notifications", True)
-                email_sent = False
-
-                if show_notifications:
-                    # Попытка отправить email через Celery, при ошибке - синхронно
+                # Email верификация обязательна для всех пользователей
+                # Попытка отправить email через Celery, при ошибке - синхронно
+                try:
+                    send_verification_email.delay(
+                        user.id,
+                        activation_url,
+                        _("Активируйте ваш аккаунт."),
+                        "auth/email/email-verification.html",
+                    )
+                    logger.info(f"Email верификации добавлен в очередь для {user.email}")
+                except Exception as celery_error:
+                    logger.warning(
+                        f"Celery недоступен, переключаемся на синхронную отправку: {celery_error}"
+                    )
+                    # Fallback на синхронную отправку email если Celery недоступен
                     try:
-                        send_verification_email.delay(
+                        send_verification_email_sync(
                             user.id,
                             activation_url,
                             _("Активируйте ваш аккаунт."),
                             "auth/email/email-verification.html",
                         )
-                        email_sent = True
-                        logger.info(f"Email верификации добавлен в очередь для {user.email}")
-                    except Exception as celery_error:
-                        logger.warning(
-                            f"Celery недоступен, переключаемся на синхронную отправку: {celery_error}"
+                        logger.info(f"Email верификации отправлен синхронно для {user.email}")
+                    except Exception as sync_error:
+                        logger.error(
+                            f"Ошибка отправки email при регистрации пользователю {user.email}: {sync_error}"
                         )
-                        # Fallback на синхронную отправку email если Celery недоступен
-                        try:
-                            send_verification_email_sync(
-                                user.id,
-                                activation_url,
-                                _("Активируйте ваш аккаунт."),
-                                "auth/email/email-verification.html",
-                            )
-                            email_sent = True
-                            logger.info(f"Email верификации отправлен синхронно для {user.email}")
-                        except Exception as sync_error:
-                            logger.error(
-                                f"Ошибка отправки email при регистрации пользователю {user.email}: {sync_error}"
-                            )
-                            messages.error(
-                                request,
-                                _("Ошибка отправки письма подтверждения. Попробуйте позже."),
-                            )
-                            raise sync_error  # Это откатит транзакцию
-                else:
-                    # Пользователь не хочет получать email, сразу успех
-                    logger.info(f"Регистрация без email верификации для {user.email}")
-                    messages.success(
-                        request,
-                        _("Регистрация завершена. Вы можете войти в систему."),
-                    )
-                    return redirect("authentication:signin")
+                        messages.error(
+                            request,
+                            _("Ошибка отправки письма подтверждения. Попробуйте позже."),
+                        )
+                        raise sync_error  # Это откатит транзакцию
 
-                # Если мы дошли до этой точки и email был отправлен, все успешно
-                if email_sent:
-                    messages.success(
-                        request,
-                        mark_safe(
-                            _(
-                                "Пожалуйста, подтвердите ваш email для завершения регистрации.<br>"
-                                "<strong>Вы автоматически подписаны на все уведомления.</strong><br>"
-                                "Вы можете управлять подписками в настройках вашего профиля."
-                            )
-                        ),
-                    )
-                    return redirect("authentication:signin")
+                # Успешная регистрация
+                success_message = _("Регистрация успешна! Проверьте ваш email для подтверждения.")
+                messages.success(request, success_message)
+                return redirect("authentication:signin")
 
             except Exception:
                 # Если что-то пошло не так, пользователь не будет создан
