@@ -213,7 +213,7 @@
         <div class="container">
             <div class="footer-bottom-content">
                 <div class="footer-copyright">
-                    <p>&copy; 2025 PyLand. {% trans "Все права защищены." %}</p>
+                    <p>&copy; {% now "Y" %} PyLand. {% trans "Все права защищены." %}</p>
                     <div class="footer-links-inline">
                         <a href="{% url 'core:privacy_policy' %}" class="footer-link-small">{% trans "Политика конфиденциальности" %}</a>
                         <a href="{% url 'core:terms_of_service' %}" class="footer-link-small">{% trans "Условия использования" %}</a>

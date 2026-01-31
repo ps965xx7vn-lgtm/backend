@@ -59,7 +59,7 @@
                 <div class="legal-meta">
                     <span class="legal-meta-item">
                         <span class="legal-meta-icon">📅</span>
-                        {% trans "Обновлено: 12 декабря 2025" %}
+                        {% trans "Обновлено:" %} {% now "j F Y" %}
                     </span>
                     <span class="legal-meta-item">
                         <span class="legal-meta-icon">📝</span>
@@ -144,7 +144,7 @@
                 <h2 class="legal-section-title">{% trans "5. Интеллектуальная собственность" %}</h2>
                 <p>{% trans "Все материалы защищены авторским правом." %}</p>
                 <div class="legal-highlight">
-                    <p><strong>© 2025 PyLand.</strong> {% trans "Все права защищены." %}</p>
+                    <p><strong>© {% now "Y" %} PyLand.</strong> {% trans "Все права защищены." %}</p>
                 </div>
             </section>
 
@@ -238,7 +238,7 @@
             </section>
 
             <footer class="legal-footer">
-                <p class="legal-footer-text">{% trans "Дата вступления в силу: 12 декабря 2025" %}</p>
+                <p class="legal-footer-text">{% trans "Дата вступления в силу:" %} {% now "j F Y" %}</p>
             </footer>
         </main>
     </div>

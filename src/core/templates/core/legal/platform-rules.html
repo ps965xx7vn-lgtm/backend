@@ -27,7 +27,7 @@
 			<header class="legal-header">
 				<h1 class="legal-title">{% trans "Правила использования платформы" %}</h1>
 				<div class="legal-meta">
-					<span class="legal-meta-item"><span class="legal-meta-icon">📅</span> {% trans "Обновлено: 17 декабря 2024" %}</span>
+					<span class="legal-meta-item"><span class="legal-meta-icon">📅</span> {% trans "Обновлено:" %} {% now "j F Y" %}</span>
 				</div>
 			</header>
 
@@ -212,7 +212,7 @@
 			</section>
 
 			<footer class="legal-footer">
-				<p class="legal-footer-text">{% trans "Дата последнего обновления: 17 декабря 2024 года" %}</p>
+				<p class="legal-footer-text">{% trans "Дата последнего обновления:" %} {% now "j F Y" %}</p>
 				<p class="legal-footer-text">{% trans "Администрация оставляет за собой право изменять Правила с уведомлением пользователей" %}</p>
 			</footer>
 		</main>
