@@ -21,31 +21,34 @@
                     <a href="#registration" class="legal-toc-link">{% trans "2. Регистрация" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#services" class="legal-toc-link">{% trans "3. Использование услуг" %}</a>
+                    <a href="#notifications" class="legal-toc-link">{% trans "3. Рассылки и уведомления" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#intellectual-property" class="legal-toc-link">{% trans "4. Интеллектуальная собственность" %}</a>
+                    <a href="#services" class="legal-toc-link">{% trans "4. Использование услуг" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#user-content" class="legal-toc-link">{% trans "5. Пользовательский контент" %}</a>
+                    <a href="#intellectual-property" class="legal-toc-link">{% trans "5. Интеллектуальная собственность" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#payments" class="legal-toc-link">{% trans "6. Платежи и возвраты" %}</a>
+                    <a href="#user-content" class="legal-toc-link">{% trans "6. Пользовательский контент" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#liability" class="legal-toc-link">{% trans "7. Ограничение ответственности" %}</a>
+                    <a href="#payments" class="legal-toc-link">{% trans "7. Платежи и возвраты" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#changes" class="legal-toc-link">{% trans "8. Изменения" %}</a>
+                    <a href="#liability" class="legal-toc-link">{% trans "8. Ограничение ответственности" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#termination" class="legal-toc-link">{% trans "9. Прекращение" %}</a>
+                    <a href="#changes" class="legal-toc-link">{% trans "9. Изменения" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#law" class="legal-toc-link">{% trans "10. Применимое право" %}</a>
+                    <a href="#termination" class="legal-toc-link">{% trans "10. Прекращение" %}</a>
                 </li>
                 <li class="legal-toc-item">
-                    <a href="#contact" class="legal-toc-link">{% trans "11. Контакты" %}</a>
+                    <a href="#law" class="legal-toc-link">{% trans "11. Применимое право" %}</a>
+                </li>
+                <li class="legal-toc-item">
+                    <a href="#contact" class="legal-toc-link">{% trans "12. Контакты" %}</a>
                 </li>
             </ul>
         </nav>
@@ -82,6 +85,10 @@
                     <li>{% trans "Уведомлять о несанкционированном использовании" %}</li>
                 </ul>
 
+                <div class="legal-highlight">
+                    <p><strong>{% trans "Подтверждение email:" %}</strong> {% trans "После регистрации на ваш email будет отправлено письмо с ссылкой для подтверждения. Для полноценного использования платформы необходимо подтвердить адрес электронной почты." %}</p>
+                </div>
+
                 <h3 class="legal-subsection-title">{% trans "Способы регистрации:" %}</h3>
                 <ul>
                     <li><strong>{% trans "Email и пароль:" %}</strong> {% trans "Стандартная регистрация с подтверждением email" %}</li>
@@ -94,8 +101,36 @@
                 </div>
             </section>
 
+            <section id="notifications" class="legal-section">
+                <h2 class="legal-section-title">{% trans "3. Рассылки и уведомления" %}</h2>
+                <p>{% trans "При регистрации на платформе PyLand вы автоматически подписываетесь на следующие типы рассылок:" %}</p>
+
+                <h3 class="legal-subsection-title">{% trans "Типы уведомлений:" %}</h3>
+                <ul>
+                    <li><strong>{% trans "Обновления курсов:" %}</strong> {% trans "Информация о новых уроках и материалах" %}</li>
+                    <li><strong>{% trans "Напоминания о заданиях:" %}</strong> {% trans "Уведомления о предстоящих дедлайнах" %}</li>
+                    <li><strong>{% trans "Достижения и прогресс:" %}</strong> {% trans "Сообщения о ваших успехах и полученных сертификатах" %}</li>
+                    <li><strong>{% trans "Новости платформы:" %}</strong> {% trans "Информация о новых функциях и возможностях" %}</li>
+                    <li><strong>{% trans "Еженедельная сводка:" %}</strong> {% trans "Обзор вашего прогресса за неделю" %}</li>
+                </ul>
+
+                <div class="legal-highlight">
+                    <p><strong>{% trans "Управление подписками:" %}</strong> {% trans "Вы можете в любой момент отключить или настроить рассылки в разделе настроек вашего личного дашборда. Перейдите в 'Настройки' → 'Уведомления' для управления предпочтениями." %}</p>
+                </div>
+
+                <h3 class="legal-subsection-title">{% trans "Обязательные уведомления:" %}</h3>
+                <p>{% trans "Некоторые уведомления являются обязательными и не могут быть отключены:" %}</p>
+                <ul>
+                    <li>{% trans "Подтверждение регистрации и активация аккаунта" %}</li>
+                    <li>{% trans "Восстановление пароля" %}</li>
+                    <li>{% trans "Изменения в условиях использования" %}</li>
+                    <li>{% trans "Критические обновления безопасности" %}</li>
+                    <li>{% trans "Уведомления о платежах и счетах" %}</li>
+                </ul>
+            </section>
+
             <section id="services" class="legal-section">
-                <h2 class="legal-section-title">{% trans "3. Использование услуг" %}</h2>
+                <h2 class="legal-section-title">{% trans "4. Использование услуг" %}</h2>
                 <p>{% trans "Вы получаете лицензию на использование наших услуг для личных образовательных целей." %}</p>
                 <h3 class="legal-subsection-title">{% trans "Запрещено:" %}</h3>
                 <ul>
@@ -106,7 +141,7 @@
             </section>
 
             <section id="intellectual-property" class="legal-section">
-                <h2 class="legal-section-title">{% trans "4. Интеллектуальная собственность" %}</h2>
+                <h2 class="legal-section-title">{% trans "5. Интеллектуальная собственность" %}</h2>
                 <p>{% trans "Все материалы защищены авторским правом." %}</p>
                 <div class="legal-highlight">
                     <p><strong>© 2025 PyLand.</strong> {% trans "Все права защищены." %}</p>
@@ -114,12 +149,12 @@
             </section>
 
             <section id="user-content" class="legal-section">
-                <h2 class="legal-section-title">{% trans "5. Пользовательский контент" %}</h2>
+                <h2 class="legal-section-title">{% trans "6. Пользовательский контент" %}</h2>
                 <p>{% trans "Размещая контент, вы предоставляете нам лицензию на его использование." %}</p>
             </section>
 
             <section id="payments" class="legal-section">
-                <h2 class="legal-section-title">{% trans "6. Платежи и возвраты" %}</h2>
+                <h2 class="legal-section-title">{% trans "7. Платежи и возвраты" %}</h2>
                 <div class="legal-highlight">
                     <p><strong>{% trans "Статус:" %}</strong> {% trans "Система автоматической оплаты находится в разработке." %}</p>
                 </div>
@@ -129,17 +164,17 @@
             </section>
 
             <section id="liability" class="legal-section">
-                <h2 class="legal-section-title">{% trans "7. Ограничение ответственности" %}</h2>
+                <h2 class="legal-section-title">{% trans "8. Ограничение ответственности" %}</h2>
                 <p>{% trans "Услуги предоставляются 'как есть' без гарантий." %}</p>
             </section>
 
             <section id="changes" class="legal-section">
-                <h2 class="legal-section-title">{% trans "8. Изменения в условиях" %}</h2>
+                <h2 class="legal-section-title">{% trans "9. Изменения в условиях" %}</h2>
                 <p>{% trans "Мы можем изменять условия с уведомлением." %}</p>
             </section>
 
             <section id="termination" class="legal-section">
-                <h2 class="legal-section-title">{% trans "9. Прекращение действия" %}</h2>
+                <h2 class="legal-section-title">{% trans "10. Прекращение действия" %}</h2>
                 <p>{% trans "Мы можем приостановить или прекратить ваш доступ к платформе при нарушении условий использования." %}</p>
                 <h3 class="legal-subsection-title">{% trans "Основания для прекращения:" %}</h3>
                 <ul>
@@ -153,7 +188,7 @@
             </section>
 
             <section id="law" class="legal-section">
-                <h2 class="legal-section-title">{% trans "10. Применимое право и разрешение споров" %}</h2>
+                <h2 class="legal-section-title">{% trans "11. Применимое право и разрешение споров" %}</h2>
                 <p>{% trans "Настоящие Условия использования регулируются и толкуются в соответствии с законодательством Грузии." %}</p>
 
                 <h3 class="legal-subsection-title">{% trans "Разрешение споров:" %}</h3>
@@ -175,7 +210,7 @@
             </section>
 
             <section id="contact" class="legal-section">
-                <h2 class="legal-section-title">{% trans "11. Контактная информация" %}</h2>
+                <h2 class="legal-section-title">{% trans "12. Контактная информация" %}</h2>
                 <div class="legal-table-wrapper">
                     <table class="legal-table">
                         <thead>

@@ -186,7 +186,7 @@
                                         <!-- Одобрено -->
                                         <div class="activity-bar-modern success"
                                              style="height: {% if day.approved > 0 %}{% widthratio day.approved 8 100 %}%{% else %}4px{% endif %};"
-                                             data-tooltip="Одобрено: {{ day.approved }}">
+                                             data-tooltip="{% trans 'Одобрено' %}: {{ day.approved }}">
                                             {% if day.approved > 0 %}
                                             <span class="bar-value">{{ day.approved }}</span>
                                             {% endif %}
@@ -194,7 +194,7 @@
                                         <!-- На правку -->
                                         <div class="activity-bar-modern info"
                                              style="height: {% if day.needs_work > 0 %}{% widthratio day.needs_work 8 100 %}%{% else %}4px{% endif %};"
-                                             data-tooltip="На правку: {{ day.needs_work }}">
+                                             data-tooltip="{% trans 'На правку' %}: {{ day.needs_work }}">
                                             {% if day.needs_work > 0 %}
                                             <span class="bar-value">{{ day.needs_work }}</span>
                                             {% endif %}

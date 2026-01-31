@@ -8355,3 +8355,144 @@ msgstr "Light"
 #: core/templates/base.html
 msgid "Темная"
 msgstr "Dark"
+# New translations for Terms of Service and Platform Rules
+msgid "3. Рассылки и уведомления"
+msgstr "3. Newsletters and Notifications"
+
+msgid "Подтверждение email:"
+msgstr "Email Confirmation:"
+
+msgid "После регистрации на ваш email будет отправлено письмо с ссылкой для подтверждения. Для полноценного использования платформы необходимо подтвердить адрес электронной почты."
+msgstr "After registration, you will receive an email with a confirmation link. To use the platform fully, you need to confirm your email address."
+
+msgid "При регистрации на платформе PyLand вы автоматически подписываетесь на следующие типы рассылок:"
+msgstr "When you register on the PyLand platform, you are automatically subscribed to the following types of newsletters:"
+
+msgid "Типы уведомлений:"
+msgstr "Notification Types:"
+
+msgid "Обновления курсов:"
+msgstr "Course Updates:"
+
+msgid "Информация о новых уроках и материалах"
+msgstr "Information about new lessons and materials"
+
+msgid "Напоминания о заданиях:"
+msgstr "Assignment Reminders:"
+
+msgid "Уведомления о предстоящих дедлайнах"
+msgstr "Notifications about upcoming deadlines"
+
+msgid "Достижения и прогресс:"
+msgstr "Achievements and Progress:"
+
+msgid "Сообщения о ваших успехах и полученных сертификатах"
+msgstr "Messages about your successes and received certificates"
+
+msgid "Новости платформы:"
+msgstr "Platform News:"
+
+msgid "Информация о новых функциях и возможностях"
+msgstr "Information about new features and capabilities"
+
+msgid "Еженедельная сводка:"
+msgstr "Weekly Summary:"
+
+msgid "Обзор вашего прогресса за неделю"
+msgstr "Overview of your progress for the week"
+
+msgid "Управление подписками:"
+msgstr "Subscription Management:"
+
+msgid "Вы можете в любой момент отключить или настроить рассылки в разделе настроек вашего личного дашборда. Перейдите в 'Настройки' → 'Уведомления' для управления предпочтениями."
+msgstr "You can disable or configure newsletters at any time in the settings section of your personal dashboard. Go to 'Settings' → 'Notifications' to manage preferences."
+
+msgid "Обязательные уведомления:"
+msgstr "Mandatory Notifications:"
+
+msgid "Некоторые уведомления являются обязательными и не могут быть отключены:"
+msgstr "Some notifications are mandatory and cannot be disabled:"
+
+# Platform Rules translations
+msgid "После регистрации вам будет отправлено письмо с ссылкой для подтверждения адреса электронной почты. Для использования всех функций платформы необходимо подтвердить email."
+msgstr "After registration, you will receive an email with a link to confirm your email address. To use all platform features, you need to confirm your email."
+
+msgid "Рассылки и уведомления:"
+msgstr "Newsletters and Notifications:"
+
+msgid "При регистрации вы автоматически подписываетесь на следующие типы уведомлений:"
+msgstr "Upon registration, you are automatically subscribed to the following types of notifications:"
+
+msgid "Обновления курсов и новые материалы"
+msgstr "Course updates and new materials"
+
+msgid "Напоминания о заданиях и дедлайнах"
+msgstr "Assignment and deadline reminders"
+
+msgid "Уведомления о достижениях и прогрессе"
+msgstr "Achievement and progress notifications"
+
+msgid "Новости и обновления платформы"
+msgstr "Platform news and updates"
+
+msgid "Еженедельная сводка активности"
+msgstr "Weekly activity summary"
+
+msgid "Вы можете отключить или настроить любые рассылки в настройках вашего дашборда (раздел 'Уведомления'). Некоторые уведомления (подтверждение email, восстановление пароля, платежи) являются обязательными и не могут быть отключены."
+msgstr "You can disable or configure any newsletters in your dashboard settings ('Notifications' section). Some notifications (email confirmation, password recovery, payments) are mandatory and cannot be disabled."
+
+# Email verification template translations
+msgid "О рассылках"
+msgstr "About Newsletters"
+
+msgid "При регистрации вы автоматически подписались на все наши рассылки:"
+msgstr "Upon registration, you were automatically subscribed to all our newsletters:"
+
+msgid "Вы можете отключить или настроить любые рассылки в настройках вашего дашборда (раздел 'Уведомления')."
+msgstr "You can disable or configure any newsletters in your dashboard settings ('Notifications' section)."
+
+# Newsletter welcome email translations
+msgid "Спасибо за подписку на блог PyLand!"
+msgstr "Thanks for subscribing to PyLand blog!"
+
+msgid "Теперь ты будешь первым узнавать о:"
+msgstr "Now you'll be the first to know about:"
+
+msgid "Новых статьях и уроках"
+msgstr "New articles and lessons"
+
+msgid "про Python, Django и веб-разработку"
+msgstr "about Python, Django and web development"
+
+msgid "Советах и трюках"
+msgstr "Tips and tricks"
+
+msgid "от опытных разработчиков"
+msgstr "from experienced developers"
+
+msgid "Специальных предложениях"
+msgstr "Special offers"
+
+msgid "эксклюзивно для подписчиков"
+msgstr "exclusively for subscribers"
+
+msgid "Новых курсах"
+msgstr "New courses"
+
+msgid "раньше всех"
+msgstr "before everyone else"
+
+msgid "Совет от команды:"
+msgstr "Tip from the team:"
+
+msgid "Добавь наш email в адресную книгу, чтобы письма не попадали в спам!"
+msgstr "Add our email to your address book so that messages don't end up in spam!"
+
+msgid "Мы рады видеть тебя в нашем сообществе!"
+msgstr "We're glad to see you in our community!"
+
+msgid "Не хочешь больше получать письма?"
+msgstr "Don't want to receive emails anymore?"
+
+msgid "Отписаться"
+msgstr "Unsubscribe"
