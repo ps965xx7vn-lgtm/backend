@@ -173,7 +173,7 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 
 ### Auto-use fixtures
 
-- `create_roles()` - автоматически создает все 6 ролей: student, mentor, reviewer, manager, admin, support
+- `create_roles()` - автоматически создает все 4 роли: student, mentor, reviewer, manager
 
 ### User fixtures
 
@@ -197,7 +197,7 @@ TypeError: BaseAuth.__init__() missing 1 required positional argument: 'strategy
 
 ### Role fixtures
 
-- `student_role`, `mentor_role`, `reviewer_role`, `manager_role`, `admin_role`, `support_role`
+- `student_role`, `mentor_role`, `reviewer_role`, `manager_role`
 
 ## Linting
 

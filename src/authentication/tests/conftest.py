@@ -60,20 +60,6 @@ def manager_role(db):
 
 
 @pytest.fixture
-def admin_role(db):
-    """Роль администратора."""
-    role, _ = Role.objects.get_or_create(name="admin", defaults={"description": "Администратор"})
-    return role
-
-
-@pytest.fixture
-def support_role(db):
-    """Роль поддержки."""
-    role, _ = Role.objects.get_or_create(name="support", defaults={"description": "Поддержка"})
-    return role
-
-
-@pytest.fixture
 def user(db, student_role):
     """Базовый пользователь со студентом ролью."""
     return User.objects.create_user(

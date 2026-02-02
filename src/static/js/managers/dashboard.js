@@ -5,43 +5,13 @@
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    initMobileMenu();
+    // УДАЛЕНО: initMobileMenu() - теперь в dashboard-mobile.js
     initThemeToggle();
     initTooltips();
     initTableInteractions();
     initAutoRefresh();
+    initViewToggle();  // Добавлен переключатель вида (сетка/список)
 });
-
-/**
- * Мобильное меню
- */
-function initMobileMenu() {
-    const toggle = document.querySelector('.mobile-menu-toggle');
-    const sidebar = document.querySelector('.manager-sidebar');
-    const overlay = document.createElement('div');
-    overlay.className = 'sidebar-overlay';
-    document.body.appendChild(overlay);
-    
-    if (toggle && sidebar) {
-        toggle.addEventListener('click', function() {
-            sidebar.classList.toggle('mobile-open');
-            overlay.classList.toggle('active');
-        });
-        
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('mobile-open');
-            overlay.classList.remove('active');
-        });
-        
-        // Закрытие по нажатию Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
-                sidebar.classList.remove('mobile-open');
-                overlay.classList.remove('active');
-            }
-        });
-    }
-}
 
 /**
  * Переключение темы
@@ -49,7 +19,7 @@ function initMobileMenu() {
 function initThemeToggle() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    
+
     // Создание кнопки переключения темы если её нет
     const headerRight = document.querySelector('.manager-header-right');
     if (headerRight && !document.querySelector('.theme-toggle-btn')) {
@@ -58,16 +28,16 @@ function initThemeToggle() {
         themeBtn.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         themeBtn.title = 'Переключить тему';
         headerRight.insertBefore(themeBtn, headerRight.firstChild);
-        
+
         themeBtn.addEventListener('click', function() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             this.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            
+
             // Анимация переключения
             document.body.style.transition = 'background-color 0.3s ease';
             setTimeout(() => {
@@ -91,16 +61,16 @@ function initTooltips() {
 function showTooltip(e) {
     const text = e.target.getAttribute('data-tooltip');
     if (!text) return;
-    
+
     const tooltip = document.createElement('div');
     tooltip.className = 'custom-tooltip';
     tooltip.textContent = text;
     document.body.appendChild(tooltip);
-    
+
     const rect = e.target.getBoundingClientRect();
     tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
     tooltip.style.top = rect.top - tooltip.offsetHeight - 8 + 'px';
-    
+
     setTimeout(() => tooltip.classList.add('show'), 10);
 }
 
@@ -124,18 +94,18 @@ function initTableInteractions() {
             sortTable(this);
         });
     });
-    
+
     // Выбор строк
     const checkboxes = document.querySelectorAll('.row-checkbox');
     const selectAll = document.querySelector('#select-all');
-    
+
     if (selectAll) {
         selectAll.addEventListener('change', function() {
             checkboxes.forEach(cb => cb.checked = this.checked);
             updateBulkActions();
         });
     }
-    
+
     checkboxes.forEach(cb => {
         cb.addEventListener('change', updateBulkActions);
     });
@@ -147,34 +117,34 @@ function sortTable(header) {
     const rows = Array.from(tbody.querySelectorAll('tr'));
     const index = Array.from(header.parentNode.children).indexOf(header);
     const isAscending = header.classList.contains('sort-asc');
-    
+
     // Очистка других заголовков
     table.querySelectorAll('th').forEach(th => {
         th.classList.remove('sort-asc', 'sort-desc');
     });
-    
+
     // Сортировка строк
     rows.sort((a, b) => {
         const aText = a.cells[index].textContent.trim();
         const bText = b.cells[index].textContent.trim();
-        
+
         // Попытка числовой сортировки
         const aNum = parseFloat(aText);
         const bNum = parseFloat(bText);
-        
+
         if (!isNaN(aNum) && !isNaN(bNum)) {
             return isAscending ? bNum - aNum : aNum - bNum;
         }
-        
+
         // Текстовая сортировка
-        return isAscending 
+        return isAscending
             ? bText.localeCompare(aText)
             : aText.localeCompare(bText);
     });
-    
+
     // Обновление DOM
     rows.forEach(row => tbody.appendChild(row));
-    
+
     // Обновление иконки сортировки
     header.classList.add(isAscending ? 'sort-desc' : 'sort-asc');
 }
@@ -182,7 +152,7 @@ function sortTable(header) {
 function updateBulkActions() {
     const checked = document.querySelectorAll('.row-checkbox:checked');
     const bulkActions = document.querySelector('.bulk-actions');
-    
+
     if (bulkActions) {
         bulkActions.style.display = checked.length > 0 ? 'flex' : 'none';
         const count = bulkActions.querySelector('.selected-count');
@@ -196,14 +166,14 @@ function updateBulkActions() {
 function initAutoRefresh() {
     const refreshInterval = 30000; // 30 секунд
     const refreshableElements = document.querySelectorAll('[data-auto-refresh]');
-    
+
     if (refreshableElements.length === 0) return;
-    
+
     setInterval(async () => {
         for (const element of refreshableElements) {
             const url = element.getAttribute('data-refresh-url');
             if (!url) continue;
-            
+
             try {
                 const response = await fetch(url);
                 if (response.ok) {
@@ -224,7 +194,7 @@ function initAutoRefresh() {
  */
 function animateStatCards() {
     const cards = document.querySelectorAll('.stat-card');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
@@ -235,7 +205,7 @@ function animateStatCards() {
             }
         });
     }, { threshold: 0.1 });
-    
+
     cards.forEach(card => observer.observe(card));
 }
 
@@ -245,7 +215,7 @@ function animateStatCards() {
 function animateCounter(element, target, duration = 1000) {
     let start = 0;
     const increment = target / (duration / 16);
-    
+
     const timer = setInterval(() => {
         start += increment;
         if (start >= target) {
@@ -277,15 +247,15 @@ function showNotification(message, type = 'info', duration = 3000) {
         <span>${message}</span>
         <button class="notification-close">&times;</button>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     setTimeout(() => notification.classList.add('show'), 10);
-    
+
     notification.querySelector('.notification-close').addEventListener('click', () => {
         hideNotification(notification);
     });
-    
+
     setTimeout(() => {
         hideNotification(notification);
     }, duration);
@@ -311,20 +281,20 @@ function getNotificationIcon(type) {
  */
 function initAjaxForms() {
     const forms = document.querySelectorAll('[data-ajax-form]');
-    
+
     forms.forEach(form => {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const formData = new FormData(this);
             const url = this.action;
             const method = this.method;
-            
+
             const submitBtn = this.querySelector('[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-            
+
             try {
                 const response = await fetch(url, {
                     method: method,
@@ -333,9 +303,9 @@ function initAjaxForms() {
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showNotification(data.message || 'Успешно сохранено', 'success');
                     if (data.redirect) {
@@ -360,7 +330,7 @@ function initAjaxForms() {
  */
 function initLiveSearch() {
     const searchInputs = document.querySelectorAll('[data-live-search]');
-    
+
     searchInputs.forEach(input => {
         let timeout;
         input.addEventListener('input', function() {
@@ -375,10 +345,10 @@ function initLiveSearch() {
 async function performSearch(query, target) {
     const targetElement = document.querySelector(target);
     if (!targetElement) return;
-    
+
     const url = targetElement.getAttribute('data-search-url');
     if (!url) return;
-    
+
     try {
         const response = await fetch(`${url}?q=${encodeURIComponent(query)}`);
         if (response.ok) {
@@ -403,3 +373,41 @@ window.managerDashboard = {
 
 // Инициализация дополнительных функций
 animateStatCards();
+
+/**
+ * Инициализация переключателя вида (сетка/список)
+ * Копировано и адаптировано из reviewers/dashboard.js
+ */
+function initViewToggle() {
+    const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
+    const reviewsContainer = document.querySelector('.reviews-container');
+
+    if (!viewToggleBtns.length || !reviewsContainer) return;
+
+    // Загружаем сохраненный вид из localStorage
+    const savedView = localStorage.getItem('managersViewMode') || 'grid';
+    setView(savedView);
+
+    // Обработчики кликов на кнопки
+    viewToggleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const view = this.dataset.view;
+            setView(view);
+            localStorage.setItem('managersViewMode', view);
+        });
+    });
+
+    function setView(view) {
+        // Обновляем data-view атрибут контейнера
+        reviewsContainer.setAttribute('data-view', view);
+
+        // Обновляем активные кнопки
+        viewToggleBtns.forEach(btn => {
+            if (btn.dataset.view === view) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+}

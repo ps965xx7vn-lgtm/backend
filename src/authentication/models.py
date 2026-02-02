@@ -262,8 +262,6 @@ class Role(models.Model):
         MENTOR = "mentor", "Ментор"
         REVIEWER = "reviewer", "Ревьюер"
         MANAGER = "manager", "Менеджер"
-        ADMIN = "admin", "Администратор"
-        SUPPORT = "support", "Поддержка"
 
     name: str = models.CharField(
         max_length=50,
@@ -291,8 +289,6 @@ class Role(models.Model):
             cls.RoleChoices.MENTOR: "Ментор - ведет курсы, консультирует студентов, проверяет задания, дает обратную связь",
             cls.RoleChoices.REVIEWER: "Ревьюер - специализируется на проверке работ студентов, оставляет детальные комментарии и рекомендации",
             cls.RoleChoices.MANAGER: "Менеджер - управляет платформой через dashboard: курсы, пользователи, статистика, настройки",
-            cls.RoleChoices.ADMIN: "Администратор - полный доступ к системе через Django Admin, управление всеми данными и пользователями",
-            cls.RoleChoices.SUPPORT: "Поддержка - обрабатывает обращения пользователей, решает технические вопросы, управляет тикетами",
         }
 
     class Meta:
@@ -735,89 +731,3 @@ class Manager(models.Model):
     def __str__(self) -> str:
         """Строковое представление менеджера."""
         return f"Менеджер: {self.user.email}"
-
-
-class Admin(models.Model):
-    """
-    Профиль администратора системы.
-
-    Администратор имеет полный доступ к Django Admin и управлению данными.
-    Права управляются через Django флаги: `user.is_staff` и `user.is_superuser`.
-
-    Attributes:
-        id: UUID первичный ключ
-        user: Связь с пользователем (OneToOne)
-        bio: Описание роли и опыта администратора
-        is_active: Активен ли в системе
-        registered_at: Дата регистрации
-        updated_at: Дата последнего обновления
-    """
-
-    id: Any = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user: User = models.OneToOneField(User, on_delete=models.CASCADE, related_name="admin")
-    bio: str = models.TextField(blank=True, verbose_name="Описание")
-    is_active: bool = models.BooleanField(default=True, verbose_name="Активен")
-    registered_at: Any = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
-    updated_at: Any = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
-
-    class Meta:
-        verbose_name: str = "Администратор"
-        verbose_name_plural: str = "Администраторы"
-        ordering: list[str] = ["-registered_at"]
-        permissions: list = [
-            ("full_system_access", "Полный доступ ко всей системе"),
-            ("manage_all_data", "Управление всеми данными через Django Admin"),
-            ("configure_system", "Настройка системных параметров"),
-            ("manage_permissions", "Управление правами доступа"),
-        ]
-        indexes: list = [
-            models.Index(fields=["user"]),
-            models.Index(fields=["is_active"]),
-        ]
-
-    def __str__(self) -> str:
-        """Строковое представление администратора."""
-        return f"Админ: {self.user.email}"
-
-
-class Support(models.Model):
-    """
-    Профиль сотрудника поддержки.
-
-    Поддержка обрабатывает обращения пользователей, решает проблемы,
-    управляет тикетами и техническими вопросами.
-
-    Attributes:
-        id: UUID первичный ключ
-        user: Связь с пользователем (OneToOne)
-        bio: Описание роли и опыта сотрудника
-        is_active: Активен ли в системе
-        registered_at: Дата регистрации
-        updated_at: Дата последнего обновления
-    """
-
-    id: Any = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user: User = models.OneToOneField(User, on_delete=models.CASCADE, related_name="support")
-    bio: str = models.TextField(blank=True, verbose_name="Описание")
-    is_active: bool = models.BooleanField(default=True, verbose_name="Активен")
-    registered_at: Any = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
-    updated_at: Any = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
-
-    class Meta:
-        verbose_name: str = "Поддержка"
-        verbose_name_plural: str = "Поддержка"
-        ordering: list[str] = ["-registered_at"]
-        permissions: list = [
-            ("handle_support_tickets", "Обработка обращений пользователей"),
-            ("resolve_user_issues", "Решение проблем пользователей"),
-            ("view_support_queue", "Просмотр очереди обращений"),
-            ("manage_tickets", "Управление тикетами поддержки"),
-        ]
-        indexes: list = [
-            models.Index(fields=["user"]),
-            models.Index(fields=["is_active"]),
-        ]
-
-    def __str__(self) -> str:
-        """Строковое представление сотрудника поддержки."""
-        return f"Поддержка: {self.user.email}"

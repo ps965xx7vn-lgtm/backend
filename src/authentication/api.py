@@ -155,18 +155,6 @@ def serialize_profile(user: AbstractUser) -> dict:
             "bio": profile.bio or None,
             "is_active": profile.is_active,
         }
-    elif role_name == "admin" and hasattr(user, "admin"):
-        profile = user.admin
-        return {
-            "bio": profile.bio or None,
-            "is_active": profile.is_active,
-        }
-    elif role_name == "support" and hasattr(user, "support"):
-        profile = user.support
-        return {
-            "bio": profile.bio or None,
-            "is_active": profile.is_active,
-        }
 
     return base_profile
 
@@ -183,7 +171,7 @@ def register(request, data: RegisterIn):
     Регистрация нового пользователя.
 
     Создаёт User с указанной ролью (student по умолчанию) и связанный профиль.
-    Поддерживаемые роли: student, mentor, reviewer, manager, admin, support.
+    Поддерживаемые роли: student, mentor, reviewer, manager.
     Автоматически создается профиль в зависимости от роли через сигнал.
     Автоматически генерирует JWT токены для немедленного входа.
     """

@@ -98,7 +98,7 @@ def create_user_student(sender: Any, instance: Any, created: bool, **kwargs: Any
     """
     if created:
         try:
-            from authentication.models import Admin, Manager, Mentor, Reviewer, Support
+            from authentication.models import Manager, Mentor, Reviewer
 
             role_name = instance.role.name if instance.role else "student"
             role_display = instance.role.get_name_display() if instance.role else "Студент"
@@ -118,17 +118,7 @@ def create_user_student(sender: Any, instance: Any, created: bool, **kwargs: Any
             elif role_name == "manager":
                 Manager.objects.create(user=instance)
                 logger.info(f"Создан профиль Manager для {instance.email} с ролью '{role_display}'")
-            elif role_name == "admin":
-                Admin.objects.create(user=instance)
-                # Установить флаги для доступа в Django Admin
-                if not instance.is_staff:
-                    instance.is_staff = True
-                    # Используем update для избежания рекурсии сигнала
-                    User.objects.filter(pk=instance.pk).update(is_staff=True)
-                logger.info(f"Создан профиль Admin для {instance.email} с ролью '{role_display}'")
-            elif role_name == "support":
-                Support.objects.create(user=instance)
-                logger.info(f"Создан профиль Support для {instance.email} с ролью '{role_display}'")
+
             else:
                 # По умолчанию создаем Student профиль
                 Student.objects.create(user=instance)
@@ -173,10 +163,53 @@ def save_user_student(sender: Any, instance: Any, created: bool, **kwargs: Any) 
     if kwargs.get("raw", False):
         return
 
-    from authentication.models import Admin, Manager, Mentor, Reviewer, Support
+    from authentication.models import Manager, Mentor, Reviewer
 
     try:
         role_name = instance.role.name if instance.role else "student"
+
+        # ДЕАКТИВИРУЕМ ВСЕ СТАРЫЕ ПРОФИЛИ при смене роли
+        # Это важно чтобы не было активных профилей у других ролей
+        if hasattr(instance, "student") and role_name != "student":
+            profile = instance.student
+            if profile.email_notifications:  # Используем любое булево поле как признак активности
+                profile.email_notifications = False
+                profile.course_updates = False
+                profile.lesson_reminders = False
+                profile.achievement_alerts = False
+                profile.weekly_summary = False
+                profile.marketing_emails = False
+                profile.save()
+                logger.info(
+                    f"Деактивирован профиль Student для {instance.email} (роль изменена на {role_name})"
+                )
+
+        if hasattr(instance, "reviewer") and role_name != "reviewer":
+            profile = instance.reviewer
+            if profile.is_active:
+                profile.is_active = False
+                profile.save()
+                logger.info(
+                    f"Деактивирован профиль Reviewer для {instance.email} (роль изменена на {role_name})"
+                )
+
+        if hasattr(instance, "mentor") and role_name != "mentor":
+            profile = instance.mentor
+            if profile.is_active:
+                profile.is_active = False
+                profile.save()
+                logger.info(
+                    f"Деактивирован профиль Mentor для {instance.email} (роль изменена на {role_name})"
+                )
+
+        if hasattr(instance, "manager") and role_name != "manager":
+            profile = instance.manager
+            if profile.is_active:
+                profile.is_active = False
+                profile.save()
+                logger.info(
+                    f"Деактивирован профиль Manager для {instance.email} (роль изменена на {role_name})"
+                )
 
         # ТОЛЬКО создаем отсутствующие профили (для миграции старых данных)
         if role_name == "student" and not hasattr(instance, "student"):
@@ -191,12 +224,35 @@ def save_user_student(sender: Any, instance: Any, created: bool, **kwargs: Any) 
         elif role_name == "manager" and not hasattr(instance, "manager"):
             Manager.objects.create(user=instance)
             logger.warning(f"Создан отсутствующий профиль Manager для {instance.email}")
-        elif role_name == "admin" and not hasattr(instance, "admin"):
-            Admin.objects.create(user=instance)
-            logger.warning(f"Создан отсутствующий профиль Admin для {instance.email}")
-        elif role_name == "support" and not hasattr(instance, "support"):
-            Support.objects.create(user=instance)
-            logger.warning(f"Создан отсутствующий профиль Support для {instance.email}")
+
+        # АКТИВИРУЕМ текущий профиль если он был деактивирован
+        if role_name == "student" and hasattr(instance, "student"):
+            profile = instance.student
+            if not profile.email_notifications:  # Если деактивирован, активируем
+                profile.email_notifications = True
+                profile.course_updates = True
+                profile.lesson_reminders = True
+                profile.save()
+                logger.info(f"Активирован профиль Student для {instance.email}")
+        elif role_name == "reviewer" and hasattr(instance, "reviewer"):
+            profile = instance.reviewer
+            if not profile.is_active:
+                profile.is_active = True
+                profile.save()
+                logger.info(f"Активирован профиль Reviewer для {instance.email}")
+        elif role_name == "mentor" and hasattr(instance, "mentor"):
+            profile = instance.mentor
+            if not profile.is_active:
+                profile.is_active = True
+                profile.save()
+                logger.info(f"Активирован профиль Mentor для {instance.email}")
+        elif role_name == "manager" and hasattr(instance, "manager"):
+            profile = instance.manager
+            if not profile.is_active:
+                profile.is_active = True
+                profile.save()
+                logger.info(f"Активирован профиль Manager для {instance.email}")
+
     except Exception as e:
         logger.error(f"Ошибка создания отсутствующего профиля для {instance.email}: {e}")
 

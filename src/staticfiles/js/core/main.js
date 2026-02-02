@@ -73,16 +73,30 @@ class LanguageManager {
     this.languages = {
       'ru': { name: 'Русский', native: 'РУ', flag: '🇷🇺' },
       'ka': { name: 'ქართული', native: 'ქარ', flag: '🇬🇪' },
-      'en': { name: 'English', native: 'EN', flag: '🇺🇸' }
+      'en': { name: 'English', native: 'EN', flag: '�🇧' }
     };
 
-    this.currentLanguage = localStorage.getItem('language') || 'ru';
+    // Определяем текущий язык из URL префикса, а не из localStorage
+    this.currentLanguage = this.getCurrentLanguageFromURL();
     this.init();
   }
 
+  getCurrentLanguageFromURL() {
+    // Извлекаем языковой префикс из URL (например /en/ или /ru/)
+    const pathMatch = window.location.pathname.match(/^\/([a-z]{2})\//);
+    if (pathMatch && this.languages[pathMatch[1]]) {
+      const langFromURL = pathMatch[1];
+      // Синхронизируем localStorage с реальным языком страницы
+      localStorage.setItem('language', langFromURL);
+      return langFromURL;
+    }
+    // Фолбэк на русский, если префикс не найден
+    return 'ru';
+  }
+
   init() {
-    // Обновляем отображение текущего языка при загрузке
-    this.updateCurrentLanguageDisplay();
+    // НЕ обновляем отображение при загрузке - Django шаблон уже это сделал
+    // this.updateCurrentLanguageDisplay();
 
     // Проверяем, было ли изменение языка
     this.checkLanguageChanged();

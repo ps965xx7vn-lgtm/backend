@@ -17,7 +17,6 @@ Pyland School Main API Configuration
 - /notifications/ - уведомления
 - /payments/ - платежи
 - /reviews/ - отзывы
-- /support/ - поддержка
 
 Health check: GET /api/ping
 """
@@ -37,7 +36,6 @@ from notifications.api import router as notifications_router
 from payments.api import router as payments_router
 from reviewers.api import router as reviews_router
 from students.api import router as account_router
-from support.api import router as support_router
 
 # Глобальная переменная для хранения единственного экземпляра API
 _api_instance = None
@@ -78,7 +76,6 @@ def get_api():
     api_instance.add_router("/notifications/", notifications_router)
     api_instance.add_router("/payments/", payments_router)
     api_instance.add_router("/reviews/", reviews_router)
-    api_instance.add_router("/support/", support_router)
 
     @api_instance.get("/ping", auth=None)
     def ping(request):

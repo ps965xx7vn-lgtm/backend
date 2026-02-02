@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Мои сертификаты" %} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/students/dashboard.css' %}?v=20251212-fixed">
+<link rel="stylesheet" href="{% static 'css/students/certificates-list.css' %}">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+
+        <!-- User Info -->
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {% if request.user.student.avatar %}
+                    <img src="{{ request.user.student.avatar.url }}" alt="{{ request.user.email }}">
+                {% else %}
+                    {{ request.user.email|first|upper }}
+                {% endif %}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>
+                    {% if request.user.first_name %}
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+                    {% else %}
+                        {{ request.user.email|truncatechars:20 }}
+                    {% endif %}
+                </h3>
+                <p class="dashboard-user-role">{% trans "Студент" %}</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="dashboard-nav">
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:dashboard' request.user.student.id %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        {% trans "Дашборд" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:courses' request.user.student.id %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        {% trans "Мои курсы" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'certificates:list' %}" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                        </svg>
+                        {% trans "Сертификаты" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'students:settings' request.user.student.id %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {% trans "Настройки" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">🏆 {% trans "Мои сертификаты" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'students:dashboard' request.user.student.id %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Сертификаты" %}</span>
+                </div>
+            </div>
+        </header>
+
+        {% if certificates %}
+            <div class="certificates-grid">
+                {% for certificate in certificates %}
+                <div class="certificate-card">
+                    <div class="certificate-header">
+                        <div class="certificate-icon">📜</div>
+                        <div class="certificate-title">{{ certificate.course.title }}</div>
+                        <div class="certificate-date">
+                            {% trans "Выдан" %} {{ certificate.completion_date|date:"d.m.Y" }}
+                        </div>
+                    </div>
+
+                    <div class="certificate-body">
+                        {% if certificate.is_valid %}
+                            <span class="status-badge status-valid">✓ {% trans "Действителен" %}</span>
+                        {% else %}
+                            <span class="status-badge status-revoked">✗ {% trans "Отозван" %}</span>
+                        {% endif %}
+
+                        <div class="certificate-number">
+                            {{ certificate.certificate_number }}
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ certificate.lessons_completed }}/{{ certificate.total_lessons }}</span>
+                                <span class="stat-label">{% trans "Уроков" %}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ certificate.assignments_approved }}</span>
+                                <span class="stat-label">{% trans "Заданий" %}</span>
+                            </div>
+                            {% if certificate.final_grade %}
+                            <div class="stat-item">
+                                <span class="stat-value">{{ certificate.final_grade }}%</span>
+                                <span class="stat-label">{% trans "Оценка" %}</span>
+                            </div>
+                            {% endif %}
+                            {% if certificate.total_time_spent %}
+                            <div class="stat-item">
+                                <span class="stat-value">{{ certificate.total_time_spent|floatformat:1 }}</span>
+                                <span class="stat-label">{% trans "Часов" %}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="certificate-actions">
+                            <a href="{% url 'certificates:detail' certificate.pk %}"
+                               class="btn-certificate btn-view">
+                                📄 {% trans "Просмотр" %}
+                            </a>
+                            {% if certificate.pdf_file %}
+                            <a href="{% url 'certificates:download' certificate.pk %}"
+                               class="btn-certificate btn-download">
+                                ⬇️ {% trans "PDF" %}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🎓</div>
+                <h2>{% trans "У вас пока нет сертификатов" %}</h2>
+                <p>{% trans "Завершите курс на 100%, чтобы получить свой первый сертификат!" %}</p>
+                <a href="{% url 'courses:courses' %}" class="btn-explore">
+                    {% trans "Исследовать курсы" %}
+                </a>
+            </div>
+        {% endif %}
+    </main>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/students/dashboard.js' %}"></script>
+<script src="{% static 'js/students/dashboard-mobile.js' %}"></script>
+<script src="{% static 'js/students/code-copy.js' %}"></script>
+{% endblock %}

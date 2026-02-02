@@ -4415,66 +4415,6 @@ html, body {
   display: none;
 }
 
-/* Password Strength */
-.password-strength-container {
-  margin-top: 0.75rem;
-}
-
-.password-strength {
-  height: 4px;
-  background: var(--border-color);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
-}
-
-.strength-label {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-}
-
-.strength-bar {
-  height: 100%;
-  width: 0%;
-  transition: all 0.3s ease;
-  border-radius: 2px;
-  background: var(--border-color);
-}
-
-.strength-bar.weak {
-  background: var(--error-500);
-}
-
-.strength-bar.medium {
-  background: var(--warning-500);
-}
-
-.strength-bar.good {
-  background: var(--primary-500);
-}
-
-.strength-bar.strong {
-  background: var(--success-500);
-}
-
-.strength-fill {
-  height: 100%;
-  transition: all 0.3s ease;
-  border-radius: 2px;
-}
-
-.strength-fill.weak { background: var(--error-500); }
-.strength-fill.medium { background: var(--warning-500); }
-.strength-fill.good { background: var(--primary-500); }
-.strength-fill.strong { background: var(--success-500); }
-
-.strength-text {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 0.25rem;
-}
-
 /* Messages */
 .messages-container {
   margin-bottom: 1.5rem;

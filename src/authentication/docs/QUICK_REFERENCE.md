@@ -68,7 +68,7 @@ authentication/
 ### Models
 
 - **User** - Custom user (email login)
-- **Role** - 6 roles (student, mentor, reviewer, manager, admin, support)
+- **Role** - 4 roles (student, mentor, reviewer, manager)
 - **Profiles** - Auto-created for each role
 
 ### API (Django Ninja)
@@ -181,7 +181,7 @@ poetry run python manage.py create_test_users
 
 - Email: `[role]@test.com`
 - Password: `password123`
-- Roles: student, mentor, reviewer, manager, admin, support
+- Roles: student, mentor, reviewer, manager
 
 ### Run server
 

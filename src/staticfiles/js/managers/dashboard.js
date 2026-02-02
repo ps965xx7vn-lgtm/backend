@@ -10,35 +10,52 @@ document.addEventListener('DOMContentLoaded', function() {
     initTooltips();
     initTableInteractions();
     initAutoRefresh();
+    initViewToggle();  // Добавлен переключатель вида (сетка/список)
 });
 
 /**
  * Мобильное меню
  */
 function initMobileMenu() {
-    const toggle = document.querySelector('.mobile-menu-toggle');
-    const sidebar = document.querySelector('.manager-sidebar');
-    const overlay = document.createElement('div');
-    overlay.className = 'sidebar-overlay';
-    document.body.appendChild(overlay);
+    const toggle = document.querySelector('.dashboard-menu-btn');
+    const sidebar = document.querySelector('.dashboard-sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
     
-    if (toggle && sidebar) {
-        toggle.addEventListener('click', function() {
-            sidebar.classList.toggle('mobile-open');
+    console.log('Manager Dashboard: Initializing mobile menu');
+    console.log('Toggle button:', toggle);
+    console.log('Sidebar:', sidebar);
+    console.log('Overlay:', overlay);
+    
+    if (toggle && sidebar && overlay) {
+        console.log('All elements found, adding event listeners');
+        
+        toggle.addEventListener('click', function(e) {
+            console.log('Toggle button clicked');
+            sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
+            console.log('Sidebar classes:', sidebar.className);
+            console.log('Overlay classes:', overlay.className);
         });
         
         overlay.addEventListener('click', function() {
-            sidebar.classList.remove('mobile-open');
+            console.log('Overlay clicked');
+            sidebar.classList.remove('open');
             overlay.classList.remove('active');
         });
         
         // Закрытие по нажатию Escape
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
-                sidebar.classList.remove('mobile-open');
+            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                console.log('Escape pressed, closing sidebar');
+                sidebar.classList.remove('open');
                 overlay.classList.remove('active');
             }
+        });
+    } else {
+        console.error('Manager Dashboard: Missing elements!', {
+            toggle: !!toggle,
+            sidebar: !!sidebar,
+            overlay: !!overlay
         });
     }
 }
@@ -403,3 +420,42 @@ window.managerDashboard = {
 
 // Инициализация дополнительных функций
 animateStatCards();
+
+/**
+ * Инициализация переключателя вида (сетка/список)
+ * Копировано и адаптировано из reviewers/dashboard.js
+ */
+function initViewToggle() {
+    const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
+    const reviewsContainer = document.querySelector('.reviews-container');
+    
+    if (!viewToggleBtns.length || !reviewsContainer) return;
+    
+    // Загружаем сохраненный вид из localStorage
+    const savedView = localStorage.getItem('managersViewMode') || 'grid';
+    setView(savedView);
+    
+    // Обработчики кликов на кнопки
+    viewToggleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const view = this.dataset.view;
+            setView(view);
+            localStorage.setItem('managersViewMode', view);
+        });
+    });
+    
+    function setView(view) {
+        // Обновляем data-view атрибут контейнера
+        reviewsContainer.setAttribute('data-view', view);
+        
+        // Обновляем активные кнопки
+        viewToggleBtns.forEach(btn => {
+            if (btn.dataset.view === view) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+}
+

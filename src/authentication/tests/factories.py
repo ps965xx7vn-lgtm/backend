@@ -8,16 +8,7 @@ import factory
 from django.contrib.auth import get_user_model
 from factory.django import DjangoModelFactory
 
-from authentication.models import (
-    Admin,
-    ExpertiseArea,
-    Manager,
-    Mentor,
-    Reviewer,
-    Role,
-    Student,
-    Support,
-)
+from authentication.models import ExpertiseArea, Manager, Mentor, Reviewer, Role, Student
 
 User = get_user_model()
 
@@ -63,7 +54,7 @@ class StaffUserFactory(UserFactory):
     """Фабрика для создания staff пользователей."""
 
     is_staff = True
-    role = factory.SubFactory(RoleFactory, name="admin")
+    role = factory.SubFactory(RoleFactory, name="manager")
 
 
 class SuperUserFactory(UserFactory):
@@ -71,7 +62,7 @@ class SuperUserFactory(UserFactory):
 
     is_staff = True
     is_superuser = True
-    role = factory.SubFactory(RoleFactory, name="admin")
+    role = factory.SubFactory(RoleFactory, name="manager")
 
 
 class ExpertiseAreaFactory(DjangoModelFactory):
@@ -130,27 +121,5 @@ class ManagerFactory(DjangoModelFactory):
         model = Manager
 
     user = factory.SubFactory(UserFactory, role__name="manager")
-    bio = factory.Faker("text", max_nb_chars=500)
-    is_active = True
-
-
-class AdminFactory(DjangoModelFactory):
-    """Фабрика для создания администраторов."""
-
-    class Meta:
-        model = Admin
-
-    user = factory.SubFactory(UserFactory, role__name="admin", is_staff=True)
-    bio = factory.Faker("text", max_nb_chars=500)
-    is_active = True
-
-
-class SupportFactory(DjangoModelFactory):
-    """Фабрика для создания поддержки."""
-
-    class Meta:
-        model = Support
-
-    user = factory.SubFactory(UserFactory, role__name="support")
     bio = factory.Faker("text", max_nb_chars=500)
     is_active = True

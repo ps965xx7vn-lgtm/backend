@@ -4,7 +4,7 @@
 Проверяет:
 - Создание пользователей
 - Роли и права доступа
-- Профили всех типов (Student, Reviewer, Mentor, Manager, Admin, Support)
+- Профили всех типов (Student, Reviewer, Mentor, Manager)
 - Методы моделей
 - Связи между моделями
 """
@@ -112,8 +112,6 @@ class TestRoleModel:
         assert "mentor" in role_names
         assert "reviewer" in role_names
         assert "manager" in role_names
-        assert "admin" in role_names
-        assert "support" in role_names
 
 
 @pytest.mark.django_db
@@ -314,70 +312,6 @@ class TestManagerModel:
         )
         manager = user.manager
         assert str(manager) == "Менеджер: manager@example.com"
-
-
-@pytest.mark.django_db
-class TestAdminModel:
-    """Тесты модели Admin."""
-
-    def test_create_admin(self, admin_role):
-        """Создание администратора через signals."""
-        user = User.objects.create_user(
-            email="newadmin@example.com", password="TestPass123!", role=admin_role
-        )
-        admin = user.admin
-
-        # Обновляем bio
-        admin.bio = "System admin"
-        admin.save()
-
-        assert admin.user == user
-        assert admin.bio == "System admin"
-        assert admin.is_active is True
-
-    def test_admin_str_method(self, admin_role):
-        """Тест __str__ метода."""
-        user = User.objects.create_user(
-            email="admin@example.com", password="TestPass123!", role=admin_role
-        )
-        admin = user.admin
-        assert str(admin) == "Админ: admin@example.com"
-
-    def test_admin_user_is_staff(self, admin_role):
-        """Админ должен иметь is_staff=True."""
-        user = User.objects.create_user(
-            email="admin2@example.com", password="TestPass123!", role=admin_role
-        )
-        admin = user.admin
-        assert admin.user.is_staff is True
-
-
-@pytest.mark.django_db
-class TestSupportModel:
-    """Тесты модели Support."""
-
-    def test_create_support(self, support_role):
-        """Создание поддержки через signals."""
-        user = User.objects.create_user(
-            email="newsupport@example.com", password="TestPass123!", role=support_role
-        )
-        support = user.support
-
-        # Обновляем bio
-        support.bio = "Support specialist"
-        support.save()
-
-        assert support.user == user
-        assert support.bio == "Support specialist"
-        assert support.is_active is True
-
-    def test_support_str_method(self, support_role):
-        """Тест __str__ метода."""
-        user = User.objects.create_user(
-            email="support@example.com", password="TestPass123!", role=support_role
-        )
-        support = user.support
-        assert str(support) == "Поддержка: support@example.com"
 
 
 @pytest.mark.django_db

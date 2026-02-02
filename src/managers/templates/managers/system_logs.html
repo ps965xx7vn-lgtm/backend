@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Системные логи" %} - Pyland{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260202-mobile-768">
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <!-- Пустой блок для отступа на мобильных -->
+        <div class="sidebar-spacer"></div>
+
+        <div class="dashboard-user-info">
+            <div class="dashboard-avatar">
+                {{ request.user.email|first|upper }}
+            </div>
+            <div class="dashboard-user-details">
+                <h3>{{ request.user.get_full_name|default:request.user.email }}</h3>
+                <p class="dashboard-user-role">{% trans "Менеджер" %}</p>
+            </div>
+        </div>
+
+        <nav class="dashboard-nav">
+            <ul class="dashboard-nav-list">
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'managers:dashboard' request.user.manager.id %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        {% trans "Главная" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'managers:feedback_list' request.user.manager.id %}" class="dashboard-nav-link">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                        </svg>
+                        {% trans "Обратная связь" %}
+                    </a>
+                </li>
+                <li class="dashboard-nav-item">
+                    <a href="{% url 'managers:system_logs' request.user.manager.id %}" class="dashboard-nav-link active">
+                        <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        {% trans "Системные логи" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Системные логи" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' request.user.manager.id %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Логи" %}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card info">
+                <div class="stat-header">
+                    <div class="stat-icon info">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ total_count }}</h3>
+                <p class="stat-label">{% trans "Всего записей" %}</p>
+            </div>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">{% trans "Системные логи" %}</h3>
+            </div>
+            <div class="chart-content">
+                {% if logs %}
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Тип" %}</th>
+                                    <th>{% trans "Дата и время" %}</th>
+                                    <th>{% trans "Пользователь" %}</th>
+                                    <th>{% trans "Действие" %}</th>
+                                    <th>{% trans "IP адрес" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                <tr>
+                                    <td>
+                                        {% if log.log_type == 'error' %}
+                                            <span class="badge badge-danger">⚠️ Error</span>
+                                        {% elif log.log_type == 'success' %}
+                                            <span class="badge badge-success">✓ Success</span>
+                                        {% else %}
+                                            <span class="badge badge-info">ℹ️ Info</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ log.created_at|date:"d.m.Y H:i:s" }}</td>
+                                    <td>
+                                        {% if log.user %}
+                                            {{ log.user.get_full_name|default:log.user.email }}
+                                        {% else %}
+                                            <span>—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ log.action }}</td>
+                                    <td>
+                                        {% if log.ip_address %}
+                                            <code>{{ log.ip_address }}</code>
+                                        {% else %}
+                                            <span>—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if logs.has_other_pages %}
+                    <div class="pagination">
+                        {% if logs.has_previous %}
+                            <a href="?page={{ logs.previous_page_number }}" class="pagination-btn">
+                                ← {% trans "Назад" %}
+                            </a>
+                        {% endif %}
+
+                        <span class="pagination-info">
+                            {% trans "Страница" %} {{ logs.number }} {% trans "из" %} {{ logs.paginator.num_pages }}
+                        </span>
+
+                        {% if logs.has_next %}
+                            <a href="?page={{ logs.next_page_number }}" class="pagination-btn">
+                                {% trans "Вперед" %} →
+                            </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h2>{% trans "Логов не найдено" %}</h2>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard-mobile.js' %}?v=20260202-mobile-768"></script>
+<script src="{% static 'js/managers/dashboard.js' %}"></script>
+{% endblock %}

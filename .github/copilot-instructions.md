@@ -43,13 +43,12 @@ The project uses a **modular app architecture** with clear separation of concern
 | `students/` | Student dashboard, courses progress | Dashboard views + caching |
 | `courses/` | Course/lesson/step structure | Hierarchical model |
 | `blog/` | Articles, comments, reactions | Full caching + nested comments |
-| `managers/` | Admin dashboard, feedback, logs | Rate limiting middleware |
+| `managers/` | Admin dashboard, feedback, logs | Own static files, no inline styles |
 | `reviewers/` | Review workflow for submissions | Review + Improvement models |
 | `certificates/` | Course completion certificates | Generated on finish |
 | `mentors/` | Mentor profiles, connections | Bridge reviewers & students |
 | `payments/` | Payment processing, purchases | Payment status tracking |
 | `notifications/` | Email/SMS/Telegram | Celery async handlers |
-| `support/` | Support tickets | Ticket tracking |
 
 **URL Routing** (`urls.py`):
 
@@ -105,7 +104,7 @@ in `schemas.py` per app.
 
 - Custom User extends `AbstractUser`, email is unique identifier
 - **Role System:** Each user has ONE role via ForeignKey (not M2M)
-  - Available roles: student, mentor, reviewer, manager, admin, support
+  - Available roles: student, mentor, reviewer, manager
   - Access: `user.role.name` or `user.role_name` property
   - Default role: 'student' (auto-assigned on registration)
 - **Student:** OneToOne extended profile in authentication.models.Student
@@ -601,11 +600,26 @@ class ArticleAdmin(admin.ModelAdmin):
 
 ### **Managers App**
 
-- **Dashboard:** Feedback management, system logs, platform statistics
-- **Models:** Feedback, SystemLog
-- **Rate Limiting:** 50 req/hour for operations
-- **Caching:** Statistics cached 5-10 minutes
-- **Logging:** All actions logged with timestamps, user, action type
+- **Purpose**: Admin dashboard for platform management
+- **Dashboard**: Feedback management, system logs, platform statistics
+- **Models**: Feedback, SystemLog, Newsletter (planned), UserActivityLog
+- **Architecture**:
+  - **Own static files**: `/static/managers/css/dashboard.css` + `/static/managers/js/dashboard.js`
+  - **No inline styles**: все стили в отдельном CSS файле
+  - **1 app = 1 control center**: нет зависимостей от других приложений
+  - **Component-based CSS**: .stat-card, .chart-card, .data-table, .badge, .btn
+- **Views**: dashboard, feedback_list, feedback_detail, feedback_delete, system_logs
+- **Forms**: FeedbackFilterForm (search, date_from, date_to, is_processed)
+- **Access**: @staff_member_required decorator
+- **Features**:
+  - User statistics (total, active, by roles, new this week/month)
+  - Content statistics (articles, courses, certificates, comments)
+  - Payment statistics (total, revenue, status breakdown)
+  - Feedback processing (view, filter, mark processed, add admin notes)
+  - System logs viewer (type, date, user, action, IP address)
+  - Responsive design with mobile sidebar
+- **Caching**: Statistics cached 5-10 minutes
+- **Logging**: All actions logged to SystemLog with user, timestamp, action type, IP
 
 ### **Payments App**
 
@@ -635,12 +649,6 @@ class ArticleAdmin(admin.ModelAdmin):
 - **Profile:** Mentor with expertise areas, available courses
 - **Connection:** Many-to-many between mentors and students
 - **Review Rights:** Mentors can review submissions in assigned courses
-
-### **Support App**
-
-- **Ticket System:** User creates support tickets
-- **Status:** open / in_progress / resolved / closed
-- **Assignment:** Auto-assigned or manually assigned to support team
 
 ---
 

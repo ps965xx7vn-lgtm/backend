@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Верификация сертификата" %} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/students/certificates-verify.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="verify-page">
+    <div class="container">
+        <div class="verify-container">
+            <div class="verify-card">
+                <div class="verify-header">
+                    <div class="verify-icon">🔍</div>
+                    <h1>{% trans "Верификация сертификата" %}</h1>
+                    <p>{% trans "Проверьте подлинность сертификата Pyland" %}</p>
+                </div>
+
+                <div class="verify-body">
+                    {% if not certificate %}
+                    <form method="get" action="{% url 'certificates:verify' %}" class="search-form">
+                        <div class="form-group">
+                            <label for="query" class="form-label">
+                                {% trans "Номер сертификата или код верификации" %}
+                            </label>
+                            <input
+                                type="text"
+                                name="query"
+                                id="query"
+                                class="form-control"
+                                placeholder="{% trans 'Например: CERT-20260126-0001 или ABC123XYZ' %}"
+                                value="{{ query }}"
+                                required
+                            >
+                        </div>
+                        <button type="submit" class="btn-verify">
+                            🔎 {% trans "Проверить сертификат" %}
+                        </button>
+                    </form>
+
+                    {% if query %}
+                    <div class="result-section result-invalid">
+                        <div class="result-icon">❌</div>
+                        <div class="result-title">{% trans "Сертификат не найден" %}</div>
+                        <p class="result-not-found-text">
+                            {% trans "Сертификат с указанным номером или кодом не найден в нашей базе данных. Проверьте правильность введенных данных." %}
+                        </p>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if certificate %}
+                    <div class="result-section {% if certificate.is_valid %}result-valid{% else %}result-invalid{% endif %}">
+                        <div class="result-icon">
+                            {% if certificate.is_valid %}✅{% else %}⚠️{% endif %}
+                        </div>
+                        <div class="result-title">
+                            {% if certificate.is_valid %}
+                                {% trans "Сертификат подлинный и действителен" %}
+                            {% else %}
+                                {% trans "Сертификат отозван" %}
+                            {% endif %}
+                        </div>
+
+                        <div class="certificate-info">
+                            <div class="info-row">
+                                <span class="info-label">📜 {% trans "Номер сертификата:" %}</span>
+                                <span class="info-value">{{ certificate.certificate_number }}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">🔐 {% trans "Код верификации:" %}</span>
+                                <span class="info-value">{{ certificate.verification_code }}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">👤 {% trans "Студент:" %}</span>
+                                <span class="info-value">
+                                    {{ certificate.student.user.get_full_name|default:certificate.student.user.email }}
+                                </span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">📚 {% trans "Курс:" %}</span>
+                                <span class="info-value">{{ certificate.course.title }}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">📅 {% trans "Дата выдачи:" %}</span>
+                                <span class="info-value">{{ certificate.completion_date|date:"d.m.Y" }}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">📖 {% trans "Уроков завершено:" %}</span>
+                                <span class="info-value">{{ certificate.lessons_completed }} / {{ certificate.total_lessons }}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">✅ {% trans "Заданий одобрено:" %}</span>
+                                <span class="info-value">{{ certificate.assignments_approved }}</span>
+                            </div>
+
+                            {% if certificate.final_grade %}
+                            <div class="info-row">
+                                <span class="info-label">🎯 {% trans "Итоговая оценка:" %}</span>
+                                <span class="info-value">{{ certificate.final_grade }}%</span>
+                            </div>
+                            {% endif %}
+
+                            {% if not certificate.is_valid and certificate.revoke_reason %}
+                            <div class="info-row info-row-revoke-reason">
+                                <span class="info-label info-label-revoke">
+                                    ⚠️ {% trans "Причина отзыва:" %}
+                                </span>
+                                <span class="info-value info-value-revoke">
+                                    {{ certificate.revoke_reason }}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% if certificate.is_valid %}
+                        <p class="valid-certificate-footer">
+                            ✓ {% trans "Этот сертификат был выдан официально платформой Pyland и подтверждает успешное завершение курса." %}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="help-text">
+                        <p><strong>{% trans "Как это работает?" %}</strong></p>
+                        <p>{% trans "Каждый сертификат Pyland имеет уникальный номер и код верификации. Вы можете использовать любой из них для проверки подлинности." %}</p>
+                        <p class="help-text-muted">
+                            {% trans "Если у вас возникли вопросы, свяжитесь с нашей" %}
+                            <a href="{% url 'support:create_ticket' %}">{% trans "службой поддержки" %}</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/students/dashboard.js' %}"></script>
+<script src="{% static 'js/students/dashboard-mobile.js' %}"></script>
+<script src="{% static 'js/students/code-copy.js' %}"></script>
+{% endblock %}

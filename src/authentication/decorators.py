@@ -60,7 +60,7 @@ def has_role(user, role_name: str) -> bool:
     if not user or not user.is_authenticated:
         return False
 
-    # Superuser имеет все роли
+    # Superuser имеет все роли (для Django admin)
     if user.is_superuser:
         return True
 
@@ -559,12 +559,10 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
     Например, общая точка входа '/dashboard/' может перенаправить на соответствующий dashboard.
 
     Поддерживаемые роли и их маршруты:
-    - admin → managers:dashboard (полный доступ к админке)
     - manager → managers:dashboard (управление платформой)
     - mentor → reviewers:dashboard (проверка работ + менторство)
     - reviewer → reviewers:dashboard (проверка работ)
     - student → students:dashboard (личный кабинет студента)
-    - support → managers:dashboard (поддержка пользователей)
     - is_staff → managers:dashboard (персонал платформы)
     - Без роли → core:home (главная страница)
     - Не авторизован → authentication:login
@@ -590,20 +588,35 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
 
         role = get_user_role(request.user)
 
-        # Роль: admin - полный доступ через managers dashboard
-        if role == "admin":
-            logger.info(f"Redirecting {request.user.email} (admin) to managers dashboard")
-            return redirect(reverse("managers:dashboard"))
-
         # Роль: manager - управление платформой
-        elif role == "manager":
-            logger.info(f"Redirecting {request.user.email} (manager) to managers dashboard")
-            return redirect(reverse("managers:dashboard"))
+        if role == "manager":
+            try:
+                manager = request.user.manager
+                logger.info(f"Redirecting {request.user.email} (manager) to managers dashboard")
+                return redirect(reverse("managers:dashboard", kwargs={"user_uuid": manager.id}))
+            except Exception as e:
+                logger.error(f"Error getting manager profile for {request.user.email}: {e}")
+                return redirect(reverse("core:home"))
 
-        # Роль: mentor - проверка работ и менторство
+        # Роль: mentor - проверка работ и менторство (пока через managers dashboard)
         elif role == "mentor":
-            logger.info(f"Redirecting {request.user.email} (mentor) to reviewers dashboard")
-            return redirect(reverse("managers:dashboard"))
+            try:
+                # У mentor может быть либо reviewer, либо manager профиль
+                if hasattr(request.user, "reviewer"):
+                    reviewer = request.user.reviewer
+                    logger.info(f"Redirecting {request.user.email} (mentor) to reviewers dashboard")
+                    return redirect(
+                        reverse("reviewers:dashboard", kwargs={"user_uuid": reviewer.id})
+                    )
+                elif hasattr(request.user, "manager"):
+                    manager = request.user.manager
+                    logger.info(f"Redirecting {request.user.email} (mentor) to managers dashboard")
+                    return redirect(reverse("managers:dashboard", kwargs={"user_uuid": manager.id}))
+                else:
+                    return redirect(reverse("core:home"))
+            except Exception as e:
+                logger.error(f"Error getting mentor profile for {request.user.email}: {e}")
+                return redirect(reverse("core:home"))
 
         # Роль: reviewer - проверка работ студентов
         elif role == "reviewer":
@@ -615,11 +628,6 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
                 logger.error(f"Error getting reviewer profile for {request.user.email}: {e}")
                 return redirect(reverse("core:home"))
 
-        # Роль: support - поддержка через managers dashboard
-        elif role == "support":
-            logger.info(f"Redirecting {request.user.email} (support) to managers dashboard")
-            return redirect(reverse("managers:dashboard"))
-
         # Роль: student - личный кабинет
         elif role == "student":
             try:
@@ -630,10 +638,27 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
                 logger.error(f"Error getting student profile for {request.user.email}: {e}")
                 return redirect(reverse("core:home"))
 
-        # is_staff без роли - на managers dashboard
+        # is_staff без роли - на managers dashboard (если есть профиль)
         elif request.user.is_staff:
-            logger.info(f"Redirecting staff user {request.user.email} to managers dashboard")
-            return redirect(reverse("managers:dashboard"))
+            try:
+                # Ищем любой профиль с dashboard доступом
+                if hasattr(request.user, "manager"):
+                    manager = request.user.manager
+                    logger.info(
+                        f"Redirecting staff user {request.user.email} to managers dashboard"
+                    )
+                    return redirect(reverse("managers:dashboard", kwargs={"user_uuid": manager.id}))
+                elif hasattr(request.user, "admin"):
+                    admin = request.user.admin
+                    logger.info(
+                        f"Redirecting staff user {request.user.email} to managers dashboard"
+                    )
+                    return redirect(reverse("managers:dashboard", kwargs={"user_uuid": admin.id}))
+                else:
+                    return redirect(reverse("core:home"))
+            except Exception as e:
+                logger.error(f"Error getting staff profile for {request.user.email}: {e}")
+                return redirect(reverse("core:home"))
 
         # Нет роли или неизвестная роль - на главную
         else:
@@ -643,3 +668,70 @@ def redirect_to_role_dashboard(view_func: Callable) -> Callable:
             return redirect(reverse("core:home"))
 
     return wrapper
+
+
+# ============================================================================
+# API-SPECIFIC DECORATORS - Декораторы для API endpoints
+# ============================================================================
+
+
+def require_role_api(role_names: list[str]) -> Callable:
+    """
+    Декоратор для проверки роли в API endpoints (Django Ninja).
+
+    Всегда возвращает JSON ответы (HttpError).
+    Использует аутентификацию через JWT (уже настроено в router).
+
+    Args:
+        role_names: Список разрешенных ролей
+
+    Returns:
+        Callable: Декорированная функция
+
+    Raises:
+        HttpError: 403 если роль не соответствует
+
+    Example:
+        >>> from ninja import Router
+        >>> from ninja_jwt.authentication import JWTAuth
+        >>>
+        >>> router = Router(auth=JWTAuth())
+        >>>
+        >>> @router.get("/manager-only/")
+        >>> @require_role_api(['manager'])
+        >>> def manager_endpoint(request):
+        >>>     return {"status": "ok"}
+    """
+    from ninja.errors import HttpError
+
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(request, *args, **kwargs):
+            # Проверка аутентификации (JWT уже проверен на уровне router)
+            if not request.user.is_authenticated:
+                logger.warning(f"Unauthorized API access attempt to {func.__name__}")
+                raise HttpError(401, "Authentication required")
+
+            # Проверка роли
+            user_role = get_user_role(request.user)
+            has_required_role = any(has_role(request.user, role) for role in role_names)
+
+            if not has_required_role:
+                logger.warning(
+                    f"User {request.user.email} (role: {user_role}) denied API access to "
+                    f"{func.__name__}: required roles {role_names}"
+                )
+                raise HttpError(
+                    403,
+                    f"Access denied. Required roles: {', '.join(role_names)}. Your role: {user_role or 'none'}",
+                )
+
+            logger.debug(
+                f"User {request.user.email} (role: {user_role}) accessed API {func.__name__}"
+            )
+
+            return func(request, *args, **kwargs)
+
+        return wrapper
+
+    return decorator

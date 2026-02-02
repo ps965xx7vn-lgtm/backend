@@ -64,6 +64,9 @@ urlpatterns += i18n_patterns(
     path("payments/", include("payments.urls")),
     path("notifications/", include("notifications.urls")),
     path("managers/", include("managers.urls")),
+    path(
+        "", include("certificates.urls")
+    ),  # Certificates (includes both /students/ and /certificates/ routes)
     prefix_default_language=True,
 )
 

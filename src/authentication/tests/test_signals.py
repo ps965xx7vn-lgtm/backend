@@ -59,27 +59,6 @@ class TestUserProfileCreationSignals:
         assert user.manager is not None
         assert user.manager.user == user
 
-    def test_admin_profile_created_on_user_creation(self, admin_role):
-        """При создании пользователя с ролью admin создается профиль Admin и is_staff=True."""
-        user = User.objects.create_user(
-            email="admin@example.com", password="TestPass123!", role=admin_role
-        )
-
-        assert hasattr(user, "admin")
-        assert user.admin is not None
-        assert user.admin.user == user
-        assert user.is_staff is True
-
-    def test_support_profile_created_on_user_creation(self, support_role):
-        """При создании пользователя с ролью support создается профиль Support."""
-        user = User.objects.create_user(
-            email="support@example.com", password="TestPass123!", role=support_role
-        )
-
-        assert hasattr(user, "support")
-        assert user.support is not None
-        assert user.support.user == user
-
     def test_no_profile_created_without_role(self):
         """Без роли создается student профиль по умолчанию."""
         user = User.objects.create_user(email="norole@example.com", password="TestPass123!")

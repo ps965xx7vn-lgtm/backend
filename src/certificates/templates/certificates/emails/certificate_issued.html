@@ -1,0 +1,216 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Поздравляем! Вы получили сертификат" %}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #4CAF50;
+            margin: 0;
+            font-size: 28px;
+        }
+        .trophy {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .certificate-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .certificate-box h2 {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+        }
+        .certificate-number {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+        }
+        .stats {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .stats h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        .stat-label {
+            font-weight: 500;
+            color: #666;
+        }
+        .stat-value {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px 5px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button-secondary {
+            background-color: #2196F3;
+        }
+        .button-secondary:hover {
+            background-color: #0b7dda;
+        }
+        .buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 14px;
+        }
+        .achievement-message {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="trophy">🏆</div>
+            <h1>{% trans "Поздравляем с завершением курса!" %}</h1>
+        </div>
+
+        <div class="content">
+            <p>{% trans "Здравствуйте," %} <strong>{{ student_name }}</strong>!</p>
+
+            <p>{% trans "Мы рады сообщить, что вы успешно завершили курс и получили сертификат!" %}</p>
+
+            <div class="certificate-box">
+                <h2>{{ course_title }}</h2>
+                <div class="certificate-number">
+                    {% trans "Сертификат №" %} {{ certificate_number }}
+                </div>
+                <p style="margin: 10px 0;">{% trans "Дата завершения:" %} {{ completion_date|date:"d.m.Y" }}</p>
+            </div>
+
+            <div class="achievement-message">
+                <strong>🎉 {% trans "Отличная работа!" %}</strong><br>
+                {% trans "Вы проявили упорство и целеустремленность, пройдя весь путь от начала до конца. Это большое достижение!" %}
+            </div>
+
+            <div class="stats">
+                <h3>📊 {% trans "Ваши результаты:" %}</h3>
+
+                <div class="stat-item">
+                    <span class="stat-label">{% trans "Завершено уроков:" %}</span>
+                    <span class="stat-value">{{ lessons_completed }} / {{ total_lessons }}</span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="stat-label">{% trans "Отправлено заданий:" %}</span>
+                    <span class="stat-value">{{ assignments_submitted }}</span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="stat-label">{% trans "Одобрено заданий:" %}</span>
+                    <span class="stat-value">{{ assignments_approved }}</span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="stat-label">{% trans "Получено отзывов:" %}</span>
+                    <span class="stat-value">{{ reviews_received }}</span>
+                </div>
+
+                {% if total_time_spent %}
+                <div class="stat-item">
+                    <span class="stat-label">{% trans "Время обучения:" %}</span>
+                    <span class="stat-value">{{ total_time_spent|floatformat:1 }} {% trans "часов" %}</span>
+                </div>
+                {% endif %}
+
+                {% if final_grade %}
+                <div class="stat-item">
+                    <span class="stat-label">{% trans "Итоговая оценка:" %}</span>
+                    <span class="stat-value">{{ final_grade }}%</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="buttons">
+                <a href="{{ certificate_url }}" class="button">
+                    📄 {% trans "Просмотреть сертификат" %}
+                </a>
+                <a href="{{ download_url }}" class="button button-secondary">
+                    ⬇️ {% trans "Скачать PDF" %}
+                </a>
+            </div>
+
+            <p style="text-align: center; color: #666; font-size: 14px;">
+                {% trans "Вы можете поделиться своим сертификатом с работодателями или добавить его в портфолио." %}
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>{% trans "С уважением," %}<br><strong>{% trans "Команда Pyland" %}</strong></p>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">
+                {% trans "Это автоматическое уведомление. Пожалуйста, не отвечайте на это письмо." %}<br>
+                {% trans "Если у вас есть вопросы, свяжитесь с нашей" %}
+                <a href="{{ support_url }}" style="color: #2196F3;">{% trans "службой поддержки" %}</a>.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

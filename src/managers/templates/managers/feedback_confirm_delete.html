@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Подтверждение удаления" %} - PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260202-complete">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+
+        <nav class="dashboard-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="{% url 'managers:dashboard' request.user.manager.id %}" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>{% trans "Панель управления" %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'managers:feedback_list' request.user.manager.id %}" class="nav-link active">
+                        <i class="fas fa-comments"></i>
+                        <span>{% trans "Обратная связь" %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'managers:system_logs' request.user.manager.id %}" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>{% trans "Системные логи" %}</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>{% trans "Подтверждение удаления" %}</h1>
+            <p>{% trans "Вы уверены, что хотите удалить это обращение?" %}</p>
+        </div>
+
+        <div class="content-card">
+            <div class="confirm-delete">
+                <div class="feedback-summary">
+                    <h2>{% trans "Информация об обращении" %}</h2>
+                    <dl class="info-list">
+                        <dt>{% trans "ID:" %}</dt>
+                        <dd>#{{ feedback.id }}</dd>
+
+                        <dt>{% trans "Имя:" %}</dt>
+                        <dd>{{ feedback.first_name }}</dd>
+
+                        <dt>{% trans "Email:" %}</dt>
+                        <dd>{{ feedback.email }}</dd>
+
+                        <dt>{% trans "Телефон:" %}</dt>
+                        <dd>{{ feedback.phone_number|default:"—" }}</dd>
+
+                        <dt>{% trans "Дата:" %}</dt>
+                        <dd>{{ feedback.registered_at|date:"d.m.Y H:i" }}</dd>
+
+                        <dt>{% trans "Сообщение:" %}</dt>
+                        <dd>{{ feedback.message|truncatewords:50 }}</dd>
+                    </dl>
+                </div>
+
+                <div class="warning-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>{% trans "Это действие необратимо. Обращение будет удалено из базы данных навсегда." %}</p>
+                </div>
+
+                <form method="post" class="delete-form">
+                    {% csrf_token %}
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i>
+                            {% trans "Да, удалить" %}
+                        </button>
+                        <a href="{% url 'managers:feedback_detail' request.user.manager.id feedback.id %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            {% trans "Отмена" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard.js' %}"></script>
+{% endblock %}
+
+<style>
+.confirm-delete {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.feedback-summary {
+    background: var(--bg-color, #f9fafb);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.feedback-summary h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--text-color, #111827);
+}
+
+.info-list {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 0.75rem;
+}
+
+.info-list dt {
+    font-weight: 600;
+    color: var(--text-secondary, #6b7280);
+}
+
+.info-list dd {
+    color: var(--text-color, #111827);
+    margin: 0;
+}
+
+.warning-message {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.warning-message i {
+    color: #92400e;
+    font-size: 1.5rem;
+}
+
+.warning-message p {
+    margin: 0;
+    color: #92400e;
+    font-weight: 500;
+}
+
+.delete-form {
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #991b1b;
+}
+
+[data-theme="dark"] .feedback-summary {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .warning-message {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+[data-theme="dark"] .warning-message i,
+[data-theme="dark"] .warning-message p {
+    color: #fbbf24;
+}
+
+@media (max-width: 768px) {
+    .info-list {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .info-list dt {
+        margin-top: 0.5rem;
+    }
+
+    .button-group {
+        flex-direction: column-reverse;
+    }
+
+    .button-group .btn {
+        width: 100%;
+    }
+}
+</style>

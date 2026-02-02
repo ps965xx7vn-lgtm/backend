@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Сертификат" %} {{ certificate.certificate_number }} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/students/certificates-detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="certificate-detail-page">
+    <div class="container">
+        <div class="certificate-container">
+            <div class="certificate-banner">
+                <div class="certificate-main-icon">📜</div>
+                <h1 class="certificate-main-title">{% trans "Сертификат об окончании курса" %}</h1>
+                <p class="certificate-subtitle">{{ certificate.course.title }}</p>
+                <div class="certificate-number-large">{{ certificate.certificate_number }}</div>
+            </div>
+
+            <div class="certificate-content">
+                <div class="status-section">
+                    {% if certificate.is_valid %}
+                        <span class="status-badge-large status-valid-large">
+                            ✓ {% trans "Сертификат действителен" %}
+                        </span>
+                        <p class="status-valid-text">
+                            {% trans "Выдан" %} {{ certificate.completion_date|date:"d F Y г." }}
+                        </p>
+                    {% else %}
+                        <span class="status-badge-large status-revoked-large">
+                            ✗ {% trans "Сертификат отозван" %}
+                        </span>
+                        {% if certificate.revoke_reason %}
+                        <p class="status-revoked-text">
+                            <strong>{% trans "Причина:" %}</strong> {{ certificate.revoke_reason }}
+                        </p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-label">👤 {% trans "Студент" %}</div>
+                        <div class="info-value">{{ certificate.student.user.get_full_name|default:certificate.student.user.email }}</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-label">📚 {% trans "Курс" %}</div>
+                        <div class="info-value">{{ certificate.course.title }}</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-label">📅 {% trans "Дата завершения" %}</div>
+                        <div class="info-value">{{ certificate.completion_date|date:"d.m.Y" }}</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-label">🔐 {% trans "Код верификации" %}</div>
+                        <div class="info-value info-value-code">
+                            {{ certificate.verification_code }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h3>📊 {% trans "Подробная статистика прохождения" %}</h3>
+                    <div class="stats-detailed">
+                        <div class="stat-box">
+                            <div class="stat-box-icon">📖</div>
+                            <div class="stat-box-value">{{ certificate.lessons_completed }}/{{ certificate.total_lessons }}</div>
+                            <div class="stat-box-label">{% trans "Завершено уроков" %}</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-box-icon">📝</div>
+                            <div class="stat-box-value">{{ certificate.assignments_submitted }}</div>
+                            <div class="stat-box-label">{% trans "Отправлено заданий" %}</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-box-icon">✅</div>
+                            <div class="stat-box-value">{{ certificate.assignments_approved }}</div>
+                            <div class="stat-box-label">{% trans "Одобрено заданий" %}</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-box-icon">💬</div>
+                            <div class="stat-box-value">{{ certificate.reviews_received }}</div>
+                            <div class="stat-box-label">{% trans "Получено отзывов" %}</div>
+                        </div>
+
+                        {% if certificate.total_time_spent %}
+                        <div class="stat-box">
+                            <div class="stat-box-icon">⏱️</div>
+                            <div class="stat-box-value">{{ certificate.total_time_spent|floatformat:1 }}</div>
+                            <div class="stat-box-label">{% trans "Часов обучения" %}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if certificate.final_grade %}
+                        <div class="stat-box">
+                            <div class="stat-box-icon">🎯</div>
+                            <div class="stat-box-value">{{ certificate.final_grade }}%</div>
+                            <div class="stat-box-label">{% trans "Итоговая оценка" %}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    {% if certificate.pdf_file %}
+                    <a href="{% url 'certificates:download' certificate.pk %}" class="btn-action btn-success-action">
+                        <span>⬇️</span>
+                        <span>{% trans "Скачать PDF" %}</span>
+                    </a>
+                    {% endif %}
+
+                    <a href="{% url 'certificates:verify_by_code' certificate.verification_code %}"
+                       class="btn-action btn-primary-action" target="_blank">
+                        <span>🔍</span>
+                        <span>{% trans "Проверить подлинность" %}</span>
+                    </a>
+
+                    <a href="{% url 'certificates:list' %}" class="btn-action btn-secondary-action">
+                        <span>◀️</span>
+                        <span>{% trans "Все сертификаты" %}</span>
+                    </a>
+                </div>
+
+                <div class="verification-info">
+                    <h4>🔐 {% trans "Верификация сертификата" %}</h4>
+                    <p>{% trans "Работодатели могут проверить подлинность этого сертификата, используя код верификации или номер сертификата на публичной странице." %}</p>
+                    <div class="verification-code">{{ certificate.verification_code }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

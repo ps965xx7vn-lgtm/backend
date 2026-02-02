@@ -66,8 +66,6 @@ class TestCompleteRegistrationFlow:
             ("mentor", "mentor"),
             ("reviewer", "reviewer"),
             ("manager", "manager"),
-            ("admin", "admin"),
-            ("support", "support"),
         ]
 
         for idx, (role_name, profile_attr) in enumerate(roles_to_test):

@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 
-from .models import Admin, ExpertiseArea, Manager, Mentor, Reviewer, Role, Student, Support, User
+from .models import ExpertiseArea, Manager, Mentor, Reviewer, Role, Student, User
 
 
 @admin.register(User)
@@ -124,12 +124,10 @@ class CustomUserAdmin(BaseUserAdmin):
         if obj.role:
             role_colors = {
                 "unassigned": "#95a5a6",  # Серый
-                "admin": "#e74c3c",  # Красный
                 "manager": "#3498db",  # Синий
                 "reviewer": "#9b59b6",  # Фиолетовый
                 "mentor": "#2ecc71",  # Зеленый
                 "student": "#f39c12",  # Оранжевый
-                "support": "#1abc9c",  # Бирюзовый
             }
             color = role_colors.get(obj.role.name, "#34495e")
             return format_html(
@@ -184,12 +182,10 @@ class RoleAdmin(admin.ModelAdmin):
         """Красивое отображение названия роли"""
         role_colors = {
             "unassigned": "#95a5a6",  # Серый
-            "admin": "#e74c3c",  # Красный
             "manager": "#3498db",  # Синий
             "reviewer": "#9b59b6",  # Фиолетовый
             "mentor": "#2ecc71",  # Зеленый
             "student": "#f39c12",  # Оранжевый
-            "support": "#1abc9c",  # Бирюзовый
         }
         color = role_colors.get(obj.name, "#34495e")
         return format_html(
@@ -236,8 +232,6 @@ class RoleAdmin(admin.ModelAdmin):
             "reviewer": "reviewer",
             "mentor": "mentor",
             "manager": "manager",
-            "admin": "admin",
-            "support": "support",
         }
 
         model_name = model_map.get(obj.name)
@@ -453,52 +447,6 @@ class MentorAdmin(admin.ModelAdmin):
 @admin.register(Manager)
 class ManagerAdmin(admin.ModelAdmin):
     """Админка для Manager"""
-
-    list_display = ["user_email", "is_active", "registered_at"]
-    list_filter = ["is_active", "registered_at"]
-    search_fields = ["user__email", "user__first_name", "user__last_name", "bio"]
-    readonly_fields = ["registered_at", "updated_at"]
-
-    fieldsets = (
-        ("Основная информация", {"fields": ("user", "bio")}),
-        ("Статус", {"fields": ("is_active",)}),
-        ("Метаданные", {"fields": ("registered_at", "updated_at"), "classes": ("collapse",)}),
-    )
-
-    @admin.display(
-        description="Email",
-        ordering="user__email",
-    )
-    def user_email(self, obj):
-        return obj.user.email
-
-
-@admin.register(Admin)
-class AdminAdmin(admin.ModelAdmin):
-    """Админка для Admin"""
-
-    list_display = ["user_email", "is_active", "registered_at"]
-    list_filter = ["is_active", "registered_at"]
-    search_fields = ["user__email", "user__first_name", "user__last_name", "bio"]
-    readonly_fields = ["registered_at", "updated_at"]
-
-    fieldsets = (
-        ("Основная информация", {"fields": ("user", "bio")}),
-        ("Статус", {"fields": ("is_active",)}),
-        ("Метаданные", {"fields": ("registered_at", "updated_at"), "classes": ("collapse",)}),
-    )
-
-    @admin.display(
-        description="Email",
-        ordering="user__email",
-    )
-    def user_email(self, obj):
-        return obj.user.email
-
-
-@admin.register(Support)
-class SupportAdmin(admin.ModelAdmin):
-    """Админка для Support"""
 
     list_display = ["user_email", "is_active", "registered_at"]
     list_filter = ["is_active", "registered_at"]

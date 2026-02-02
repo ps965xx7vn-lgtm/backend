@@ -1,0 +1,305 @@
+/* Certificates Detail Page Styles */
+
+.certificate-detail-page {
+    min-height: calc(100vh - 200px);
+    padding: 40px 0;
+}
+
+.certificate-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.certificate-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 50px 40px;
+    text-align: center;
+    position: relative;
+}
+
+.certificate-banner::before {
+    content: '🏆';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 60px;
+    opacity: 0.3;
+}
+
+.certificate-banner::after {
+    content: '🎓';
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 60px;
+    opacity: 0.3;
+}
+
+.certificate-main-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.certificate-main-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.certificate-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.certificate-number-large {
+    background: rgba(255,255,255,0.2);
+    padding: 15px 30px;
+    border-radius: 10px;
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.certificate-content {
+    padding: 40px;
+}
+
+.status-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.status-badge-large {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.status-valid-large {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-revoked-large {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* FIX для inline стилей - добавлены классы */
+.status-valid-text {
+    color: #6c757d;
+    margin-top: 10px;
+}
+
+.status-revoked-text {
+    color: #721c24;
+    margin-top: 10px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.info-card {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+.info-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* FIX для inline стилей - verification code */
+.info-value-code {
+    font-size: 1rem;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.stats-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.stats-section h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.stats-detailed {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.stat-box-icon {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.stat-box-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.stat-box-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-action {
+    flex: 1;
+    padding: 18px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-primary-action {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary-action:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-success-action {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success-action:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40,167,69,0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary-action {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary-action:hover {
+    background: #545b62;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108,117,125,0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.verification-info {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.verification-info h4 {
+    color: #856404;
+    margin-bottom: 10px;
+}
+
+.verification-info p {
+    color: #856404;
+    margin: 0;
+}
+
+.verification-code {
+    background: white;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .certificate-banner {
+        padding: 40px 20px;
+    }
+
+    .certificate-main-title {
+        font-size: 1.8rem;
+    }
+
+    .certificate-content {
+        padding: 25px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-detailed {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}

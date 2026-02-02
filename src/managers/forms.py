@@ -1,27 +1,17 @@
 """
-Manager Forms Module - Django формы для административной панели.
+Manager Forms Module - Django формы для административной панели менеджеров.
 
 Этот модуль предоставляет формы для работы с обратной связью
-и фильтрации данных в административном интерфейсе.
+и фильтрации данных в интерфейсе менеджера.
 
 Формы:
-    - FeedbackForm: Форма создания/редактирования обратной связи
-    - FeedbackFilterForm: Форма фильтрации списка обращений
+    - FeedbackFilterForm: Форма фильтрации списка обращений с расширенными опциями
 
 Особенности:
-    - Кастомная валидация полей (телефон, email, сообщение)
-    - Кастомные виджеты для улучшения UX
-    - Валидация на стороне сервера
+    - Кастомная валидация дат
+    - Поддержка фильтрации по теме обращения
+    - Удобные виджеты для дат
     - Type hints для всех методов
-
-Валидация:
-    - Телефон: должен начинаться с +
-    - Email: стандартная валидация Django
-    - Сообщение: минимум 10 символов
-    - Имя: минимум 2 символа
-
-Примечание:
-    Используется в Django admin и в manager dashboard views.
 
 Автор: Pyland Team
 Дата: 2025
@@ -167,39 +157,26 @@ class FeedbackFilterForm(forms.Form):
     """
     Форма для фильтрации списка обращений обратной связи.
 
-    Позволяет администраторам фильтровать обращения по тексту
-    и диапазону дат для удобного поиска и анализа.
+    Позволяет менеджерам фильтровать обращения по тексту, датам,
+    статусу обработки и теме обращения.
 
     Поля:
-        - search: Текстовый поиск по имени, email, теме, сообщению
+        - search: Текстовый поиск по имени, email, телефону, сообщению
         - date_from: Дата начала периода (необязательное)
         - date_to: Дата окончания периода (необязательное)
-
-    Виджеты:
-        - search: TextInput с placeholder
-        - date_from: DateInput с type='date'
-        - date_to: DateInput с type='date'
+        - is_processed: Статус обработки (необязательное)
+        - topic: Тема обращения (необязательное)
 
     Example:
-        >>> # В view функции
         >>> filter_form = FeedbackFilterForm(request.GET)
-        >>> feedbacks = Feedback.objects.all()
-        >>>
         >>> if filter_form.is_valid():
+        >>>     feedbacks = Feedback.objects.all()
         >>>     search = filter_form.cleaned_data.get('search')
-        >>>     date_from = filter_form.cleaned_data.get('date_from')
-        >>>     date_to = filter_form.cleaned_data.get('date_to')
-        >>>
         >>>     if search:
         >>>         feedbacks = feedbacks.filter(
-        >>>             Q(name__icontains=search) |
-        >>>             Q(email__icontains=search) |
-        >>>             Q(subject__icontains=search)
+        >>>             Q(first_name__icontains=search) |
+        >>>             Q(email__icontains=search)
         >>>         )
-        >>>     if date_from:
-        >>>         feedbacks = feedbacks.filter(registered_at__gte=date_from)
-        >>>     if date_to:
-        >>>         feedbacks = feedbacks.filter(registered_at__lte=date_to)
     """
 
     search = forms.CharField(
@@ -208,7 +185,7 @@ class FeedbackFilterForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Поиск по имени, email, теме...",
+                "placeholder": "Поиск по имени, email, телефону, сообщению...",
             }
         ),
     )
@@ -224,3 +201,44 @@ class FeedbackFilterForm(forms.Form):
         label="Дата до",
         widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
     )
+
+    is_processed = forms.NullBooleanField(
+        required=False,
+        label="Статус обработки",
+        widget=forms.Select(
+            choices=[
+                ("", "Все"),
+                ("true", "Обработанные"),
+                ("false", "Необработанные"),
+            ],
+            attrs={"class": "form-control"},
+        ),
+    )
+
+    topic = forms.ChoiceField(
+        required=False,
+        label="Тема",
+        choices=[("", "Все")] + Feedback.TOPIC_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    def clean(self):
+        """
+        Валидирует корректность диапазона дат.
+
+        Проверяет, что date_from <= date_to, если оба поля заполнены.
+
+        Returns:
+            dict: Очищенные данные формы
+
+        Raises:
+            forms.ValidationError: Если date_from > date_to
+        """
+        cleaned_data = super().clean()
+        date_from = cleaned_data.get("date_from")
+        date_to = cleaned_data.get("date_to")
+
+        if date_from and date_to and date_from > date_to:
+            raise forms.ValidationError("Дата начала не может быть позже даты окончания")
+
+        return cleaned_data

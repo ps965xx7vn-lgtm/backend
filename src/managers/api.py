@@ -1,8 +1,8 @@
 """
 Manager API Router Module - REST API для административных функций платформы.
 
-Этот модуль содержит приватные (admin-only) эндпоинты для управления платформой.
-Все эндпоинты требуют прав администратора (staff_member_required).
+Этот модуль содержит приватные (manager-only) эндпоинты для управления платформой.
+Все эндпоинты требуют роли менеджера.
 
 API Эндпоинты:
     GET /api/managers/feedback/ - Список всех сообщений обратной связи (с пагинацией)
@@ -11,26 +11,10 @@ API Эндпоинты:
     GET /api/managers/feedback/stats/ - Статистика по обратной связи
 
 Особенности:
-    - Все эндпоинты требуют staff права (@staff_member_required)
-    - Полная валидация данных через Pydantic схемы (schemas.py)
+    - Требуется роль 'manager' для доступа
+    - Полная валидация данных через Pydantic схемы
     - Логирование всех административных действий
-    - Кеширование статистики (cache_utils.py)
     - Автоматическая документация в Swagger UI (/api/docs)
-    - Type hints для всех параметров и возвращаемых значений
-
-Архитектура:
-    - Request/Response модели в schemas.py
-    - Все ответы проходят Pydantic валидацию
-    - managers/models.py - модель Feedback используется в core
-    - Разделение ответственности: core создает, manager управляет
-
-Схемы (Pydantic):
-    Output: FeedbackOut, FeedbackListOut, FeedbackStatsOut, FeedbackDeleteResponse
-    Error: ErrorResponse
-
-Примечание:
-    Создание feedback происходит через core/api.py (публичный endpoint).
-    Manager API предназначен только для просмотра и управления.
 
 Автор: Pyland Team
 Дата: 2025
@@ -41,11 +25,12 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timedelta
 
-from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import HttpRequest
 from ninja import Router
+
+from authentication.decorators import require_role_api
 
 from .models import Feedback
 from .schemas import (
@@ -58,8 +43,8 @@ from .schemas import (
 
 logger = logging.getLogger(__name__)
 
-# Create router
-router = Router(tags=["Manager"])
+# Create router (auth handled at API level)
+router = Router(tags=["Managers"])
 
 # ============================================================================
 # FEEDBACK MANAGEMENT - Управление обратной связью
@@ -70,19 +55,19 @@ router = Router(tags=["Manager"])
     "/feedback/",
     response={200: FeedbackListOut, 403: ErrorResponse, 500: ErrorResponse},
     summary="Список всех сообщений обратной связи",
-    description="Получить пагинированный список всех сообщений обратной связи (только для администраторов)",
+    description="Получить пагинированный список всех сообщений обратной связи (только для менеджеров)",
 )
-@staff_member_required
+@require_role_api(["manager"])
 def list_feedback(
     request: HttpRequest,
     page: int = 1,
     page_size: int = 20,
-    search: str = None,
+    search: str | None = None,
 ):
     """
     Получает пагинированный список сообщений обратной связи.
 
-    Доступен только администраторам (staff_member_required).
+    Доступен только менеджерам.
     Поддерживает поиск по имени, email, телефону и тексту сообщения.
 
     Args:
@@ -95,7 +80,7 @@ def list_feedback(
         FeedbackListOut: Пагинированный список с метаданными
 
     Raises:
-        403: Недостаточно прав (не администратор)
+        403: Недостаточно прав (не менеджер)
         500: Ошибка сервера
 
     Example:
@@ -149,14 +134,14 @@ def list_feedback(
     "/feedback/{feedback_id}/",
     response={200: FeedbackOut, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse},
     summary="Детали сообщения обратной связи",
-    description="Получить подробную информацию о конкретном сообщении (только для администраторов)",
+    description="Получить подробную информацию о конкретном сообщении (только для менеджеров)",
 )
-@staff_member_required
+@require_role_api(["manager"])
 def get_feedback(request: HttpRequest, feedback_id: int):
     """
     Получает детальную информацию о сообщении обратной связи по ID.
 
-    Доступен только администраторам (staff_member_required).
+    Доступен только менеджерам.
 
     Args:
         request: HTTP request объект
@@ -166,7 +151,7 @@ def get_feedback(request: HttpRequest, feedback_id: int):
         FeedbackOut: Объект с полной информацией о сообщении
 
     Raises:
-        403: Недостаточно прав (не администратор)
+        403: Недостаточно прав (не менеджер)
         404: Сообщение не найдено
         500: Ошибка сервера
 
@@ -209,14 +194,14 @@ def get_feedback(request: HttpRequest, feedback_id: int):
         500: ErrorResponse,
     },
     summary="Удалить сообщение обратной связи",
-    description="Удалить сообщение обратной связи по ID (только для администраторов)",
+    description="Удалить сообщение обратной связи по ID (только для менеджеров)",
 )
-@staff_member_required
+@require_role_api(["manager"])
 def delete_feedback(request: HttpRequest, feedback_id: int):
     """
     Удаляет сообщение обратной связи по ID.
 
-    Доступен только администраторам (staff_member_required).
+    Доступен только менеджерам.
     Действие необратимо - сообщение будет удалено из базы данных.
 
     Args:
@@ -227,7 +212,7 @@ def delete_feedback(request: HttpRequest, feedback_id: int):
         FeedbackDeleteResponse: Результат операции удаления
 
     Raises:
-        403: Недостаточно прав (не администратор)
+        403: Недостаточно прав (не менеджер)
         404: Сообщение не найдено
         500: Ошибка сервера
 
@@ -246,9 +231,10 @@ def delete_feedback(request: HttpRequest, feedback_id: int):
         feedback_info = str(feedback)
         feedback.delete()
 
+        admin_email = getattr(request.user, "email", "unknown")
         logger.info(
             f"API: Удалена обратная связь: ID={feedback_id}, "
-            f"администратор={request.user.email}, инфо={feedback_info}"
+            f"администратор={admin_email}, инфо={feedback_info}"
         )
 
         return 200, {
@@ -273,14 +259,14 @@ def delete_feedback(request: HttpRequest, feedback_id: int):
     "/feedback/stats/",
     response={200: FeedbackStatsOut, 403: ErrorResponse, 500: ErrorResponse},
     summary="Статистика обратной связи",
-    description="Получить подробную статистику по сообщениям обратной связи (только для администраторов)",
+    description="Получить подробную статистику по сообщениям обратной связи (только для менеджеров)",
 )
-@staff_member_required
+@require_role_api(["manager"])
 def get_feedback_stats(request: HttpRequest, recent_count: int = 5):
     """
     Получает статистику по обратной связи за различные периоды.
 
-    Доступен только администраторам (staff_member_required).
+    Доступен только менеджерам.
     Предоставляет агрегированные данные: сегодня, за неделю, за месяц, среднее.
     Результаты кешируются (см. cache_utils.py).
 
@@ -292,7 +278,7 @@ def get_feedback_stats(request: HttpRequest, recent_count: int = 5):
         FeedbackStatsOut: Объект со статистикой
 
     Raises:
-        403: Недостаточно прав (не администратор)
+        403: Недостаточно прав (не менеджер)
         500: Ошибка сервера
 
     Example:

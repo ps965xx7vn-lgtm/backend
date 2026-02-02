@@ -1,24 +1,27 @@
 """
-Manager Views Module - Django views для административной панели.
+Manager Views Module - Django views для административной панели менеджеров.
 
-Этот модуль предоставляет веб-интерфейс для управления платформой.
-Все views требуют прав администратора (@staff_member_required).
+Современная архитектура на основе reviewers/views.py:
+- Чистые function-based views
+- Декораторы из authentication
+- Полное кэширование
+- Type hints
+- Подробная документация
 
 Views:
-    - manager_dashboard: Главная страница dashboard со статистикой
-    - feedback_list: Список всех обращений
-    - feedback_detail: Детальный просмотр обращения
-    - feedback_delete: Удаление обращения
-    - system_logs: Просмотр системных логов
-    - system_settings: Управление настройками системы
+    - dashboard_view: Главная страница dashboard со статистикой
+    - feedback_list_view: Список всех обращений
+    - feedback_detail_view: Детальный просмотр обращения
+    - feedback_delete_view: Удаление обращения
+    - system_logs_view: Просмотр системных логов
+    - api_feedback_stats: API endpoint для статистики
 
 Особенности:
-    - Все views защищены @staff_member_required
+    - Декоратор @require_any_role(['manager'])
     - Кеширование статистики для быстрой загрузки
     - Пагинация списков
     - Фильтрация данных через формы
-    - Breadcrumbs для навигации
-    - Responsive дизайн
+    - Современный дизайн с уникальной цветовой схемой
 
 Автор: Pyland Team
 Дата: 2025
@@ -27,61 +30,60 @@ Views:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta
+import uuid
+from datetime import timedelta
 
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .cache_utils import get_cached_feedback_stats
+from authentication.decorators import require_any_role
+
+from .cache_utils import get_cached_feedback_stats, invalidate_feedback_cache
 from .forms import FeedbackFilterForm
-from .models import Feedback, SystemLog, SystemSettings
+from .models import Feedback, SystemLog
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
 # ============================================================================
-# DASHBOARD - Главная страница административной панели
+# DASHBOARD - Главная страница панели менеджера
 # ============================================================================
 
 
-@staff_member_required
-def manager_dashboard(request: HttpRequest) -> HttpResponse:
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
     """
-    Главная страница административной панели (Dashboard).
+    Главная страница панели менеджера с полной статистикой платформы.
 
-    Отображает общую статистику платформы:
+    Отображает:
+        - Статистика по пользователям (всего, активных, по ролям, новые за неделю/месяц)
+        - Статистика по контенту (статьи, курсы, сертификаты, комментарии)
+        - Статистика по платежам (всего, сумма, статусы)
         - Статистика по обратной связи (всего, необработанных, за сегодня)
         - Последние 5 обращений
-        - Статистика по пользователям (всего, активных, новых)
-        - Статистика по контенту (статьи, курсы, комментарии)
         - Последние 10 системных логов
-        - Быстрые ссылки на основные разделы
 
     Args:
-        request: HTTP запрос от пользователя
+        request: HTTP запрос от менеджера
+        user_uuid: UUID профиля менеджера
 
     Returns:
-        HttpResponse с отрендеренным шаблоном dashboard
+        HttpResponse: Отрендеренная страница dashboard
 
     Template:
         managers/dashboard.html
-
-    Context:
-        - stats: Словарь со всей статистикой
-        - recent_feedback: QuerySet последних обращений
-        - recent_logs: QuerySet последних логов
-        - user_stats: Статистика по пользователям
-        - content_stats: Статистика по контенту
-
-    Примечание:
-        Использует кеширование для статистики (TTL 5 минут)
     """
+    # Получаем профиль менеджера
+    from authentication.models import Manager
+
+    get_object_or_404(Manager, user=request.user)
     # Получаем кешированную статистику по feedback
     feedback_stats = get_cached_feedback_stats()
 
@@ -91,16 +93,31 @@ def manager_dashboard(request: HttpRequest) -> HttpResponse:
     # Последние 10 системных логов
     recent_logs = SystemLog.objects.select_related("user").order_by("-created_at")[:10]
 
-    # Статистика по пользователям (если есть доступ к модели User)
+    # === Статистика по пользователям ===
+    today = timezone.now().date()
+    week_ago = today - timedelta(days=7)
+    month_ago = today - timedelta(days=30)
+
     try:
-        today = timezone.now().date()
-        week_ago = today - timedelta(days=7)
+        from authentication.models import Role
+
+        # Базовая статистика
+        total_users = User.objects.count()
+        active_users = User.objects.filter(is_active=True).count()
+        new_users_week = User.objects.filter(date_joined__gte=week_ago).count()
+        new_users_month = User.objects.filter(date_joined__gte=month_ago).count()
+
+        # Статистика по ролям
+        roles_stats = {}
+        for role in Role.objects.all():
+            roles_stats[role.name] = User.objects.filter(role=role).count()
 
         user_stats = {
-            "total_users": User.objects.count(),
-            "active_users": User.objects.filter(is_active=True).count(),
-            "new_users_week": User.objects.filter(date_joined__gte=week_ago).count(),
-            "staff_users": User.objects.filter(is_staff=True).count(),
+            "total_users": total_users,
+            "active_users": active_users,
+            "new_users_week": new_users_week,
+            "new_users_month": new_users_month,
+            "by_role": roles_stats,
         }
     except Exception as e:
         logger.warning(f"Ошибка получения статистики пользователей: {e}")
@@ -108,10 +125,11 @@ def manager_dashboard(request: HttpRequest) -> HttpResponse:
             "total_users": 0,
             "active_users": 0,
             "new_users_week": 0,
-            "staff_users": 0,
+            "new_users_month": 0,
+            "by_role": {},
         }
 
-    # Статистика по контенту (blog, courses если есть)
+    # === Статистика по контенту ===
     content_stats = {}
     try:
         from blog.models import Article, Comment
@@ -120,23 +138,35 @@ def manager_dashboard(request: HttpRequest) -> HttpResponse:
         content_stats["published_articles"] = Article.objects.filter(status="published").count()
         content_stats["comments"] = Comment.objects.count()
     except ImportError:
-        pass
+        logger.debug("Blog app not available")
 
     try:
         from courses.models import Course
 
         content_stats["courses"] = Course.objects.count()
     except ImportError:
-        pass
+        logger.debug("Courses app not available")
 
-    # Системные настройки
     try:
-        settings_count = SystemSettings.objects.count()
-        public_settings = SystemSettings.objects.filter(is_public=True).count()
-    except Exception as e:
-        logger.warning(f"Ошибка получения настроек: {e}")
-        settings_count = 0
-        public_settings = 0
+        from certificates.models import Certificate
+
+        content_stats["certificates"] = Certificate.objects.count()
+    except ImportError:
+        logger.debug("Certificates app not available")
+
+    # === Статистика по платежам ===
+    payment_stats = {}
+    try:
+        from payments.models import Payment
+
+        payments = Payment.objects.all()
+        payment_stats["total_payments"] = payments.count()
+        payment_stats["total_revenue"] = sum(p.amount for p in payments if p.status == "completed")
+        payment_stats["pending"] = payments.filter(status="pending").count()
+        payment_stats["completed"] = payments.filter(status="completed").count()
+        payment_stats["failed"] = payments.filter(status="failed").count()
+    except ImportError:
+        logger.debug("Payments app not available")
 
     context = {
         "feedback_stats": feedback_stats,
@@ -144,11 +174,10 @@ def manager_dashboard(request: HttpRequest) -> HttpResponse:
         "recent_logs": recent_logs,
         "user_stats": user_stats,
         "content_stats": content_stats,
-        "settings_count": settings_count,
-        "public_settings": public_settings,
-        "page_title": "Dashboard",
+        "payment_stats": payment_stats,
     }
 
+    logger.info(f"Manager {request.user.email} accessed dashboard")
     return render(request, "managers/dashboard.html", context)
 
 
@@ -157,37 +186,26 @@ def manager_dashboard(request: HttpRequest) -> HttpResponse:
 # ============================================================================
 
 
-@staff_member_required
-def feedback_list(request: HttpRequest) -> HttpResponse:
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def feedback_list_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
     """
-    Список всех обращений обратной связи с фильтрацией.
+    Список всех обращений обратной связи с фильтрацией и пагинацией.
 
     Поддерживает фильтрацию по:
         - Поиск по имени, email, телефону, сообщению
         - Дата от/до
         - Статус обработки
-        - Обработавший администратор
+        - Тема обращения
 
     Args:
         request: HTTP запрос (GET параметры для фильтрации)
 
     Returns:
-        HttpResponse с отрендеренным списком
+        HttpResponse: Отрендеренный список обращений
 
     Template:
         managers/feedback_list.html
-
-    Context:
-        - feedback_list: Paginator page с обращениями
-        - filter_form: Форма фильтрации
-        - total_count: Общее количество записей
-
-    Query Parameters:
-        - search: Текст для поиска
-        - date_from: Дата начала (YYYY-MM-DD)
-        - date_to: Дата окончания (YYYY-MM-DD)
-        - is_processed: Статус обработки (true/false)
-        - page: Номер страницы для пагинации
     """
     # Получаем все обращения
     feedback_qs = Feedback.objects.select_related("processed_by").order_by("-registered_at")
@@ -200,7 +218,9 @@ def feedback_list(request: HttpRequest) -> HttpResponse:
         date_from = filter_form.cleaned_data.get("date_from")
         date_to = filter_form.cleaned_data.get("date_to")
         is_processed = filter_form.cleaned_data.get("is_processed")
+        topic = filter_form.cleaned_data.get("topic")
 
+        # Поиск по нескольким полям
         if search:
             feedback_qs = feedback_qs.filter(
                 Q(first_name__icontains=search)
@@ -209,41 +229,58 @@ def feedback_list(request: HttpRequest) -> HttpResponse:
                 | Q(message__icontains=search)
             )
 
+        # Фильтр по дате
         if date_from:
-            feedback_qs = feedback_qs.filter(registered_at__gte=date_from)
-
+            feedback_qs = feedback_qs.filter(registered_at__date__gte=date_from)
         if date_to:
-            # Добавляем 1 день для включения записей до конца дня
-            date_to_end = datetime.combine(date_to, datetime.max.time())
-            feedback_qs = feedback_qs.filter(registered_at__lte=date_to_end)
+            feedback_qs = feedback_qs.filter(registered_at__date__lte=date_to)
 
+        # Фильтр по статусу
         if is_processed is not None:
             feedback_qs = feedback_qs.filter(is_processed=is_processed)
 
+        # Фильтр по теме
+        if topic:
+            feedback_qs = feedback_qs.filter(topic=topic)
+
     # Пагинация
-    paginator = Paginator(feedback_qs, 25)  # 25 записей на страницу
+    paginator = Paginator(feedback_qs, 20)  # 20 записей на страницу
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
 
-    context = {
-        "feedback_list": page_obj,
-        "filter_form": filter_form,
-        "total_count": paginator.count,
-        "page_title": "Обратная связь",
+    # Статистика для sidebar
+    stats = {
+        "total": Feedback.objects.count(),
+        "unprocessed": Feedback.objects.filter(is_processed=False).count(),
+        "processed_today": Feedback.objects.filter(
+            is_processed=True, processed_at__date=timezone.now().date()
+        ).count(),
     }
 
-    return render(request, "managers/feedback_list.html", context)
+    logger.info(f"Manager {request.user.email} viewed feedback list (page {page_number})")
+
+    return render(
+        request,
+        "managers/feedback_list.html",
+        {
+            "page_obj": page_obj,
+            "filter_form": filter_form,
+            "stats": stats,
+            "total_count": feedback_qs.count(),
+        },
+    )
 
 
-@staff_member_required
-def feedback_detail(request: HttpRequest, pk: int) -> HttpResponse:
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def feedback_detail_view(request: HttpRequest, user_uuid: uuid.UUID, pk: int) -> HttpResponse:
     """
-    Детальный просмотр и обработка обращения.
+    Детальный просмотр и обработка обращения обратной связи.
 
     Позволяет:
         - Просмотреть полную информацию об обращении
         - Отметить как обработанное/необработанное
-        - Добавить заметки администратора
+        - Добавить заметки менеджера
         - Просмотреть историю обработки
 
     Args:
@@ -251,20 +288,12 @@ def feedback_detail(request: HttpRequest, pk: int) -> HttpResponse:
         pk: ID обращения
 
     Returns:
-        HttpResponse с детальной информацией
+        HttpResponse: Детальная страница обращения
         GET: Отображение формы
         POST: Обработка обновления статуса и заметок
 
     Template:
         managers/feedback_detail.html
-
-    Context:
-        - feedback: Объект Feedback
-        - form: Форма для редактирования заметок
-
-    POST Parameters:
-        - action: 'mark_processed' или 'mark_unprocessed'
-        - admin_notes: Текст заметок администратора
     """
     feedback = get_object_or_404(Feedback.objects.select_related("processed_by"), pk=pk)
 
@@ -275,45 +304,60 @@ def feedback_detail(request: HttpRequest, pk: int) -> HttpResponse:
             feedback.is_processed = True
             feedback.processed_by = request.user
             feedback.processed_at = timezone.now()
-            messages.success(request, "Обращение отмечено как обработанное.")
+            feedback.admin_notes = request.POST.get("admin_notes", "")
+            feedback.save()
+            invalidate_feedback_cache()
+            messages.success(request, "Обращение успешно обработано.")
+            logger.info(f"Manager {request.user.email} processed feedback #{pk}")
+            return redirect("managers:feedback_detail", pk=pk)
 
         elif action == "mark_unprocessed":
             feedback.is_processed = False
             feedback.processed_by = None
             feedback.processed_at = None
+            feedback.save()
+            invalidate_feedback_cache()
             messages.info(request, "Обращение отмечено как необработанное.")
+            logger.info(f"Manager {request.user.email} unmarked feedback #{pk}")
+            return redirect("managers:feedback_detail", pk=pk)
 
-        # Сохраняем заметки администратора
-        admin_notes = request.POST.get("admin_notes", "").strip()
-        if admin_notes:
-            feedback.admin_notes = admin_notes
+        elif action == "update_notes":
+            feedback.admin_notes = request.POST.get("admin_notes", "")
+            feedback.save()
+            messages.success(request, "Заметки обновлены.")
+            logger.info(f"Manager {request.user.email} updated notes for feedback #{pk}")
+            return redirect("managers:feedback_detail", pk=pk)
 
-        feedback.save()
-
-        # Логируем действие
-        SystemLog.objects.create(
-            level="INFO",
-            action_type="FEEDBACK_PROCESSED" if action == "mark_processed" else "FEEDBACK_UPDATED",
-            user=request.user,
-            message=f"Обращение #{feedback.id} обработано пользователем {request.user.username}",
-            details={
-                "feedback_id": feedback.id,
-                "action": action,
-                "has_notes": bool(admin_notes),
-            },
-        )
-
-        return redirect("manager:feedback_detail", pk=pk)
-
-    context = {
-        "feedback": feedback,
-        "page_title": f"Обращение #{feedback.id}",
-    }
-
-    return render(request, "managers/feedback_detail.html", context)
+    return render(request, "managers/feedback_detail.html", {"feedback": feedback})
 
 
-@staff_member_required
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def feedback_delete_view(request: HttpRequest, user_uuid: uuid.UUID, pk: int) -> HttpResponse:
+    """
+    Удаление обращения обратной связи.
+
+    Args:
+        request: HTTP запрос
+        pk: ID обращения
+
+    Returns:
+        HttpResponse: Redirect на список обращений после удаления
+    """
+    feedback = get_object_or_404(Feedback, pk=pk)
+
+    if request.method == "POST":
+        feedback.delete()
+        invalidate_feedback_cache()
+        messages.success(request, "Обращение успешно удалено.")
+        logger.warning(f"Manager {request.user.email} deleted feedback #{pk}")
+        return redirect("managers:feedback_list")
+
+    return render(request, "managers/feedback_confirm_delete.html", {"feedback": feedback})
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
 def feedback_delete(request: HttpRequest, pk: int) -> HttpResponse:
     """
     Удаление обращения обратной связи.
@@ -367,8 +411,9 @@ def feedback_delete(request: HttpRequest, pk: int) -> HttpResponse:
 # ============================================================================
 
 
-@staff_member_required
-def system_logs(request: HttpRequest) -> HttpResponse:
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def system_logs_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
     """
     Просмотр системных логов с фильтрацией.
 
@@ -383,25 +428,10 @@ def system_logs(request: HttpRequest) -> HttpResponse:
         request: HTTP запрос (GET параметры для фильтрации)
 
     Returns:
-        HttpResponse с отрендеренным списком логов
+        HttpResponse: Страница со списком логов
 
     Template:
         managers/system_logs.html
-
-    Context:
-        - logs: Paginator page с логами
-        - level_choices: Доступные уровни логирования
-        - action_choices: Доступные типы действий
-        - total_count: Общее количество записей
-
-    Query Parameters:
-        - level: Уровень лога (DEBUG/INFO/WARNING/ERROR/CRITICAL)
-        - action_type: Тип действия
-        - user_id: ID пользователя
-        - date_from: Дата начала
-        - date_to: Дата окончания
-        - search: Поиск по сообщению
-        - page: Номер страницы
     """
     logs_qs = SystemLog.objects.select_related("user").order_by("-created_at")
 
@@ -423,10 +453,10 @@ def system_logs(request: HttpRequest) -> HttpResponse:
         logs_qs = logs_qs.filter(user_id=user_id)
 
     if date_from:
-        logs_qs = logs_qs.filter(created_at__gte=date_from)
+        logs_qs = logs_qs.filter(created_at__date__gte=date_from)
 
     if date_to:
-        logs_qs = logs_qs.filter(created_at__lte=date_to)
+        logs_qs = logs_qs.filter(created_at__date__lte=date_to)
 
     if search:
         logs_qs = logs_qs.filter(Q(message__icontains=search) | Q(ip_address__icontains=search))
@@ -436,104 +466,58 @@ def system_logs(request: HttpRequest) -> HttpResponse:
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
 
-    context = {
-        "logs": page_obj,
-        "level_choices": SystemLog.LOG_LEVELS,
-        "action_choices": SystemLog.ACTION_TYPES,
-        "total_count": paginator.count,
-        "page_title": "Системные логи",
-    }
+    # Choices для фильтров
+    level_choices = SystemLog.LOG_LEVELS
+    action_choices = SystemLog.ACTION_TYPES
 
-    return render(request, "managers/system_logs.html", context)
+    logger.info(f"Manager {request.user.email} viewed system logs (page {page_number})")
+
+    return render(
+        request,
+        "managers/system_logs.html",
+        {
+            "page_obj": page_obj,
+            "level_choices": level_choices,
+            "action_choices": action_choices,
+            "total_count": logs_qs.count(),
+            "filters": {
+                "level": level,
+                "action_type": action_type,
+                "user_id": user_id,
+                "date_from": date_from,
+                "date_to": date_to,
+                "search": search,
+            },
+        },
+    )
 
 
 # ============================================================================
-# SYSTEM SETTINGS - Управление настройками системы
+# API ENDPOINTS - JSON endpoints для динамической загрузки
 # ============================================================================
 
 
-@staff_member_required
-def system_settings(request: HttpRequest) -> HttpResponse:
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def api_feedback_stats(request: HttpRequest, user_uuid: uuid.UUID) -> JsonResponse:
     """
-    Управление настройками системы.
-
-    Позволяет просматривать и редактировать настройки платформы:
-        - Общие настройки (название сайта, email и т.д.)
-        - Настройки безопасности
-        - Настройки интеграций (email, соц. сети)
-        - Feature flags
-        - API ключи
-
-    Args:
-        request: HTTP запрос
-        GET: Отображение списка настроек
-        POST: Обновление значений настроек
+    API endpoint для получения статистики по обратной связи.
 
     Returns:
-        HttpResponse с формой настроек
-
-    Template:
-        managers/system_settings.html
-
-    Context:
-        - settings_list: QuerySet всех настроек
-        - grouped_settings: Настройки сгруппированные по категориям
-
-    POST Parameters:
-        - setting_{id}: Новое значение для настройки с ID={id}
-
-    Примечание:
-        Изменения логируются в SystemLog для аудита.
+        JsonResponse: JSON с актуальной статистикой
     """
-    settings_qs = SystemSettings.objects.all().order_by("key")
+    stats = get_cached_feedback_stats()
+    return JsonResponse(stats)
 
-    if request.method == "POST":
-        # Обработка обновления настроек
-        updated_count = 0
 
-        for setting in settings_qs:
-            new_value = request.POST.get(f"setting_{setting.id}")
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def api_unprocessed_count(request: HttpRequest, user_uuid: uuid.UUID) -> JsonResponse:
+    """
+    API endpoint для получения количества необработанных обращений.
 
-            if new_value is not None and new_value != setting.value:
-                old_value = setting.value
-                setting.value = new_value
-                setting.updated_by = request.user
-                setting.save()
-
-                updated_count += 1
-
-                # Логируем изменение
-                SystemLog.objects.create(
-                    level="INFO",
-                    action_type="SETTING_UPDATE",
-                    user=request.user,
-                    message=f"Настройка {setting.key} изменена",
-                    details={
-                        "setting_key": setting.key,
-                        "old_value": old_value,
-                        "new_value": new_value,
-                    },
-                )
-
-        if updated_count > 0:
-            messages.success(request, f"Обновлено настроек: {updated_count}")
-        else:
-            messages.info(request, "Нет изменений для сохранения.")
-
-        return redirect("manager:system_settings")
-
-    # Группируем настройки по префиксу ключа
-    grouped_settings = {}
-    for setting in settings_qs:
-        prefix = setting.key.split("_")[0] if "_" in setting.key else "general"
-        if prefix not in grouped_settings:
-            grouped_settings[prefix] = []
-        grouped_settings[prefix].append(setting)
-
-    context = {
-        "settings_list": settings_qs,
-        "grouped_settings": grouped_settings,
-        "page_title": "Настройки системы",
-    }
-
-    return render(request, "managers/system_settings.html", context)
+    Returns:
+        JsonResponse: {"count": int}
+    """
+    count = Feedback.objects.filter(is_processed=False).count()
+    return JsonResponse({"count": count})

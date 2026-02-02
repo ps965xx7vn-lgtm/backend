@@ -18,8 +18,6 @@ def translate_role(role_name):
         "mentor": _("Ментор"),
         "reviewer": _("Ревьюер"),
         "manager": _("Менеджер"),
-        "admin": _("Администратор"),
-        "support": _("Поддержка"),
     }
 
     # Нормализуем название роли к lowercase

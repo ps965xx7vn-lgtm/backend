@@ -88,12 +88,27 @@ def signin_view(request: HttpRequest) -> HttpResponse:
         → Redirect to /dashboard если email подтвержден
         → Ошибка с ссылкой на resend_verification если не подтвержден
     """
-    # Редирект авторизованных пользователей
+    # Редирект авторизованных пользователей на их dashboard
     if request.user.is_authenticated:
         logger.info(f"Авторизованный пользователь {request.user.email} перенаправлен с signin")
+        role_name = request.user.role.name if request.user.role else None
+
+        if role_name == "manager" and hasattr(request.user, "manager"):
+            return redirect(
+                reverse("managers:dashboard", kwargs={"user_uuid": request.user.manager.id})
+            )
+        elif role_name == "student" and hasattr(request.user, "student"):
+            return redirect(
+                reverse("students:dashboard", kwargs={"user_uuid": request.user.student.id})
+            )
+        elif role_name == "reviewer" and hasattr(request.user, "reviewer"):
+            return redirect(
+                reverse("reviewers:dashboard", kwargs={"user_uuid": request.user.reviewer.id})
+            )
         return redirect("/")
 
-    next_url = request.GET.get("next") or request.POST.get("next") or "/"
+    next_url = request.GET.get("next") or request.POST.get("next")
+
     if request.method == "POST":
         form = UserLoginForm(request.POST)
         if form.is_valid():
@@ -109,6 +124,33 @@ def signin_view(request: HttpRequest) -> HttpResponse:
                     if not remember_me:
                         request.session.set_expiry(0)
                     # Если выбрал "Запомнить меня", сессия будет храниться 2 недели (по умолчанию в settings)
+
+                    # Умный редирект на основе роли пользователя
+                    if not next_url or next_url == "/":
+                        role_name = user.role.name if user.role else None
+
+                        if role_name == "manager" and hasattr(user, "manager"):
+                            # Менеджеры идут на свой dashboard
+                            next_url = reverse(
+                                "managers:dashboard", kwargs={"user_uuid": user.manager.id}
+                            )
+                            logger.info(f"Redirecting {email} (manager) to managers dashboard")
+                        elif role_name == "student" and hasattr(user, "student"):
+                            # Студенты идут на свой dashboard
+                            next_url = reverse(
+                                "students:dashboard", kwargs={"user_uuid": user.student.id}
+                            )
+                            logger.info(f"Redirecting {email} (student) to student dashboard")
+                        elif role_name == "reviewer" and hasattr(user, "reviewer"):
+                            # Ревьюеры идут на свой dashboard
+                            next_url = reverse(
+                                "reviewers:dashboard", kwargs={"user_uuid": user.reviewer.id}
+                            )
+                            logger.info(f"Redirecting {email} (reviewer) to reviewer dashboard")
+                        else:
+                            # По умолчанию на главную
+                            next_url = "/"
+
                     return redirect(next_url)
                 else:
                     logger.warning(f"Попытка входа с неподтвержденным email: {email}")

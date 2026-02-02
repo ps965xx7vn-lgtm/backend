@@ -100,7 +100,6 @@ INSTALLED_APPS = [
     "courses",  # курсы / уроки
     "certificates",  # сертификаты
     "payments",  # платежи
-    "support",  # тикеты, саппорт
     "reviewers",  # отзывы
     "mentors",  # менторы
     "managers",  # менеджер

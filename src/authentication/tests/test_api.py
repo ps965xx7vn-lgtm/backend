@@ -111,43 +111,6 @@ class TestRegisterAPI:
         assert hasattr(user, "manager")
         assert user.manager is not None
 
-    def test_register_admin_success(self, api_client, admin_role):
-        """Успешная регистрация администратора."""
-        payload = {
-            "email": "newadmin@example.com",
-            "password": "SecurePass123!",
-            "confirm_password": "SecurePass123!",
-            "first_name": "Charlie",
-            "last_name": "Brown",
-            "role": "admin",
-        }
-
-        response = api_client.post("/auth/register", json=payload)
-
-        assert response.status_code == 201
-        user = User.objects.get(email="newadmin@example.com")
-        assert hasattr(user, "admin")
-        assert user.admin is not None
-        assert user.is_staff is True
-
-    def test_register_support_success(self, api_client, support_role):
-        """Успешная регистрация поддержки."""
-        payload = {
-            "email": "newsupport@example.com",
-            "password": "SecurePass123!",
-            "confirm_password": "SecurePass123!",
-            "first_name": "David",
-            "last_name": "Miller",
-            "role": "support",
-        }
-
-        response = api_client.post("/auth/register", json=payload)
-
-        assert response.status_code == 201
-        user = User.objects.get(email="newsupport@example.com")
-        assert hasattr(user, "support")
-        assert user.support is not None
-
     def test_register_default_role_is_student(self, api_client, student_role):
         """По умолчанию создается студент, если роль не указана."""
         payload = {
