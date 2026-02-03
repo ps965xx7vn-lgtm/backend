@@ -234,6 +234,10 @@
                             </a>
                         </li>
                         {% endif %}
+                        <li class="nav-item">                            <a href="{% url 'certificates:verify_form' %}" class="nav-link">
+                                {% trans "Верификация" %}
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{% url 'core:contacts' %}" class="nav-link">
                                 {% trans "Контакты" %}
@@ -418,6 +422,13 @@
                         <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
                     </svg>
                     <span>{% trans "Контакты" %}</span>
+                </a>
+
+                <a href="{% url 'certificates:verify_form' %}" class="mobile-nav-item">
+                    <svg class="mobile-nav-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <span>🔍 {% trans "Верификация" %}</span>
                 </a>
             </nav>
 

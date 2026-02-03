@@ -6,7 +6,7 @@
 {% block description %}{% trans "Изучайте программирование с лучшими онлайн курсами Python, JavaScript и других технологий" %}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
+<link rel="stylesheet" href="{% static 'css/core/home.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -105,12 +105,12 @@
 
         <div class="courses-grid-revolutionary">
             {% for course in courses %}
-            <a href="{{ course.get_absolute_url }}" class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:3 }}" data-category="{{ course.category }}">
+            <div class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:3 }}">
                 <div class="course-image-revolutionary">
                     {% if course.image %}
-                        <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-image-img">
+                        <img src="{{ course.image.url }}" alt="{{ course.name }}">
                     {% else %}
-                        <div class="course-placeholder-image {% if course.category == 'python' %}course-placeholder-blue{% elif course.category == 'javascript' %}course-placeholder-pink{% endif %}">
+                        <div class="course-placeholder-image {% if course.category == 'python' %}course-placeholder-blue{% elif course.category == 'javascript' %}course-placeholder-pink{% endif %}" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
                             {% if course.category == 'python' %}🐍
                             {% elif course.category == 'javascript' %}⚡
                             {% elif course.category == 'web' %}🌐
@@ -128,58 +128,30 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                    {% if course.status == 'coming_soon' %}
-                        <div class="course-badge-revolutionary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            {% trans "Скоро" %}
-                        </div>
-                    {% elif course.status == 'archived' %}
-                        <div class="course-badge-revolutionary" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
-                            {% trans "Архив" %}
-                        </div>
-                    {% elif course.status == 'draft' %}
-                        <div class="course-badge-revolutionary" style="background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);">
-                            {% trans "Черновик" %}
-                        </div>
-                    {% endif %}
                 </div>
                 <div class="course-content-revolutionary">
                     <h3 class="course-title-revolutionary">{{ course.name }}</h3>
                     <p class="course-description-revolutionary">
-                        {{ course.short_description|default:course.description|truncatewords:15 }}
+                        {{ course.short_description|default:course.description|truncatewords:20 }}
                     </p>
                     <div class="course-meta-revolutionary">
-                        <div class="course-price-revolutionary">
-                            {% if course.price == 0 or course.price is None %}
-                                <span class="price-free">{% trans "Бесплатно" %}</span>
-                            {% else %}
-                                <span class="price-paid">${{ course.price }}</span>
-                            {% endif %}
+                        <div class="course-duration-revolutionary">
+                            📚 {{ course.lessons.count|default:"0" }} {% trans "уроков" %}
                         </div>
-                        <div class="course-rating-revolutionary">
-                            ⭐ {{ course.rating|default:"5.0" }}
+                        <div class="course-lessons-revolutionary">
+                            {% if course.price == 0 or course.price is None %}
+                                <span style="color: #10b981; font-weight: 700;">{% trans "Бесплатно" %}</span>
+                            {% else %}
+                                <span style="font-weight: 700; color: #0ea5e9;">${{ course.price }}</span>
+                            {% endif %}
                         </div>
                     </div>
-
-                    {% if course.price > 0 %}
-                        <div class="course-action-buttons" style="margin-top: 16px; display: flex; gap: 8px; align-items: center;">
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'payments:checkout' course_slug=course.slug %}" class="course-buy-btn" style="flex: 1; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 12px; font-weight: 600; text-decoration: none; transition: transform 0.2s;">
-                                    💳 {% trans "Купить курс" %}
-                                </a>
-                            {% else %}
-                                <a href="{% url 'authentication:login' %}?next={% url 'payments:checkout' course_slug=course.slug %}" class="course-buy-btn" style="flex: 1; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 12px; font-weight: 600; text-decoration: none; transition: transform 0.2s;">
-                                    🔐 {% trans "Войти и купить" %}
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="course-btn-revolutionary">
-                            <span>{% trans "Начать изучение" %}</span>
-                            <span>→</span>
-                        </div>
-                    {% endif %}
+                    <a href="{% url 'courses:course_detail' course.slug %}" class="course-btn-revolutionary">
+                        <span>{% trans "Подробнее" %}</span>
+                        <span>→</span>
+                    </a>
                 </div>
-            </a>
+            </div>
             {% endfor %}
         </div>
     </div>

@@ -245,7 +245,7 @@ class StudentsSecurityHeadersMiddleware:
                     "default-src 'self'; "
                     "img-src 'self' data: https:; "
                     "style-src 'self' 'unsafe-inline'; "
-                    "script-src 'self'; "
+                    "script-src 'self' 'unsafe-inline'; "
                     "font-src 'self' data:; "
                     "frame-ancestors 'none';",
                 )

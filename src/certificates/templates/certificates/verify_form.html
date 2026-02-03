@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Проверка подлинности сертификата" %} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/certificates/verify-form.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="verify-hero">
+    <div class="verify-hero-content">
+        <div class="verify-hero-icon">🔍</div>
+        <h1 class="verify-hero-title">
+            {% trans "Проверка подлинности сертификата" %}
+        </h1>
+        <p class="verify-hero-subtitle">
+            {% trans "Убедитесь в подлинности сертификата PyLand. Введите код верификации или номер сертификата для мгновенной проверки." %}
+        </p>
+    </div>
+</section>
+
+<!-- Verification Form Section -->
+<section class="verify-content-section">
+    <div class="verify-form-container">
+        <div class="verify-form-card">
+            <h2 class="verify-form-title">
+                {% trans "Введите данные для проверки" %}
+            </h2>
+
+            <form method="post" class="verify-form">
+                {% csrf_token %}
+                <div class="verify-form-group">
+                    <label for="verification_code" class="verify-form-label">
+                        {% trans "Код верификации или номер сертификата" %}
+                    </label>
+                    <input 
+                        type="text" 
+                        id="verification_code" 
+                        name="verification_code" 
+                        class="verify-form-input"
+                        placeholder="{% trans 'Например: 30B432450602 или CERT-20260203-A3F9' %}"
+                        value="{{ request.GET.code|default:'' }}"
+                        required
+                        maxlength="50"
+                    >
+                </div>
+
+                <button type="submit" class="verify-btn-submit">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    {% trans "Проверить сертификат" %}
+                </button>
+            </form>
+        </div>
+
+        {% if certificate %}
+            {% if is_valid %}
+            <!-- Valid Certificate Result -->
+            <div class="verify-result-box verify-result-valid">
+                <div class="verify-result-icon">✓</div>
+                <h3 class="verify-result-title">
+                    {% trans "Сертификат действителен" %}
+                </h3>
+
+                <div class="verify-cert-info">
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">📜 {% trans "Номер сертификата" %}:</span>
+                        <span class="verify-info-value">{{ certificate.certificate_number }}</span>
+                    </div>
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">👤 {% trans "Студент" %}:</span>
+                        <span class="verify-info-value">
+                            {{ certificate.student.user.get_full_name|default:certificate.student.user.email }}
+                        </span>
+                    </div>
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">📚 {% trans "Курс" %}:</span>
+                        <span class="verify-info-value">{{ certificate.course.name }}</span>
+                    </div>
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">📅 {% trans "Дата завершения" %}:</span>
+                        <span class="verify-info-value">{{ certificate.completion_date|date:"d F Y г." }}</span>
+                    </div>
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">📅 {% trans "Дата выдачи" %}:</span>
+                        <span class="verify-info-value">{{ certificate.issued_at|date:"d F Y г." }}</span>
+                    </div>
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">🔐 {% trans "Код верификации" %}:</span>
+                        <span class="verify-info-value verify-info-value-code">
+                            {{ certificate.verification_code }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="verify-result-actions">
+                    <a href="{{ certificate.get_public_url }}" class="verify-btn-view">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        {% trans "Посмотреть полную информацию" %}
+                    </a>
+                </div>
+
+                <p class="verify-result-message">
+                    ✓ {% trans "Этот сертификат был выдан официально платформой PyLand и подтверждает успешное завершение курса." %}
+                </p>
+            </div>
+            {% else %}
+            <!-- Revoked Certificate Result -->
+            <div class="verify-result-box verify-result-invalid">
+                <div class="verify-result-icon">⚠️</div>
+                <h3 class="verify-result-title">
+                    {% trans "Сертификат отозван" %}
+                </h3>
+
+                <div class="verify-cert-info">
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">📜 {% trans "Номер сертификата" %}:</span>
+                        <span class="verify-info-value">{{ certificate.certificate_number }}</span>
+                    </div>
+                    {% if certificate.revoked_at %}
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">📅 {% trans "Дата отзыва" %}:</span>
+                        <span class="verify-info-value">{{ certificate.revoked_at|date:"d F Y г." }}</span>
+                    </div>
+                    {% endif %}
+                    {% if certificate.revoke_reason %}
+                    <div class="verify-info-row">
+                        <span class="verify-info-label">⚠️ {% trans "Причина" %}:</span>
+                        <span class="verify-info-value">{{ certificate.revoke_reason }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <p class="verify-result-message">
+                    {% trans "Этот сертификат был отозван и более не является действительным." %}
+                </p>
+            </div>
+            {% endif %}
+        {% elif not_found %}
+            <!-- Certificate Not Found -->
+            <div class="verify-result-box verify-result-invalid">
+                <div class="verify-result-icon">❌</div>
+                <h3 class="verify-result-title">
+                    {% trans "Сертификат не найден" %}
+                </h3>
+                <p class="verify-result-message">
+                    {% trans "Сертификат с указанным кодом или номером не существует в нашей базе данных. Пожалуйста, проверьте правильность введенных данных." %}
+                </p>
+            </div>
+        {% endif %}
+
+        <!-- Info Section -->
+        <div class="verify-info-section">
+            <h3 class="verify-info-title">
+                💡 {% trans "Как проверить сертификат?" %}
+            </h3>
+            <div class="verify-info-text">
+                <p>{% trans "Вы можете проверить подлинность сертификата, используя:" %}</p>
+                <ul class="verify-info-list">
+                    <li>
+                        <strong>{% trans "Код верификации" %}</strong> 
+                        {% trans "(12 символов, например: 30B432450602)" %}
+                    </li>
+                    <li>
+                        <strong>{% trans "Номер сертификата" %}</strong> 
+                        {% trans "(например: CERT-20260203-A3F9)" %}
+                    </li>
+                </ul>
+                <p style="margin-top: 20px;">
+                    {% trans "Оба значения указаны в выданном сертификате и могут быть найдены на странице детального просмотра сертификата." %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

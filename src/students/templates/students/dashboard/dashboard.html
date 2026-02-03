@@ -58,7 +58,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'students:courses' request.user.student.id %}" class="dashboard-nav-link">
+                    <a href="{% url 'students:courses' profile.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
@@ -74,7 +74,7 @@
                     </a>
                 </li>
                 <li class="dashboard-nav-item">
-                    <a href="{% url 'students:settings' request.user.student.id %}" class="dashboard-nav-link">
+                    <a href="{% url 'students:settings' profile.id %}" class="dashboard-nav-link">
                         <svg class="dashboard-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -243,7 +243,7 @@
                     </div>
 
                     <div class="course-actions">
-                        <a href="{% url 'students:course_detail' request.user.student.id course_stat.course.slug %}" class="btn btn-primary btn-sm">
+                        <a href="{% url 'students:course_detail' profile.id course_stat.course.slug %}" class="btn btn-primary btn-sm">
                             {% if course_stat.completion_percentage == 0 %}
                                 {% trans "Начать" %}
                             {% else %}
@@ -369,7 +369,7 @@
 
                         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: #6b7280;">
                             <span>{% trans "Попытка:" %} {{ submission.revision_count|add:1 }}</span>
-                            <a href="{% url 'students:lesson_detail' request.user.student.id submission.lesson.course.slug submission.lesson.slug %}"
+                            <a href="{% url 'students:lesson_detail' profile.id submission.lesson.course.slug submission.lesson.slug %}"
                                class="btn btn-danger btn-sm">
                                 ✏️ {% trans "Исправить работу" %}
                             </a>
@@ -500,32 +500,19 @@
         {% endif %}
     </main>
 </div>
-
-<!-- Data for JavaScript -->
-<script>
-window.dashboardData = {
-    dailyActivity: {{ daily_activity|safe }},
-    courseProgress: [
-        {% for course_stat in course_stats %}
-        {
-            name: "{{ course_stat.course.name|escapejs }}",
-            progress: {{ course_stat.completion_percentage }},
-            color: "{% if course_stat.completion_percentage == 100 %}#10b981{% elif course_stat.completion_percentage >= 75 %}#f59e0b{% elif course_stat.completion_percentage >= 50 %}#3b82f6{% else %}#ef4444{% endif %}"
-        }{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ],
-    translations: {
-        noActivityTitle: "{% trans 'Нет активности за последнюю неделю' %}",
-        noActivityText: "{% trans 'Начните выполнять задания, чтобы увидеть вашу статистику' %}",
-        noCoursesTitle: "{% trans 'Нет активных курсов' %}",
-        noCoursesText: "{% trans 'Запишитесь на курс, чтобы начать обучение' %}"
-    }
-};
-</script>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/students/dashboard.js' %}"></script>
-<script src="{% static 'js/students/dashboard-mobile.js' %}"></script>
-<script src="{% static 'js/students/code-copy.js' %}"></script>
+<script>
+window.dashboardData = {{ dashboard_data_json|safe }};
+window.dashboardData.translations = {
+    noActivityTitle: "{% trans 'Нет активности за последнюю неделю' %}",
+    noActivityText: "{% trans 'Начните выполнять задания, чтобы увидеть вашу статистику' %}",
+    noCoursesTitle: "{% trans 'Нет активных курсов' %}",
+    noCoursesText: "{% trans 'Запишитесь на курс, чтобы начать обучение' %}"
+};
+</script>
+<script src="{% static 'js/students/dashboard.js' %}?v=20260203-0953"></script>
+<script src="{% static 'js/students/dashboard-mobile.js' %}?v=20260203-0953"></script>
+<script src="{% static 'js/students/code-copy.js' %}?v=20260203-0953"></script>
 {% endblock %}

@@ -25,6 +25,7 @@ Students Views Module - Django views для личного кабинета ст
 
 from __future__ import annotations
 
+import json
 import logging
 import uuid
 from datetime import timedelta
@@ -374,6 +375,28 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         "submissions_by_status": submissions_by_status,
         "submissions_count": submissions_count,
         "bookmarked_articles": bookmarked_articles,
+        # Для JSON сериализации в JavaScript
+        "dashboard_data_json": {
+            "profile": {"id": str(profile.id), "email": profile.user.email},
+            "stats": {
+                "total_courses": courses.count(),
+                "completed_steps": total_steps_completed,
+                "completion_percentage": round(overall_completion, 1),
+                "submissions_total": submissions.count(),
+                "submissions_pending": submissions_by_status["pending"].count(),
+                "submissions_changes_requested": submissions_by_status["changes_requested"].count(),
+                "submissions_approved": submissions_by_status["approved"].count(),
+            },
+            "dailyActivity": [{"date": day["date"], "completed_steps": day["completed_steps"]} for day in daily_activity],
+            "courseProgress": [
+                {
+                    "name": c["course"].name, 
+                    "progress": c["completion_percentage"], 
+                    "color": ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"][idx % 6]
+                } 
+                for idx, c in enumerate(top_4_course_stats)
+            ],
+        },
     }
 
     return render(request, "students/dashboard/dashboard.html", context)

@@ -21,13 +21,13 @@ app_name = "certificates"
 urlpatterns = [
     # Для студентов (требуют авторизации)
     path("students/certificates/", views.certificates_list_view, name="list"),
-    path("students/certificates/<int:pk>/", views.certificate_detail_view, name="detail"),
+    path("students/certificates/<str:verification_code>/", views.certificate_detail_view, name="detail"),
     path(
-        "students/certificates/<int:pk>/download/", views.certificate_download_view, name="download"
+        "students/certificates/<str:verification_code>/download/", views.certificate_download_view, name="download"
     ),
     # Публичная верификация (без авторизации)
     path(
-        "certificates/verify/<str:certificate_number>/",
+        "certificates/verify/<str:verification_code>/",
         views.certificate_verify_view,
         name="verify",
     ),

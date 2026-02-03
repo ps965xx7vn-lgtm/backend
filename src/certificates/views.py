@@ -80,11 +80,11 @@ def certificates_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def certificate_detail_view(request: HttpRequest, pk: int) -> HttpResponse:
+def certificate_detail_view(request: HttpRequest, verification_code: str) -> HttpResponse:
     """
     Детальная информация о конкретном сертификате.
 
-    URL: /students/certificates/<pk>/
+    URL: /students/certificates/<verification_code>/
     Template: students/certificates/detail.html
 
     Context:
@@ -92,7 +92,8 @@ def certificate_detail_view(request: HttpRequest, pk: int) -> HttpResponse:
         can_download: Можно ли скачать PDF
     """
     certificate = get_object_or_404(
-        Certificate.objects.select_related("student__user", "course"), pk=pk
+        Certificate.objects.select_related("student__user", "course"),
+        verification_code=verification_code.upper()
     )
 
     # Проверка доступа - только владелец может видеть свой сертификат
@@ -112,16 +113,16 @@ def certificate_detail_view(request: HttpRequest, pk: int) -> HttpResponse:
 
 
 @login_required
-def certificate_download_view(request: HttpRequest, pk: int) -> HttpResponse:
+def certificate_download_view(request: HttpRequest, verification_code: str) -> HttpResponse:
     """
     Скачивание PDF файла сертификата.
 
-    URL: /students/certificates/<pk>/download/
+    URL: /students/certificates/<verification_code>/download/
     Response: FileResponse с PDF
 
     Если PDF еще не сгенерирован - генерирует его автоматически.
     """
-    certificate = get_object_or_404(Certificate, pk=pk)
+    certificate = get_object_or_404(Certificate, verification_code=verification_code.upper())
 
     # Проверка доступа
     if certificate.student != request.user.student:
@@ -133,7 +134,12 @@ def certificate_download_view(request: HttpRequest, pk: int) -> HttpResponse:
         try:
             from .utils import generate_certificate_pdf
 
-            generate_certificate_pdf(certificate)
+            # Определить язык из запроса
+            language = request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'ru'
+            if language not in ['ru', 'en', 'ka']:
+                language = 'ru'
+            
+            generate_certificate_pdf(certificate, language=language)
             certificate.refresh_from_db()
         except Exception as e:
             logger.error(f"Failed to generate PDF for certificate {pk}: {e}")
@@ -161,11 +167,11 @@ def certificate_download_view(request: HttpRequest, pk: int) -> HttpResponse:
         raise Http404(_("PDF файл не найден")) from e
 
 
-def certificate_verify_view(request: HttpRequest, certificate_number: str) -> HttpResponse:
+def certificate_verify_view(request: HttpRequest, verification_code: str) -> HttpResponse:
     """
     Публичная страница верификации сертификата.
 
-    URL: /certificates/verify/<certificate_number>/
+    URL: /certificates/verify/<verification_code>/
     Template: students/certificates/verify.html
 
     Доступна ВСЕМ (не требует авторизации) для проверки подлинности сертификата.
@@ -177,7 +183,7 @@ def certificate_verify_view(request: HttpRequest, certificate_number: str) -> Ht
     """
     try:
         certificate = Certificate.objects.select_related("student__user", "course").get(
-            certificate_number=certificate_number.upper()
+            verification_code=verification_code.upper()
         )
 
         context = {

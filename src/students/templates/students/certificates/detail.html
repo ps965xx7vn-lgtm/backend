@@ -14,7 +14,7 @@
             <div class="certificate-banner">
                 <div class="certificate-main-icon">📜</div>
                 <h1 class="certificate-main-title">{% trans "Сертификат об окончании курса" %}</h1>
-                <p class="certificate-subtitle">{{ certificate.course.title }}</p>
+                <p class="certificate-subtitle">{{ certificate.course.name }}</p>
                 <div class="certificate-number-large">{{ certificate.certificate_number }}</div>
             </div>
 
@@ -47,7 +47,7 @@
 
                     <div class="info-card">
                         <div class="info-label">📚 {% trans "Курс" %}</div>
-                        <div class="info-value">{{ certificate.course.title }}</div>
+                        <div class="info-value">{{ certificate.course.name }}</div>
                     </div>
 
                     <div class="info-card">
@@ -110,13 +110,18 @@
 
                 <div class="action-buttons">
                     {% if certificate.pdf_file %}
-                    <a href="{% url 'certificates:download' certificate.pk %}" class="btn-action btn-success-action">
+                    <a href="{% url 'certificates:download' certificate.verification_code %}" class="btn-action btn-success-action">
                         <span>⬇️</span>
                         <span>{% trans "Скачать PDF" %}</span>
                     </a>
+                    {% else %}
+                    <a href="{% url 'certificates:download' certificate.verification_code %}" class="btn-action btn-success-action">
+                        <span>📄</span>
+                        <span>{% trans "Сгенерировать PDF" %}</span>
+                    </a>
                     {% endif %}
 
-                    <a href="{% url 'certificates:verify_by_code' certificate.verification_code %}"
+                    <a href="{% url 'certificates:verify' certificate.verification_code %}"
                        class="btn-action btn-primary-action" target="_blank">
                         <span>🔍</span>
                         <span>{% trans "Проверить подлинность" %}</span>

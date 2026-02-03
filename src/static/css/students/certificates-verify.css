@@ -3,7 +3,7 @@
 .verify-page {
     min-height: calc(100vh - 200px);
     padding: 60px 0;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: var(--bg-primary);
 }
 
 .verify-container {
@@ -12,10 +12,11 @@
 }
 
 .verify-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .verify-header {
@@ -56,16 +57,18 @@
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
 }
 
 .form-control {
     width: 100%;
     padding: 15px;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s;
+    background: var(--input-bg);
+    color: var(--text-primary);
 }
 
 .form-control:focus {
@@ -97,12 +100,22 @@
 }
 
 .result-valid {
-    background: #d4edda;
+    background: #ffffff;
     border: 2px solid #28a745;
 }
 
 .result-invalid {
-    background: #f8d7da;
+    background: #ffffff;
+    border: 2px solid #dc3545;
+}
+
+[data-theme="dark"] .result-valid {
+    background: #1a1a1a;
+    border: 2px solid #28a745;
+}
+
+[data-theme="dark"] .result-invalid {
+    background: #1a1a1a;
     border: 2px solid #dc3545;
 }
 
@@ -120,32 +133,36 @@
 }
 
 .result-valid .result-title {
-    color: #155724;
+    color: #28a745;
 }
 
 .result-invalid .result-title {
-    color: #721c24;
+    color: #dc3545;
 }
 
 /* FIX для inline стилей - добавлены классы */
 .result-not-found-text {
     text-align: center;
-    color: #721c24;
+    color: #dc3545;
     margin: 0;
 }
 
 .certificate-info {
-    background: white;
+    background: #f8f9fa;
     padding: 25px;
     border-radius: 8px;
     margin-top: 20px;
+}
+
+[data-theme="dark"] .certificate-info {
+    background: #2d2d2d;
 }
 
 .info-row {
     display: flex;
     justify-content: space-between;
     padding: 12px 0;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .info-row:last-child {
@@ -154,11 +171,11 @@
 
 .info-label {
     font-weight: 600;
-    color: #6c757d;
+    color: var(--text-secondary);
 }
 
 .info-value {
-    color: #2c3e50;
+    color: var(--text-primary);
     font-weight: 500;
 }
 

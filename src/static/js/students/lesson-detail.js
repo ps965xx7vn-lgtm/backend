@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Highlight first incomplete step and scroll to it
     initStepScrolling();
 
+    // Initialize step checkboxes for regular lesson steps
+    initStepCheckboxes();
+
     // Track improvement steps checkboxes
     initImprovementTracking();
 
@@ -28,6 +31,144 @@ function initStepScrolling() {
             firstIncompleteStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 500);
     }
+}
+
+/**
+ * Initialize step checkboxes for regular lesson steps
+ */
+function initStepCheckboxes() {
+    // Get all step checkboxes (NOT improvement steps)
+    const stepCheckboxes = document.querySelectorAll('.step-checkbox:not(.improvement-step-checkbox)');
+
+    stepCheckboxes.forEach(function(checkbox) {
+        // Add change event listener
+        checkbox.addEventListener('change', function(e) {
+            e.stopPropagation();
+            
+            const stepId = this.dataset.stepId;
+            const courseSlug = this.dataset.courseSlug;
+            const lessonSlug = this.dataset.lessonSlug;
+            const isCompleted = this.checked;
+
+            console.log('Step checkbox changed:', { stepId, courseSlug, lessonSlug, isCompleted });
+
+            // Disable checkbox while saving
+            this.disabled = true;
+
+            // Get language prefix from URL
+            const pathParts = window.location.pathname.split('/');
+            const langPrefix = ['ru', 'en', 'ka'].includes(pathParts[1]) ? `/${pathParts[1]}` : '';
+
+            // Send request to server
+            fetch(`${langPrefix}/students/courses/${courseSlug}/lessons/${lessonSlug}/steps/${stepId}/toggle/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    completed: isCompleted
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Step toggle response:', data);
+
+                // Re-enable checkbox
+                this.disabled = false;
+
+                if (data.success) {
+                    // Update step card class
+                    const stepCard = this.closest('.step-card');
+                    if (stepCard) {
+                        if (data.is_completed) {
+                            stepCard.classList.add('completed');
+                        } else {
+                            stepCard.classList.remove('completed');
+                        }
+                    }
+
+                    // Update step badge
+                    const badge = stepCard?.querySelector('.step-badge');
+                    if (badge) {
+                        if (data.is_completed) {
+                            badge.className = 'step-badge completed';
+                            badge.innerHTML = `
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Выполнено</span>
+                            `;
+                        } else {
+                            badge.className = 'step-badge not-completed';
+                            badge.innerHTML = `
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Не выполнено</span>
+                            `;
+                        }
+                    }
+
+                    // Update progress indicators if they exist
+                    if (data.lesson_progress) {
+                        const lessonProgressText = document.querySelector('.lesson-progress-text');
+                        if (lessonProgressText) {
+                            lessonProgressText.textContent = `${data.lesson_progress.completed_steps}/${data.lesson_progress.total_steps} шагов`;
+                        }
+
+                        const lessonProgressBar = document.querySelector('.lesson-progress-bar');
+                        if (lessonProgressBar) {
+                            lessonProgressBar.style.width = `${data.lesson_progress.completion_percentage}%`;
+                        }
+                    }
+
+                    if (data.course_progress) {
+                        const courseProgressText = document.querySelector('.course-progress-text');
+                        if (courseProgressText) {
+                            courseProgressText.textContent = `${Math.round(data.course_progress.completion_percentage)}%`;
+                        }
+                    }
+
+                    // Show notification
+                    if (data.is_completed) {
+                        window.showNotification('✅ Шаг отмечен как выполненный', 'success');
+                    } else {
+                        window.showNotification('⏳ Шаг отмечен как невыполненный', 'info');
+                    }
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling step:', error);
+                
+                // Re-enable checkbox and restore previous state
+                this.disabled = false;
+                this.checked = !isCompleted;
+                
+                window.showNotification('❌ Ошибка при сохранении прогресса', 'error');
+            });
+        });
+
+        // Also handle clicks on the custom checkbox UI
+        const container = checkbox.closest('.step-checkbox-container');
+        if (container) {
+            container.addEventListener('click', function(e) {
+                if (e.target === container || e.target.closest('.step-checkbox-custom')) {
+                    if (!checkbox.disabled) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                }
+            });
+        }
+    });
 }
 
 /**
@@ -448,4 +589,73 @@ function initSelfCheckItems() {
         // Initial update
         updateSelfCheckProgress();
     });
+}
+
+/**
+ * Show notification toast
+ * @param {string} message - Message to display
+ * @param {string} type - Type of notification (success, error, info, warning)
+ * @param {number} duration - Duration in milliseconds
+ */
+window.showNotification = function(message, type = 'info', duration = 3000) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        font-size: 14px;
+        font-weight: 500;
+        max-width: 350px;
+        word-wrap: break-word;
+        animation: slideInRight 0.3s ease-out;
+    `;
+
+    // Add to body
+    document.body.appendChild(notification);
+
+    // Auto remove after duration
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-in';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, duration);
+};
+
+// Add CSS animation styles if not already present
+if (!document.getElementById('notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notification-styles';
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 }

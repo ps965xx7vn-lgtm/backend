@@ -104,7 +104,7 @@
                 <div class="certificate-card">
                     <div class="certificate-header">
                         <div class="certificate-icon">📜</div>
-                        <div class="certificate-title">{{ certificate.course.title }}</div>
+                        <div class="certificate-title">{{ certificate.course.name }}</div>
                         <div class="certificate-date">
                             {% trans "Выдан" %} {{ certificate.completion_date|date:"d.m.Y" }}
                         </div>
@@ -145,12 +145,12 @@
                         </div>
 
                         <div class="certificate-actions">
-                            <a href="{% url 'certificates:detail' certificate.pk %}"
+                            <a href="{% url 'certificates:detail' certificate.verification_code %}"
                                class="btn-certificate btn-view">
                                 📄 {% trans "Просмотр" %}
                             </a>
                             {% if certificate.pdf_file %}
-                            <a href="{% url 'certificates:download' certificate.pk %}"
+                            <a href="{% url 'certificates:download' certificate.verification_code %}"
                                class="btn-certificate btn-download">
                                 ⬇️ {% trans "PDF" %}
                             </a>

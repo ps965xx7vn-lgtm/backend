@@ -8,7 +8,6 @@ class DashboardManager {
     }
 
     init() {
-
         this.initSidebar();
         this.initCharts();
         this.initModals();
@@ -16,7 +15,7 @@ class DashboardManager {
         this.initAnimations();
         this.initStepToggle();
         this.initLessonSubmission();
-
+        this.initSubmissionTabs();
     }
 
     // Инициализация боковой панели
@@ -98,10 +97,14 @@ class DashboardManager {
 
     // Отрисовка графика активности
     renderActivityChart(container, data) {
-        const maxValue = Math.max(...data.map(d => d.completed_steps));
+        if (!data || data.length === 0) {
+            return;
+        }
+        
+        const maxValue = Math.max(...data.map(d => d.completed_steps), 1); // Минимум 1 чтобы избежать деления на 0
         const width = container.offsetWidth - 40;
         const height = 160;
-        const barWidth = width / data.length - 10;
+        const barWidth = Math.max(width / data.length - 10, 20); // Минимальная ширина столбца 20px
 
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('width', width + 40);
@@ -109,7 +112,7 @@ class DashboardManager {
         svg.style.overflow = 'visible';
 
         data.forEach((item, index) => {
-            const barHeight = (item.completed_steps / maxValue) * height;
+            const barHeight = Math.max((item.completed_steps / maxValue) * height, 2); // Минимальная высота 2px
             const x = index * (barWidth + 10) + 20;
             const y = height - barHeight + 20;
 
@@ -131,14 +134,18 @@ class DashboardManager {
                 rect.style.transform = 'translateY(0)';
             }, index * 100);
 
-            // Подпись
+            // Подпись - день месяца
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', x + barWidth / 2);
             text.setAttribute('y', height + 35);
             text.setAttribute('text-anchor', 'middle');
             text.setAttribute('font-size', '12');
             text.setAttribute('fill', '#6b7280');
-            text.textContent = new Date(item.date).getDate();
+            
+            // Парсим дату и извлекаем день
+            const date = new Date(item.date);
+            const dayOfMonth = !isNaN(date.getTime()) ? date.getDate() : '?';
+            text.textContent = dayOfMonth;
 
             // Значение
             const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -148,7 +155,7 @@ class DashboardManager {
             valueText.setAttribute('font-size', '12');
             valueText.setAttribute('font-weight', '600');
             valueText.setAttribute('fill', '#374151');
-            valueText.textContent = item.completed_steps;
+            valueText.textContent = item.completed_steps || 0;
 
             svg.appendChild(rect);
             svg.appendChild(text);
@@ -209,6 +216,10 @@ class DashboardManager {
 
     // Отрисовка графика прогресса
     renderProgressChart(container, data) {
+        if (!data || data.length === 0) {
+            return;
+        }
+        
         const radius = 80;
         const centerX = 100;
         const centerY = 100;
@@ -222,7 +233,11 @@ class DashboardManager {
         let currentAngle = -90; // Начинаем с верха
 
         data.forEach((item, index) => {
-            const percentage = item.progress / 100;
+            if (!item || typeof item.progress !== 'number') {
+                return;
+            }
+            
+            const percentage = Math.min(Math.max(item.progress / 100, 0), 1); // Clamp between 0 and 1
             const angle = percentage * 360;
             const largeArcFlag = angle > 180 ? 1 : 0;
 
@@ -236,7 +251,7 @@ class DashboardManager {
 
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', `M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`);
-            path.setAttribute('fill', item.color);
+            path.setAttribute('fill', item.color || '#3b82f6');
             path.setAttribute('opacity', '0.8');
             path.style.transition = 'all 0.3s ease';
 
@@ -825,6 +840,39 @@ class DashboardManager {
     getCSRFToken() {
         return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
                document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || '';
+    }
+
+    // Инициализация табов для раздела "Мои работы"
+    initSubmissionTabs() {
+        const tabButtons = document.querySelectorAll('.submissions-tabs .tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        if (tabButtons.length === 0) return;
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+
+                // Remove active class from all buttons
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                // Hide all tab contents
+                tabContents.forEach(content => {
+                    content.style.display = 'none';
+                });
+
+                // Show target tab content
+                const targetContent = document.getElementById(targetTab + '-tab');
+                if (targetContent) {
+                    targetContent.style.display = 'block';
+                }
+            });
+        });
     }
 }
 

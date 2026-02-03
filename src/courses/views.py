@@ -38,7 +38,7 @@ def course_list_view(request: HttpRequest) -> HttpResponse:
     """
     # Показываем только активные курсы
     courses = list(
-        Course.objects.filter(status="active").select_related().prefetch_related("students")
+        Course.objects.filter(status="active").select_related()
     )
     return render(request, "courses/courses.html", {"courses": courses})
 

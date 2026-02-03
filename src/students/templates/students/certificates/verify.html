@@ -84,7 +84,7 @@
 
                             <div class="info-row">
                                 <span class="info-label">📚 {% trans "Курс:" %}</span>
-                                <span class="info-value">{{ certificate.course.title }}</span>
+                                <span class="info-value">{{ certificate.course.name }}</span>
                             </div>
 
                             <div class="info-row">
@@ -98,8 +98,8 @@
                             </div>
 
                             <div class="info-row">
-                                <span class="info-label">✅ {% trans "Заданий одобрено:" %}</span>
-                                <span class="info-value">{{ certificate.assignments_approved }}</span>
+                                <span class="info-label">⭐ {% trans "Получено проверок:" %}</span>
+                                <span class="info-value">{{ certificate.reviews_received }}</span>
                             </div>
 
                             {% if certificate.final_grade %}
@@ -133,8 +133,7 @@
                         <p><strong>{% trans "Как это работает?" %}</strong></p>
                         <p>{% trans "Каждый сертификат Pyland имеет уникальный номер и код верификации. Вы можете использовать любой из них для проверки подлинности." %}</p>
                         <p class="help-text-muted">
-                            {% trans "Если у вас возникли вопросы, свяжитесь с нашей" %}
-                            <a href="{% url 'support:create_ticket' %}">{% trans "службой поддержки" %}</a>.
+                            {% trans "Если у вас возникли вопросы, напишите нам: pylandschool@gmail.com" %}
                         </p>
                     </div>
                 </div>

@@ -178,11 +178,13 @@ class Course(models.Model):
 
         total_lessons = lessons_qs.count()
         completed_lessons = 0
+        
         for lesson_item in lessons_qs:
-            if (
+            is_completed = (
                 lesson_item.total_steps > 0
                 and lesson_item.total_steps == lesson_item.completed_steps
-            ):
+            )
+            if is_completed:
                 completed_lessons += 1
 
         last_activity = (

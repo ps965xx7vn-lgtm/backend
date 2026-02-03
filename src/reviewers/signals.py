@@ -22,9 +22,38 @@ from authentication.models import Reviewer
 from reviewers.models import LessonSubmission
 
 from .cache_utils import invalidate_reviewer_cache
-from .models import Review
+from .models import Review, StepProgress
 
 logger = logging.getLogger(__name__)
+
+
+def invalidate_student_caches(student_profile, course=None):
+    """
+    Инвалидирует все кэши студента.
+    
+    Args:
+        student_profile: Профиль студента (Student)
+        course: Курс (опционально) - если указан, инвалидирует только его кэш
+    """
+    from students.cache_utils import safe_cache_delete
+    
+    # Инвалидируем основные кэши дашборда
+    safe_cache_delete(f'dashboard_stats_{student_profile.id}')
+    safe_cache_delete(f'user_courses_stats_{student_profile.id}')
+    
+    if course:
+        # Инвалидируем кэш конкретного курса
+        safe_cache_delete(f'course_progress_{course.id}_{student_profile.id}')
+        for lesson in course.lessons.all():
+            safe_cache_delete(f'lesson_progress_{lesson.id}_{student_profile.id}')
+    else:
+        # Инвалидируем все курсы студента
+        for course in student_profile.courses.all():
+            safe_cache_delete(f'course_progress_{course.id}_{student_profile.id}')
+            for lesson in course.lessons.all():
+                safe_cache_delete(f'lesson_progress_{lesson.id}_{student_profile.id}')
+    
+    logger.info(f"Invalidated cache keys for student {student_profile.id}")
 
 
 @receiver(post_save, sender=Review)
@@ -187,6 +216,10 @@ def notify_student_on_review(sender, instance: Review, created: bool, **kwargs):
                 logger.error(
                     f"Не удалось отправить email студенту {student.user.email} даже синхронно: {email_error}"
                 )
+        
+        # ВАЖНО: Инвалидируем кэш студента после изменения статуса submission
+        invalidate_student_caches(student, course=submission.lesson.course)
+        logger.info(f"Cache invalidated for student {student.user.email} after review")
 
     except Exception as e:
         logger.error(f"Ошибка уведомления студента о проверке: {e}")
@@ -322,6 +355,24 @@ def invalidate_reviewer_cache_on_review(sender, instance: Review, **kwargs):
             logger.info(f"Инвалидирован кэш для ревьюера {instance.reviewer.id} после проверки")
     except Exception as e:
         logger.error(f"Ошибка инвалидации кэша ревьюера: {e}")
+
+
+@receiver(post_save, sender=StepProgress)
+def invalidate_student_cache_on_progress(sender, instance: StepProgress, **kwargs):
+    """
+    Инвалидирует кэш студента при изменении прогресса по шагам.
+    
+    Срабатывает: После сохранения StepProgress (создание или обновление)
+    """
+    try:
+        course = instance.step.lesson.course
+        invalidate_student_caches(instance.profile, course=course)
+        logger.info(
+            f"Cache invalidated for student {instance.profile.id} "
+            f"after step progress update (step: {instance.step.name})"
+        )
+    except Exception as e:
+        logger.error(f"Ошибка инвалидации кэша студента при обновлении прогресса: {e}")
 
 
 # Подключение сигналов происходит автоматически при импорте модуля

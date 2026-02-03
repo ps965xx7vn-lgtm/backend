@@ -77,6 +77,7 @@ TEMPLATES = [
                 "core.context_processors.footer_data",
                 "core.context_processors.header_courses",
                 "reviewers.context_processors.reviewers_context",
+                "students.context_processors.student_profile",
             ],
         },
     },
@@ -229,7 +230,7 @@ AUTHENTICATION_BACKENDS = (
 # === SESSION SETTINGS ===
 # Сессия истекает при закрытии браузера, если не выбран "Запомнить меня"
 SESSION_COOKIE_AGE = 1209600  # 2 недели (в секундах)
-SESSION_SAVE_EVERY_REQUEST = False  # Сохраняем сессию только при изменениях
+SESSION_SAVE_EVERY_REQUEST = True  # Сохраняем сессию при каждом запросе для синхронизации между вкладками
 SESSION_COOKIE_SECURE = not DEBUG  # HTTPS only в продакшене
 SESSION_COOKIE_HTTPONLY = True  # Защита от XSS
 SESSION_COOKIE_SAMESITE = "Lax"  # CSRF защита

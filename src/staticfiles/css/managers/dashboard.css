@@ -888,7 +888,7 @@
         width: 280px;
         max-width: 85vw;
         height: 100vh;
-        z-index: 1000;
+        z-index: 999;
         transform: translateX(-100%);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 0;
@@ -995,7 +995,7 @@
         bottom: 0;
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(4px);
-        z-index: 999;
+        z-index: 998;
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
@@ -1005,7 +1005,7 @@
     .sidebar-overlay.active {
         opacity: 1;
         visibility: visible;
-        pointer-events: auto;
+        /* pointer-events будет установлен через JS с задержкой */
     }
 
     .dashboard-main {
@@ -1045,6 +1045,19 @@
     .dashboard-actions {
         width: 100%;
         justify-content: flex-start;
+    }
+
+    /* ВАЖНО: Повышенный z-index для маленьких экранов */
+    .dashboard-sidebar {
+        z-index: 1001 !important;
+    }
+
+    .sidebar-overlay {
+        z-index: 1000 !important;
+    }
+
+    .dashboard-menu-btn {
+        z-index: 1002 !important;
     }
 
     .stats-grid {
@@ -1687,11 +1700,11 @@
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1rem;
     }
-    
+
     .courses-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .charts-container {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -1702,11 +1715,11 @@
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .achievements-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
-    
+
     .action-list {
         gap: 0.5rem;
     }
@@ -2624,7 +2637,7 @@
     .dashboard-layout {
         grid-template-columns: 1fr;
     }
-    
+
     .dashboard-sidebar {
         position: fixed;
         left: -100%;
@@ -2632,32 +2645,32 @@
         width: 280px;
         transition: left 0.3s ease;
     }
-    
+
     .dashboard-sidebar.open {
         left: 0;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .tab-nav {
         flex-wrap: nowrap;
         overflow-x: auto;
     }
-    
+
     .courses-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .limit-cards {
         grid-template-columns: 1fr;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .btn {
         width: 100%;
         justify-content: center;
@@ -4157,20 +4170,20 @@
         grid-template-columns: 1fr;
         gap: 1.25rem;
     }
-    
+
     .form-group.full-width {
         grid-column: 1;
     }
-    
+
     .avatar-upload-container {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .btn-large {
         width: 100%;
         justify-content: center;
@@ -4418,31 +4431,31 @@
     .submissions-grid-compact {
         grid-template-columns: 1fr;
     }
-    
+
     .dashboard-section {
         padding: 1rem;
     }
-    
+
     .section-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .review-item {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .review-avatar {
         width: 36px;
         height: 36px;
     }
-    
+
     .status-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .preference-header {
         flex-wrap: wrap;
     }
@@ -4866,24 +4879,24 @@
     .review-info-card {
         padding: 1.5rem;
     }
-    
+
     .review-info-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .review-form-card {
         padding: 1.5rem;
     }
-    
+
     .review-status-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .review-form-actions {
         flex-direction: column-reverse;
     }
-    
+
     .btn {
         width: 100%;
         padding: 1rem;
@@ -5798,23 +5811,23 @@
     .reviews-container[data-view="list"] .review-card {
         flex-direction: column;
     }
-    
+
     .reviews-container[data-view="list"] .review-card-header {
         flex-direction: row;
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
     }
-    
+
     [data-theme="dark"] .reviews-container[data-view="list"] .review-card-header {
         border-bottom-color: rgba(255, 255, 255, 0.1);
     }
-    
+
     .reviews-container[data-view="list"] .review-card-status {
         margin-top: 0;
         margin-left: 1rem;
     }
-    
+
     .reviews-container[data-view="list"] .review-card-footer {
         width: 100%;
         flex-direction: row;
@@ -5822,11 +5835,11 @@
         border-left: none;
         border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
     }
-    
+
     [data-theme="dark"] .reviews-container[data-view="list"] .review-card-footer {
         border-top-color: rgba(255, 255, 255, 0.1);
     }
-    
+
     .reviews-container[data-view="list"] .review-meta {
         flex-direction: row;
         align-items: center;

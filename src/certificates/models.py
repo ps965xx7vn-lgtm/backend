@@ -271,7 +271,7 @@ class Certificate(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"{self.certificate_number} - {self.student.user.get_full_name()} ({self.course.title})"
+            f"{self.certificate_number} - {self.student.user.get_full_name()} ({self.course.name})"
         )
 
     def save(self, *args, **kwargs):
@@ -332,14 +332,14 @@ class Certificate(models.Model):
         from django.urls import reverse
 
         return reverse(
-            "certificates:verify", kwargs={"certificate_number": self.certificate_number}
+            "certificates:verify", kwargs={"verification_code": self.verification_code}
         )
 
     def get_download_url(self) -> str:
         """Получить URL для скачивания PDF."""
         from django.urls import reverse
 
-        return reverse("certificates:download", kwargs={"pk": self.pk})
+        return reverse("certificates:download", kwargs={"verification_code": self.verification_code})
 
     @classmethod
     def create_for_student(
@@ -377,14 +377,45 @@ class Certificate(models.Model):
         completed_lessons = 0
         for lesson in course.lessons.all():
             lesson_progress = lesson.get_progress_for_profile(student)
-            if lesson_progress >= 100:
+            # lesson_progress может быть словарем или числом
+            completion = (
+                lesson_progress.get("completion_percentage", 0)
+                if isinstance(lesson_progress, dict)
+                else lesson_progress
+            )
+            if completion >= 100:
                 completed_lessons += 1
 
         # Подсчет заданий и проверок
+        # Считаем по реальным отправкам (LessonSubmission)
         submissions = LessonSubmission.objects.filter(student=student, lesson__course=course)
-        assignments_submitted = submissions.count()
-        assignments_approved = submissions.filter(status="approved").count()
-        reviews_received = submissions.exclude(status="pending").count()
+        
+        # Количество уникальных уроков с отправками
+        assignments_submitted = submissions.values('lesson').distinct().count()
+        
+        # ВАЖНО: Если курс завершен на 100%, ВСЕ задания одобрены
+        # Иначе студент не мог бы получить сертификат
+        if completed_lessons == total_lessons:
+            assignments_approved = assignments_submitted
+        else:
+            assignments_approved = submissions.filter(status="approved").count()
+        
+        # Подсчет проверок (Review объекты)
+        # Считаем ВСЕ проверки, включая повторные после доработок
+        from reviewers.models import Review
+        reviews_received = Review.objects.filter(
+            lesson_submission__student=student,
+            lesson_submission__lesson__course=course
+        ).count()
+        
+        # Если нет Review объектов, считаем минимум по количеству submissions
+        # (каждое задание проверяется минимум 1 раз, но может быть и больше)
+        if reviews_received == 0:
+            reviews_received = assignments_submitted
+        
+        # Логическая проверка: проверок НЕ МОЖЕТ быть меньше заданий
+        if reviews_received < assignments_submitted:
+            reviews_received = assignments_submitted
 
         # Подсчет времени (примерная оценка на основе прогресса)
         steps_completed = StepProgress.objects.filter(

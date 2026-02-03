@@ -53,7 +53,7 @@
                                 <span>{% trans "Купить курс" %}</span>
                             </a>
                         {% else %}
-                            <a href="{% url 'authentication:login' %}?next={% url 'payments:checkout' course_slug=course.slug %}" class="btn-revolutionary-hero btn-primary-hero">
+                            <a href="{% url 'authentication:signin' %}?next={% url 'payments:checkout' course_slug=course.slug %}" class="btn-revolutionary-hero btn-primary-hero">
                                 <span>🎯</span>
                                 <span>{% trans "Войти и купить" %}</span>
                             </a>

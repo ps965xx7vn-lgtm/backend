@@ -292,7 +292,9 @@
     border: 1px solid var(--border-color);
     text-decoration: none;
     color: inherit;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .course-card-revolutionary:hover {
@@ -301,9 +303,10 @@
 }
 
 .course-image-revolutionary {
-    height: 200px;
+    height: 220px;
     overflow: hidden;
     position: relative;
+    flex-shrink: 0;
 }
 
 .course-image-revolutionary img {
@@ -357,6 +360,9 @@
 
 .course-content-revolutionary {
     padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .course-title-revolutionary {
@@ -364,12 +370,15 @@
     font-weight: 800;
     margin-bottom: 12px;
     line-height: 1.3;
+    min-height: 2.6rem;
 }
 
 .course-description-revolutionary {
     color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 20px;
+    flex-grow: 1;
+    min-height: 3.2rem;
 }
 
 .course-meta-revolutionary {
@@ -378,6 +387,7 @@
     align-items: center;
     padding-top: 20px;
     border-top: 1px solid var(--border-color);
+    margin-top: auto;
 }
 
 .course-duration-revolutionary,
@@ -409,6 +419,41 @@
     position: absolute;
     top: 0;
     left: 0;
+}
+
+/* === COURSE PURCHASE BUTTONS (UPDATED 2026-02-03 15:20) === */
+.course-action-buttons {
+    margin-top: 16px !important;
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+}
+
+.course-buy-btn,
+a.course-buy-btn,
+a.course-buy-btn:link,
+a.course-buy-btn:visited {
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    display: inline-block !important;
+}
+
+.course-buy-btn:hover,
+.course-buy-btn:focus,
+a.course-buy-btn:hover,
+a.course-buy-btn:focus {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3) !important;
+    color: white !important;
+    text-decoration: none !important;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
 }
 
 /* === FEATURES === */
