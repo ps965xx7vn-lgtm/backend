@@ -1131,8 +1131,8 @@ html, body {
 
 /* Main Content Spacing */
 .main-content {
-  margin-top: 140px; /* Account for fixed header */
-  min-height: calc(100vh - 140px);
+  margin-top: var(--header-height); /* Account for fixed header */
+  min-height: calc(100vh - var(--header-height));
 }
 
 /* === ПЕРЕКЛЮЧАТЕЛЬ ТЕМ === */
@@ -3787,6 +3787,10 @@ html, body {
 }
 
 @media (max-width: 768px) {
+  :root {
+    --header-height: 80px; /* Mobile: только header-main без header-top */
+  }
+
   .header-top {
     display: none;
   }
@@ -3813,7 +3817,7 @@ html, body {
   }
 
   .main-content {
-    margin-top: 80px;
+    margin-top: var(--header-height);
   }
 
   .footer-grid {

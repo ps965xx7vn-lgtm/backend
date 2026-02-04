@@ -3,7 +3,6 @@
 // Новые уникальные классы: stats-*
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Stats Charts Unique - Initializing...');
     
     // Инициализация графика активности
     initDailyActivityChart();
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Анимация недельных баров
     animateWeeklyBars();
     
-    console.log('Stats Charts Unique - Initialized!');
 });
 
 // ========================================
@@ -29,26 +27,22 @@ document.addEventListener('DOMContentLoaded', function() {
 function initDailyActivityChart() {
     const chartContainer = document.getElementById('dailyActivityChart');
     if (!chartContainer) {
-        console.log('Daily activity chart container not found');
         return;
     }
     
     const canvas = document.getElementById('dailyCanvas');
     if (!canvas) {
-        console.log('Daily canvas not found');
         return;
     }
     
     // Получаем данные из атрибутов data (должны быть добавлены в шаблон)
     const dataElement = chartContainer.querySelector('[data-chart-data]');
     if (!dataElement) {
-        console.log('Chart data not found');
         return;
     }
     
     try {
         const chartData = JSON.parse(dataElement.dataset.chartData);
-        console.log('Chart data loaded:', chartData);
         
         // Создаем и рендерим график
         const chart = new ChartRenderer(canvas, chartData);
@@ -57,7 +51,6 @@ function initDailyActivityChart() {
         // Сохраняем ссылку для возможного обновления
         window.dailyChart = chart;
     } catch (error) {
-        console.error('Error initializing daily activity chart:', error);
     }
 }
 

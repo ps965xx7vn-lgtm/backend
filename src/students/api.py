@@ -40,7 +40,6 @@ router = Router(tags=["Students"])
 
 User = get_user_model()
 
-
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
@@ -446,7 +445,7 @@ def complete_step(request, step_id: str) -> MessageSchema:
         step_uuid = UUID(step_id)
         step = Step.objects.get(id=step_uuid)
     except (ValueError, Step.DoesNotExist):
-        raise HttpError(404, "Step not found")
+        raise HttpError(404, "Step not found") from None
 
     # Получаем или создаём запись прогресса
     progress, created = StepProgress.objects.get_or_create(

@@ -256,18 +256,18 @@ class TestStatsSchema:
     def test_valid_stats(self):
         """Тест валидной статистики."""
         data = {
-            "total_students": 1250,
+            "total_students": 0,  # Not publicly displayed
             "total_courses": 15,
             "total_lessons": 230,
             "total_hours": 145.5,
-            "completion_rate": 78.5,
+            "completion_rate": 0.0,  # Not publicly displayed
         }
 
         stats = StatsSchema(**data)
 
-        assert stats.total_students == 1250
+        assert stats.total_students == 0
         assert stats.total_courses == 15
-        assert stats.completion_rate == 78.5
+        assert stats.completion_rate == 0.0
 
     def test_default_values(self):
         """Тест значений по умолчанию."""

@@ -983,7 +983,6 @@ function initHeader() {
           }
         }
       } catch (error) {
-        console.error('Newsletter subscription error:', error);
         if (window.notificationManager) {
           window.notificationManager.show('Произошла ошибка. Попробуйте позже.', 'error', 5000);
         }
@@ -1223,10 +1222,10 @@ function initHeader() {
             let percentage = 0;
 
             switch(stat) {
-              case 'students': percentage = 90; break;  // 2500+ students
-              case 'success': percentage = 98; break;   // 98% success
-              case 'companies': percentage = 70; break; // 150+ companies
               case 'support': percentage = 100; break;  // 24/7 support
+              case 'practice': percentage = 100; break; // 100% practice
+              case 'mentors': percentage = 95; break;   // Expert mentors
+              case 'quality': percentage = 98; break;   // High quality
             }
 
             const circumference = 2 * Math.PI * 25; // r=25

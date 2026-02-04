@@ -4,6 +4,9 @@
 
 /* CSS Custom Properties (Variables) */
 :root {
+  /* === Layout === */
+  --header-height: 140px; /* Full header height: header-top (~60px) + header-main (~80px) */
+
   /* === Цветовая палитра === */
   /* Основные цвета */
   --primary-50: #f0f9ff;
@@ -16,7 +19,7 @@
   --primary-700: #0369a1;
   --primary-800: #075985;
   --primary-900: #0c4a6e;
-  
+
   /* Вторичные цвета */
   --secondary-50: #fafaf9;
   --secondary-100: #f5f5f4;
@@ -28,7 +31,7 @@
   --secondary-700: #44403c;
   --secondary-800: #292524;
   --secondary-900: #1c1917;
-  
+
   /* Успех */
   --success-50: #f0fdf4;
   --success-100: #dcfce7;
@@ -40,7 +43,7 @@
   --success-700: #15803d;
   --success-800: #166534;
   --success-900: #14532d;
-  
+
   /* Предупреждение */
   --warning-50: #fffbeb;
   --warning-100: #fef3c7;
@@ -52,7 +55,7 @@
   --warning-700: #b45309;
   --warning-800: #92400e;
   --warning-900: #78350f;
-  
+
   /* Ошибка */
   --error-50: #fef2f2;
   --error-100: #fee2e2;
@@ -64,7 +67,7 @@
   --error-700: #b91c1c;
   --error-800: #991b1b;
   --error-900: #7f1d1d;
-  
+
   /* Нейтральные цвета */
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
@@ -76,32 +79,32 @@
   --gray-700: #374151;
   --gray-800: #1f2937;
   --gray-900: #111827;
-  
+
   /* Базовые цвета для светлой темы */
   --white: #ffffff;
   --black: #000000;
-  
+
   /* Фоны для светлой темы */
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --bg-tertiary: #f3f4f6;
   --bg-color: #ffffff;
-  
+
   /* Текстовые цвета для светлой темы */
   --text-color: #111827;
   --text-muted: #6b7280;
   --text-secondary: #4b5563;
-  
+
   /* Границы для светлой темы */
   --border-color: #e5e7eb;
-  
+
   /* === Градиенты === */
   --gradient-primary: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
   --gradient-secondary: linear-gradient(135deg, var(--secondary-400) 0%, var(--secondary-600) 100%);
   --gradient-success: linear-gradient(135deg, var(--success-400) 0%, var(--success-600) 100%);
   --gradient-hero: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 50%, var(--secondary-800) 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  
+
   /* === Тени === */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
@@ -110,12 +113,12 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  
+
   /* === Типографика === */
   --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   --font-family-serif: 'Playfair Display', Georgia, serif;
   --font-family-mono: 'JetBrains Mono', 'Fira Code', Consolas, 'Liberation Mono', monospace;
-  
+
   /* Размеры шрифтов */
   --text-xs: 0.75rem;     /* 12px */
   --text-sm: 0.875rem;    /* 14px */
@@ -130,14 +133,14 @@
   --text-7xl: 4.5rem;     /* 72px */
   --text-8xl: 6rem;       /* 96px */
   --text-9xl: 8rem;       /* 128px */
-  
+
   /* Высота строк */
   --leading-tight: 1.25;
   --leading-snug: 1.375;
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
   --leading-loose: 2;
-  
+
   /* === Отступы === */
   --spacing-0: 0px;
   --spacing-1: 0.25rem;   /* 4px */
@@ -153,7 +156,7 @@
   --spacing-20: 5rem;     /* 80px */
   --spacing-24: 6rem;     /* 96px */
   --spacing-32: 8rem;     /* 128px */
-  
+
   /* === Радиусы скругления === */
   --radius-none: 0px;
   --radius-sm: 0.125rem;  /* 2px */
@@ -163,19 +166,19 @@
   --radius-2xl: 1rem;     /* 16px */
   --radius-3xl: 1.5rem;   /* 24px */
   --radius-full: 9999px;
-  
+
   /* === Анимации === */
   --transition-fast: 0.15s ease-out;
   --transition-normal: 0.25s ease-out;
   --transition-slow: 0.4s ease-out;
-  
+
   /* === Размеры экранов === */
   --screen-sm: 640px;
   --screen-md: 768px;
   --screen-lg: 1024px;
   --screen-xl: 1280px;
   --screen-2xl: 1536px;
-  
+
   /* === Z-индексы === */
   --z-negative: -1;
   --z-0: 0;
@@ -205,7 +208,7 @@
   --gray-700: #e5e7eb;
   --gray-800: #f3f4f6;
   --gray-900: #f9fafb;
-  
+
   --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
 }
 
@@ -295,6 +298,20 @@ a:focus {
 
 @media (min-width: 1024px) {
   .container { padding: 0 var(--spacing-8); }
+}
+
+/* === Main Content Layout === */
+main,
+.main-content {
+  padding-top: var(--header-height);
+}
+
+/* Для секций которые идут сразу после header */
+main > section:first-child,
+.main-content > section:first-child,
+main > .revolutionary-hero-home:first-child,
+.main-content > .revolutionary-hero-home:first-child {
+  padding-top: var(--header-height);
 }
 
 /* === Скрытие элементов === */
@@ -487,7 +504,7 @@ pre code {
   /* Переопределение цветов для темной темы */
   --white: #1a1a1a;
   --black: #ffffff;
-  
+
   /* Серые цвета для темной темы */
   --gray-50: #1f1f1f;
   --gray-100: #2a2a2a;
@@ -500,21 +517,21 @@ pre code {
   --gray-800: #e0e0e0;
   --gray-900: #ffffff;
   --gray-950: #ffffff;
-  
+
   /* Фоны для темной темы */
   --bg-primary: #1a1a1a;
   --bg-secondary: #2a2a2a;
   --bg-tertiary: #3a3a3a;
   --bg-color: #1a1a1a;
-  
+
   /* Текстовые цвета для темной темы */
   --text-color: #ffffff;
   --text-muted: #a0a0a0;
   --text-secondary: #c0c0c0;
-  
+
   /* Границы для темной темы */
   --border-color: #4a4a4a;
-  
+
   /* Обновленные градиенты для темной темы */
   --gradient-primary: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-600) 100%);
   --gradient-success: linear-gradient(135deg, var(--success-600) 0%, var(--success-700) 100%);
@@ -1203,34 +1220,34 @@ pre code {
     padding: 60px 24px;
     margin-bottom: 60px;
   }
-  
+
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.125rem;
   }
-  
+
   .features-grid,
   .courses-grid {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  
+
   .stats-section {
     padding: 60px 24px;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
   }
-  
+
   .cta-section {
     padding: 60px 24px;
   }
-  
+
   .cta-title {
     font-size: 2rem;
   }

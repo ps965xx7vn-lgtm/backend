@@ -26,12 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (!toggleBtn || !sidebar || !overlay) {
-        console.warn('Dashboard elements not found:', { toggleBtn, sidebar, overlay });
         return; // Элементы не найдены
     }
 
     // Проверяем начальное состояние
-
 
     // ВАЖНО: На mobile убираем класс open при инициализации
     // Потому что на desktop sidebar всегда открыт, но нам нужно скрыть на mobile

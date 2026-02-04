@@ -25,38 +25,49 @@ from .models import Course
 
 def course_list_view(request: HttpRequest) -> HttpResponse:
     """
-    Представление для отображения списка всех курсов.
+    Представление для отображения списка всех активных курсов.
 
-    GET:
-        - Показывает все доступные курсы.
+    Показывает публичный каталог курсов со статусом 'active'.
+    Использует оптимизацию запросов через select_related.
 
     Args:
-        request (HttpRequest): HTTP-запрос пользователя.
+        request: HTTP-запрос пользователя
 
     Returns:
-        HttpResponse: Страница со списком курсов.
+        HttpResponse: Отрендеренная страница courses/courses.html со списком курсов
+
+    Template context:
+        courses: List[Course] - список активных курсов
     """
-    # Показываем только активные курсы
-    courses = list(
-        Course.objects.filter(status="active").select_related()
-    )
+    courses = list(Course.objects.filter(status="active").select_related())
     return render(request, "courses/courses.html", {"courses": courses})
 
 
 def course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
     """
-    Представление для отображения деталей курса и его уроков.
+    Представление для отображения детальной информации о курсе.
 
-    GET:
-        - Показывает детали курса и список уроков.
-        - Доступно для всех пользователей (не требует авторизации для просмотра)
+    Показывает полное описание курса, список уроков с шагами,
+    информацию о доступе пользователя и рекомендуемые курсы.
+    Рассчитывает общее количество шагов и примерное время прохождения.
 
     Args:
-        request (HttpRequest): HTTP-запрос пользователя.
-        course_slug (str): Slug курса.
+        request: HTTP-запрос пользователя
+        course_slug: Slug курса для идентификации
 
     Returns:
-        HttpResponse: Страница с деталями курса.
+        HttpResponse: Отрендеренная страница course_detail.html с деталями курса
+
+    Raises:
+        Http404: Если курс с указанным slug не найден
+
+    Template context:
+        course: Course - объект курса
+        lessons: QuerySet[Lesson] - уроки курса с prefetch шагов
+        has_access: bool - имеет ли текущий пользователь доступ к курсу
+        courses: QuerySet[Course] - другие активные курсы для рекомендаций (до 3)
+        total_steps: int - общее количество шагов в курсе
+        estimated_hours: float - примерное время прохождения (1 шаг = 0.5 часа)
     """
     course = get_object_or_404(Course, slug=course_slug)
     lessons = course.lessons.all().prefetch_related("steps")
@@ -64,18 +75,14 @@ def course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
 
     if request.user.is_authenticated:
         try:
-            # Используем правильный related_name из модели Student
             has_access = course.student_enrollments.filter(user=request.user).exists()
         except Exception:
             has_access = False
 
-    # Получаем другие активные курсы для рекомендаций
     other_courses = Course.objects.filter(status="active").exclude(id=course.id)[:3]
 
-    # Подсчитываем общее количество шагов (заданий) в курсе
     total_steps = sum(lesson.steps.count() for lesson in lessons)
 
-    # Рассчитываем примерное время прохождения (1 шаг = 0.5 часа)
     estimated_hours = total_steps * 0.5
 
     return render(

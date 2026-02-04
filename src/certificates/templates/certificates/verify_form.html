@@ -4,20 +4,39 @@
 {% block title %}{% trans "Проверка подлинности сертификата" %} - Pyland{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/courses/courses.css' %}">
 <link rel="stylesheet" href="{% static 'css/certificates/verify-form.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="verify-hero">
-    <div class="verify-hero-content">
-        <div class="verify-hero-icon">🔍</div>
-        <h1 class="verify-hero-title">
-            {% trans "Проверка подлинности сертификата" %}
-        </h1>
-        <p class="verify-hero-subtitle">
-            {% trans "Убедитесь в подлинности сертификата PyLand. Введите код верификации или номер сертификата для мгновенной проверки." %}
-        </p>
+<!-- Hero Section (используем классы из blog/home) -->
+<section class="revolutionary-hero-home">
+    <div class="hero-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="container">
+        <div class="hero-main-content">
+            <div class="hero-badge-revolutionary animate-fade-in">
+                <span>🔍</span>
+                <span>{% trans "Верификация сертификата" %}</span>
+            </div>
+
+            <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+                {% trans "Проверка подлинности сертификата" %}
+            </h1>
+
+            <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+                {% trans "Убедитесь в подлинности сертификата PyLand. Введите код верификации или номер сертификата для мгновенной проверки." %}
+            </p>
+        </div>
     </div>
 </section>
 
@@ -35,10 +54,10 @@
                     <label for="verification_code" class="verify-form-label">
                         {% trans "Код верификации или номер сертификата" %}
                     </label>
-                    <input 
-                        type="text" 
-                        id="verification_code" 
-                        name="verification_code" 
+                    <input
+                        type="text"
+                        id="verification_code"
+                        name="verification_code"
                         class="verify-form-input"
                         placeholder="{% trans 'Например: 30B432450602 или CERT-20260203-A3F9' %}"
                         value="{{ request.GET.code|default:'' }}"
@@ -164,11 +183,11 @@
                 <p>{% trans "Вы можете проверить подлинность сертификата, используя:" %}</p>
                 <ul class="verify-info-list">
                     <li>
-                        <strong>{% trans "Код верификации" %}</strong> 
+                        <strong>{% trans "Код верификации" %}</strong>
                         {% trans "(12 символов, например: 30B432450602)" %}
                     </li>
                     <li>
-                        <strong>{% trans "Номер сертификата" %}</strong> 
+                        <strong>{% trans "Номер сертификата" %}</strong>
                         {% trans "(например: CERT-20260203-A3F9)" %}
                     </li>
                 </ul>

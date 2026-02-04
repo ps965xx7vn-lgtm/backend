@@ -178,7 +178,6 @@ class PaymentAdmin(admin.ModelAdmin):
             label,
         )
 
-
     @admin.display(
         description=_("Пользователь"),
         ordering="user__email",
@@ -203,7 +202,6 @@ class PaymentAdmin(admin.ModelAdmin):
             )
         return "-"
 
-
     @admin.display(
         description=_("Курс"),
         ordering="course__name",
@@ -222,7 +220,6 @@ class PaymentAdmin(admin.ModelAdmin):
             url = reverse("admin:courses_course_change", args=[obj.course.pk])
             return format_html('<a href="{}" target="_blank">📚 {}</a>', url, obj.course.name)
         return "-"
-
 
     @admin.display(
         description=_("Сумма"),
@@ -253,7 +250,6 @@ class PaymentAdmin(admin.ModelAdmin):
             amount_formatted,
         )
 
-
     @admin.display(
         description=_("Метод оплаты"),
         ordering="payment_method",
@@ -281,10 +277,7 @@ class PaymentAdmin(admin.ModelAdmin):
             '<span style="color: {}; font-weight: 600;">{} {}</span>', color, icon, name
         )
 
-
-    @admin.action(
-        description=_("Вернуть средства (refund)")
-    )
+    @admin.action(description=_("Вернуть средства (refund)"))
     def mark_as_refunded(self, request, queryset):
         """
         Action для массового возврата платежей.
@@ -303,7 +296,6 @@ class PaymentAdmin(admin.ModelAdmin):
         self.message_user(
             request, f"Успешно возвращено платежей: {refunded_count} из {queryset.count()}"
         )
-
 
     def get_queryset(self, request):
         """

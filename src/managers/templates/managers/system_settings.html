@@ -96,11 +96,11 @@
             <div class="chart-content">
                 <form method="post">
                     {% csrf_token %}
-                    
+
                     {% for prefix, settings in grouped_settings.items %}
                     <div class="settings-group">
                         <h3 class="settings-group-title">{{ prefix|title }}</h3>
-                        
+
                         {% for setting in settings %}
                         <div class="form-group">
                             <label class="form-label" for="setting_{{ setting.id }}">
@@ -109,11 +109,11 @@
                             {% if setting.description %}
                             <p class="form-help">{{ setting.description }}</p>
                             {% endif %}
-                            <input 
-                                type="text" 
-                                id="setting_{{ setting.id }}" 
-                                name="setting_{{ setting.id }}" 
-                                value="{{ setting.value }}" 
+                            <input
+                                type="text"
+                                id="setting_{{ setting.id }}"
+                                name="setting_{{ setting.id }}"
+                                value="{{ setting.value }}"
                                 class="form-input"
                             >
                             {% if setting.updated_at %}
@@ -130,7 +130,7 @@
                     {% empty %}
                     <p class="empty-state">{% trans "Нет настроек для отображения" %}</p>
                     {% endfor %}
-                    
+
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
                             {% trans "Сохранить изменения" %}

@@ -121,7 +121,7 @@ class RateLimitMiddleware:
 
     def _get_client_ip(self, request):
         """Получает IP адрес клиента из запроса."""
-        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        x_forwarded_for = request.headers.get("x-forwarded-for")
         if x_forwarded_for:
             ip = x_forwarded_for.split(",")[0].strip()
         else:

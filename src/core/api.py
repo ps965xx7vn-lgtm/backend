@@ -310,12 +310,13 @@ def get_platform_stats(request):
 
         Response 200:
         {
-            "total_students": 1250,
+            "total_students": 0,
             "total_courses": 15,
             "total_lessons": 230,
             "total_hours": 145.5,
-            "completion_rate": 78.5
+            "completion_rate": 0.0
         }
+        Note: Student count and completion rate are not publicly displayed
     """
     try:
         # Получаем статистику с кешированием (10 минут)

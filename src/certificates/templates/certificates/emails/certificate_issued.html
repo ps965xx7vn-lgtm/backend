@@ -1,216 +1,117 @@
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Поздравляем! Вы получили сертификат" %}</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background: white;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            color: #4CAF50;
-            margin: 0;
-            font-size: 28px;
-        }
-        .trophy {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-        .content {
-            margin-bottom: 30px;
-        }
-        .certificate-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .certificate-box h2 {
-            margin: 0 0 10px 0;
-            font-size: 22px;
-        }
-        .certificate-number {
-            font-family: 'Courier New', monospace;
-            font-size: 18px;
-            font-weight: bold;
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-        }
-        .stats {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .stats h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .stat-item:last-child {
-            border-bottom: none;
-        }
-        .stat-label {
-            font-weight: 500;
-            color: #666;
-        }
-        .stat-value {
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        .button {
-            display: inline-block;
-            padding: 15px 30px;
-            margin: 10px 5px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .button:hover {
-            background-color: #45a049;
-        }
-        .button-secondary {
-            background-color: #2196F3;
-        }
-        .button-secondary:hover {
-            background-color: #0b7dda;
-        }
-        .buttons {
-            text-align: center;
-            margin: 30px 0;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-            color: #666;
-            font-size: 14px;
-        }
-        .achievement-message {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="trophy">🏆</div>
-            <h1>{% trans "Поздравляем с завершением курса!" %}</h1>
-        </div>
-
-        <div class="content">
-            <p>{% trans "Здравствуйте," %} <strong>{{ student_name }}</strong>!</p>
-
-            <p>{% trans "Мы рады сообщить, что вы успешно завершили курс и получили сертификат!" %}</p>
-
-            <div class="certificate-box">
-                <h2>{{ course_title }}</h2>
-                <div class="certificate-number">
-                    {% trans "Сертификат №" %} {{ certificate_number }}
-                </div>
-                <p style="margin: 10px 0;">{% trans "Дата завершения:" %} {{ completion_date|date:"d.m.Y" }}</p>
-            </div>
-
-            <div class="achievement-message">
-                <strong>🎉 {% trans "Отличная работа!" %}</strong><br>
-                {% trans "Вы проявили упорство и целеустремленность, пройдя весь путь от начала до конца. Это большое достижение!" %}
-            </div>
-
-            <div class="stats">
-                <h3>📊 {% trans "Ваши результаты:" %}</h3>
-
-                <div class="stat-item">
-                    <span class="stat-label">{% trans "Завершено уроков:" %}</span>
-                    <span class="stat-value">{{ lessons_completed }} / {{ total_lessons }}</span>
-                </div>
-
-                <div class="stat-item">
-                    <span class="stat-label">{% trans "Отправлено заданий:" %}</span>
-                    <span class="stat-value">{{ assignments_submitted }}</span>
-                </div>
-
-                <div class="stat-item">
-                    <span class="stat-label">{% trans "Одобрено заданий:" %}</span>
-                    <span class="stat-value">{{ assignments_approved }}</span>
-                </div>
-
-                <div class="stat-item">
-                    <span class="stat-label">{% trans "Получено отзывов:" %}</span>
-                    <span class="stat-value">{{ reviews_received }}</span>
-                </div>
-
-                {% if total_time_spent %}
-                <div class="stat-item">
-                    <span class="stat-label">{% trans "Время обучения:" %}</span>
-                    <span class="stat-value">{{ total_time_spent|floatformat:1 }} {% trans "часов" %}</span>
-                </div>
-                {% endif %}
-
-                {% if final_grade %}
-                <div class="stat-item">
-                    <span class="stat-label">{% trans "Итоговая оценка:" %}</span>
-                    <span class="stat-value">{{ final_grade }}%</span>
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="buttons">
-                <a href="{{ certificate_url }}" class="button">
-                    📄 {% trans "Просмотреть сертификат" %}
-                </a>
-                <a href="{{ download_url }}" class="button button-secondary">
-                    ⬇️ {% trans "Скачать PDF" %}
-                </a>
-            </div>
-
-            <p style="text-align: center; color: #666; font-size: 14px;">
-                {% trans "Вы можете поделиться своим сертификатом с работодателями или добавить его в портфолио." %}
-            </p>
-        </div>
-
-        <div class="footer">
-            <p>{% trans "С уважением," %}<br><strong>{% trans "Команда Pyland" %}</strong></p>
-            <p style="font-size: 12px; color: #999; margin-top: 20px;">
-                {% trans "Это автоматическое уведомление. Пожалуйста, не отвечайте на это письмо." %}<br>
-                {% trans "Если у вас есть вопросы, свяжитесь с нашей" %}
-                <a href="{{ support_url }}" style="color: #2196F3;">{% trans "службой поддержки" %}</a>.
-            </p>
-        </div>
+<div style="background-color: #f7f7f7; padding: 40px 0; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div style="background-color: #4CAF50; border-radius: 10px 10px 0 0; color: #ffffff; padding: 30px; margin: 0 auto; max-width: 600px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
+      <span style="font-size: 48px;">🎓</span>
+      <span style="font-size: 24px; font-weight: bold;">PyLand</span>
     </div>
-</body>
-</html>
+    <h2 style="margin: 0; font-size: 28px;">{% trans "Поздравляем с завершением курса!" %}</h2>
+  </div>
+
+  <div style="margin: 0 auto; padding: 40px; background-color: #ffffff; max-width: 600px; text-align: left; border-radius: 0 0 10px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <p style="font-size: 18px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+      {% trans "Привет" %}, <strong>{{ student_name }}</strong>!
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6; color: #555; margin-bottom: 30px;">
+      {% trans "Мы рады сообщить, что вы успешно завершили курс и получили сертификат!" %}
+    </p>
+
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 10px; margin: 30px 0; text-align: center;">
+      <h3 style="margin: 0 0 15px 0; font-size: 20px;">{{ course_name }}</h3>
+      <div style="font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; margin: 15px 0; padding: 12px; background: rgba(255,255,255,0.2); border-radius: 6px;">
+        {% trans "Сертификат №" %} {{ certificate_number }}
+      </div>
+      {% if completion_date %}
+      <p style="margin: 10px 0; font-size: 14px; opacity: 0.9;">
+        {% trans "Дата завершения:" %} {{ completion_date|date:"d.m.Y" }}
+      </p>
+      {% endif %}
+    </div>
+
+    <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 30px 0;">
+      <p style="font-size: 14px; line-height: 1.6; color: #856404; margin: 0;">
+        <strong>🎉 {% trans "Отличная работа!" %}</strong><br>
+        {% trans "Вы проявили упорство и целеустремленность, пройдя весь путь от начала до конца. Это большое достижение!" %}
+      </p>
+    </div>
+
+    <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 30px 0;">
+      <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px;">📊 {% trans "Ваши результаты:" %}</h3>
+
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 12px 0; font-size: 14px; color: #64748b;">📚 {% trans "Завершено уроков:" %}</td>
+          <td style="padding: 12px 0; text-align: right; font-weight: bold; color: #4CAF50; font-size: 16px;">
+            {{ lessons_completed }} / {{ total_lessons }}
+          </td>
+        </tr>
+        {% if total_time_spent %}
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 12px 0; font-size: 14px; color: #64748b;">⏱️ {% trans "Время обучения:" %}</td>
+          <td style="padding: 12px 0; text-align: right; font-weight: bold; color: #4CAF50; font-size: 16px;">
+            {{ total_time_spent|floatformat:1 }} {% trans "ч" %}
+          </td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td style="padding: 12px 0; font-size: 14px; color: #64748b;">💬 {% trans "Получено проверок:" %}</td>
+          <td style="padding: 12px 0; text-align: right; font-weight: bold; color: #4CAF50; font-size: 16px;">
+            {{ reviews_received }}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+      <a href="{{ pdf_url }}"
+         style="display: inline-block;
+                padding: 16px 32px;
+                background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                color: #ffffff;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+                margin: 10px;">
+        📄 {% trans "Скачать сертификат" %}
+      </a>
+      <br>
+      <a href="{{ site_url }}/certificates/verify/"
+         style="display: inline-block;
+                padding: 16px 32px;
+                background: linear-gradient(135deg, #2196F3 0%, #0b7dda 100%);
+                color: #ffffff;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+                margin: 10px;">
+        🔍 {% trans "Проверить подлинность" %}
+      </a>
+    </div>
+
+    <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 20px 0;">
+      <p style="font-size: 14px; line-height: 1.6; color: #1e40af; margin: 0;">
+        {% trans "Вы можете поделиться своим сертификатом с работодателями или добавить его в портфолио." %}
+      </p>
+    </div>
+
+    <hr style="border: none; height: 1px; background-color: #e2e8f0; margin: 30px 0;">
+
+    <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 0;">
+      {% trans "С уважением," %}<br>
+      <strong>{% trans "Команда PyLand" %}</strong>
+    </p>
+  </div>
+
+  <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+    <p>
+      {% trans "Это автоматическое письмо, пожалуйста, не отвечайте на него." %}<br>
+      {% trans "Если у вас есть вопросы, свяжитесь с нашей" %}
+      <a href="{{ site_url }}/support/" style="color: #5865F2; text-decoration: none;">{% trans "службой поддержки" %}</a>.
+    </p>
+  </div>
+</div>

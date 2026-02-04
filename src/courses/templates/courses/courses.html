@@ -2,230 +2,234 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Курсы" %} - PyLand{% endblock %}
-{% block description %}{% trans "Изучайте программирование с лучшими онлайн курсами Python, JavaScript и других технологий" %}{% endblock %}
+{% block title %}
+  {% trans 'Курсы' %}- PyLand
+{% endblock %}
+{% block description %}
+  {% trans 'Изучайте программирование с лучшими онлайн курсами Python, JavaScript и других технологий' %}
+{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/core/home.css' %}">
+  <link rel="stylesheet" href="{% static 'css/courses/courses.css' %}" />
 {% endblock %}
 
 {% block content %}
-<!-- Революционный Hero (используем классы из home.html) -->
-<section class="revolutionary-hero-home">
+  <!-- Революционный Hero (используем классы из home.html) -->
+  <section class="revolutionary-hero-home">
     <div class="hero-particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
     </div>
 
     <div class="container">
-        <div class="hero-main-content">
-            <div class="hero-badge-revolutionary animate-fade-in">
-                <span>🎓</span>
-                <span>{% trans "Курсы программирования" %}</span>
-            </div>
-
-            <h1 class="hero-title-revolutionary animate-fade-in delay-1">
-                {% trans "Изучайте код" %}
-                <br>{% trans "с экспертами" %}
-            </h1>
-
-            <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
-                {% trans "Выберите из нашей коллекции курсов и станьте профессиональным разработчиком. Практические проекты, менторская поддержка и гарантированное трудоустройство." %}
-            </p>
-
-            <div class="hero-actions-revolutionary animate-fade-in delay-3">
-                {% if not user.is_authenticated %}
-                    <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
-                        <span>🚀</span>
-                        <span>{% trans "Начать обучение" %}</span>
-                    </a>
-                {% else %}
-                    <a href="#courses" class="btn-revolutionary-hero btn-primary-hero">
-                        <span>📚</span>
-                        <span>{% trans "Выбрать курс" %}</span>
-                    </a>
-                {% endif %}
-                <a href="#features" class="btn-revolutionary-hero btn-secondary-hero">
-                    <span>✨</span>
-                    <span>{% trans "Возможности" %}</span>
-                </a>
-            </div>
-
-            <div class="hero-stats-revolutionary animate-fade-in delay-4">
-                <div class="stat-card-revolutionary">
-                    <span class="stat-number-revolutionary">{{ courses.count|default:"8" }}+</span>
-                    <span class="stat-label-revolutionary">{% trans "Курсов" %}</span>
-                </div>
-                <div class="stat-card-revolutionary">
-                    <span class="stat-number-revolutionary">150+</span>
-                    <span class="stat-label-revolutionary">{% trans "Студентов" %}</span>
-                </div>
-                <div class="stat-card-revolutionary">
-                    <span class="stat-number-revolutionary">85%</span>
-                    <span class="stat-label-revolutionary">{% trans "Довольны обучением" %}</span>
-                </div>
-                <div class="stat-card-revolutionary">
-                    <span class="stat-number-revolutionary">24/7</span>
-                    <span class="stat-label-revolutionary">{% trans "Поддержка" %}</span>
-                </div>
-            </div>
+      <div class="hero-main-content">
+        <div class="hero-badge-revolutionary animate-fade-in">
+          <span>🎓</span>
+          <span>{% trans 'Курсы программирования' %}</span>
         </div>
-    </div>
-</section>
 
-<!-- Революционные курсы (используем существующие классы) -->
-<section class="courses-revolutionary" id="courses">
+        <h1 class="hero-title-revolutionary animate-fade-in delay-1">
+          {% trans 'Изучайте код' %}
+          <br />{% trans 'с экспертами' %}
+        </h1>
+
+        <p class="hero-subtitle-revolutionary animate-fade-in delay-2">
+          {% trans 'Выберите из нашей коллекции курсов и станьте профессиональным разработчиком. Практические проекты, менторская поддержка и гарантированное трудоустройство.' %}
+        </p>
+
+        <div class="hero-actions-revolutionary animate-fade-in delay-3">
+          {% if not user.is_authenticated %}
+            <a href="{% url 'authentication:signup' %}" class="btn-revolutionary-hero btn-primary-hero">
+              <span>🚀</span>
+              <span>{% trans 'Начать обучение' %}</span>
+            </a>
+          {% else %}
+            <a href="#courses" class="btn-revolutionary-hero btn-primary-hero">
+              <span>📚</span>
+              <span>{% trans 'Выбрать курс' %}</span>
+            </a>
+          {% endif %}
+          <a href="#features" class="btn-revolutionary-hero btn-secondary-hero">
+            <span>✨</span>
+            <span>{% trans 'Возможности' %}</span>
+          </a>
+        </div>
+
+        <div class="hero-stats-revolutionary animate-fade-in delay-4">
+          <div class="stat-card-revolutionary">
+            <span class="stat-number-revolutionary">24/7</span>
+            <span class="stat-label-revolutionary">{% trans 'Поддержка менторов' %}</span>
+          </div>
+          <div class="stat-card-revolutionary">
+            <span class="stat-number-revolutionary">100%</span>
+            <span class="stat-label-revolutionary">{% trans 'Практика' %}</span>
+          </div>
+          <div class="stat-card-revolutionary">
+            <span class="stat-number-revolutionary">∞</span>
+            <span class="stat-label-revolutionary">{% trans 'Доступ к материалам' %}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Революционные курсы (используем существующие классы) -->
+  <section class="courses-revolutionary" id="courses">
     <div class="container">
-        <div class="section-header-revolutionary">
-            <div class="section-badge animate-fade-in">
-                <span>📚</span>
-                <span>{% trans "Курсы" %}</span>
-            </div>
-            <h2 class="section-title-revolutionary animate-fade-in delay-1">
-                {% trans "Топовые направления 2025" %}
-            </h2>
-            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
-                {% trans "Изучайте самые востребованные технологии будущего с нашими интерактивными курсами нового поколения" %}
-            </p>
+      <div class="section-header-revolutionary">
+        <div class="section-badge animate-fade-in">
+          <span>📚</span>
+          <span>{% trans 'Курсы' %}</span>
         </div>
+        <h2 class="section-title-revolutionary animate-fade-in delay-1">{% trans 'Топовые направления 2025' %}</h2>
+        <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+          {% trans 'Изучайте самые востребованные технологии будущего с нашими интерактивными курсами нового поколения' %}
+        </p>
+      </div>
 
-        <!-- Фильтры курсов -->
-        <div class="courses-filter-revolutionary">
-            <button class="filter-btn active" data-filter="all">{% trans "Все курсы" %}</button>
-            <button class="filter-btn" data-filter="python">Python</button>
-            <button class="filter-btn" data-filter="javascript">JavaScript</button>
-            <button class="filter-btn" data-filter="web">{% trans "Веб-разработка" %}</button>
-        </div>
+      <!-- Фильтры курсов -->
+      <div class="courses-filter-revolutionary">
+        <button class="filter-btn active" data-filter="all">{% trans 'Все курсы' %}</button>
+        <button class="filter-btn" data-filter="python">Python</button>
+        <button class="filter-btn" data-filter="javascript">JavaScript</button>
+        <button class="filter-btn" data-filter="web">{% trans 'Веб-разработка' %}</button>
+      </div>
 
-        <div class="courses-grid-revolutionary">
-            {% for course in courses %}
-            <div class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:3 }}">
-                <div class="course-image-revolutionary">
-                    {% if course.image %}
-                        <img src="{{ course.image.url }}" alt="{{ course.name }}">
-                    {% else %}
-                        <div class="course-placeholder-image {% if course.category == 'python' %}course-placeholder-blue{% elif course.category == 'javascript' %}course-placeholder-pink{% endif %}" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
-                            {% if course.category == 'python' %}🐍
-                            {% elif course.category == 'javascript' %}⚡
-                            {% elif course.category == 'web' %}🌐
-                            {% elif course.category == 'data-science' %}📊
-                            {% else %}💻
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                    {% if course.is_featured %}
-                        <div class="course-badge-revolutionary">
-                            {% if course.created_at|timesince < "30 days" %}
-                                {% trans "Новый" %}
-                            {% else %}
-                                {% trans "Хит" %}
-                            {% endif %}
-                        </div>
-                    {% endif %}
+      <div class="courses-grid-revolutionary">
+        {% for course in courses %}
+          <div class="course-card-revolutionary animate-fade-in delay-{{ forloop.counter|add:3 }}" data-category="{{ course.category|lower }}">
+            <div class="course-image-revolutionary">
+              {% if course.image %}
+                <img src="{{ course.image.url }}" alt="{{ course.name }}" />
+              {% else %}
+                <div class="course-placeholder-image {% if course.category == 'python' %}
+                    course-placeholder-blue
+                  {% elif course.category == 'javascript' %}
+                    course-placeholder-pink
+                  {% endif %}"
+                  style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                  {% if course.category == 'python' %}
+                    🐍
+                  {% elif course.category == 'javascript' %}
+                    ⚡
+                  {% elif course.category == 'web' %}
+                    🌐
+                  {% elif course.category == 'data-science' %}
+                    📊
+                  {% else %}
+                    💻
+                  {% endif %}
                 </div>
-                <div class="course-content-revolutionary">
-                    <h3 class="course-title-revolutionary">{{ course.name }}</h3>
-                    <p class="course-description-revolutionary">
-                        {{ course.short_description|default:course.description|truncatewords:20 }}
-                    </p>
-                    <div class="course-meta-revolutionary">
-                        <div class="course-duration-revolutionary">
-                            📚 {{ course.lessons.count|default:"0" }} {% trans "уроков" %}
-                        </div>
-                        <div class="course-lessons-revolutionary">
-                            {% if course.price == 0 or course.price is None %}
-                                <span style="color: #10b981; font-weight: 700;">{% trans "Бесплатно" %}</span>
-                            {% else %}
-                                <span style="font-weight: 700; color: #0ea5e9;">${{ course.price }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <a href="{% url 'courses:course_detail' course.slug %}" class="course-btn-revolutionary">
-                        <span>{% trans "Подробнее" %}</span>
-                        <span>→</span>
-                    </a>
+              {% endif %}
+              {% if course.is_featured %}
+                <div class="course-badge-revolutionary">
+                  {% if course.created_at|timesince < '30 days' %}
+                    {% trans 'Новый' %}
+                  {% else %}
+                    {% trans 'Хит' %}
+                  {% endif %}
                 </div>
+              {% endif %}
             </div>
-            {% endfor %}
-        </div>
+            <div class="course-content-revolutionary">
+              <h3 class="course-title-revolutionary">{{ course.name }}</h3>
+              <p class="course-description-revolutionary">{{ course.short_description|default:course.description|truncatewords:20 }}</p>
+              <div class="course-meta-revolutionary">
+                <div class="course-duration-revolutionary">
+                  📚 {{ course.lessons.count|default:'0' }} {% trans 'уроков' %}
+                </div>
+                <div class="course-lessons-revolutionary">
+                  {% if course.price == 0 or course.price is None %}
+                    <span style="color: #10b981; font-weight: 700;">{% trans 'Бесплатно' %}</span>
+                  {% else %}
+                    <span style="font-weight: 700; color: #0ea5e9;">${{ course.price }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              <a href="{% url 'courses:course_detail' course.slug %}" class="course-btn-revolutionary">
+                <span>{% trans 'Подробнее' %}</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-</section>
+  </section>
 
-<!-- Возможности (полностью используем из home.html) -->
-<section class="features-revolutionary" id="features">
+  <!-- Возможности (полностью используем из home.html) -->
+  <section class="features-revolutionary" id="features">
     <div class="container">
-        <div class="section-header-revolutionary">
-            <div class="section-badge animate-fade-in">
-                <span>⚡</span>
-                <span>{% trans "Возможности" %}</span>
-            </div>
-            <h2 class="section-title-revolutionary animate-fade-in delay-1">
-                {% trans "Почему PyLand?" %}
-            </h2>
-            <p class="section-subtitle-revolutionary animate-fade-in delay-2">
-                {% trans "Мы используем передовые технологии и инновационные методики обучения для максимально эффективного усвоения материала" %}
-            </p>
+      <div class="section-header-revolutionary">
+        <div class="section-badge animate-fade-in">
+          <span>⚡</span>
+          <span>{% trans 'Возможности' %}</span>
+        </div>
+        <h2 class="section-title-revolutionary animate-fade-in delay-1">{% trans 'Почему PyLand?' %}</h2>
+        <p class="section-subtitle-revolutionary animate-fade-in delay-2">
+          {% trans 'Мы используем передовые технологии и инновационные методики обучения для максимально эффективного усвоения материала' %}
+        </p>
+      </div>
+
+      <div class="features-grid-revolutionary">
+        <div class="feature-card-revolutionary animate-fade-in delay-3">
+          <div class="feature-icon-revolutionary">🎯</div>
+          <h3 class="feature-title-revolutionary">{% trans 'Практический подход' %}</h3>
+          <p class="feature-description-revolutionary">
+            {% trans 'Вы учитесь на реальных примерах и задачах. Каждый урок включает практические упражнения для закрепления материала' %}
+          </p>
         </div>
 
-        <div class="features-grid-revolutionary">
-            <div class="feature-card-revolutionary animate-fade-in delay-3">
-                <div class="feature-icon-revolutionary">🎯</div>
-                <h3 class="feature-title-revolutionary">{% trans "Практический подход" %}</h3>
-                <p class="feature-description-revolutionary">
-                    {% trans "Вы учитесь на реальных примерах и задачах. Каждый урок включает практические упражнения для закрепления материала" %}
-                </p>
-            </div>
-
-            <div class="feature-card-revolutionary animate-fade-in delay-4">
-                <div class="feature-icon-revolutionary">🌐</div>
-                <h3 class="feature-title-revolutionary">{% trans "Живая поддержка менторов" %}</h3>
-                <p class="feature-description-revolutionary">
-                    {% trans "Опытные разработчики помогут разобраться с любыми вопросами и дадут обратную связь по вашим проектам" %}
-                </p>
-            </div>
-
-            <div class="feature-card-revolutionary animate-fade-in delay-5">
-                <div class="feature-icon-revolutionary">🚀</div>
-                <h3 class="feature-title-revolutionary">{% trans "Реальные проекты" %}</h3>
-                <p class="feature-description-revolutionary">
-                    {% trans "Создавайте настоящие приложения и веб-сайты в процессе обучения. Пополняйте портфолио работами для будущего трудоустройства" %}
-                </p>
-            </div>
-
-            <div class="feature-card-revolutionary animate-fade-in delay-6">
-                <div class="feature-icon-revolutionary">👥</div>
-                <h3 class="feature-title-revolutionary">{% trans "Активное сообщество" %}</h3>
-                <p class="feature-description-revolutionary">
-                    {% trans "Общайтесь с единомышленниками, обменивайтесь опытом и находите напарников для совместных проектов" %}
-                </p>
-            </div>
-
-            <div class="feature-card-revolutionary animate-fade-in delay-3">
-                <div class="feature-icon-revolutionary">🎓</div>
-                <h3 class="feature-title-revolutionary">{% trans "Официальные сертификаты" %}</h3>
-                <p class="feature-description-revolutionary">
-                    {% trans "Получайте сертификаты о прохождении курсов, которые подтверждают ваши знания и навыки перед работодателями" %}
-                </p>
-            </div>
-
-            <div class="feature-card-revolutionary animate-fade-in delay-4">
-                <div class="feature-icon-revolutionary">💼</div>
-                <h3 class="feature-title-revolutionary">{% trans "Помощь в трудоустройстве" %}</h3>
-                <p class="feature-description-revolutionary">
-                    {% trans "Консультации по составлению резюме, подготовка к собеседованиям и рекомендации лучшим студентам" %}
-                </p>
-            </div>
+        <div class="feature-card-revolutionary animate-fade-in delay-4">
+          <div class="feature-icon-revolutionary">🌐</div>
+          <h3 class="feature-title-revolutionary">{% trans 'Живая поддержка менторов' %}</h3>
+          <p class="feature-description-revolutionary">
+            {% trans 'Опытные разработчики помогут разобраться с любыми вопросами и дадут обратную связь по вашим проектам' %}
+          </p>
         </div>
+
+        <div class="feature-card-revolutionary animate-fade-in delay-5">
+          <div class="feature-icon-revolutionary">🚀</div>
+          <h3 class="feature-title-revolutionary">{% trans 'Реальные проекты' %}</h3>
+          <p class="feature-description-revolutionary">
+            {% trans 'Создавайте настоящие приложения и веб-сайты в процессе обучения. Пополняйте портфолио работами для будущего трудоустройства' %}
+          </p>
+        </div>
+
+        <div class="feature-card-revolutionary animate-fade-in delay-6">
+          <div class="feature-icon-revolutionary">👥</div>
+          <h3 class="feature-title-revolutionary">{% trans 'Активное сообщество' %}</h3>
+          <p class="feature-description-revolutionary">
+            {% trans 'Общайтесь с единомышленниками, обменивайтесь опытом и находите напарников для совместных проектов' %}
+          </p>
+        </div>
+
+        <div class="feature-card-revolutionary animate-fade-in delay-3">
+          <div class="feature-icon-revolutionary">🎓</div>
+          <h3 class="feature-title-revolutionary">{% trans 'Официальные сертификаты' %}</h3>
+          <p class="feature-description-revolutionary">
+            {% trans 'Получайте сертификаты о прохождении курсов, которые подтверждают ваши знания и навыки перед работодателями' %}
+          </p>
+        </div>
+
+        <div class="feature-card-revolutionary animate-fade-in delay-4">
+          <div class="feature-icon-revolutionary">💼</div>
+          <h3 class="feature-title-revolutionary">{% trans 'Помощь в трудоустройстве' %}</h3>
+          <p class="feature-description-revolutionary">
+            {% trans 'Консультации по составлению резюме, подготовка к собеседованиям и рекомендации лучшим студентам' %}
+          </p>
+        </div>
+      </div>
     </div>
-</section>
+  </section>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/courses/courses.js' %}"></script>
+  <script src="{% static 'js/courses/courses.js' %}"></script>
 {% endblock %}

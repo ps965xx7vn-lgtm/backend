@@ -120,32 +120,6 @@
                             {{ course.description|markdownify|default:"Этот курс предназначен для изучения современных технологий программирования. Вы получите практические навыки и знания, необходимые для успешной карьеры в IT." }}
                         </div>
 
-                        <h4 class="course-learning-title">{% trans "Что вы изучите:" %}</h4>
-                        <ul class="course-learning-list">
-                            <li class="course-learning-item">
-                                <span class="course-learning-icon">✓</span>
-                                {% trans "Основы программирования и алгоритмы" %}
-                            </li>
-                            <li class="course-learning-item">
-                                <span class="course-learning-icon">✓</span>
-                                {% trans "Работа с базами данных" %}
-                            </li>
-                            <li class="course-learning-item">
-                                <span class="course-learning-icon">✓</span>
-                                {% trans "Создание веб-приложений" %}
-                            </li>
-                            <li class="course-learning-item">
-                                <span class="course-learning-icon">✓</span>
-                                {% trans "Тестирование и отладка кода" %}
-                            </li>
-                            <li class="course-learning-item">
-                                <span class="course-learning-icon">✓</span>
-                                {% trans "Развертывание приложений" %}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
                 <!-- Curriculum Tab -->
                 <div class="tab-content" id="curriculum-content">
                     {% for lesson in lessons %}
@@ -232,7 +206,8 @@
                         <div class="code-line"><span class="code-comment">// Интерактивное обучение</span></div>
                         <div class="code-line"><span class="code-keyword">const</span> <span class="code-variable">learningApp</span> = {</div>
                         <div class="code-line">&nbsp;&nbsp;courses: [],</div>
-                        <div class="code-line">&nbsp;&nbsp;students: <span class="code-number">5000</span>,</div>
+                        <div class="code-line">&nbsp;&nbsp;support: <span class="code-string">'24/7'</span>,</div>
+                        <div class="code-line">&nbsp;&nbsp;practice: <span class="code-string">'100%'</span>,</div>
                         <div class="code-line"></div>
                         <div class="code-line">&nbsp;&nbsp;<span class="code-function">addCourse</span>(<span class="code-param">course</span>) {</div>
                         <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">this</span>.courses.<span class="code-function">push</span>(<span class="code-param">course</span>);</div>
@@ -253,7 +228,7 @@
                     {% trans "Готовы начать изучение?" %}
                 </h2>
                 <p class="cta-description-revolutionary animate-fade-in delay-1">
-                    {% trans "Присоединяйтесь к тысячам студентов, которые уже изменили свою жизнь благодаря этому курсу. Получите персональную поддержку и практические навыки." %}
+                    {% trans "Присоединяйтесь к растущему сообществу студентов, которые уже начали изменять свою жизнь благодаря этому курсу. Получите персональную поддержку и практические навыки." %}
                 </p>
                 <div class="cta-actions-revolutionary animate-fade-in delay-2">
                     {% if has_access %}

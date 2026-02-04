@@ -48,7 +48,6 @@ from .models import Payment
 
 logger = logging.getLogger(__name__)
 
-
 # Курсы валют для конвертации (можно вынести в settings или получать из API)
 EXCHANGE_RATES: dict[str, Decimal] = {
     "USD": Decimal("1.00"),
@@ -179,7 +178,7 @@ def checkout_view(request: HttpRequest, course_slug: str) -> HttpResponse:
     prices_in_currencies = {}
     course_price_usd = course.price
 
-    for currency_code, currency_label in Payment.CURRENCY_CHOICES:
+    for currency_code, _currency_label in Payment.CURRENCY_CHOICES:
         prices_in_currencies[currency_code] = convert_currency(
             course_price_usd, "USD", currency_code
         )

@@ -178,7 +178,7 @@ class Course(models.Model):
 
         total_lessons = lessons_qs.count()
         completed_lessons = 0
-        
+
         for lesson_item in lessons_qs:
             is_completed = (
                 lesson_item.total_steps > 0

@@ -55,19 +55,14 @@ class SubscriptionAdmin(admin.ModelAdmin):
         "export_to_csv",
     ]
 
-    @admin.display(
-        description="Статус"
-    )
+    @admin.display(description="Статус")
     def status_icon(self, obj):
         """Иконка статуса подписки."""
         if obj.is_active:
             return format_html('<span style="color: green; font-size: 16px;">✅</span>')
         return format_html('<span style="color: gray; font-size: 16px;">❌</span>')
 
-
-    @admin.display(
-        description="Тип"
-    )
+    @admin.display(description="Тип")
     def subscription_type_display(self, obj):
         """Красивое отображение типа подписки."""
         type_colors = {
@@ -90,10 +85,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             type_label,
         )
 
-
-    @admin.display(
-        description="Пользователь"
-    )
+    @admin.display(description="Пользователь")
     def user_link(self, obj):
         """Ссылка на пользователя в админке."""
         if obj.user:
@@ -103,28 +95,19 @@ class SubscriptionAdmin(admin.ModelAdmin):
             return format_html('<a href="{}">{}</a>', url, obj.user.email)
         return format_html('<span style="color: gray;">Анонимная</span>')
 
-
-    @admin.action(
-        description="✅ Активировать выбранные подписки"
-    )
+    @admin.action(description="✅ Активировать выбранные подписки")
     def activate_subscriptions(self, request, queryset):
         """Массовая активация подписок."""
         updated = queryset.update(is_active=True)
         self.message_user(request, f"✅ Активировано подписок: {updated}")
 
-
-    @admin.action(
-        description="❌ Деактивировать выбранные подписки"
-    )
+    @admin.action(description="❌ Деактивировать выбранные подписки")
     def deactivate_subscriptions(self, request, queryset):
         """Массовая деактивация подписок."""
         updated = queryset.update(is_active=False)
         self.message_user(request, f"❌ Деактивировано подписок: {updated}")
 
-
-    @admin.action(
-        description="📥 Экспортировать в CSV"
-    )
+    @admin.action(description="📥 Экспортировать в CSV")
     def export_to_csv(self, request, queryset):
         """Экспорт подписок в CSV."""
         import csv
@@ -148,4 +131,3 @@ class SubscriptionAdmin(admin.ModelAdmin):
             )
 
         return response
-

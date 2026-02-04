@@ -55,16 +55,59 @@ logger = logging.getLogger(__name__)
 @login_required
 def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
     """
-    Улучшенный дашборд с детальной аналитикой прогресса обучения.
+    Улучшенный дашборд студента с детальной аналитикой прогресса обучения.
+
+    Отображает полную статистику обучения студента включая:
+    - Детальный прогресс по каждому курсу и уроку
+    - Бейджи достижений (первые шаги, настойчивость, мастер Python)
+    - Персонализированные рекомендации для продолжения обучения
+    - График активности за последние 7 дней
+    - Статус отправленных работ (pending, changes_requested, approved)
+    - Избранные статьи из блога
+
+    Args:
+        request: HTTP запрос от студента
+        user_uuid: UUID профиля студента для просмотра
+
+    Returns:
+        HttpResponse: Отрендеренная страница students/dashboard/dashboard.html
+
+    Template Context:
+        profile: Student - профиль студента
+        courses: QuerySet[Course] - все курсы студента
+        course_stats: List[dict] - топ-4 активных курса для карточек
+        all_course_stats: List[dict] - полный список курсов, отсортированный по активности
+        is_public: bool - просмотр чужого профиля (True) или своего (False)
+        overall_stats: dict - общая статистика (курсы, шаги, процент завершения)
+        recent_progress: QuerySet[StepProgress] - последние 10 завершенных шагов за 7 дней
+        daily_activity: List[dict] - активность по дням (date, completed_steps)
+        achievements: List[dict] - разблокированные бейджи достижений
+        recommendations: List[dict] - персонализированные рекомендации (до 5)
+        submissions_by_status: dict - работы сгруппированные по статусу
+        submissions_count: dict - количество работ по статусам
+        bookmarked_articles: QuerySet[Bookmark] - избранные статьи (до 10)
+        dashboard_data_json: dict - данные для JS (графики и прогресс-бары)
+
+    Cache Strategy:
+        - dashboard_stats: кэш на 5 минут
+        - Инвалидируется при обновлении прогресса через StepProgress
+        - Ключ кэша: f"dashboard_stats_{profile.id}"
+
+    Achievements Logic:
+        - "Первые шаги": ≥ 1 завершенного шага
+        - "Настойчивость": ≥ 10 завершенных шагов
+        - "Мастер Python": ≥ 50 завершенных шагов
+        - "Завершение курса": ≥ 1 полностью завершенного курса
+
+    Example:
+        GET /account/dashboard/{uuid}/
+        → Показывает полный дашборд с аналитикой и рекомендациями
     """
     profile = get_object_or_404(Student, id=user_uuid)
     is_public = profile.user != request.user
 
-    # Базовая информация о курсах
     courses = profile.courses.all()
 
-    # Детальная статистика по курсам
-    # Проверяем кэш для статистики дашборда
     dashboard_cache_key = f"dashboard_stats_{profile.id}"
     cached_dashboard = safe_cache_get(dashboard_cache_key)
 
@@ -73,26 +116,21 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         total_steps_completed = cached_dashboard["total_steps_completed"]
         total_steps_available = cached_dashboard["total_steps_available"]
     else:
-        # Статистика по курсам с оптимизированными запросами
         course_stats = []
         total_steps_completed = 0
         total_steps_available = 0
 
-        # Предзагружаем все данные одним запросом
         courses_with_prefetch = courses.prefetch_related(
             "lessons__steps", "lessons__steps__progress"
         )
 
         for course in courses_with_prefetch:
-            # Используем кэшированный метод для получения прогресса
             course_progress = course.get_progress_for_profile(profile)
 
-            # Статистика по урокам курса
             lesson_stats = []
             for lesson in course.lessons.all():
                 lesson_progress = lesson.get_progress_for_profile(profile)
 
-                # Последняя активность по уроку
                 last_activity = (
                     StepProgress.objects.filter(
                         profile=profile, step__lesson=lesson, is_completed=True
@@ -128,7 +166,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             total_steps_completed += course_progress["completed_steps"]
             total_steps_available += course_progress["total_steps"]
 
-        # Кэшируем результат на 5 минут (короче чем другие, т.к. дашборд обновляется чаще)
         dashboard_cache_data = {
             "course_stats": course_stats,
             "total_steps_completed": total_steps_completed,
@@ -136,18 +173,15 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         }
         safe_cache_set(dashboard_cache_key, dashboard_cache_data, 60 * 5)
 
-    # Общая статистика
     overall_completion = (
         (total_steps_completed / total_steps_available * 100) if total_steps_available > 0 else 0
     )
 
-    # Активность за последние 7 дней
     seven_days_ago = timezone.now() - timedelta(days=7)
     recent_progress = StepProgress.objects.filter(
         profile=profile, completed_at__gte=seven_days_ago, is_completed=True
     ).order_by("-completed_at")[:10]
 
-    # Статистика активности по дням
     daily_activity = []
     for i in range(7):
         day = timezone.now() - timedelta(days=i)
@@ -163,12 +197,10 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
 
         daily_activity.append({"date": day_start.isoformat(), "completed_steps": completed_today})
 
-    daily_activity.reverse()  # Сортируем от прошлого к настоящему
+    daily_activity.reverse()
 
-    # Достижения и бейджи
     achievements = []
 
-    # Бейдж "Первые шаги"
     if total_steps_completed >= 1:
         achievements.append(
             {
@@ -179,7 +211,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             }
         )
 
-    # Бейдж "Настойчивость"
     if total_steps_completed >= 10:
         achievements.append(
             {
@@ -190,7 +221,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             }
         )
 
-    # Бейдж "Мастер Python"
     if total_steps_completed >= 50:
         achievements.append(
             {
@@ -201,7 +231,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             }
         )
 
-    # Бейдж "Курс завершен"
     completed_courses = len([course for course in course_stats if course["is_completed"]])
     if completed_courses >= 1:
         achievements.append(
@@ -213,10 +242,8 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             }
         )
 
-    # Рекомендации для дальнейшего обучения
     recommendations = []
 
-    # Найти незавершенные уроки
     for course_stat in course_stats:
         for lesson_stat in course_stat["lessons"]:
             if not lesson_stat["is_completed"] and lesson_stat["completion_percentage"] > 0:
@@ -230,7 +257,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
                     }
                 )
 
-    # Найти новые уроки для начала
     for course_stat in course_stats:
         for lesson_stat in course_stat["lessons"]:
             if lesson_stat["completion_percentage"] == 0 and len(recommendations) < 3:
@@ -243,10 +269,8 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
                         "priority": "medium",
                     }
                 )
-                break  # Только один новый урок на курс
+                break
 
-    # Статистика для диаграмм - показываем только 3 последних активных курса
-    # Находим последнюю активность по каждому курсу напрямую из базы
     courses_activity = []
     for course in courses:
         last_activity = (
@@ -258,7 +282,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         )
 
         if last_activity:
-            # Находим соответствующую статистику курса
             course_stat = next((cs for cs in course_stats if cs["course"].id == course.id), None)
             if course_stat:
                 courses_activity.append(
@@ -266,28 +289,23 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
                         "name": course.name,
                         "completion_percentage": course_stat["completion_percentage"],
                         "last_activity": last_activity.completed_at,
-                        "course_stat": course_stat,  # Сохраняем полную статистику
+                        "course_stat": course_stat,
                     }
                 )
                 logger.info(
                     f"Course activity: {course.name}, last_activity: {last_activity.completed_at}"
                 )
 
-    # Сортируем по последней активности (самые свежие сверху)
     courses_activity.sort(key=lambda x: x["last_activity"], reverse=True)
 
-    # Берем топ-4 самых активных курса для "Активные курсы"
     top_4_courses = courses_activity[:4]
 
-    # Формируем данные для диаграмм и карточек курсов
     course_labels = [c["name"] for c in top_4_courses]
     course_progress_data = [c["completion_percentage"] for c in top_4_courses]
-    top_4_course_stats = [c["course_stat"] for c in top_4_courses]  # Для карточек курсов
+    top_4_course_stats = [c["course_stat"] for c in top_4_courses]
 
-    # Для секции "Прогресс по курсам" - сортируем все курсы по активности и проценту
     all_courses_sorted = []
     for course_stat in course_stats:
-        # Находим последнюю активность для этого курса
         last_activity = (
             StepProgress.objects.filter(
                 profile=profile, step__lesson__course=course_stat["course"], is_completed=True
@@ -304,39 +322,33 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             }
         )
 
-    # Сортируем: сначала по наличию активности, потом по дате активности, потом по проценту
     all_courses_sorted.sort(
         key=lambda x: (
-            x["last_activity"] is None,  # Курсы без активности в конец
-            -(x["last_activity"].timestamp() if x["last_activity"] else 0),  # По дате убывания
-            -x["completion_percentage"],  # По проценту убывания
+            x["last_activity"] is None,
+            -(x["last_activity"].timestamp() if x["last_activity"] else 0),
+            -x["completion_percentage"],
         )
     )
 
     all_course_stats_sorted = [c["course_stat"] for c in all_courses_sorted]
 
-    # Еженедельная активность
     weekly_labels = [day["date"] for day in daily_activity]
     weekly_data = [day["completed_steps"] for day in daily_activity]
 
-    # Ограничиваем рекомендации
     recommendations = recommendations[:5]
 
-    # Статистика по работам студента
     submissions = (
         LessonSubmission.objects.filter(student=profile)
         .select_related("lesson", "lesson__course", "mentor", "mentor__user")
         .order_by("-submitted_at")
     )
 
-    # Группируем по статусам
     submissions_by_status = {
         "pending": submissions.filter(status="pending"),
         "changes_requested": submissions.filter(status="changes_requested"),
         "approved": submissions.filter(status="approved"),
     }
 
-    # Счетчики
     submissions_count = {
         "total": submissions.count(),
         "pending": submissions_by_status["pending"].count(),
@@ -344,7 +356,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         "approved": submissions_by_status["approved"].count(),
     }
 
-    # Избранные статьи (bookmarked articles)
     bookmarked_articles = (
         Bookmark.objects.filter(user=profile.user)
         .select_related("article", "article__author")
@@ -375,7 +386,6 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         "submissions_by_status": submissions_by_status,
         "submissions_count": submissions_count,
         "bookmarked_articles": bookmarked_articles,
-        # Для JSON сериализации в JavaScript
         "dashboard_data_json": {
             "profile": {"id": str(profile.id), "email": profile.user.email},
             "stats": {
@@ -387,13 +397,18 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
                 "submissions_changes_requested": submissions_by_status["changes_requested"].count(),
                 "submissions_approved": submissions_by_status["approved"].count(),
             },
-            "dailyActivity": [{"date": day["date"], "completed_steps": day["completed_steps"]} for day in daily_activity],
+            "dailyActivity": [
+                {"date": day["date"], "completed_steps": day["completed_steps"]}
+                for day in daily_activity
+            ],
             "courseProgress": [
                 {
-                    "name": c["course"].name, 
-                    "progress": c["completion_percentage"], 
-                    "color": ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"][idx % 6]
-                } 
+                    "name": c["course"].name,
+                    "progress": c["completion_percentage"],
+                    "color": ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"][
+                        idx % 6
+                    ],
+                }
                 for idx, c in enumerate(top_4_course_stats)
             ],
         },
@@ -405,19 +420,47 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
 @login_required
 def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
     """
-    Отображает страницу настроек профиля пользователя.
+    Отображает страницу настроек профиля студента.
+
+    Поддерживает 4 типа настроек:
+    1. Profile Settings (profile_submit): личные данные, аватар, телефон
+    2. Notification Settings (notification_submit): настройки уведомлений
+    3. Privacy Settings (privacy_submit): видимость профиля, прогресса
+    4. Password Change (password_submit): смена пароля
 
     Args:
-        request (HttpRequest): HTTP-запрос пользователя.
-        user_uuid (uuid.UUID): UUID профиля студента.
+        request: HTTP запрос (студент GET или POST с изменениями)
+        user_uuid: UUID профиля студента
 
     Returns:
-        HttpResponse: Страница с настройками профиля.
+        HttpResponse: Отрендеренная страница students/dashboard/settings.html
+
+    POST Handlers:
+        - profile_submit: Обновляет first_name, last_name, email, bio, phone, birthday, gender,
+                         country, city, address, avatar
+        - notification_submit: Обновляет email_notifications, course_updates, lesson_reminders,
+                              achievement_alerts, weekly_summary, marketing_emails
+        - privacy_submit: Обновляет profile_visibility, show_progress, show_achievements,
+                         allow_messages
+        - password_submit: Изменяет пароль с проверкой текущего
+
+    Validation:
+        - Email: проверка уникальности
+        - Phone: валидация через phonenumbers.parse() и is_valid_number()
+        - Password: проверка текущего и совпадение новых
+
+    Template Context:
+        profile: Student - профиль студента
+        user: User - объект пользователя
+
+    Example:
+        POST /account/settings/{uuid}/ (profile_submit)
+        {"first_name": "Ivan", "last_name": "Petrov", "phone": "+79991234567"}
+        → Обновляет профиль, redirect на settings с success message
     """
     profile = get_object_or_404(Student, id=user_uuid)
 
     if request.method == "POST":
-        # Profile Settings
         if "profile_submit" in request.POST:
             first_name = request.POST.get("first_name", "").strip()
             last_name = request.POST.get("last_name", "").strip()
@@ -431,13 +474,11 @@ def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             address = request.POST.get("address")
             avatar = request.FILES.get("avatar")
 
-            # Update user fields
             if first_name:
                 request.user.first_name = first_name
             if last_name:
                 request.user.last_name = last_name
             if email and email != request.user.email:
-                # Check if email already exists
                 if not User.objects.filter(email=email).exclude(pk=request.user.pk).exists():
                     request.user.email = email
                 else:
@@ -445,7 +486,6 @@ def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
                     return redirect("students:settings", user_uuid=profile.id)
             request.user.save()
 
-            # Update profile fields
             profile.bio = bio
             if phone:
                 try:
@@ -484,9 +524,8 @@ def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
                 profile.avatar = avatar
 
             profile.save()
-            messages.success(request, _("Профиль успешно обновлен"))
+            messages.success(request, _(" Профиль успешно обновлен"))
 
-        # Notification Settings
         elif "notification_submit" in request.POST:
             profile.email_notifications = request.POST.get("email_notifications") == "on"
             profile.course_updates = request.POST.get("course_updates") == "on"
@@ -497,7 +536,6 @@ def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             profile.save()
             messages.success(request, _("Настройки уведомлений обновлены"))
 
-        # Privacy Settings
         elif "privacy_submit" in request.POST:
             profile.profile_visibility = request.POST.get("profile_visibility", "students")
             profile.show_progress = request.POST.get("show_progress") == "on"
@@ -506,7 +544,6 @@ def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             profile.save()
             messages.success(request, _("Настройки приватности обновлены"))
 
-        # Password Change
         elif "password_submit" in request.POST:
             current_password = request.POST.get("current_password")
             new_password = request.POST.get("new_password")
@@ -518,7 +555,6 @@ def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
                         request.user.set_password(new_password)
                         request.user.save()
                         messages.success(request, _("Пароль успешно изменен"))
-                        # Re-authenticate user
                         login(request, request.user)
                     else:
                         messages.error(request, _("Новые пароли не совпадают"))
@@ -537,9 +573,24 @@ def settings_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
 
 @login_required
 @require_http_methods(["POST"])
-def delete_avatar_view(request):
+def delete_avatar_view(request: HttpRequest) -> JsonResponse:
     """
-    Удаление аватара пользователя.
+    AJAX endpoint для удаления аватара студента.
+
+    Удаляет файл аватара из хранилища и очищает поле avatar в профиле.
+
+    Args:
+        request: HTTP POST запрос от аутентифицированного студента
+
+    Returns:
+        JsonResponse:
+            - Success: {"success": true, "message": "Аватар успешно удален"}
+            - Not Found: {"success": false, "message": "Аватар не найден"}, status=404
+            - Error: {"success": false, "message": "Ошибка..."}, status=500
+
+    Example:
+        POST /account/delete-avatar/ (AJAX)
+        → {"success": true, "message": "Аватар успешно удален"}
     """
     try:
         profile = request.user.student
@@ -558,20 +609,41 @@ def delete_avatar_view(request):
 @login_required
 def export_user_data(request: HttpRequest) -> HttpResponse:
     """
-    Экспортирует все данные пользователя в JSON формате.
+    Экспортирует все данные пользователя в JSON формате (GDPR compliance).
+
+    Включает:
+    - Личную информацию (email, имя, дата регистрации)
+    - Данные профиля (телефон, дата рождения, страна, город, bio)
+    - Настройки уведомлений и приватности
+    - Список курсов и прогресс по шагам
 
     Args:
-        request (HttpRequest): HTTP-запрос пользователя.
+        request: HTTP GET запрос от аутентифицированного пользователя
 
     Returns:
-        HttpResponse: JSON файл с данными пользователя.
+        HttpResponse: JSON файл с Content-Disposition для скачивания
+            Filename: pyland_data_{email}_{YYYYMMDD_HHMMSS}.json
+
+    Data Structure:
+        {
+            "export_date": ISO datetime,
+            "user_info": {...},
+            "profile": {...},
+            "notification_settings": {...},
+            "privacy_settings": {...},
+            "roles": [...],
+            "courses": [{"name", "slug", "description", "enrolled_date"}, ...],
+            "progress": [{"course", "lesson", "step", "is_completed", "completed_at"}, ...]
+        }
+
+    Example:
+        GET /account/export-data/
+        → Скачивает pyland_data_user@email.com_20250204_153045.json
     """
-    import json
     from datetime import datetime
 
     profile = get_object_or_404(Student, user=request.user)
 
-    # Собираем данные пользователя
     user_data = {
         "export_date": datetime.now().isoformat(),
         "user_info": {
@@ -619,7 +691,6 @@ def export_user_data(request: HttpRequest) -> HttpResponse:
         "progress": [],
     }
 
-    # Добавляем информацию о курсах
     for course in profile.courses.all():
         course_data = {
             "name": course.name,
@@ -629,10 +700,7 @@ def export_user_data(request: HttpRequest) -> HttpResponse:
         }
         user_data["courses"].append(course_data)
 
-    # Добавляем прогресс по шагам (если есть модель Progress)
     try:
-        from reviewers.models import StepProgress
-
         progress_records = StepProgress.objects.filter(profile=profile).select_related(
             "step", "step__lesson", "step__lesson__course"
         )
@@ -651,7 +719,6 @@ def export_user_data(request: HttpRequest) -> HttpResponse:
     except (ImportError, AttributeError):
         pass
 
-    # Создаем JSON ответ
     response = HttpResponse(
         json.dumps(user_data, ensure_ascii=False, indent=2),
         content_type="application/json; charset=utf-8",
@@ -667,37 +734,55 @@ def export_user_data(request: HttpRequest) -> HttpResponse:
 @login_required
 def delete_account(request: HttpRequest) -> HttpResponse:
     """
-    Удаляет аккаунт пользователя после подтверждения.
+    Удаляет аккаунт пользователя после двойного подтверждения.
+
+    Требует два подтверждения:
+    1. Ввод строки "УДАЛИТЬ" (точное совпадение)
+    2. Ввод текущего пароля
+
+    При успешном удалении каскадно удаляются:
+    - User объект
+    - Student профиль (on_delete=CASCADE)
+    - Все связанные данные (прогресс, работы, комментарии)
 
     Args:
-        request (HttpRequest): HTTP-запрос пользователя.
+        request: HTTP POST запрос с confirmation и password полями
 
     Returns:
-        HttpResponse: Перенаправление на главную страницу или страницу настроек.
+        HttpResponse:
+            - POST успешно: Redirect на core:home с success message
+            - POST ошибка: Redirect на students:settings с error message
+            - GET: Redirect на students:settings
+
+    Security:
+        - Требуется аутентификация (@login_required)
+        - Проверка текущего пароля через user.check_password()
+        - Выход из системы перед удалением (logout)
+
+    Example:
+        POST /account/delete/
+        {"confirmation": "УДАЛИТЬ", "password": "current_password"}
+        → Удаляет аккаунт, logout, redirect на home
     """
     if request.method == "POST":
         confirmation = request.POST.get("confirmation", "").strip()
         password = request.POST.get("password", "")
 
-        # Проверяем подтверждение
         if confirmation != "УДАЛИТЬ":
             messages.error(
                 request, _("Неверное подтверждение. Введите 'УДАЛИТЬ' для подтверждения.")
             )
             return redirect("students:settings", user_uuid=request.user.student.id)
 
-        # Проверяем пароль
         if not request.user.check_password(password):
             messages.error(request, _("Неверный пароль. Удаление отменено."))
             return redirect("students:settings", user_uuid=request.user.student.id)
 
-        # Сохраняем email для сообщения
         user_email = request.user.email
 
         try:
-            # Удаляем пользователя (каскадно удалятся профиль и связанные данные)
             user = request.user
-            logout(request)  # Выходим из системы
+            logout(request)
             user.delete()
 
             messages.success(
@@ -708,25 +793,60 @@ def delete_account(request: HttpRequest) -> HttpResponse:
             messages.error(request, _(f"Ошибка при удалении аккаунта: {str(e)}"))
             return redirect("students:settings", user_uuid=request.user.student.id)
 
-    # Если GET запрос, перенаправляем на настройки
     return redirect("students:settings", user_uuid=request.user.student.id)
 
 
 @login_required
 def courses_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
     """
-    Отображает страницу со списком курсов пользователя.
-    Использует кэширование для оптимизации производительности.
+    Отображает страницу со списком всех курсов студента с детальной статистикой.
+
+    Показывает прогресс по каждому курсу, статистику завершенных уроков и шагов,
+    дату последней активности. Использует агрессивное кэширование (10 минут)
+    для оптимизации производительности.
 
     Args:
-        request (HttpRequest): HTTP-запрос пользователя.
+        request: HTTP запрос от аутентифицированного студента
+        user_uuid: UUID профиля студента (игнорируется, используется request.user)
 
     Returns:
-        HttpResponse: Страница с курсами пользователя.
+        HttpResponse: Отрендеренная страница students/dashboard/course-list.html
+
+    Template Context:
+        profile: Student - профиль студента
+        courses: List[dict] - список курсов с детальной статистикой
+        overall_progress: float - общий процент завершения всех курсов
+        total_courses: int - количество курсов студента
+        total_completed_steps: int - всего завершенных шагов
+        total_steps: int - всего шагов в курсах
+        completed_courses_count: int - количество завершенных курсов (100%)
+        in_progress_courses_count: int - количество курсов в процессе (0-100%)
+        not_started_courses_count: int - количество не начатых курсов (0%)
+        total_study_time: int - общее время обучения (пока 0)
+        average_score: float - средний балл (пока 0)
+
+    Cache Strategy:
+        - Ключ: f"user_courses_stats_{profile.id}"
+        - TTL: 10 минут
+        - Инвалидируется при обновлении прогресса
+
+    Course Stats Structure:
+        {
+            "course": Course объект,
+            "completion_percentage": float,
+            "completed_steps": int,
+            "total_steps": int,
+            "completed_lessons": int,
+            "total_lessons": int,
+            "last_activity": datetime или None
+        }
+
+    Example:
+        GET /account/courses/{uuid}/
+        → Показывает список всех курсов с прогресс-барами и статистикой
     """
     profile = get_object_or_404(Student, user=request.user)
 
-    # Пытаемся получить данные из кэша
     cache_key = f"user_courses_stats_{profile.id}"
     cached_data = safe_cache_get(cache_key)
 
@@ -735,12 +855,10 @@ def courses_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         overall_completed_steps = cached_data["overall_completed_steps"]
         overall_total_steps = cached_data["overall_total_steps"]
     else:
-        # Оптимизированный запрос с prefetch_related
         courses = profile.courses.prefetch_related(
             "lessons__steps", "lessons__steps__progress"
         ).all()
 
-        # Собираем статистику для каждого курса используя кэшированные методы
         courses_with_stats = []
         overall_completed_steps = 0
         overall_total_steps = 0
@@ -763,7 +881,6 @@ def courses_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             overall_completed_steps += progress_data["completed_steps"]
             overall_total_steps += progress_data["total_steps"]
 
-        # Кэшируем результат на 10 минут
         cache_data = {
             "courses_with_stats": courses_with_stats,
             "overall_completed_steps": overall_completed_steps,
@@ -771,7 +888,6 @@ def courses_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         }
         safe_cache_set(cache_key, cache_data, 60 * 10)
 
-    # Общий прогресс обучения
     overall_progress = (
         (overall_completed_steps / overall_total_steps * 100) if overall_total_steps > 0 else 0
     )
@@ -813,11 +929,8 @@ def course_detail_view(
 
     Показывает описание курса, изображение и список уроков, если курс связан с аккаунтом пользователя.
     """
-    from reviewers.models import StepProgress
-
     profile = get_object_or_404(Student, user=request.user)
 
-    # Пытаемся получить курс из записанных, если нет - автоматически записываем
     try:
         course = profile.courses.get(slug=course_slug)
     except Course.DoesNotExist:
@@ -825,17 +938,14 @@ def course_detail_view(
         profile.courses.add(course)
         logger.info(f"Student {profile.user.email} auto-enrolled to course {course.name}")
 
-    # Course-level progress
     course_progress = course.get_progress_for_profile(profile)
 
-    # Per-lesson statistics (including small steps preview for UI)
     lesson_stats = []
     previous_lesson_approved = True  # Первый урок всегда разблокирован
 
     for lesson in course.lessons.all():
         lprog = lesson.get_progress_for_profile(profile)
 
-        # Steps preview (show first 3 incomplete OR last 3 completed)
         all_steps = []
         incomplete_steps = []
         for step in lesson.steps.all():
@@ -848,7 +958,6 @@ def course_detail_view(
             if not step_data["is_completed"]:
                 incomplete_steps.append(step_data)
 
-        # Show first 3 incomplete steps, or if all completed - show last 3
         if incomplete_steps:
             steps_preview = incomplete_steps[:3]
         else:
@@ -856,21 +965,18 @@ def course_detail_view(
 
         total_steps_count = len(all_steps)
 
-        # last activity for lesson
         last_activity = (
             StepProgress.objects.filter(profile=profile, step__lesson=lesson, is_completed=True)
             .order_by("-completed_at")
             .first()
         )
 
-        # Submission status for this lesson
         submission = (
             LessonSubmission.objects.filter(student=profile, lesson=lesson)
             .select_related("mentor", "mentor__user")
             .first()
         )
 
-        # Проверяем блокировку: текущий урок заблокирован если предыдущий не одобрен
         is_locked = not previous_lesson_approved
 
         lesson_stats.append(
@@ -889,15 +995,11 @@ def course_detail_view(
             }
         )
 
-        # Обновляем флаг для следующего урока
-        # Урок считается одобренным если submission.status == 'approved'
-        # Если submission нет или не одобрен - следующий урок блокируется
         if submission and submission.status == "approved":
             previous_lesson_approved = True
         else:
             previous_lesson_approved = False
 
-    # Small defaults for template fields that may be missing
     estimated_time = 0
     average_score = 0
 
@@ -925,13 +1027,10 @@ def lesson_detail_view(
     course = get_object_or_404(Course, slug=course_slug)
     lesson = get_object_or_404(Lesson, slug=lesson_slug, course=course)
 
-    # Автоматически записываем студента на курс при первом доступе к уроку
     if course not in profile.courses.all():
         profile.courses.add(course)
         logger.info(f"Student {profile.user.email} auto-enrolled to course {course.name}")
 
-    # ВАЖНО: Проверяем доступ к уроку - предыдущий урок должен быть одобрен
-    # Урок 1 всегда доступен
     if lesson.lesson_number > 1:
         prev_lesson = (
             lesson.course.lessons.filter(lesson_number__lt=lesson.lesson_number)
@@ -942,7 +1041,6 @@ def lesson_detail_view(
             prev_submission = LessonSubmission.objects.filter(
                 student=profile, lesson=prev_lesson
             ).first()
-            # Если предыдущий урок не одобрен - доступ закрыт
             if not prev_submission or prev_submission.status != "approved":
                 from django.contrib import messages
 
@@ -958,7 +1056,6 @@ def lesson_detail_view(
     raw_steps = lesson.steps.all()
     form = LessonSubmissionForm()
 
-    # Проверяем, была ли уже отправлена работа
     existing_submission = (
         LessonSubmission.objects.filter(student=profile, lesson=lesson)
         .select_related("review")
@@ -966,7 +1063,6 @@ def lesson_detail_view(
         .first()
     )
 
-    # Build steps list with completion flags for template
     steps_list = []
     for step in raw_steps:
         progress = StepProgress.objects.filter(profile=profile, step=step).first()
@@ -980,17 +1076,14 @@ def lesson_detail_view(
             }
         )
 
-    # Find last incomplete step for autofocus
     last_incomplete_step = next((s["step"] for s in steps_list if not s["is_completed"]), None)
     if not last_incomplete_step:
         last_incomplete_step = raw_steps.last()
 
-    # Lesson-level progress summary
     lesson_progress = lesson.get_progress_for_profile(profile)
 
     total_lessons = lesson.course.lessons.count()
 
-    # Определяем предыдущий и следующий уроки
     prev_lesson = (
         lesson.course.lessons.filter(lesson_number__lt=lesson.lesson_number)
         .order_by("-lesson_number")
@@ -1002,17 +1095,30 @@ def lesson_detail_view(
         .first()
     )
 
-    # Подсчитываем невыполненные шаги доработки от ревьюера
     incomplete_improvements = 0
     if existing_submission:
         incomplete_improvements = existing_submission.improvements.filter(
             is_completed=False
         ).count()
 
-    # Проверяем доступность следующего урока (только если текущий урок одобрен)
     next_lesson_available = False
     if next_lesson and existing_submission and existing_submission.status == "approved":
-        next_lesson_available = True
+        total_steps = lesson.steps.count()
+        completed_steps = StepProgress.objects.filter(
+            profile=profile, step__lesson=lesson, is_completed=True
+        ).count()
+
+        if completed_steps >= total_steps:
+            next_lesson_available = True
+            logger.info(
+                f"Next lesson unlocked for {request.user.email}: "
+                f"all {completed_steps}/{total_steps} steps completed in lesson {lesson.slug}"
+            )
+        else:
+            logger.warning(
+                f"Next lesson BLOCKED for {request.user.email}: "
+                f"only {completed_steps}/{total_steps} steps completed in lesson {lesson.slug}"
+            )
 
     return render(
         request,
@@ -1047,7 +1153,6 @@ def lesson_submit_view(request, user_uuid: uuid.UUID, course_slug, lesson_slug):
     course = get_object_or_404(profile.courses, slug=course_slug)
     lesson = get_object_or_404(course.lessons, slug=lesson_slug, course=course)
 
-    # Проверяем, что все шаги урока выполнены
     total_steps = lesson.steps.count()
     completed_steps = StepProgress.objects.filter(
         profile=profile, step__lesson=lesson, is_completed=True
@@ -1066,7 +1171,6 @@ def lesson_submit_view(request, user_uuid: uuid.UUID, course_slug, lesson_slug):
 
     form = LessonSubmissionForm(request.POST)
     if form.is_valid():
-        # Проверяем, не отправлена ли уже работа
         existing_submission = LessonSubmission.objects.filter(
             student=profile, lesson=lesson
         ).first()
@@ -1236,12 +1340,10 @@ def toggle_improvement_view(request, improvement_id):
     try:
         profile = get_object_or_404(Student, user=request.user)
 
-        # Проверяем, что улучшение принадлежит этому студенту
         improvement = get_object_or_404(
             StudentImprovement, id=improvement_id, lesson_submission__student=profile
         )
 
-        # Переключаем состояние
         improvement.is_completed = not improvement.is_completed
         improvement.completed_at = timezone.now() if improvement.is_completed else None
         improvement.save(update_fields=["is_completed", "completed_at"])
@@ -1275,40 +1377,32 @@ def toggle_step_progress(request, course_slug, lesson_slug, step_id):
     lesson = get_object_or_404(course.lessons, slug=lesson_slug, course=course)
     step = get_object_or_404(Step, id=step_id, lesson=lesson)
 
-    # Получаем или создаем запись прогресса
     step_progress, created = StepProgress.objects.get_or_create(
         profile=profile, step=step, defaults={"is_completed": False}
     )
 
-    # Проверяем параметр completed из тела запроса
     try:
         import json
 
         body = json.loads(request.body.decode("utf-8"))
         completed = body.get("completed")
         if completed is not None:
-            # Устанавливаем явно переданное значение
             step_progress.is_completed = completed
         else:
-            # Переключаем статус (старое поведение для обратной совместимости)
             step_progress.is_completed = not step_progress.is_completed
     except (json.JSONDecodeError, AttributeError):
-        # Переключаем статус если тело запроса пустое или невалидное
         step_progress.is_completed = not step_progress.is_completed
 
     step_progress.completed_at = timezone.now() if step_progress.is_completed else None
     step_progress.save()
 
-    # Инвалидируем кэш прогресса после изменения
     lesson.invalidate_progress_cache(profile)
     course.invalidate_progress_cache(profile)
 
-    # Инвалидируем кэш страниц включая дашборд
     safe_cache_delete(f"user_courses_stats_{profile.id}")
     safe_cache_delete(f"dashboard_stats_{profile.id}")
     safe_cache_delete(f"course_detail_{course.id}_{profile.id}")
 
-    # Получаем обновленные данные прогресса используя свежие расчеты (без кэша)
     lesson_progress = lesson.get_progress_for_profile(profile, use_cache=False)
     course_progress = course.get_progress_for_profile(profile, use_cache=False)
 

@@ -96,26 +96,18 @@ class CategoryAdmin(admin.ModelAdmin):
         ("Временные метки", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
     )
 
-    @admin.display(
-        description="Иконка"
-    )
+    @admin.display(description="Иконка")
     def icon_display(self, obj):
         return format_html('<span style="font-size: 18px;">{}</span>', obj.icon)
 
-
-    @admin.display(
-        description="Цвет"
-    )
+    @admin.display(description="Цвет")
     def color_display(self, obj):
         return format_html(
             '<div style="width: 20px; height: 20px; background-color: {}; border-radius: 3px; display: inline-block;"></div>',
             obj.color,
         )
 
-
-    @admin.display(
-        description="Статьи"
-    )
+    @admin.display(description="Статьи")
     def articles_count(self, obj):
         count = obj.articles.filter(status="published").count()
         if count > 0:
@@ -123,10 +115,7 @@ class CategoryAdmin(admin.ModelAdmin):
             return format_html('<a href="{}">{} статей</a>', url, count)
         return "0 статей"
 
-
-    @admin.display(
-        description="Теги"
-    )
+    @admin.display(description="Теги")
     def tags_count(self, obj):
         from taggit.models import Tag
 
@@ -141,7 +130,6 @@ class CategoryAdmin(admin.ModelAdmin):
                 count += 1
 
         return f"{count} тегов" if count > 0 else "-"
-
 
 
 @admin.register(Article)
@@ -271,9 +259,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
     actions = ["publish_articles", "unpublish_articles", "feature_articles", "unfeature_articles"]
 
-    @admin.display(
-        description="Статус"
-    )
+    @admin.display(description="Статус")
     def status_display(self, obj):
         colors = {"draft": "#f39c12", "published": "#27ae60", "archived": "#95a5a6"}
         return format_html(
@@ -282,10 +268,7 @@ class ArticleAdmin(admin.ModelAdmin):
             obj.get_status_display(),
         )
 
-
-    @admin.display(
-        description="Сложность"
-    )
+    @admin.display(description="Сложность")
     def difficulty_display(self, obj):
         colors = {
             "beginner": "#2ecc71",
@@ -299,19 +282,13 @@ class ArticleAdmin(admin.ModelAdmin):
             obj.get_difficulty_display(),
         )
 
-
-    @admin.display(
-        description="Опубликовано"
-    )
+    @admin.display(description="Опубликовано")
     def published_at_display(self, obj):
         if obj.published_at:
             return obj.published_at.strftime("%d.%m.%Y %H:%M")
         return "Не опубликовано"
 
-
-    @admin.display(
-        description="Предварительный просмотр"
-    )
+    @admin.display(description="Предварительный просмотр")
     def article_preview(self, obj):
         if obj.pk:
             preview_url = obj.get_absolute_url()
@@ -320,38 +297,25 @@ class ArticleAdmin(admin.ModelAdmin):
             )
         return "Сохраните статью для предварительного просмотра"
 
-
-    @admin.action(
-        description="Опубликовать выбранные статьи"
-    )
+    @admin.action(description="Опубликовать выбранные статьи")
     def publish_articles(self, request, queryset):
         updated = queryset.update(status="published", published_at=timezone.now())
         self.message_user(request, f"{updated} статей опубликовано.")
 
-
-    @admin.action(
-        description="Снять с публикации"
-    )
+    @admin.action(description="Снять с публикации")
     def unpublish_articles(self, request, queryset):
         updated = queryset.update(status="draft")
         self.message_user(request, f"{updated} статей отправлено в черновики.")
 
-
-    @admin.action(
-        description="Добавить в рекомендуемые"
-    )
+    @admin.action(description="Добавить в рекомендуемые")
     def feature_articles(self, request, queryset):
         updated = queryset.update(is_featured=True)
         self.message_user(request, f"{updated} статей добавлено в рекомендуемые.")
 
-
-    @admin.action(
-        description="Убрать из рекомендуемых"
-    )
+    @admin.action(description="Убрать из рекомендуемых")
     def unfeature_articles(self, request, queryset):
         updated = queryset.update(is_featured=False)
         self.message_user(request, f"{updated} статей удалено из рекомендуемых.")
-
 
 
 @admin.register(Comment)
@@ -396,21 +360,15 @@ class CommentAdmin(admin.ModelAdmin):
 
     actions = ["approve_comments", "disapprove_comments"]
 
-    @admin.action(
-        description="Одобрить комментарии"
-    )
+    @admin.action(description="Одобрить комментарии")
     def approve_comments(self, request, queryset):
         updated = queryset.update(is_approved=True)
         self.message_user(request, f"{updated} комментариев одобрено.")
 
-
-    @admin.action(
-        description="Скрыть комментарии"
-    )
+    @admin.action(description="Скрыть комментарии")
     def disapprove_comments(self, request, queryset):
         updated = queryset.update(is_approved=False)
         self.message_user(request, f"{updated} комментариев скрыто.")
-
 
 
 @admin.register(Series)
@@ -620,12 +578,9 @@ class ArticleViewAdmin(admin.ModelAdmin):
     search_fields = ["article__title", "user__username", "ip_address"]
     readonly_fields = ["viewed_at"]
 
-    @admin.display(
-        description="Пользователь"
-    )
+    @admin.display(description="Пользователь")
     def user_display(self, obj):
         return obj.user.username if obj.user else "Анонимный"
-
 
     def has_add_permission(self, request):
         return False  # Просмотры создаются автоматически
@@ -724,37 +679,25 @@ class AuthorAdmin(admin.ModelAdmin):
 
     actions = ["update_statistics", "feature_authors", "unfeature_authors"]
 
-    @admin.display(
-        description="Email"
-    )
+    @admin.display(description="Email")
     def user_email(self, obj):
         return obj.user.email
 
-
-    @admin.action(
-        description="Обновить статистику"
-    )
+    @admin.action(description="Обновить статистику")
     def update_statistics(self, request, queryset):
         for author in queryset:
             author.update_statistics()
         self.message_user(request, f"Статистика обновлена для {queryset.count()} авторов.")
 
-
-    @admin.action(
-        description="Добавить в рекомендуемые"
-    )
+    @admin.action(description="Добавить в рекомендуемые")
     def feature_authors(self, request, queryset):
         updated = queryset.update(is_featured=True)
         self.message_user(request, f"{updated} авторов добавлено в рекомендуемые.")
 
-
-    @admin.action(
-        description="Убрать из рекомендуемых"
-    )
+    @admin.action(description="Убрать из рекомендуемых")
     def unfeature_authors(self, request, queryset):
         updated = queryset.update(is_featured=False)
         self.message_user(request, f"{updated} авторов убрано из рекомендуемых.")
-
 
 
 @admin.register(ArticleReport)
@@ -816,35 +759,23 @@ class ArticleReportAdmin(admin.ModelAdmin):
 
     actions = ["mark_as_reviewed", "mark_as_resolved", "mark_as_rejected"]
 
-    @admin.display(
-        description="Отправитель"
-    )
+    @admin.display(description="Отправитель")
     def reporter_display(self, obj):
         if obj.reporter:
             return obj.reporter.username
         return format_html('<span style="color: #9ca3af;">Анонимный</span>')
 
-
-    @admin.action(
-        description="Отметить как рассмотренные"
-    )
+    @admin.action(description="Отметить как рассмотренные")
     def mark_as_reviewed(self, request, queryset):
         updated = queryset.update(status="reviewed", reviewed_at=timezone.now())
         self.message_user(request, f"{updated} жалоб отмечено как рассмотренные.")
 
-
-    @admin.action(
-        description="Отметить как решённые"
-    )
+    @admin.action(description="Отметить как решённые")
     def mark_as_resolved(self, request, queryset):
         updated = queryset.update(status="resolved", reviewed_at=timezone.now())
         self.message_user(request, f"{updated} жалоб отмечено как решённые.")
 
-
-    @admin.action(
-        description="Отметить как отклонённые"
-    )
+    @admin.action(description="Отметить как отклонённые")
     def mark_as_rejected(self, request, queryset):
         updated = queryset.update(status="rejected", reviewed_at=timezone.now())
         self.message_user(request, f"{updated} жалоб отмечено как отклонённые.")
-

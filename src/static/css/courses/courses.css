@@ -201,6 +201,11 @@
     position: relative;
 }
 
+/* Светлая тема для секции курсов */
+[data-theme="light"] .courses-revolutionary {
+    background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
 .section-header-revolutionary {
     text-align: center;
     margin-bottom: 80px;
@@ -267,6 +272,13 @@
     outline: none;
 }
 
+/* Светлая тема */
+[data-theme="light"] .filter-btn {
+    background: #ffffff;
+    border: 2px solid #d1d5db;
+    color: #374151;
+}
+
 .filter-btn:hover,
 .filter-btn.active {
     background: var(--primary-500);
@@ -274,6 +286,13 @@
     border-color: var(--primary-500);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+[data-theme="light"] .filter-btn:hover,
+[data-theme="light"] .filter-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
 }
 
 .courses-grid-revolutionary {
@@ -295,6 +314,18 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+/* Фон для светлой темы */
+[data-theme="light"] .course-card-revolutionary {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .course-card-revolutionary:hover {
+    border-color: var(--primary-500);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 .course-card-revolutionary:hover {
@@ -454,6 +485,40 @@ a.course-buy-btn:focus {
     color: white !important;
     text-decoration: none !important;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+}
+
+/* === COURSE DETAIL BUTTON === */
+.course-btn-revolutionary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 16px;
+    background: var(--primary-500);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.course-btn-revolutionary:hover {
+    background: var(--primary-600);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+[data-theme="light"] .course-btn-revolutionary {
+    background: #667eea;
+}
+
+[data-theme="light"] .course-btn-revolutionary:hover {
+    background: #5a67d8;
 }
 
 /* === FEATURES === */
@@ -731,28 +796,28 @@ a.course-buy-btn:focus {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .btn-revolutionary-hero {
         width: 100%;
         max-width: 300px;
         justify-content: center;
     }
-    
+
     .hero-stats-revolutionary {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
-    
+
     .courses-grid-revolutionary {
         grid-template-columns: 1fr;
         gap: 24px;
     }
-    
+
     .courses-filter-revolutionary {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .cta-actions-revolutionary {
         flex-direction: column;
         align-items: center;
@@ -763,17 +828,17 @@ a.course-buy-btn:focus {
     .container {
         padding: 0 16px;
     }
-    
+
     .revolutionary-hero-home {
         min-height: 80vh;
     }
-    
+
     .courses-revolutionary,
     .features-revolutionary,
     .cta-revolutionary {
         padding: 80px 0;
     }
-    
+
     .hero-stats-revolutionary {
         grid-template-columns: 1fr;
     }
@@ -1816,22 +1881,22 @@ a.course-buy-btn:focus {
         gap: 8px;
         padding: 30px 0;
     }
-    
+
     .pagination-btn {
         padding: 10px 14px;
         font-size: 14px;
         min-height: 40px;
     }
-    
+
     .pagination-btn .btn-text {
         display: none;
     }
-    
+
     .pagination-numbers .pagination-btn {
         min-width: 40px;
         justify-content: center;
     }
-    
+
     .pagination-info {
         order: -1;
         width: 100%;
@@ -1843,20 +1908,20 @@ a.course-buy-btn:focus {
         grid-template-columns: 1fr;
         gap: 40px;
     }
-    
+
     .navigation-grid-revolutionary {
         grid-template-columns: 1fr;
     }
-    
+
     .tag-categories-revolutionary {
         grid-template-columns: 1fr;
     }
-    
+
     .hero-meta-revolutionary {
         flex-direction: column;
         gap: 24px;
     }
-    
+
     .meta-stats-hero {
         justify-content: center;
     }
@@ -2035,15 +2100,15 @@ a.course-buy-btn:focus {
     .series-progress-indicator {
         padding: 24px 20px;
     }
-    
+
     .series-progress-indicator .progress-title {
         font-size: 18px;
     }
-    
+
     .series-progress-indicator .progress-percentage {
         font-size: 28px;
     }
-    
+
     .series-progress-indicator .progress-stats {
         flex-direction: column;
         gap: 8px;
@@ -2222,4 +2287,3 @@ a.course-buy-btn:focus {
 .tag-category-card .course-title-revolutionary:hover {
     color: var(--primary-600);
 }
-

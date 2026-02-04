@@ -40,7 +40,6 @@
         cacheElements();
         bindEvents();
         updateUI();
-        console.log('✓ Bulk Operations initialized');
     }
     
     /**
@@ -273,7 +272,6 @@
                 throw new Error(data.error || 'Произошла ошибка');
             }
         } catch (error) {
-            console.error('Bulk action error:', error);
             if (typeof window.showNotification === 'function') {
                 window.showNotification(error.message || 'Произошла ошибка при выполнении действия', 'error');
             }

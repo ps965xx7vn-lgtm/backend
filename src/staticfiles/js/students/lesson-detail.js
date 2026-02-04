@@ -44,13 +44,11 @@ function initStepCheckboxes() {
         // Add change event listener
         checkbox.addEventListener('change', function(e) {
             e.stopPropagation();
-            
+
             const stepId = this.dataset.stepId;
             const courseSlug = this.dataset.courseSlug;
             const lessonSlug = this.dataset.lessonSlug;
             const isCompleted = this.checked;
-
-            console.log('Step checkbox changed:', { stepId, courseSlug, lessonSlug, isCompleted });
 
             // Disable checkbox while saving
             this.disabled = true;
@@ -77,7 +75,6 @@ function initStepCheckboxes() {
                 return response.json();
             })
             .then(data => {
-                console.log('Step toggle response:', data);
 
                 // Re-enable checkbox
                 this.disabled = false;
@@ -146,12 +143,11 @@ function initStepCheckboxes() {
                 }
             })
             .catch(error => {
-                console.error('Error toggling step:', error);
-                
+
                 // Re-enable checkbox and restore previous state
                 this.disabled = false;
                 this.checked = !isCompleted;
-                
+
                 window.showNotification('❌ Ошибка при сохранении прогресса', 'error');
             });
         });
@@ -267,7 +263,6 @@ function initImprovementTracking() {
      * @param {boolean} isChecked - Whether the checkbox is checked
      */
     function saveImprovementState(improvementId, isChecked) {
-        console.log('Saving improvement state:', improvementId, isChecked);
 
         // Get current language prefix from URL (e.g., /ru/, /en/, /ka/)
         const pathParts = window.location.pathname.split('/');
@@ -281,14 +276,12 @@ function initImprovementTracking() {
             }
         })
         .then(response => {
-            console.log('Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('Response data:', data);
             if (data.success) {
                 // Check if all improvements are now completed
                 const allCheckboxes = document.querySelectorAll('.improvement-step-checkbox');
@@ -307,7 +300,6 @@ function initImprovementTracking() {
             }
         })
         .catch(error => {
-            console.error('Error saving improvement state:', error);
             window.showNotification('Ошибка при сохранении: ' + error.message, 'error');
         });
     }
@@ -368,7 +360,6 @@ async function markStepAsCompleted(stepId, courseSlug, lessonSlug) {
 
     if (!response.ok) {
         const errorText = await response.text();
-        console.error('[markStepAsCompleted] Error:', response.status, errorText.substring(0, 200));
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -427,7 +418,6 @@ function initSelfCheckItems() {
                     }
                 });
             } catch (e) {
-                console.error('Error loading saved state:', e);
             }
         }
 
@@ -529,7 +519,6 @@ function initSelfCheckItems() {
                                     }
                                 }
                             } else {
-                                console.error('[Next Step] API returned unsuccessfull response:', response);
                             }
 
                             // Обновляем счётчик выполненных шагов
@@ -555,7 +544,6 @@ function initSelfCheckItems() {
                             }
 
                         } catch (error) {
-                            console.error('Error marking step as completed:', error);
                         }
 
                         // Collapse current step

@@ -28,7 +28,6 @@ from django.utils import timezone
 from faker import Faker
 
 from authentication.models import Manager, Reviewer, Role, Student
-from blog.models import Article, Category as BlogCategory
 from certificates.models import Certificate
 from courses.models import Course, Lesson, Step
 from managers.models import Feedback, SystemLog
@@ -81,9 +80,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(self.style.HTTP_INFO("=" * 80))
         self.stdout.write(
-            self.style.HTTP_INFO(
-                "  СОЗДАНИЕ ПОЛНЫХ ТЕСТОВЫХ ДАННЫХ ДЛЯ PYLAND PLATFORM"
-            )
+            self.style.HTTP_INFO("  СОЗДАНИЕ ПОЛНЫХ ТЕСТОВЫХ ДАННЫХ ДЛЯ PYLAND PLATFORM")
         )
         self.stdout.write(self.style.HTTP_INFO("=" * 80))
         self.stdout.write("")
@@ -191,7 +188,7 @@ class Command(BaseCommand):
         # Создаем студентов
         self.stdout.write(f"\n  Создание {options['students']} студентов...")
         for i in range(options["students"]):
-            email = f"student{i+1}@test.com"
+            email = f"student{i + 1}@test.com"
             user = self._create_user(
                 email=email,
                 first_name=fake.first_name(),
@@ -199,12 +196,14 @@ class Command(BaseCommand):
                 role=roles["student"],
             )
             users_data["students"].append(user)
-        self.stdout.write(self.style.SUCCESS(f"  ✓ Создано {len(users_data['students'])} студентов"))
+        self.stdout.write(
+            self.style.SUCCESS(f"  ✓ Создано {len(users_data['students'])} студентов")
+        )
 
         # Создаем проверяющих
         self.stdout.write(f"\n  Создание {options['reviewers']} проверяющих...")
         for i in range(options["reviewers"]):
-            email = f"reviewer{i+1}@test.com"
+            email = f"reviewer{i + 1}@test.com"
             user = self._create_user(
                 email=email,
                 first_name=fake.first_name(),
@@ -219,7 +218,7 @@ class Command(BaseCommand):
         # Создаем менторов
         self.stdout.write(f"\n  Создание {options['mentors']} менторов...")
         for i in range(options["mentors"]):
-            email = f"mentor{i+1}@test.com"
+            email = f"mentor{i + 1}@test.com"
             user = self._create_user(
                 email=email,
                 first_name=fake.first_name(),
@@ -232,7 +231,7 @@ class Command(BaseCommand):
         # Создаем менеджеров
         self.stdout.write(f"\n  Создание {options['managers']} менеджеров...")
         for i in range(options["managers"]):
-            email = f"manager{i+1}@test.com"
+            email = f"manager{i + 1}@test.com"
             user = self._create_user(
                 email=email,
                 first_name=fake.first_name(),
@@ -342,7 +341,7 @@ class Command(BaseCommand):
                 for lesson_num in range(1, random.randint(4, 7)):
                     lesson_name = f"Урок {lesson_num}: {fake.sentence(nb_words=4)}"
                     lesson_slug = f"{course.slug}-lesson-{lesson_num}"
-                    
+
                     lesson = Lesson.objects.create(
                         course=course,
                         name=lesson_name,
@@ -385,7 +384,7 @@ class Command(BaseCommand):
     def _create_progress(self, students, courses):
         """Создание прогресса студентов и submissions"""
         from reviewers.models import StepProgress
-        
+
         submissions = []
         submissions_created = 0
         steps_completed = 0
@@ -402,10 +401,10 @@ class Command(BaseCommand):
 
                 for lesson in lessons[:lessons_to_complete]:
                     steps = lesson.steps.all()
-                    
+
                     # Случайное количество выполненных шагов (от 50% до 100%)
                     steps_to_complete = max(1, int(steps.count() * random.uniform(0.5, 1.0)))
-                    
+
                     # Создаём прогресс по шагам
                     for step in steps[:steps_to_complete]:
                         progress, created = StepProgress.objects.get_or_create(
@@ -413,12 +412,13 @@ class Command(BaseCommand):
                             step=step,
                             defaults={
                                 "is_completed": True,
-                                "completed_at": timezone.now() - timedelta(days=random.randint(1, 30)),
+                                "completed_at": timezone.now()
+                                - timedelta(days=random.randint(1, 30)),
                             },
                         )
                         if created:
                             steps_completed += 1
-                    
+
                     # Если выполнено больше 70% шагов урока, создаём submission
                     completion_rate = steps_to_complete / steps.count() if steps.count() > 0 else 0
                     if completion_rate >= 0.7:
@@ -430,16 +430,15 @@ class Command(BaseCommand):
                                 defaults={
                                     "lesson_url": f"https://github.com/student/lesson-{lesson.id}/pull/{random.randint(1, 999)}",
                                     "status": "pending",  # Только pending, чтобы избежать срабатывания сигналов
-                                    "submitted_at": timezone.now() - timedelta(days=random.randint(1, 25)),
+                                    "submitted_at": timezone.now()
+                                    - timedelta(days=random.randint(1, 25)),
                                 },
                             )
                             if created:
                                 submissions.append(submission)
                                 submissions_created += 1
 
-        self.stdout.write(
-            self.style.SUCCESS(f"  ✓ Создано {steps_completed} выполненных шагов")
-        )
+        self.stdout.write(self.style.SUCCESS(f"  ✓ Создано {steps_completed} выполненных шагов"))
         self.stdout.write(
             self.style.SUCCESS(f"  ✓ Создано {submissions_created} отправленных заданий")
         )
@@ -448,7 +447,7 @@ class Command(BaseCommand):
     def _create_reviews(self, submissions, reviewers):
         """Создание отзывов от проверяющих"""
         from reviewers.models import StepProgress
-        
+
         reviews_created = 0
         improvements_created = 0
 
@@ -458,7 +457,7 @@ class Command(BaseCommand):
                 # 60% вероятность что работа проверена
                 if random.random() < 0.6 and reviewers:
                     reviewer = random.choice(reviewers)
-                    
+
                     # Выбираем новый статус
                     new_status = random.choice(["approved", "changes_requested"])
 
@@ -469,24 +468,25 @@ class Command(BaseCommand):
                             "status": "approved" if new_status == "approved" else "needs_work",
                             "comments": fake.text(max_nb_chars=200),
                             "time_spent": random.randint(10, 60),
-                            "reviewed_at": timezone.now()
-                            - timedelta(days=random.randint(0, 20)),
+                            "reviewed_at": timezone.now() - timedelta(days=random.randint(0, 20)),
                         },
                     )
 
                     if created:
                         reviews_created += 1
-                        
+
                         # Обновляем статус submission
                         submission.status = new_status
-                        submission.reviewed_at = timezone.now() - timedelta(days=random.randint(0, 15))
-                        
+                        submission.reviewed_at = timezone.now() - timedelta(
+                            days=random.randint(0, 15)
+                        )
+
                         # Добавляем комментарий ментора если требуются доработки
                         if new_status == "changes_requested":
                             submission.mentor_comment = fake.text(max_nb_chars=150)
-                        
+
                         submission.save()
-                        
+
                         # ВАЖНО: Если работа одобрена, убеждаемся что ВСЕ шаги урока выполнены
                         if new_status == "approved":
                             lesson_steps = submission.lesson.steps.all()
@@ -522,8 +522,8 @@ class Command(BaseCommand):
 
     def _create_certificates(self, students, courses):
         """Создание сертификатов для завершенных курсов"""
-        from reviewers.models import LessonSubmission, StepProgress
         from certificates.utils import generate_certificate_pdf
+        from reviewers.models import LessonSubmission, StepProgress
 
         certificates = []
         certificates_created = 0
@@ -535,11 +535,17 @@ class Command(BaseCommand):
             for course in enrolled_courses:
                 # Проверить прогресс курса - сертификат только если 100%
                 progress_data = course.get_progress_for_profile(student_profile)
-                completion_percentage = progress_data.get("completion_percentage", 0) if isinstance(progress_data, dict) else progress_data
-                
+                completion_percentage = (
+                    progress_data.get("completion_percentage", 0)
+                    if isinstance(progress_data, dict)
+                    else progress_data
+                )
+
                 # Сертификат только если курс завершен на 100% ИЛИ для тестирования с 20% вероятностью
-                should_create_cert = completion_percentage >= 100 or (completion_percentage >= 50 and random.random() < 0.2)
-                
+                should_create_cert = completion_percentage >= 100 or (
+                    completion_percentage >= 50 and random.random() < 0.2
+                )
+
                 if should_create_cert:
                     # Проверить, нет ли уже сертификата
                     existing = Certificate.objects.filter(
@@ -564,10 +570,7 @@ class Command(BaseCommand):
                                 is_completed=True,
                             ).count()
                             total_steps_count = lesson.steps.count()
-                            if (
-                                total_steps_count > 0
-                                and completed_steps_count == total_steps_count
-                            ):
+                            if total_steps_count > 0 and completed_steps_count == total_steps_count:
                                 completed_lessons += 1
 
                         # Подсчет заданий
@@ -603,7 +606,7 @@ class Command(BaseCommand):
                                 total_time_spent=total_time_spent,
                                 final_grade=final_grade,
                             )
-                            
+
                             # Генерировать PDF автоматически
                             try:
                                 generate_certificate_pdf(certificate)
@@ -626,19 +629,15 @@ class Command(BaseCommand):
                                         f"    ⚠ Сертификат {certificate.certificate_number} создан, но ошибка генерации PDF: {e}"
                                     )
                                 )
-                            
+
                             certificates.append(certificate)
                             certificates_created += 1
                         except Exception as e:
                             self.stdout.write(
-                                self.style.WARNING(
-                                    f"    ⚠ Не удалось создать сертификат: {e}"
-                                )
+                                self.style.WARNING(f"    ⚠ Не удалось создать сертификат: {e}")
                             )
 
-        self.stdout.write(
-            self.style.SUCCESS(f"  ✓ Создано {certificates_created} сертификатов")
-        )
+        self.stdout.write(self.style.SUCCESS(f"  ✓ Создано {certificates_created} сертификатов"))
         return certificates
 
     def _create_feedback(self, managers):
@@ -679,8 +678,6 @@ class Command(BaseCommand):
             + users_data["managers"]
         )
 
-        log_levels = ["INFO", "WARNING", "ERROR", "DEBUG", "CRITICAL"]
-        
         action_types = [
             "USER_LOGIN",
             "USER_LOGOUT",
@@ -697,7 +694,7 @@ class Command(BaseCommand):
         for _ in range(random.randint(30, 50)):
             user = random.choice(all_users) if all_users else None
             action_type = random.choice(action_types)
-            
+
             if action_type == "ERROR_OCCURRED":
                 level = "ERROR"
             elif action_type == "SECURITY_EVENT":
@@ -740,11 +737,7 @@ class Command(BaseCommand):
             ),
             (
                 "Шагов",
-                sum(
-                    lesson.steps.count()
-                    for course in courses
-                    for lesson in course.lessons.all()
-                ),
+                sum(lesson.steps.count() for course in courses for lesson in course.lessons.all()),
             ),
             ("Записей на курсы", total_enrollments),
             ("Отправленных заданий", len(submissions)),

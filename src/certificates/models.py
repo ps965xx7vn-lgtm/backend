@@ -331,15 +331,15 @@ class Certificate(models.Model):
         """Получить публичный URL для верификации сертификата."""
         from django.urls import reverse
 
-        return reverse(
-            "certificates:verify", kwargs={"verification_code": self.verification_code}
-        )
+        return reverse("certificates:verify", kwargs={"verification_code": self.verification_code})
 
     def get_download_url(self) -> str:
         """Получить URL для скачивания PDF."""
         from django.urls import reverse
 
-        return reverse("certificates:download", kwargs={"verification_code": self.verification_code})
+        return reverse(
+            "certificates:download", kwargs={"verification_code": self.verification_code}
+        )
 
     @classmethod
     def create_for_student(
@@ -389,30 +389,30 @@ class Certificate(models.Model):
         # Подсчет заданий и проверок
         # Считаем по реальным отправкам (LessonSubmission)
         submissions = LessonSubmission.objects.filter(student=student, lesson__course=course)
-        
+
         # Количество уникальных уроков с отправками
-        assignments_submitted = submissions.values('lesson').distinct().count()
-        
+        assignments_submitted = submissions.values("lesson").distinct().count()
+
         # ВАЖНО: Если курс завершен на 100%, ВСЕ задания одобрены
         # Иначе студент не мог бы получить сертификат
         if completed_lessons == total_lessons:
             assignments_approved = assignments_submitted
         else:
             assignments_approved = submissions.filter(status="approved").count()
-        
+
         # Подсчет проверок (Review объекты)
         # Считаем ВСЕ проверки, включая повторные после доработок
         from reviewers.models import Review
+
         reviews_received = Review.objects.filter(
-            lesson_submission__student=student,
-            lesson_submission__lesson__course=course
+            lesson_submission__student=student, lesson_submission__lesson__course=course
         ).count()
-        
+
         # Если нет Review объектов, считаем минимум по количеству submissions
         # (каждое задание проверяется минимум 1 раз, но может быть и больше)
         if reviews_received == 0:
             reviews_received = assignments_submitted
-        
+
         # Логическая проверка: проверок НЕ МОЖЕТ быть меньше заданий
         if reviews_received < assignments_submitted:
             reviews_received = assignments_submitted

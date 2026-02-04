@@ -158,11 +158,11 @@ class StatsSchema(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "total_students": 1250,
+                "total_students": 0,  # Not displayed publicly
                 "total_courses": 15,
                 "total_lessons": 230,
                 "total_hours": 145.5,
-                "completion_rate": 78.5,
+                "completion_rate": 0.0,  # Not displayed publicly
             }
         }
 

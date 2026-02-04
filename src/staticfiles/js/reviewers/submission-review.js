@@ -5,9 +5,7 @@
 
 (function() {
     'use strict';
-    
-    console.log('[Review] Script loaded, waiting for DOM...');
-    
+
     // Wait for DOM to be fully loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initReviewPage);
@@ -16,7 +14,6 @@
     }
     
     function initReviewPage() {
-        console.log('=== Review Page Initialization START ===');
         
         // Character counter for comments
         initCharacterCounter();
@@ -30,7 +27,6 @@
         // Form validation
         initFormValidation();
         
-        console.log('=== Review Page Initialization COMPLETE ===');
     }
     
     function initCharacterCounter() {
@@ -41,9 +37,7 @@
             commentsTextarea.addEventListener('input', function() {
                 charCountSpan.textContent = this.value.length;
             });
-            console.log('✓ Character counter initialized');
         } else {
-            console.warn('Character counter elements not found');
         }
     }
     
@@ -53,17 +47,12 @@
         
         const addBtn = document.getElementById('addImprovementBtn');
         const container = document.getElementById('improvementsContainer');
-        
-        console.log('Add button:', addBtn);
-        console.log('Container:', container);
-        
+
         if (!addBtn) {
-            console.error('✗ Add button NOT FOUND');
             return;
         }
         
         if (!container) {
-            console.error('✗ Container NOT FOUND');
             return;
         }
         
@@ -71,16 +60,13 @@
         addBtn.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
-            
-            console.log('>>> Button clicked! Counter:', improvementCounter);
-            
+
             if (improvementCounter >= maxImprovements) {
                 alert('Максимум 10 предложений по улучшению');
                 return;
             }
             
             improvementCounter++;
-            console.log('Creating improvement #' + improvementCounter);
             
             const improvementDiv = document.createElement('div');
             improvementDiv.className = 'review-improvement-item';
@@ -101,7 +87,6 @@
                     'placeholder="Опишите конкретное предложение по улучшению" required></textarea>';
             
             container.appendChild(improvementDiv);
-            console.log('✓ Improvement added to DOM');
             
             // Add remove listener to the new button
             const removeBtn = improvementDiv.querySelector('[data-remove-improvement]');
@@ -117,9 +102,7 @@
                 addBtn.style.opacity = '0.5';
             }
         });
-        
-        console.log('✓ Add improvement button initialized');
-        
+
         // Remove improvement function
         function removeImprovement(button) {
             const improvementItem = button.closest('.review-improvement-item');
@@ -127,9 +110,7 @@
             
             improvementItem.remove();
             improvementCounter--;
-            
-            console.log('Improvement removed, remaining:', improvementCounter);
-            
+
             // Renumber remaining improvements
             const remainingItems = document.querySelectorAll('.review-improvement-item');
             remainingItems.forEach(function(item, index) {
@@ -188,7 +169,6 @@
                     // Show/hide entire improvements section
                     if (improvementsSection) {
                         improvementsSection.style.display = isChangesRequested ? 'block' : 'none';
-                        console.log('Improvements section:', isChangesRequested ? 'shown' : 'hidden');
                     }
                     
                     // Toggle class on form actions to remove border
@@ -205,16 +185,13 @@
             // Initially hide improvements section and add no-border class
             if (improvementsSection) {
                 improvementsSection.style.display = 'none';
-                console.log('Improvements section initially hidden');
             }
             
             if (formActions) {
                 formActions.classList.add('no-border-top');
             }
             
-            console.log('✓ Status radio listeners initialized');
         } else {
-            console.warn('Status radios not found');
         }
     }
     
@@ -222,12 +199,10 @@
         const form = document.getElementById('reviewForm');
         
         if (!form) {
-            console.error('Review form not found');
             return;
         }
         
         form.addEventListener('submit', function(event) {
-            console.log('Form submit triggered');
             
             // Get form values
             const statusRadio = document.querySelector('input[name="status"]:checked');
@@ -238,7 +213,6 @@
             if (!statusRadio) {
                 event.preventDefault();
                 showNotification('Выберите статус проверки', 'error');
-                console.error('No status selected');
                 return false;
             }
             
@@ -249,7 +223,6 @@
             if (comments.length < 20) {
                 event.preventDefault();
                 showNotification('Комментарии должны содержать минимум 20 символов', 'error');
-                console.error('Comments too short:', comments.length);
                 commentsTextarea.focus();
                 return false;
             }
@@ -261,7 +234,6 @@
                 if (improvements.length === 0) {
                     event.preventDefault();
                     showNotification('Для доработок необходимо добавить минимум 1 улучшение', 'error');
-                    console.error('No improvements added for changes_requested');
                     return false;
                 }
                 
@@ -273,7 +245,6 @@
                         const text = textarea.value.trim();
                         if (text.length < 10) {
                             hasEmptyImprovement = true;
-                            console.error('Improvement #' + (index + 1) + ' too short:', text.length);
                         }
                     }
                 });
@@ -285,11 +256,9 @@
                 }
             }
             
-            console.log('Form validation passed, submitting...');
             showNotification('Отправка проверки...', 'info');
             return true;
         });
         
-        console.log('✓ Form validation initialized');
     }
 })();

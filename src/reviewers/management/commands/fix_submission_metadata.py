@@ -64,7 +64,7 @@ class Command(BaseCommand):
 
                 if dry_run:
                     self.stdout.write(
-                        f"  ℹ️  Submission {submission.id}: " f"reviewed_at = {new_reviewed_at}"
+                        f"  ℹ️  Submission {submission.id}: reviewed_at = {new_reviewed_at}"
                     )
                 else:
                     submission.reviewed_at = new_reviewed_at
@@ -92,7 +92,7 @@ class Command(BaseCommand):
 
                     if dry_run:
                         self.stdout.write(
-                            f"  ℹ️  Submission {submission.id}: " f"mentor = {new_mentor.user.email}"
+                            f"  ℹ️  Submission {submission.id}: mentor = {new_mentor.user.email}"
                         )
                     else:
                         submission.mentor = new_mentor

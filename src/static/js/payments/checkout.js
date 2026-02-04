@@ -213,7 +213,6 @@
             handlePaymentMethodChange();
         }
 
-        console.log('✅ Checkout form initialized');
     }
 
     // Запускаем после загрузки DOM

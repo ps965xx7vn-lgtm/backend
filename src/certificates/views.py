@@ -93,7 +93,7 @@ def certificate_detail_view(request: HttpRequest, verification_code: str) -> Htt
     """
     certificate = get_object_or_404(
         Certificate.objects.select_related("student__user", "course"),
-        verification_code=verification_code.upper()
+        verification_code=verification_code.upper(),
     )
 
     # Проверка доступа - только владелец может видеть свой сертификат
@@ -135,14 +135,16 @@ def certificate_download_view(request: HttpRequest, verification_code: str) -> H
             from .utils import generate_certificate_pdf
 
             # Определить язык из запроса
-            language = request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'ru'
-            if language not in ['ru', 'en', 'ka']:
-                language = 'ru'
-            
+            language = request.LANGUAGE_CODE if hasattr(request, "LANGUAGE_CODE") else "ru"
+            if language not in ["ru", "en", "ka"]:
+                language = "ru"
+
             generate_certificate_pdf(certificate, language=language)
             certificate.refresh_from_db()
         except Exception as e:
-            logger.error(f"Failed to generate PDF for certificate {pk}: {e}")
+            logger.error(
+                f"Failed to generate PDF for certificate {certificate.verification_code}: {e}"
+            )
             messages.error(request, _("Ошибка при генерации PDF сертификата"))
             raise Http404(_("PDF файл не найден")) from e
 
@@ -162,7 +164,7 @@ def certificate_download_view(request: HttpRequest, verification_code: str) -> H
         return response
 
     except Exception as e:
-        logger.error(f"Error serving PDF file for certificate {pk}: {e}")
+        logger.error(f"Error serving PDF file for certificate {certificate.verification_code}: {e}")
         messages.error(request, _("Ошибка при скачивании файла"))
         raise Http404(_("PDF файл не найден")) from e
 
@@ -217,12 +219,16 @@ def certificate_verify_by_code_view(request: HttpRequest) -> HttpResponse:
     not_found = False
 
     if request.method == "POST":
-        verification_code = request.POST.get("verification_code", "").strip().upper()
+        code_input = request.POST.get("verification_code", "").strip().upper()
 
-        if verification_code:
+        if code_input:
             try:
+                # Ищем по обоим полям: verification_code (хэш) ИЛИ certificate_number (читаемый номер)
+                # Это позволяет проверять сертификат как по коду из QR, так и по номеру из письма
+                from django.db.models import Q
+
                 certificate = Certificate.objects.select_related("student__user", "course").get(
-                    verification_code=verification_code
+                    Q(verification_code=code_input) | Q(certificate_number=code_input)
                 )
 
                 is_valid = certificate.is_valid

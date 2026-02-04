@@ -4,6 +4,9 @@
 
 /* CSS Custom Properties (Variables) */
 :root {
+  /* === Layout === */
+  --header-height: 80px;
+  
   /* === Цветовая палитра === */
   /* Основные цвета */
   --primary-50: #f0f9ff;
@@ -295,6 +298,29 @@ a:focus {
 
 @media (min-width: 1024px) {
   .container { padding: 0 var(--spacing-8); }
+}
+
+/* === Main Content Layout === */
+main,
+.main-content {
+  padding-top: var(--header-height);
+}
+
+/* Для секций которые идут сразу после header */
+/* ИСКЛЮЧЕНИЕ: Hero-секции с min-height: 100vh НЕ нуждаются в padding-top! */
+main > section:first-child:not(.revolutionary-hero-home):not(.verify-hero):not(.contacts-hero),
+.main-content > section:first-child:not(.revolutionary-hero-home):not(.verify-hero):not(.contacts-hero) {
+  padding-top: var(--header-height);
+}
+
+/* Hero-секции с min-height: 100vh НЕ ДОЛЖНЫ иметь padding-top! */
+main > .revolutionary-hero-home:first-child,
+.main-content > .revolutionary-hero-home:first-child,
+main > .verify-hero:first-child,
+.main-content > .verify-hero:first-child,
+main > .contacts-hero:first-child,
+.main-content > .contacts-hero:first-child {
+  padding-top: 0 !important;
 }
 
 /* === Скрытие элементов === */

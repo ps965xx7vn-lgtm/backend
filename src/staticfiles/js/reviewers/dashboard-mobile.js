@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Проверяем начальное состояние
 
-    
     // ВАЖНО: На mobile убираем класс open при инициализации
     // Потому что на desktop sidebar всегда открыт, но нам нужно скрыть на mobile
     if (window.innerWidth < 1024) {

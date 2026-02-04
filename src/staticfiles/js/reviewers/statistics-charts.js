@@ -378,7 +378,6 @@
             const data = JSON.parse(dataElement.textContent);
             window.dailyChart = new ChartRenderer('dailyCanvas', data);
         } catch (e) {
-            console.error('Failed to parse chart data:', e);
         }
     }
 
@@ -391,7 +390,6 @@
                 
                 // Можно добавить логику фильтрации данных графика
                 const label = this.querySelector('.legend-label').textContent;
-                console.log('Toggle legend:', label);
             });
         });
     }

@@ -983,7 +983,6 @@ function initHeader() {
           }
         }
       } catch (error) {
-        console.error('Newsletter subscription error:', error);
         if (window.notificationManager) {
           window.notificationManager.show('Произошла ошибка. Попробуйте позже.', 'error', 5000);
         }

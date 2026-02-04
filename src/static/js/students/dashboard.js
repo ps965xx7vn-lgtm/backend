@@ -28,7 +28,6 @@ class DashboardManager {
         }
 
         if (!mobileToggle) {
-            console.warn('Dashboard menu button not found');
             return;
         }
 
@@ -100,7 +99,7 @@ class DashboardManager {
         if (!data || data.length === 0) {
             return;
         }
-        
+
         const maxValue = Math.max(...data.map(d => d.completed_steps), 1); // Минимум 1 чтобы избежать деления на 0
         const width = container.offsetWidth - 40;
         const height = 160;
@@ -141,7 +140,7 @@ class DashboardManager {
             text.setAttribute('text-anchor', 'middle');
             text.setAttribute('font-size', '12');
             text.setAttribute('fill', '#6b7280');
-            
+
             // Парсим дату и извлекаем день
             const date = new Date(item.date);
             const dayOfMonth = !isNaN(date.getTime()) ? date.getDate() : '?';
@@ -219,7 +218,7 @@ class DashboardManager {
         if (!data || data.length === 0) {
             return;
         }
-        
+
         const radius = 80;
         const centerX = 100;
         const centerY = 100;
@@ -236,7 +235,7 @@ class DashboardManager {
             if (!item || typeof item.progress !== 'number') {
                 return;
             }
-            
+
             const percentage = Math.min(Math.max(item.progress / 100, 0), 1); // Clamp between 0 and 1
             const angle = percentage * 360;
             const largeArcFlag = angle > 180 ? 1 : 0;

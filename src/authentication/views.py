@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import logging
 import uuid
-from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -56,7 +55,8 @@ def signin_view(request: HttpRequest) -> HttpResponse:
 
     Обрабатывает аутентификацию пользователя с проверкой подтверждения email.
     Поддерживает перенаправление на next URL после успешного входа.
-    Авторизованные пользователи автоматически перенаправляются на главную.
+    Авторизованные пользователи автоматически перенаправляются на их dashboard.
+    Поддерживает опцию "Запомнить меня" для продления сессии.
 
     Args:
         request: HTTP запрос Django (GET для отображения формы, POST для входа)
@@ -64,31 +64,28 @@ def signin_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse:
             - GET: Рендерит форму входа account/auth/signin.html
-            - POST успешно: Redirect на next URL или /
+            - POST успешно: Redirect на next URL или role-based dashboard
             - POST ошибка: Рендерит форму с сообщением об ошибке
 
     Template Context:
-        form: UserLoginForm instance
-        next: URL для перенаправления после входа (из GET/POST параметра)
+        form: UserLoginForm - форма для ввода email и пароля
+        next: str - URL для перенаправления после входа (из GET/POST параметра)
 
     Validation:
         - Проверяет email и пароль через UserLoginForm
         - Проверяет user.email_is_verified перед входом
         - Показывает ссылку на повторную отправку email если не подтвержден
 
+    Session:
+        - remember_me=False: сессия истекает при закрытии браузера
+        - remember_me=True: сессия хранится 2 недели (настройка в settings)
+
     Example:
         GET /account/signin?next=/courses/python
-        POST /account/signin
-        {
-            "email": "user@example.com",
-            "password": "SecurePass123",
-            "next": "/dashboard"
-        }
-
-        → Redirect to /dashboard если email подтвержден
+        POST /account/signin {"email": "user@example.com", "password": "pass", "remember_me": true}
+        → Redirect to role dashboard если email подтвержден
         → Ошибка с ссылкой на resend_verification если не подтвержден
     """
-    # Редирект авторизованных пользователей на их dashboard
     if request.user.is_authenticated:
         logger.info(f"Авторизованный пользователь {request.user.email} перенаправлен с signin")
         role_name = request.user.role.name if request.user.role else None
@@ -120,35 +117,28 @@ def signin_view(request: HttpRequest) -> HttpResponse:
                 if user.email_is_verified:
                     login(request, user)
                     logger.info(f"Пользователь успешно вошел: {email}")
-                    # Если пользователь не выбрал "Запомнить меня", сессия истечет при закрытии браузера
                     if not remember_me:
                         request.session.set_expiry(0)
-                    # Если выбрал "Запомнить меня", сессия будет храниться 2 недели (по умолчанию в settings)
 
-                    # Умный редирект на основе роли пользователя
                     if not next_url or next_url == "/":
                         role_name = user.role.name if user.role else None
 
                         if role_name == "manager" and hasattr(user, "manager"):
-                            # Менеджеры идут на свой dashboard
                             next_url = reverse(
                                 "managers:dashboard", kwargs={"user_uuid": user.manager.id}
                             )
                             logger.info(f"Redirecting {email} (manager) to managers dashboard")
                         elif role_name == "student" and hasattr(user, "student"):
-                            # Студенты идут на свой dashboard
                             next_url = reverse(
                                 "students:dashboard", kwargs={"user_uuid": user.student.id}
                             )
                             logger.info(f"Redirecting {email} (student) to student dashboard")
                         elif role_name == "reviewer" and hasattr(user, "reviewer"):
-                            # Ревьюеры идут на свой dashboard
                             next_url = reverse(
                                 "reviewers:dashboard", kwargs={"user_uuid": user.reviewer.id}
                             )
                             logger.info(f"Redirecting {email} (reviewer) to reviewer dashboard")
                         else:
-                            # По умолчанию на главную
                             next_url = "/"
 
                     return redirect(next_url)
@@ -193,7 +183,7 @@ def signup_view(request: HttpRequest) -> HttpResponse:
             - POST ошибка: Рендерит форму с ошибками валидации
 
     Template Context:
-        form: UserRegisterForm instance
+        form: UserRegisterForm - форма регистрации
 
     Process Flow:
         1. Валидация формы (email уникальность, пароль сложность, телефон)
@@ -221,7 +211,6 @@ def signup_view(request: HttpRequest) -> HttpResponse:
         → Отправляется email с /account/verify-email-confirm/{uidb64}/{token}/
         → Redirect на signin с сообщением "Подтвердите email"
     """
-    # Редирект авторизованных пользователей
     if request.user.is_authenticated:
         logger.info(f"Авторизованный пользователь {request.user.email} перенаправлен с signup")
         return redirect("/")
@@ -229,14 +218,12 @@ def signup_view(request: HttpRequest) -> HttpResponse:
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             try:
-                # Создаем пользователя (транзакция управляется декоратором)
                 user = form.save(commit=False)
                 user.username = str(uuid.uuid4())[:30]
                 password = form.cleaned_data.get("password")
                 user.set_password(password)
                 user.save()
 
-                # Сохраняем номер телефона в профиль Student
                 phone_number = form.cleaned_data.get("phone_number")
                 if phone_number:
                     user.student.phone = phone_number
@@ -252,8 +239,6 @@ def signup_view(request: HttpRequest) -> HttpResponse:
                     )
                 )
 
-                # Email верификация обязательна для всех пользователей
-                # Попытка отправить email через Celery, при ошибке - синхронно
                 try:
                     send_verification_email.delay(
                         user.id,
@@ -266,7 +251,6 @@ def signup_view(request: HttpRequest) -> HttpResponse:
                     logger.warning(
                         f"Celery недоступен, переключаемся на синхронную отправку: {celery_error}"
                     )
-                    # Fallback на синхронную отправку email если Celery недоступен
                     try:
                         send_verification_email_sync(
                             user.id,
@@ -283,15 +267,13 @@ def signup_view(request: HttpRequest) -> HttpResponse:
                             request,
                             _("Ошибка отправки письма подтверждения. Попробуйте позже."),
                         )
-                        raise sync_error  # Это откатит транзакцию
+                        raise sync_error
 
-                # Успешная регистрация
                 success_message = _("Регистрация успешна! Проверьте ваш email для подтверждения.")
                 messages.success(request, success_message)
                 return redirect("authentication:signin")
 
             except Exception:
-                # Если что-то пошло не так, пользователь не будет создан
                 messages.error(request, _("Произошла ошибка при регистрации. Попробуйте еще раз."))
     else:
         form = UserRegisterForm()
@@ -433,12 +415,42 @@ def password_reset_view(request: HttpRequest) -> HttpResponse:
 @csrf_protect
 @never_cache
 @transaction.atomic
-def password_reset_confirm(request, uidb64: str, token: str) -> Any:
+def password_reset_confirm(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
     """
-    Подтверждение сброса пароля.
+    Подтверждение сброса пароля и установка нового пароля.
 
-    :param uidb64: base64 закодированный pk пользователя
-    :param token: токен сброса пароля
+    Декодирует uidb64 для получения user ID, проверяет валидность токена,
+    и позволяет установить новый пароль если токен действителен.
+
+    Args:
+        request: HTTP запрос Django (GET для формы, POST для установки пароля)
+        uidb64: Base64 закодированный user.pk из urlsafe_base64_encode()
+        token: Одноразовый токен из default_token_generator.make_token()
+
+    Returns:
+        HttpResponse:
+            - GET с валидным токеном: Рендер формы установки пароля
+            - POST успешно: Redirect на signin с сообщением об успехе
+            - Невалидный токен: Рендер страницы с сообщением об ошибке
+
+    Template Context:
+        form: SetPasswordForm - форма для установки нового пароля
+        validlink: bool - True если токен валидный, False иначе
+
+    Flow:
+        1. Декодируем uidb64 → user.pk
+        2. Получаем User из БД
+        3. Проверяем токен через default_token_generator.check_token()
+        4. Если токен валидный и POST: сохраняем новый пароль
+        5. Если токен невалидный: показываем предупреждение
+
+    Example:
+        GET /account/password-reset-confirm/MjM=/6c8-abc123def456/
+        → Показывает форму установки нового пароля
+
+        POST /account/password-reset-confirm/MjM=/6c8-abc123def456/
+        {"new_password1": "NewPass123", "new_password2": "NewPass123"}
+        → Сохраняет новый пароль, redirect на signin
     """
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -468,7 +480,6 @@ def password_reset_confirm(request, uidb64: str, token: str) -> Any:
             {"form": form, "validlink": validlink},
         )
 
-    # Если ссылка недействительна
     logger.warning(f"Невалидный или истекший токен сброса пароля для uidb64: {uidb64}")
     return render(
         request,

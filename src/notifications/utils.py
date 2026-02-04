@@ -27,7 +27,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-
 # Маппинг типов уведомлений на поля Student модели
 NOTIFICATION_TYPE_MAPPING = {
     "course_update": "course_updates",
