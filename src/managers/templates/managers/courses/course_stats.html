@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Статистика курса" %} - {{ course.name }} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260204">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+        {% include 'managers/_sidebar_nav.html' with active='courses' %}
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Статистика курса" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' user_uuid %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                    <a href="{% url 'managers:courses_list' user_uuid %}">{% trans "Курсы" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                    <span>{{ course.name }}</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{% url 'managers:course_access' user_uuid course.id %}" class="btn btn-outline-secondary">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    {% trans "Доступ" %}
+                </a>
+                <a href="{% url 'managers:course_edit' user_uuid course.id %}" class="btn btn-primary">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    {% trans "Редактировать" %}
+                </a>
+            </div>
+        </header>
+
+        <!-- Course Info Card -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-body">
+                <div style="display: flex; gap: 2rem; align-items: start;">
+                    {% if course.image %}
+                    <div style="flex-shrink: 0;">
+                        <img src="{{ course.image.url }}" alt="{{ course.name }}" style="width: 200px; border-radius: 12px;">
+                    </div>
+                    {% endif %}
+                    <div style="flex: 1;">
+                        <h2 style="margin: 0 0 0.5rem 0;">{{ course.name }}</h2>
+                        <p style="color: #6b7280; margin: 0 0 1rem 0;">{{ course.short_description|default:course.description|truncatewords:30 }}</p>
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                            <span class="badge badge-{{ course.status }}">{{ course.get_status_display }}</span>
+                            <span class="badge">{{ course.get_category_display }}</span>
+                            <span class="badge">{% if course.price > 0 %}{{ course.price }} ₽{% else %}{% trans "Бесплатно" %}{% endif %}</span>
+                            <span class="badge">⭐ {{ course.rating }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ total_students }}</h3>
+                    <p class="stat-label">{% trans "Всего студентов" %}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ total_lessons }}</h3>
+                    <p class="stat-label">{% trans "Уроков" %}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ total_steps }}</h3>
+                    <p class="stat-label">{% trans "Шагов" %}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ avg_completion }}%</h3>
+                    <p class="stat-label">{% trans "Средний прогресс" %}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Chart -->
+        <div class="card" style="margin: 2rem 0;">
+            <div class="card-header">
+                <h2 class="card-title">{% trans "Активность за неделю" %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-card">
+                    <canvas id="activityChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Students -->
+        {% if top_students %}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">{% trans "Топ-10 студентов по прогрессу" %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">№</th>
+                                <th>{% trans "Студент" %}</th>
+                                <th style="text-align: center;">{% trans "Прогресс" %}</th>
+                                <th style="text-align: right;">{% trans "Завершено шагов" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in top_students %}
+                            <tr>
+                                <td style="font-weight: bold; color: #6b7280;">{{ forloop.counter }}</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="dashboard-avatar" style="width: 36px; height: 36px; font-size: 14px;">
+                                            {{ item.student.user.email|first|upper }}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">{{ item.student.user.get_full_name|default:item.student.user.email }}</div>
+                                            <div style="font-size: 0.875rem; color: #6b7280;">{{ item.student.user.email }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <div style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                                        <div class="progress-bar" style="width: 100px; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                                            <div style="width: {{ item.completion_percentage }}%; height: 100%; background: {% if item.completion_percentage == 100 %}#10b981{% elif item.completion_percentage >= 75 %}#3b82f6{% elif item.completion_percentage >= 50 %}#f59e0b{% else %}#ef4444{% endif %}; transition: width 0.3s;"></div>
+                                        </div>
+                                        <span style="font-weight: 600; min-width: 45px;">{{ item.completion_percentage }}%</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: right; font-weight: 500;">{{ item.completed_steps }} / {{ item.total_steps }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+<button class="mobile-menu-toggle" aria-label="Toggle menu">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{% static 'js/managers/dashboard.js' %}?v=20260202-mobile"></script>
+<script>
+// Activity Chart
+const activityData = {
+    labels: [
+        {% for day in activity_by_day %}'{{ day.date|date:"d.m" }}'{% if not forloop.last %},{% endif %}{% endfor %}
+    ],
+    datasets: [{
+        label: '{% trans "Завершенных шагов" %}',
+        data: [{% for day in activity_by_day %}{{ day.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+        borderColor: 'rgb(59, 130, 246)',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true
+    }]
+};
+
+const activityConfig = {
+    type: 'line',
+    data: activityData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                padding: 12,
+                titleFont: { size: 14 },
+                bodyFont: { size: 13 }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { stepSize: 1 }
+            }
+        }
+    }
+};
+
+const activityChart = new Chart(
+    document.getElementById('activityChart'),
+    activityConfig
+);
+</script>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Удаление курса" %} - {{ course.name }} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260204">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+
+        {% include 'managers/_sidebar_nav.html' with active='courses' %}
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Удаление курса" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' user_uuid %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <a href="{% url 'managers:courses_list' user_uuid %}">{% trans "Курсы" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Удаление" %}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Confirmation Card -->
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <div class="card-header bg-danger">
+                <h2 class="card-title" style="color: white;">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    {% trans "Подтвердите удаление" %}
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <strong>{% trans "Внимание!" %}</strong>
+                    {% trans "Вы собираетесь удалить курс. Это действие необратимо!" %}
+                </div>
+
+                <!-- Course Info -->
+                <div class="course-delete-info">
+                    {% if course.image %}
+                    <div class="course-delete-image">
+                        <img src="{{ course.image.url }}" alt="{{ course.name }}">
+                    </div>
+                    {% endif %}
+
+                    <h3 style="margin-top: 1rem;">{{ course.name }}</h3>
+                    <p style="color: #6b7280;">{{ course.get_category_display }} • {{ course.get_status_display }}</p>
+
+                    <!-- Related Objects Warning -->
+                    <div class="related-objects-warning">
+                        <h4>{% trans "Будут удалены:" %}</h4>
+                        <ul>
+                            <li>
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <strong>{{ lessons_count }}</strong> {% trans "уроков" %}
+                            </li>
+                            <li>
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                                {% trans "Доступ для" %} <strong>{{ students_count }}</strong> {% trans "студентов" %}
+                            </li>
+                            <li>
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                </svg>
+                                {% trans "Весь прогресс студентов по курсу" %}
+                            </li>
+                        </ul>
+                    </div>
+
+                    {% if students_count > 0 %}
+                    <div class="alert alert-danger" style="margin-top: 1rem;">
+                        <strong>{% trans "Курс используется!" %}</strong>
+                        {% trans "На этом курсе обучаются студенты. Рекомендуется перевести курс в архив вместо удаления." %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Confirmation Form -->
+                <form method="post" style="margin-top: 2rem;">
+                    {% csrf_token %}
+
+                    <div class="form-actions" style="justify-content: center; gap: 1rem;">
+                        <a href="{% url 'managers:courses_list' user_uuid %}" class="btn btn-outline-secondary">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                            </svg>
+                            {% trans "Отмена" %}
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            {% trans "Удалить курс" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Mobile Menu Toggle Button -->
+<button class="mobile-menu-toggle" aria-label="Toggle menu">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard.js' %}?v=20260202-mobile"></script>
+{% endblock %}

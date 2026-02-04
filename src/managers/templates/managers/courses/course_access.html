@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Управление доступом" %} - {{ course.name }} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260204">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+        {% include 'managers/_sidebar_nav.html' with active='courses' %}
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Управление доступом" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' user_uuid %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                    <a href="{% url 'managers:courses_list' user_uuid %}">{% trans "Курсы" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                    <span>{{ course.name }}</span>
+                </div>
+            </div>
+            <a href="{% url 'managers:course_stats' user_uuid course.id %}" class="btn btn-outline-primary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                {% trans "Статистика" %}
+            </a>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ enrolled_count }}</h3>
+                    <p class="stat-label">{% trans "Зачисленных студентов" %}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ available_count }}</h3>
+                    <p class="stat-label">{% trans "Доступных для добавления" %}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Management Form -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h2 class="card-title">{% trans "Добавить или удалить студентов" %}</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="form-label">{{ form.action.label }}</label>
+                        <div class="radio-group">
+                            {% for radio in form.action %}
+                                <div class="form-check">
+                                    {{ radio.tag }}
+                                    <label for="{{ radio.id_for_label }}" class="form-check-label">{{ radio.choice_label }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.action.errors %}
+                            <div class="form-error">{{ form.action.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">{{ form.students.label }}</label>
+                        <div class="students-checkbox-grid" style="max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem;">
+                            {% for checkbox in form.students %}
+                                <div class="form-check">
+                                    {{ checkbox.tag }}
+                                    <label for="{{ checkbox.id_for_label }}" class="form-check-label">
+                                        {{ checkbox.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.students.errors %}
+                            <div class="form-error">{{ form.students.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {% trans "Применить" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Enrolled Students List -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">{% trans "Зачисленные студенты" %}</h2>
+            </div>
+            <div class="card-body">
+                {% if page_obj %}
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Email" %}</th>
+                                <th>{% trans "Имя" %}</th>
+                                <th>{% trans "Дата регистрации" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in page_obj %}
+                            <tr>
+                                <td>{{ student.user.email }}</td>
+                                <td>{{ student.user.get_full_name|default:"-" }}</td>
+                                <td>{{ student.user.date_joined|date:"d.m.Y H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <div class="pagination" style="margin-top: 1.5rem;">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1" class="pagination-link">{% trans "Первая" %}</a>
+                        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">{% trans "Назад" %}</a>
+                    {% endif %}
+                    <span class="pagination-current">
+                        {% trans "Страница" %} {{ page_obj.number }} {% trans "из" %} {{ page_obj.paginator.num_pages }}
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">{% trans "Вперед" %}</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link">{% trans "Последняя" %}</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="empty-state">
+                    <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <h3>{% trans "Нет зачисленных студентов" %}</h3>
+                    <p>{% trans "Добавьте студентов используя форму выше" %}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+
+<button class="mobile-menu-toggle" aria-label="Toggle menu">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard.js' %}?v=20260202-mobile"></script>
+{% endblock %}

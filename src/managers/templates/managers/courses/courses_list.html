@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Управление курсами" %} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260204">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+
+        {% include 'managers/_sidebar_nav.html' with active='courses' %}
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">
+                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    {% trans "Управление курсами" %}
+                </h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' user_uuid %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Курсы" %}</span>
+                </div>
+            </div>
+
+            <!-- Create Course Button -->
+            <a href="{% url 'managers:course_create' user_uuid %}" class="btn btn-primary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                {% trans "Создать курс" %}
+            </a>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ total_courses }}</h3>
+                    <p class="stat-label">{% trans "Всего курсов" %}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ active_courses }}</h3>
+                    <p class="stat-label">{% trans "Активных" %}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">{{ draft_courses }}</h3>
+                    <p class="stat-label">{% trans "Черновиков" %}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h2 class="card-title">{% trans "Фильтры" %}</h2>
+            </div>
+            <div class="card-body">
+                <form method="get" class="filters-form">
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 2;">
+                            {{ filter_form.search }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.status }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.category }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.is_featured }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.price_from }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.price_to }}
+                        </div>
+                        <div class="form-group" style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </button>
+                            <a href="{% url 'managers:courses_list' user_uuid %}" class="btn btn-outline-secondary">
+                                {% trans "Сбросить" %}
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Courses List -->
+        {% if page_obj %}
+        <div class="courses-grid">
+            {% for course in page_obj %}
+            <div class="course-card-manager">
+                <!-- Image -->
+                <div class="course-image-manager">
+                    {% if course.image %}
+                        <img src="{{ course.image.url }}" alt="{{ course.name }}">
+                    {% else %}
+                        <div class="course-image-placeholder">
+                            {{ course.name|first|upper }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Status Badge -->
+                    <div class="course-status-badge status-{{ course.status }}">
+                        {% if course.status == 'active' %}
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {% trans "Активный" %}
+                        {% elif course.status == 'draft' %}
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            {% trans "Черновик" %}
+                        {% elif course.status == 'archived' %}
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                            </svg>
+                            {% trans "Архив" %}
+                        {% else %}
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {% trans "Скоро" %}
+                        {% endif %}
+                    </div>
+
+                    {% if course.is_featured %}
+                    <div class="course-featured-badge">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                        </svg>
+                        {% trans "Избранный" %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Content -->
+                <div class="course-content-manager">
+                    <h3 class="course-title-manager">
+                        <a href="{% url 'managers:course_stats' user_uuid course.id %}">
+                            {{ course.name }}
+                        </a>
+                    </h3>
+
+                    <p class="course-meta-manager">
+                        <span class="course-category">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                            </svg>
+                            {{ course.get_category_display }}
+                        </span>
+                        <span class="course-price">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {% if course.price > 0 %}
+                                {{ course.price }} ₽
+                            {% else %}
+                                {% trans "Бесплатно" %}
+                            {% endif %}
+                        </span>
+                        <span class="course-rating">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                            </svg>
+                            {{ course.rating }}
+                        </span>
+                    </p>
+
+                    <p class="course-students-count">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <strong>{{ course.student_enrollments.count }}</strong> {% trans "студентов" %}
+                    </p>
+
+                    <!-- Actions -->
+                    <div class="course-actions-manager">
+                        <a href="{% url 'managers:course_stats' user_uuid course.id %}" class="btn btn-sm btn-outline-primary" title="{% trans 'Статистика' %}">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'managers:course_access' user_uuid course.id %}" class="btn btn-sm btn-outline-secondary" title="{% trans 'Доступ' %}">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'managers:course_edit' user_uuid course.id %}" class="btn btn-sm btn-warning" title="{% trans 'Редактировать' %}">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'managers:course_delete' user_uuid course.id %}" class="btn btn-sm btn-danger" title="{% trans 'Удалить' %}">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{{ request.GET.urlencode }}" class="pagination-link">{% trans "Первая" %}</a>
+                <a href="?page={{ page_obj.previous_page_number }}{{ request.GET.urlencode }}" class="pagination-link">{% trans "Назад" %}</a>
+            {% endif %}
+
+            <span class="pagination-current">
+                {% trans "Страница" %} {{ page_obj.number }} {% trans "из" %} {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{{ request.GET.urlencode }}" class="pagination-link">{% trans "Вперед" %}</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{{ request.GET.urlencode }}" class="pagination-link">{% trans "Последняя" %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            <h3>{% trans "Курсы не найдены" %}</h3>
+            <p>{% trans "Попробуйте изменить параметры фильтрации или создайте новый курс" %}</p>
+            <a href="{% url 'managers:course_create' user_uuid %}" class="btn btn-primary">
+                {% trans "Создать первый курс" %}
+            </a>
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+<!-- Mobile Menu Toggle Button -->
+<button class="mobile-menu-toggle" aria-label="Toggle menu">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard.js' %}?v=20260202-mobile"></script>
+{% endblock %}

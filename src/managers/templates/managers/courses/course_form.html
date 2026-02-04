@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{{ title }} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260204">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-spacer"></div>
+
+        {% include 'managers/_sidebar_nav.html' with active='courses' %}
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{{ title }}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' user_uuid %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <a href="{% url 'managers:courses_list' user_uuid %}">{% trans "Курсы" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{{ title }}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Course Form Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    {% trans "Информация о курсе" %}
+                </h2>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" class="course-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">{% trans "Основная информация" %}</h3>
+
+                        <div class="form-group">
+                            <label for="{{ form.name.id_for_label }}" class="form-label required">
+                                {{ form.name.label }}
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="form-error">{{ form.name.errors }}</div>
+                            {% endif %}
+                            {% if form.name.help_text %}
+                                <small class="form-help">{{ form.name.help_text }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.slug.id_for_label }}" class="form-label required">
+                                {{ form.slug.label }}
+                            </label>
+                            {{ form.slug }}
+                            {% if form.slug.errors %}
+                                <div class="form-error">{{ form.slug.errors }}</div>
+                            {% endif %}
+                            {% if form.slug.help_text %}
+                                <small class="form-help">{{ form.slug.help_text }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.short_description.id_for_label }}" class="form-label">
+                                {{ form.short_description.label }}
+                            </label>
+                            {{ form.short_description }}
+                            {% if form.short_description.errors %}
+                                <div class="form-error">{{ form.short_description.errors }}</div>
+                            {% endif %}
+                            <small class="form-help">{% trans "Краткое описание для карточки курса (макс 350 символов)" %}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                {{ form.description.label }}
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="form-error">{{ form.description.errors }}</div>
+                            {% endif %}
+                            <small class="form-help">{% trans "Полное описание курса. Поддерживается Markdown." %}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">
+                                {{ form.image.label }}
+                            </label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="form-error">{{ form.image.errors }}</div>
+                            {% endif %}
+                            {% if course.image %}
+                                <div class="current-image">
+                                    <img src="{{ course.image.url }}" alt="{{ course.name }}" style="max-width: 200px; border-radius: 8px; margin-top: 10px;">
+                                    <small class="form-help">{% trans "Текущее изображение. Загрузите новое для замены." %}</small>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Pricing & Category -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">{% trans "Категория и цена" %}</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.category.id_for_label }}" class="form-label required">
+                                    {{ form.category.label }}
+                                </label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="form-error">{{ form.category.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.price.id_for_label }}" class="form-label required">
+                                    {{ form.price.label }}
+                                </label>
+                                {{ form.price }}
+                                {% if form.price.errors %}
+                                    <div class="form-error">{{ form.price.errors }}</div>
+                                {% endif %}
+                                {% if form.price.help_text %}
+                                    <small class="form-help">{{ form.price.help_text }}</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.rating.id_for_label }}" class="form-label required">
+                                    {{ form.rating.label }}
+                                </label>
+                                {{ form.rating }}
+                                {% if form.rating.errors %}
+                                    <div class="form-error">{{ form.rating.errors }}</div>
+                                {% endif %}
+                                {% if form.rating.help_text %}
+                                    <small class="form-help">{{ form.rating.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status & Visibility -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">{% trans "Статус и видимость" %}</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.status.id_for_label }}" class="form-label required">
+                                    {{ form.status.label }}
+                                </label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="form-error">{{ form.status.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-check">
+                                    {{ form.is_featured }}
+                                    <label for="{{ form.is_featured.id_for_label }}" class="form-check-label">
+                                        {{ form.is_featured.label }}
+                                    </label>
+                                </div>
+                                {% if form.is_featured.errors %}
+                                    <div class="form-error">{{ form.is_featured.errors }}</div>
+                                {% endif %}
+                                {% if form.is_featured.help_text %}
+                                    <small class="form-help">{{ form.is_featured.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {{ submit_text }}
+                        </button>
+                        <a href="{% url 'managers:courses_list' user_uuid %}" class="btn btn-outline-secondary">
+                            {% trans "Отмена" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Mobile Menu Toggle Button -->
+<button class="mobile-menu-toggle" aria-label="Toggle menu">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard.js' %}?v=20260202-mobile"></script>
+<script>
+// Auto-generate slug from name
+document.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.querySelector('#{{ form.name.id_for_label }}');
+    const slugInput = document.querySelector('#{{ form.slug.id_for_label }}');
+
+    if (nameInput && slugInput) {
+        nameInput.addEventListener('input', function() {
+            if (!slugInput.value || slugInput.dataset.autoGenerated) {
+                const slug = this.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9-]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
+                slugInput.value = slug;
+                slugInput.dataset.autoGenerated = 'true';
+            }
+        });
+
+        slugInput.addEventListener('input', function() {
+            delete this.dataset.autoGenerated;
+        });
+    }
+});
+</script>
+{% endblock %}
