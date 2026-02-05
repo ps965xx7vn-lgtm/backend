@@ -1806,6 +1806,131 @@
     }
 }
 
+/* ============================================
+   LIGHT THEME OVERRIDES FOR FEEDBACK PAGES
+   ============================================ */
+
+[data-theme="light"] .feedback-detail-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .feedback-card-header {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .feedback-subject {
+    color: #0f172a;
+}
+
+[data-theme="light"] .feedback-from {
+    color: #0f172a;
+}
+
+[data-theme="light"] .feedback-meta {
+    color: #64748b;
+}
+
+[data-theme="light"] .feedback-section-title {
+    color: #0f172a;
+}
+
+[data-theme="light"] .feedback-message-content {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+}
+
+[data-theme="light"] .feedback-contact-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .feedback-contact-label {
+    color: #64748b;
+}
+
+[data-theme="light"] .feedback-contact-value {
+    color: #0f172a;
+}
+
+[data-theme="light"] .feedback-admin-notes {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .feedback-admin-notes h3 {
+    color: #0f172a;
+}
+
+[data-theme="light"] .feedback-admin-notes textarea {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+}
+
+[data-theme="light"] .feedback-admin-notes-help {
+    color: #64748b;
+}
+
+[data-theme="light"] .feedback-management {
+    border-top: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .feedback-management h3 {
+    color: #0f172a;
+}
+
+[data-theme="light"] .action-card {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+}
+
+[data-theme="light"] .action-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .action-card-content h4 {
+    color: #0f172a;
+}
+
+[data-theme="light"] .action-card-content p {
+    color: #64748b;
+}
+
+/* Delete Warning for Light Theme */
+[data-theme="light"] .delete-warning-banner {
+    background: rgba(239, 68, 68, 0.05);
+    border: 2px solid rgba(239, 68, 68, 0.2);
+}
+
+[data-theme="light"] .delete-warning-icon {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+[data-theme="light"] .delete-warning-content p {
+    color: #64748b;
+}
+
+/* Messages for Light Theme */
+[data-theme="light"] .message-success {
+    background: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #16a34a;
+}
+
+[data-theme="light"] .message-danger {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #dc2626;
+}
+
+[data-theme="light"] .message-info {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: #2563eb;
+}
+
 /* Button Styles in Chart Headers */
 .chart-header .btn {
     display: inline-flex;

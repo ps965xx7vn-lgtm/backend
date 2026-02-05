@@ -29,7 +29,7 @@
             <div>
                 <h1 class="dashboard-title">{% trans "Панель управления" %}</h1>
                 <div class="dashboard-breadcrumb">
-                    <span>{% trans "Главная" %}</span>
+                    <a href="{% url 'managers:dashboard' request.user.manager.id %}">{% trans "Главная" %}</a>
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
                         <path d="m9 18 6-6-6-6"/>
                     </svg>
@@ -49,7 +49,7 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="stat-value">{{ user_stats.total_users|default:0 }}</h3>
+                <h3 class="stat-value">{{ user_stats.total|default:0 }}</h3>
                 <p class="stat-label">{% trans "Всего пользователей" %}</p>
             </div>
 
@@ -75,7 +75,7 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="stat-value">{{ payment_stats.total_payments|default:0 }}</h3>
+                <h3 class="stat-value">{{ payment_stats.total|default:0 }}</h3>
                 <p class="stat-label">{% trans "Платежей" %}</p>
             </div>
 
