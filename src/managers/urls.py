@@ -45,6 +45,22 @@ urlpatterns = [
     ),
     # System Logs
     path("<uuid:user_uuid>/logs/", views.system_logs_view, name="system_logs"),
+    # Payments Management
+    path("<uuid:user_uuid>/payments/", views.payments_list_view, name="payments_list"),
+    path(
+        "<uuid:user_uuid>/payments/<uuid:payment_id>/",
+        views.payment_detail_view,
+        name="payment_detail",
+    ),
+    path(
+        "<uuid:user_uuid>/payments/<uuid:payment_id>/refund/",
+        views.payment_refund_view,
+        name="payment_refund",
+    ),
+    path(
+        "<uuid:user_uuid>/payments/reports/", views.payments_reports_view, name="payments_reports"
+    ),
+    path("<uuid:user_uuid>/payments/export/", views.payments_export_view, name="payments_export"),
     # API Endpoints
     path(
         "<uuid:user_uuid>/api/feedback-stats/", views.api_feedback_stats, name="api_feedback_stats"

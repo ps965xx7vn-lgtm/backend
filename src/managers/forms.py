@@ -335,3 +335,158 @@ class SystemLogsFilterForm(forms.Form):
             raise forms.ValidationError("Дата начала не может быть позже даты окончания")
 
         return cleaned_data
+
+
+# ============================================================================
+# PAYMENTS FILTER FORM - Форма фильтрации платежей
+# ============================================================================
+
+
+class PaymentsFilterForm(forms.Form):
+    """Форма для фильтрации платежных транзакций."""
+
+    search = forms.CharField(
+        required=False,
+        label="Поиск",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "ID транзакции, email пользователя, название курса...",
+            }
+        ),
+    )
+
+    status = forms.ChoiceField(
+        required=False,
+        label="Статус",
+        choices=[
+            ("", "Все статусы"),
+            ("pending", "Ожидает оплаты"),
+            ("processing", "Обрабатывается"),
+            ("completed", "Завершён"),
+            ("failed", "Ошибка"),
+            ("cancelled", "Отменён"),
+            ("refunded", "Возвращён"),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    payment_method = forms.ChoiceField(
+        required=False,
+        label="Метод оплаты",
+        choices=[
+            ("", "Все методы"),
+            ("cloudpayments", "CloudPayments"),
+            ("tbc_georgia", "TBC Bank"),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    currency = forms.ChoiceField(
+        required=False,
+        label="Валюта",
+        choices=[
+            ("", "Все валюты"),
+            ("USD", "USD"),
+            ("GEL", "GEL"),
+            ("RUB", "RUB"),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    date_from = forms.DateField(
+        required=False,
+        label="Дата от",
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    date_to = forms.DateField(
+        required=False,
+        label="Дата до",
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    amount_min = forms.DecimalField(
+        required=False,
+        label="Сумма от",
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "0.00", "step": "0.01"}
+        ),
+    )
+
+    amount_max = forms.DecimalField(
+        required=False,
+        label="Сумма до",
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "0.00", "step": "0.01"}
+        ),
+    )
+
+    def clean(self):
+        """Валидирует корректность диапазонов дат и сумм."""
+        cleaned_data = super().clean()
+        date_from = cleaned_data.get("date_from")
+        date_to = cleaned_data.get("date_to")
+        amount_min = cleaned_data.get("amount_min")
+        amount_max = cleaned_data.get("amount_max")
+
+        if date_from and date_to and date_from > date_to:
+            raise forms.ValidationError("Дата начала не может быть позже даты окончания")
+
+        if amount_min and amount_max and amount_min > amount_max:
+            raise forms.ValidationError("Минимальная сумма не может быть больше максимальной")
+
+        return cleaned_data
+
+
+# ============================================================================
+# PAYMENT REFUND FORM - Форма возврата платежа
+# ============================================================================
+
+
+class PaymentRefundForm(forms.Form):
+    """Форма для оформления возврата средств по платежу."""
+
+    refund_amount = forms.DecimalField(
+        label="Сумма возврата",
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "0.00",
+                "step": "0.01",
+                "required": True,
+            }
+        ),
+    )
+
+    refund_reason = forms.CharField(
+        label="Причина возврата",
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Укажите причину возврата средств...",
+            }
+        ),
+    )
+
+    def clean_refund_amount(self):
+        """Валидирует сумму возврата."""
+        amount = self.cleaned_data.get("refund_amount")
+        if amount and amount <= 0:
+            raise forms.ValidationError("Сумма возврата должна быть больше нуля")
+        return amount
+
+    def clean_refund_reason(self):
+        """Валидирует причину возврата."""
+        reason = self.cleaned_data.get("refund_reason")
+        if reason and len(reason) < 10:
+            raise forms.ValidationError("Причина возврата должна содержать минимум 10 символов")
+        return reason

@@ -45,7 +45,7 @@ from django.utils import timezone
 from authentication.decorators import require_any_role
 
 from .cache_utils import get_cached_feedback_stats, invalidate_feedback_cache
-from .forms import FeedbackFilterForm, SystemLogsFilterForm
+from .forms import FeedbackFilterForm, PaymentRefundForm, PaymentsFilterForm, SystemLogsFilterForm
 from .models import Feedback, SystemLog
 from .utils import log_feedback_action
 
@@ -539,3 +539,354 @@ def api_unprocessed_count(request: HttpRequest, user_uuid: uuid.UUID) -> JsonRes
     """
     count = Feedback.objects.filter(is_processed=False).count()
     return JsonResponse({"count": count})
+
+
+# ============================================================================
+# PAYMENTS VIEWS - Управление платежами
+# ============================================================================
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def payments_list_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
+    """
+    Список всех платежей с фильтрацией и статистикой.
+
+    Показывает:
+    - Все транзакции с пагинацией
+    - Фильтры: статус, метод оплаты, валюта, диапазоны дат/сумм
+    - Статистику: общий доход, количество по статусам
+    """
+    from authentication.models import Manager
+    from payments.models import Payment
+
+    # Проверка прав доступа
+    get_object_or_404(Manager, id=user_uuid)
+    if request.user.manager.id != user_uuid:
+        return redirect("core:home")
+
+    # Фильтрация
+    filter_form = PaymentsFilterForm(request.GET or None)
+    payments = Payment.objects.select_related("user", "course").order_by("-created_at")
+
+    if filter_form.is_valid():
+        data = filter_form.cleaned_data
+
+        if search := data.get("search"):
+            payments = payments.filter(
+                Q(user__email__icontains=search)
+                | Q(user__first_name__icontains=search)
+                | Q(user__last_name__icontains=search)
+                | Q(transaction_id__icontains=search)
+            )
+
+        if status := data.get("status"):
+            payments = payments.filter(status=status)
+
+        if payment_method := data.get("payment_method"):
+            payments = payments.filter(payment_method=payment_method)
+
+        if currency := data.get("currency"):
+            payments = payments.filter(currency=currency)
+
+        if date_from := data.get("date_from"):
+            payments = payments.filter(created_at__gte=date_from)
+
+        if date_to := data.get("date_to"):
+            payments = payments.filter(created_at__lte=date_to)
+
+        if amount_from := data.get("amount_from"):
+            payments = payments.filter(amount__gte=amount_from)
+
+        if amount_to := data.get("amount_to"):
+            payments = payments.filter(amount__lte=amount_to)
+
+    # Статистика
+    from django.db.models import Count, Sum
+
+    stats = Payment.objects.aggregate(
+        total_revenue=Sum("amount", filter=Q(status="completed")),
+        total_count=Count("id"),
+        completed_count=Count("id", filter=Q(status="completed")),
+        pending_count=Count("id", filter=Q(status="pending")),
+        processing_count=Count("id", filter=Q(status="processing")),
+        failed_count=Count("id", filter=Q(status="failed")),
+        refunded_count=Count("id", filter=Q(status="refunded")),
+    )
+
+    # Если нет completed платежей, ставим 0
+    if stats["total_revenue"] is None:
+        stats["total_revenue"] = 0
+
+    # Пагинация
+    paginator = Paginator(payments, 20)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+
+    logger.info(f"Manager {request.user.email} viewed payments list (page {page_number})")
+
+    return render(
+        request,
+        "managers/payments/payments_list.html",
+        {
+            "page_obj": page_obj,
+            "filter_form": filter_form,
+            "stats": stats,
+            "total_count": paginator.count,
+        },
+    )
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def payment_detail_view(
+    request: HttpRequest, user_uuid: uuid.UUID, payment_id: int
+) -> HttpResponse:
+    """
+    Детальный просмотр платежа с историей изменений.
+    """
+    from authentication.models import Manager
+    from payments.models import Payment
+
+    get_object_or_404(Manager, id=user_uuid)
+    if request.user.manager.id != user_uuid:
+        return redirect("core:home")
+
+    payment = get_object_or_404(Payment.objects.select_related("user", "course"), id=payment_id)
+
+    logger.info(f"Manager {request.user.email} viewed payment #{payment_id}")
+
+    return render(
+        request,
+        "managers/payments/payment_detail.html",
+        {
+            "payment": payment,
+        },
+    )
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def payment_refund_view(
+    request: HttpRequest, user_uuid: uuid.UUID, payment_id: int
+) -> HttpResponse:
+    """
+    Обработка возврата платежа.
+    """
+    from authentication.models import Manager
+    from payments.models import Payment
+
+    get_object_or_404(Manager, id=user_uuid)
+    if request.user.manager.id != user_uuid:
+        return redirect("core:home")
+
+    payment = get_object_or_404(Payment, id=payment_id)
+
+    if payment.status != "completed":
+        messages.error(request, "Возврат возможен только для завершенных платежей")
+        return redirect("managers:payment_detail", user_uuid, payment_id)
+
+    if request.method == "POST":
+        form = PaymentRefundForm(request.POST)
+        if form.is_valid():
+            # Обновляем статус платежа
+            payment.status = "refunded"
+            payment.refund_reason = form.cleaned_data["reason"]
+            payment.refund_amount = form.cleaned_data["amount"]
+            payment.refunded_at = timezone.now()
+            payment.refunded_by = request.user
+            payment.save()
+
+            # Логируем действие
+            from .utils import create_system_log
+
+            create_system_log(
+                level="INFO",
+                action_type="PAYMENT_REFUNDED",
+                message=f"Возврат платежа #{payment_id} на сумму {payment.refund_amount}",
+                request=request,
+                user=request.user,
+                details={
+                    "payment_id": payment_id,
+                    "amount": float(payment.refund_amount),
+                    "reason": payment.refund_reason,
+                },
+            )
+
+            messages.success(request, f"Возврат платежа #{payment_id} успешно выполнен")
+            logger.info(f"Manager {request.user.email} refunded payment #{payment_id}")
+            return redirect("managers:payment_detail", user_uuid, payment_id)
+    else:
+        form = PaymentRefundForm(initial={"amount": payment.amount})
+
+    return render(
+        request,
+        "managers/payments/payment_refund.html",
+        {
+            "payment": payment,
+            "form": form,
+        },
+    )
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def payments_reports_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
+    """
+    Отчеты и аналитика по платежам.
+    """
+    from django.db.models import Count, Sum
+    from django.db.models.functions import TruncDate
+
+    from authentication.models import Manager
+    from payments.models import Payment
+
+    get_object_or_404(Manager, id=user_uuid)
+    if request.user.manager.id != user_uuid:
+        return redirect("core:home")
+
+    # Период для отчета
+    from_date = request.GET.get("from_date")
+    to_date = request.GET.get("to_date")
+
+    # Фильтруем платежи
+    payments_qs = Payment.objects.filter(status="completed")
+
+    if from_date:
+        payments_qs = payments_qs.filter(created_at__gte=from_date)
+    if to_date:
+        payments_qs = payments_qs.filter(created_at__lte=to_date)
+
+    # Общая статистика
+    total_stats = payments_qs.aggregate(
+        total_revenue=Sum("amount"),
+        total_count=Count("id"),
+    )
+    # Вычисляем среднее значение
+    if total_stats["total_count"] and total_stats["total_count"] > 0:
+        total_stats["avg_amount"] = total_stats["total_revenue"] / total_stats["total_count"]
+    else:
+        total_stats["avg_amount"] = 0
+
+    # Статистика по статусам
+    status_stats = Payment.objects.values("status").annotate(count=Count("id"), total=Sum("amount"))
+
+    # Статистика по методам оплаты
+    method_stats = Payment.objects.values("payment_method").annotate(
+        count=Count("id"), total=Sum("amount")
+    )
+
+    # Доход по дням (последние 30 дней)
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    daily_revenue = (
+        Payment.objects.filter(created_at__gte=thirty_days_ago, status="completed")
+        .annotate(date=TruncDate("created_at"))
+        .values("date")
+        .annotate(revenue=Sum("amount"), count=Count("id"))
+        .order_by("date")
+    )
+
+    # Топ курсов по доходу
+    top_courses = (
+        Payment.objects.filter(status="completed")
+        .values("course__name")
+        .annotate(revenue=Sum("amount"), count=Count("id"))
+        .order_by("-revenue")[:10]
+    )
+
+    logger.info(f"Manager {request.user.email} viewed payments reports")
+
+    return render(
+        request,
+        "managers/payments/payments_reports.html",
+        {
+            "total_stats": total_stats,
+            "status_stats": status_stats,
+            "method_stats": method_stats,
+            "daily_revenue": list(daily_revenue),
+            "top_courses": top_courses,
+        },
+    )
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def payments_export_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
+    """
+    Экспорт платежей в CSV.
+    """
+    import csv
+
+    from django.http import HttpResponse
+
+    from authentication.models import Manager
+    from payments.models import Payment
+
+    get_object_or_404(Manager, id=user_uuid)
+    if request.user.manager.id != user_uuid:
+        return redirect("core:home")
+
+    # Создаем CSV response
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="payments_export.csv"'
+    response.write("\ufeff")  # BOM для правильного отображения в Excel
+
+    writer = csv.writer(response)
+    writer.writerow(
+        [
+            "ID",
+            "Дата",
+            "Пользователь",
+            "Email",
+            "Телефон",
+            "Курс",
+            "Сумма",
+            "Валюта",
+            "Статус",
+            "Метод оплаты",
+            "ID транзакции",
+        ]
+    )
+
+    payments = Payment.objects.select_related("user", "course").order_by("-created_at")
+
+    for payment in payments:
+        writer.writerow(
+            [
+                payment.id,
+                payment.created_at.strftime("%d.%m.%Y %H:%M"),
+                payment.user.get_full_name(),
+                payment.user.email,
+                (
+                    payment.user.student.phone
+                    if hasattr(payment.user, "student") and payment.user.student.phone
+                    else "-"
+                ),
+                payment.course.name if payment.course else "-",
+                payment.amount,
+                payment.currency,
+                payment.get_status_display(),
+                payment.get_payment_method_display(),
+                payment.transaction_id or "-",
+            ]
+        )
+
+    logger.info(f"Manager {request.user.email} exported payments to CSV")
+
+    return response
+
+
+__all__ = [
+    "dashboard_view",
+    "feedback_list_view",
+    "feedback_detail_view",
+    "feedback_delete_view",
+    "system_logs_view",
+    "api_feedback_stats",
+    "api_unprocessed_count",
+    "payments_list_view",
+    "payment_detail_view",
+    "payment_refund_view",
+    "payments_reports_view",
+    "payments_export_view",
+]

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Возврат платежа" %} #{{ payment.id }} - Pyland{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260205-payments">
+{% endblock %}
+
+{% block content %}
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        {% include 'managers/_sidebar_nav.html' with active_page='payments' %}
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Возврат платежа" %} #{{ payment.id }}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' request.user.manager.id %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <a href="{% url 'managers:payments_list' request.user.manager.id %}">{% trans "Платежи" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Возврат" %}</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="feedback-detail-card">
+            <div class="feedback-card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+                            {% trans "Сумма возврата" %}
+                        </label>
+                        {{ form.amount }}
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+                            {% trans "Причина возврата" %}
+                        </label>
+                        {{ form.reason }}
+                    </div>
+
+                    <div class="feedback-actions">
+                        <button type="submit" class="btn btn-warning">
+                            {% trans "Подтвердить возврат" %}
+                        </button>
+                        <a href="{% url 'managers:payment_detail' request.user.manager.id payment.id %}" class="btn btn-secondary">
+                            {% trans "Отмена" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard-mobile.js' %}?v=20260205-payments"></script>
+{% endblock %}
