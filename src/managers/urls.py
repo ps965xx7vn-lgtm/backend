@@ -45,6 +45,9 @@ urlpatterns = [
     ),
     # System Logs
     path("<uuid:user_uuid>/logs/", views.system_logs_view, name="system_logs"),
+    # Users Management
+    path("<uuid:user_uuid>/users/", views.users_list_view, name="users_list"),
+    path("<uuid:user_uuid>/users/<int:user_id>/", views.user_detail_view, name="user_detail"),
     # Payments Management
     path("<uuid:user_uuid>/payments/", views.payments_list_view, name="payments_list"),
     path(

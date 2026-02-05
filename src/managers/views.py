@@ -876,6 +876,243 @@ def payments_export_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResp
     return response
 
 
+# ============================================================================
+# USERS MANAGEMENT - Управление пользователями
+# ============================================================================
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def users_list_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
+    """
+    Список всех пользователей с фильтрами.
+    """
+    from django.db.models import Q
+
+    from authentication.models import Manager
+
+    from .forms import UserFilterForm
+
+    User = get_user_model()
+
+    # Проверка прав доступа
+    get_object_or_404(Manager, id=user_uuid)
+    if request.user.manager.id != user_uuid:
+        return redirect("core:home")
+
+    # Фильтрация
+    filter_form = UserFilterForm(request.GET or None)
+    users = (
+        User.objects.select_related("role")
+        .prefetch_related("student", "reviewer")
+        .order_by("-date_joined")
+    )
+
+    if filter_form.is_valid():
+        data = filter_form.cleaned_data
+
+        if search := data.get("search"):
+            users = users.filter(
+                Q(email__icontains=search)
+                | Q(first_name__icontains=search)
+                | Q(last_name__icontains=search)
+            )
+
+        if role := data.get("role"):
+            users = users.filter(role__name=role)
+
+        is_active = data.get("is_active")
+        # Фильтруем только если это действительно boolean
+        if isinstance(is_active, bool):
+            users = users.filter(is_active=is_active)
+
+        if from_date := data.get("from_date"):
+            users = users.filter(date_joined__gte=from_date)
+
+        if to_date := data.get("to_date"):
+            users = users.filter(date_joined__lte=to_date)
+
+    # Статистика
+    stats = {
+        "total_users": User.objects.count(),
+        "active_users": User.objects.filter(is_active=True).count(),
+        "students_count": User.objects.filter(role__name="student").count(),
+        "new_this_month": User.objects.filter(
+            date_joined__year=timezone.now().year,
+            date_joined__month=timezone.now().month,
+        ).count(),
+    }
+
+    # Пагинация
+    paginator = Paginator(users, 20)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+
+    logger.info(f"Manager {request.user.email} viewed users list (page {page_number})")
+
+    return render(
+        request,
+        "managers/users/users_list.html",
+        {
+            "page_obj": page_obj,
+            "form": filter_form,
+            "total_users": stats["total_users"],
+            "active_users": stats["active_users"],
+            "students_count": stats["students_count"],
+            "new_this_month": stats["new_this_month"],
+        },
+    )
+
+
+@login_required
+@require_any_role(["manager"], redirect_url="/")
+def user_detail_view(request: HttpRequest, user_uuid: uuid.UUID, user_id: int) -> HttpResponse:
+    """
+    Детальная информация о пользователе с статистикой.
+    """
+    from django.db.models import Sum
+
+    from authentication.models import Manager
+    from managers.forms import ManagerNoteForm
+    from managers.models import ManagerNote
+
+    User = get_user_model()
+
+    get_object_or_404(Manager, id=user_uuid)
+    if request.user.manager.id != user_uuid:
+        return redirect("core:home")
+
+    user = get_object_or_404(
+        User.objects.select_related("role").prefetch_related("student", "reviewer"), id=user_id
+    )
+
+    # Обработка POST запросов
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        # Добавление комментария
+        if action == "add_note":
+            note_form = ManagerNoteForm(request.POST)
+            if note_form.is_valid():
+                ManagerNote.objects.create(
+                    user=user, manager=request.user, note=note_form.cleaned_data["note"]
+                )
+                messages.success(request, "Комментарий успешно добавлен")
+                return redirect("managers:user_detail", user_uuid=user_uuid, user_id=user_id)
+
+        # Подтверждение email вручную
+        elif action == "verify_email":
+            user.email_is_verified = True
+            user.save(update_fields=["email_is_verified"])
+
+            # Логируем действие
+            SystemLog.objects.create(
+                level="INFO",
+                action_type="USER_UPDATED",
+                user=request.user,
+                message=f"Менеджер {request.user.email} вручную подтвердил email для {user.email}",
+                details={"user_id": user.id, "verified_manually": True},
+            )
+
+            messages.success(request, "Email успешно подтвержден")
+            return redirect("managers:user_detail", user_uuid=user_uuid, user_id=user_id)
+
+    # Получаем все заметки о пользователе
+    manager_notes = ManagerNote.objects.filter(user=user).select_related("manager")[:10]
+    note_form = ManagerNoteForm()
+
+    context = {
+        "viewed_user": user,  # Просматриваемый пользователь
+        "manager_notes": manager_notes,
+        "note_form": note_form,
+    }
+
+    # Статистика для студентов - получаем реальный прогресс
+    if hasattr(user, "student") and user.student:
+        from certificates.models import Certificate
+        from courses.models import Course
+        from reviewers.models import LessonSubmission
+
+        # Используем ManyToMany связь
+        enrolled_courses = Course.objects.filter(student_enrollments=user.student)
+
+        # Получаем все сертификаты студента
+        certificates = Certificate.objects.filter(student=user.student).select_related("course")
+        certificates_by_course = {cert.course_id: cert for cert in certificates}
+
+        # Получаем прогресс каждого курса
+        enrollments_with_progress = []
+        total_completed_steps = 0
+
+        for course in enrolled_courses[:5]:  # Первые 5 курсов
+            progress = course.get_progress_for_profile(user.student, use_cache=False)
+            certificate = certificates_by_course.get(course.id)
+
+            enrollments_with_progress.append(
+                {
+                    "course": course,
+                    "progress": progress["completion_percentage"],
+                    "completed_steps": progress["completed_steps"],
+                    "total_steps": progress["total_steps"],
+                    "completed_lessons": progress["completed_lessons"],
+                    "total_lessons": progress["total_lessons"],
+                    "certificate": certificate,
+                }
+            )
+            total_completed_steps += progress["completed_steps"]
+
+        # Получаем pending submissions для студента (работы ожидающие проверки)
+        pending_reviews = LessonSubmission.objects.filter(
+            student=user.student, status="pending"
+        ).count()
+
+        context.update(
+            {
+                "enrolled_courses": enrolled_courses.count(),
+                "enrollments": enrollments_with_progress,
+                "completed_steps": total_completed_steps,
+                "pending_reviews": pending_reviews,
+            }
+        )
+
+    # Статистика для ревьюеров
+    if hasattr(user, "reviewer") and user.reviewer:
+        from reviewers.models import Review
+
+        reviews = Review.objects.filter(reviewer=user.reviewer)
+        context.update(
+            {
+                "total_reviews": reviews.count(),
+                "approved_reviews": reviews.filter(status="approved").count(),
+                "pending_reviews": reviews.filter(status="pending").count(),
+            }
+        )
+
+    # История платежей (для всех)
+    from payments.models import Payment
+
+    payments = (
+        Payment.objects.filter(user=user).select_related("course").order_by("-created_at")[:10]
+    )
+    total_spent = payments.aggregate(total=Sum("amount"))["total"] or 0
+
+    context.update(
+        {
+            "total_payments": payments.count(),
+            "total_spent": total_spent,
+            "recent_payments": payments[:5],
+        }
+    )
+
+    logger.info(f"Manager {request.user.email} viewed user profile #{user_id}")
+
+    return render(
+        request,
+        "managers/users/user_detail.html",
+        context,
+    )
+
+
 __all__ = [
     "dashboard_view",
     "feedback_list_view",
@@ -884,6 +1121,8 @@ __all__ = [
     "system_logs_view",
     "api_feedback_stats",
     "api_unprocessed_count",
+    "users_list_view",
+    "user_detail_view",
     "payments_list_view",
     "payment_detail_view",
     "payment_refund_view",

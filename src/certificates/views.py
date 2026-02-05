@@ -124,8 +124,19 @@ def certificate_download_view(request: HttpRequest, verification_code: str) -> H
     """
     certificate = get_object_or_404(Certificate, verification_code=verification_code.upper())
 
-    # Проверка доступа
-    if certificate.student != request.user.student:
+    # Проверка доступа - только владелец или staff/manager может скачать
+    is_owner = hasattr(request.user, "student") and certificate.student == request.user.student
+    is_staff_or_manager = request.user.is_staff or request.user.is_superuser
+    is_manager = (
+        hasattr(request.user, "role") and request.user.role and request.user.role.name == "manager"
+    )
+
+    logger.info(
+        f"Certificate access check: user={request.user.email}, is_owner={is_owner}, "
+        f"is_staff={request.user.is_staff}, is_manager={is_manager}"
+    )
+
+    if not (is_owner or is_staff_or_manager or is_manager):
         messages.error(request, _("У вас нет доступа к этому сертификату"))
         raise Http404(_("Сертификат не найден"))
 
@@ -139,17 +150,39 @@ def certificate_download_view(request: HttpRequest, verification_code: str) -> H
             if language not in ["ru", "en", "ka"]:
                 language = "ru"
 
+            logger.info(
+                f"Attempting to generate PDF for certificate {certificate.verification_code}"
+            )
             generate_certificate_pdf(certificate, language=language)
             certificate.refresh_from_db()
+            logger.info(
+                f"PDF generated successfully for certificate {certificate.verification_code}"
+            )
+        except ImportError as e:
+            logger.error(f"ReportLab not installed: {e}")
+            messages.error(request, _("PDF генератор не установлен. Обратитесь к администратору."))
+            raise Http404(
+                _("Невозможно сгенерировать PDF - отсутствует необходимая библиотека")
+            ) from e
         except Exception as e:
             logger.error(
-                f"Failed to generate PDF for certificate {certificate.verification_code}: {e}"
+                f"Failed to generate PDF for certificate {certificate.verification_code}: {e}",
+                exc_info=True,
             )
-            messages.error(request, _("Ошибка при генерации PDF сертификата"))
-            raise Http404(_("PDF файл не найден")) from e
+            messages.error(request, _("Ошибка при генерации PDF сертификата. Попробуйте позже."))
+            raise Http404(_("Не удалось создать PDF файл")) from e
+
+    # Проверить существование PDF файла после генерации
+    if not certificate.pdf_file:
+        logger.error(
+            f"Certificate {certificate.verification_code} has no pdf_file after generation"
+        )
+        messages.error(request, _("PDF файл сертификата отсутствует"))
+        raise Http404(_("PDF файл не найден"))
 
     # Открыть файл и отправить как FileResponse
     try:
+        logger.info(f"Opening PDF file: {certificate.pdf_file.name}")
         pdf_file = certificate.pdf_file.open("rb")
         filename = f"certificate_{certificate.certificate_number}.pdf"
 
@@ -164,7 +197,10 @@ def certificate_download_view(request: HttpRequest, verification_code: str) -> H
         return response
 
     except Exception as e:
-        logger.error(f"Error serving PDF file for certificate {certificate.verification_code}: {e}")
+        logger.error(
+            f"Error serving PDF file for certificate {certificate.verification_code}: {e}",
+            exc_info=True,
+        )
         messages.error(request, _("Ошибка при скачивании файла"))
         raise Http404(_("PDF файл не найден")) from e
 

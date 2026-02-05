@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Пользователи" %} - Pyland{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/managers/dashboard.css' %}?v=20260204-actions">
+{% endblock %}
+
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
+<div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+        {% include 'managers/_sidebar_nav.html' with active_page='users' %}
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">{% trans "Управление пользователями" %}</h1>
+                <div class="dashboard-breadcrumb">
+                    <a href="{% url 'managers:dashboard' request.user.manager.id %}">{% trans "Главная" %}</a>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    <span>{% trans "Пользователи" %}</span>
+                </div>
+            </div>
+
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="view-toggle-btn active" data-view="grid" title="{% trans 'Сетка' %}">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                    </svg>
+                </button>
+                <button class="view-toggle-btn" data-view="list" title="{% trans 'Список' %}">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card info">
+                <div class="stat-header">
+                    <div class="stat-icon info">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ total_users|default:"0" }}</h3>
+                <p class="stat-label">{% trans "Всего пользователей" %}</p>
+            </div>
+
+            <div class="stat-card success">
+                <div class="stat-header">
+                    <div class="stat-icon success">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ active_users|default:"0" }}</h3>
+                <p class="stat-label">{% trans "Активных" %}</p>
+            </div>
+
+            <div class="stat-card primary">
+                <div class="stat-header">
+                    <div class="stat-icon primary">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ students_count|default:"0" }}</h3>
+                <p class="stat-label">{% trans "Студентов" %}</p>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-header">
+                    <div class="stat-icon warning">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-value">{{ new_this_month|default:"0" }}</h3>
+                <p class="stat-label">{% trans "Новых за месяц" %}</p>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section-compact">
+            <form method="get" class="filter-form-inline">
+                <!-- Search -->
+                <div class="filter-group-inline">
+                    <label class="filter-label-inline" for="id_search">{% trans "Поиск:" %}</label>
+                    <input type="text"
+                           id="id_search"
+                           name="search"
+                           value="{{ request.GET.search|default:'' }}"
+                           placeholder="{% trans 'Email, имя' %}"
+                           class="filter-input">
+                </div>
+
+                <!-- Role Filter -->
+                <div class="filter-group-inline">
+                    <label class="filter-label-inline" for="id_role">{% trans "Роль:" %}</label>
+                    <select id="id_role" name="role" class="filter-select">
+                        <option value="">{% trans "Все роли" %}</option>
+                        <option value="student" {% if request.GET.role == 'student' %}selected{% endif %}>{% trans "Студент" %}</option>
+                        <option value="mentor" {% if request.GET.role == 'mentor' %}selected{% endif %}>{% trans "Ментор" %}</option>
+                        <option value="reviewer" {% if request.GET.role == 'reviewer' %}selected{% endif %}>{% trans "Ревьювер" %}</option>
+                        <option value="manager" {% if request.GET.role == 'manager' %}selected{% endif %}>{% trans "Менеджер" %}</option>
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="filter-group-inline">
+                    <label class="filter-label-inline" for="id_is_active">{% trans "Статус:" %}</label>
+                    <select id="id_is_active" name="is_active" class="filter-select">
+                        <option value="">{% trans "Все" %}</option>
+                        <option value="true" {% if request.GET.is_active == 'true' %}selected{% endif %}>{% trans "Активные" %}</option>
+                        <option value="false" {% if request.GET.is_active == 'false' %}selected{% endif %}>{% trans "Неактивные" %}</option>
+                    </select>
+                </div>
+
+                <!-- Date From -->
+                <div class="filter-group-inline">
+                    <label class="filter-label-inline" for="id_from_date">{% trans "С даты:" %}</label>
+                    <input type="date"
+                           id="id_from_date"
+                           name="from_date"
+                           value="{{ request.GET.from_date|default:'' }}"
+                           class="filter-input">
+                </div>
+
+                <!-- Date To -->
+                <div class="filter-group-inline">
+                    <label class="filter-label-inline" for="id_to_date">{% trans "По дату:" %}</label>
+                    <input type="date"
+                           id="id_to_date"
+                           name="to_date"
+                           value="{{ request.GET.to_date|default:'' }}"
+                           class="filter-input">
+                </div>
+
+                <!-- Buttons -->
+                <div class="filter-buttons-group">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        {% trans "Применить" %}
+                    </button>
+                    <a href="{% url 'managers:users_list' request.user.manager.id %}" class="btn btn-secondary btn-sm">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        {% trans "Сбросить" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Users List -->
+        {% if page_obj %}
+        <div class="reviews-container" data-view="grid">
+            {% for user in page_obj %}
+            <div class="review-card">
+                <div class="review-card-header">
+                    <div class="user-cell">
+                        {% if user.student and user.student.avatar %}
+                            <img src="{{ user.student.avatar.url }}" alt="{{ user.get_full_name }}" class="user-avatar">
+                        {% else %}
+                            <div class="user-avatar-placeholder">
+                                {{ user.first_name|first|default:"U"|upper }}{{ user.last_name|first|default:""|upper }}
+                            </div>
+                        {% endif %}
+                        <div class="user-info">
+                            <div class="user-name">{{ user.get_full_name|default:user.email }}</div>
+                            <div class="user-meta">{{ user.email }}</div>
+                        </div>
+                    </div>
+                    <div class="review-card-status">
+                        {% if user.is_active %}
+                            <span class="badge badge-success">{% trans "Активен" %}</span>
+                        {% else %}
+                            <span class="badge badge-danger">{% trans "Неактивен" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="review-card-body">
+                    <p class="review-course-info">
+                        {% if user.role %}
+                            <span class="badge badge-{% if user.role.name == 'student' %}info{% elif user.role.name == 'mentor' %}primary{% elif user.role.name == 'reviewer' %}warning{% elif user.role.name == 'manager' %}success{% else %}secondary{% endif %}">
+                                {{ user.role.get_name_display }}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-secondary">{% trans "Нет роли" %}</span>
+                        {% endif %}
+                        {% if user.student and user.student.country %}
+                            <span class="review-separator">•</span>
+                            <span class="review-course">{{ user.student.country.name }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="review-card-footer">
+                    <div class="review-meta">
+                        <span class="review-date">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            {{ user.date_joined|date:"d M Y" }}
+                        </span>
+                        {% if user.last_login %}
+                        <span class="review-time">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {{ user.last_login|date:"d M Y" }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'managers:user_detail' request.user.manager.id user.id %}" class="btn btn-secondary btn-sm">
+                        {% trans "Подробнее" %}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-wrapper">
+            <div class="pagination-info">
+                {% trans "Показано" %} {{ page_obj|length }} {% trans "из" %} {{ page_obj.paginator.count }} {% trans "пользователей" %}
+            </div>
+            <div class="pagination-controls">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                       class="pagination-btn"
+                       title="{% trans 'Первая страница' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                       class="pagination-btn"
+                       title="{% trans 'Предыдущая' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                {% else %}
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                        </svg>
+                    </span>
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </span>
+                {% endif %}
+
+                <span class="pagination-current">
+                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                       class="pagination-btn"
+                       title="{% trans 'Следующая' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                       class="pagination-btn"
+                       title="{% trans 'Последняя страница' %}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                {% else %}
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                    <span class="pagination-btn disabled">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state" style="margin-top: 3rem;">
+            <div class="empty-icon">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+            </div>
+            <h3 class="empty-title">{% trans "Пользователи не найдены" %}</h3>
+            <p class="empty-message">{% trans "Попробуйте изменить параметры фильтров" %}</p>
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/managers/dashboard-mobile.js' %}?v=20260204-fixes"></script>
+<script src="{% static 'js/managers/dashboard.js' %}"></script>
+<script>
+// View toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const viewBtns = document.querySelectorAll('.view-toggle-btn');
+    const container = document.querySelector('.reviews-container');
+
+    if (viewBtns && container) {
+        // Load saved view preference
+        const savedView = localStorage.getItem('usersViewMode') || 'grid';
+        container.setAttribute('data-view', savedView);
+
+        viewBtns.forEach(btn => {
+            if (btn.dataset.view === savedView) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Toggle view on button click
+        viewBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const view = this.dataset.view;
+
+                viewBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                container.setAttribute('data-view', view);
+                localStorage.setItem('usersViewMode', view);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

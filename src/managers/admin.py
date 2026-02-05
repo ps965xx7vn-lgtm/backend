@@ -1,22 +1,39 @@
 """
-Manager Admin Configuration - Notification about registrations relocation.
+Manager Admin Configuration.
 
-IMPORTANT: All manager-related model admin registrations have been moved to
-authentication/admin.py for centralized role-specific entity management:
-    - Feedback admin (with mark_as_processed/mark_as_unprocessed actions)
-    - SystemLog admin (with custom permissions)
-    - SystemSettings admin (with value_preview display)
-
-Manage these models through Django Admin:
-    - Feedback: /admin/authentication/feedback/
-    - SystemLog: /admin/authentication/systemlog/
-    - SystemSettings: /admin/authentication/systemsettings/
-
-For more information, see:
-    - /src/authentication/admin.py
-    - /src/authentication/decorators.py (role-based access control)
-    - /src/managers/models.py (Feedback, SystemLog, SystemSettings models)
+Admin configuration for manager-related models including ManagerNote.
 
 Author: Pyland Team
 Date: 2025
 """
+
+from django.contrib import admin
+
+from .models import ManagerNote
+
+
+@admin.register(ManagerNote)
+class ManagerNoteAdmin(admin.ModelAdmin):
+    """Админка для заметок менеджеров."""
+
+    list_display = ["user_email", "manager_email", "note_preview", "created_at"]
+    list_filter = ["created_at", "manager"]
+    search_fields = ["user__email", "manager__email", "note"]
+    readonly_fields = ["created_at", "updated_at"]
+
+    fieldsets = (
+        ("Информация", {"fields": ("user", "manager", "note")}),
+        ("Метаданные", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
+    )
+
+    @admin.display(description="Пользователь", ordering="user__email")
+    def user_email(self, obj):
+        return obj.user.email
+
+    @admin.display(description="Менеджер", ordering="manager__email")
+    def manager_email(self, obj):
+        return obj.manager.email
+
+    @admin.display(description="Комментарий")
+    def note_preview(self, obj):
+        return obj.note[:50] + "..." if len(obj.note) > 50 else obj.note

@@ -245,6 +245,108 @@ class FeedbackFilterForm(forms.Form):
 
 
 # ============================================================================
+# USER FILTER FORM - Форма фильтрации пользователей
+# ============================================================================
+
+
+class UserFilterForm(forms.Form):
+    """
+    Форма для фильтрации списка пользователей.
+
+    Поля:
+        - search: Поиск по имени, email
+        - role: Фильтр по роли пользователя
+        - is_active: Фильтр по статусу активности
+        - from_date: Дата регистрации от
+        - to_date: Дата регистрации до
+    """
+
+    search = forms.CharField(
+        required=False,
+        label="Поиск",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Имя, email...",
+            }
+        ),
+    )
+
+    role = forms.ChoiceField(
+        required=False,
+        label="Роль",
+        choices=[
+            ("", "Все роли"),
+            ("student", "Студент"),
+            ("mentor", "Ментор"),
+            ("reviewer", "Ревьювер"),
+            ("manager", "Менеджер"),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    is_active = forms.ChoiceField(
+        required=False,
+        label="Статус",
+        choices=[
+            ("", "Все"),
+            ("true", "Активные"),
+            ("false", "Неактивные"),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    from_date = forms.DateField(
+        required=False,
+        label="Дата регистрации от",
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    to_date = forms.DateField(
+        required=False,
+        label="Дата регистрации до",
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    def clean_is_active(self):
+        """Преобразует строковое значение в boolean."""
+        value = self.cleaned_data.get("is_active")
+        if value == "true":
+            return True
+        elif value == "false":
+            return False
+        # Пустая строка или None = все пользователи
+        return None
+
+    def clean(self):
+        """Валидирует корректность диапазона дат."""
+        cleaned_data = super().clean()
+        from_date = cleaned_data.get("from_date")
+        to_date = cleaned_data.get("to_date")
+
+        if from_date and to_date and from_date > to_date:
+            raise forms.ValidationError("Дата начала не может быть позже даты окончания")
+
+        return cleaned_data
+
+
+class ManagerNoteForm(forms.Form):
+    """Форма для добавления заметки менеджера о пользователе."""
+
+    note = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "rows": 4,
+                "placeholder": "Добавьте комментарий о пользователе...",
+                "class": "feedback-textarea",
+            }
+        ),
+        label="Комментарий",
+        required=True,
+    )
+
+
+# ============================================================================
 # SYSTEM LOGS FILTER FORM - Форма фильтрации системных логов
 # ============================================================================
 

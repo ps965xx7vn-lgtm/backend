@@ -173,3 +173,32 @@ class SystemSettings(models.Model):
             return json.loads(self.value)
         else:
             return self.value
+
+
+class ManagerNote(models.Model):
+    """Модель для заметок менеджера о пользователе."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="manager_notes",
+        verbose_name="Пользователь",
+    )
+    manager = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="created_notes",
+        verbose_name="Менеджер",
+    )
+    note = models.TextField(verbose_name="Комментарий")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    class Meta:
+        db_table = "manager_notes"
+        verbose_name = "Заметка менеджера"
+        verbose_name_plural = "Заметки менеджера"
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"Заметка от {self.manager.email} о {self.user.email}"
