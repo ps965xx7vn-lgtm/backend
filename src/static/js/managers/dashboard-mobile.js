@@ -22,11 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return; // Элементы не найдены
     }
 
-        toggleBtn: !!toggleBtn,
-        sidebar: !!sidebar,
-        overlay: !!overlay
-    });
-
     // ВАЖНО: На mobile убираем класс open при инициализации
     // Потому что на desktop sidebar всегда открыт, но нам нужно скрыть на mobile
     if (window.innerWidth < 1024) {

@@ -45,8 +45,9 @@ from django.utils import timezone
 from authentication.decorators import require_any_role
 
 from .cache_utils import get_cached_feedback_stats, invalidate_feedback_cache
-from .forms import FeedbackFilterForm
+from .forms import FeedbackFilterForm, SystemLogsFilterForm
 from .models import Feedback, SystemLog
+from .utils import log_feedback_action
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -107,17 +108,18 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
         new_users_week = User.objects.filter(date_joined__gte=week_ago).count()
         new_users_month = User.objects.filter(date_joined__gte=month_ago).count()
 
-        # Статистика по ролям
-        roles_stats = {}
+        # Статистика по ролям - преобразуем в список для удобства в шаблоне
+        roles_stats = []
         for role in Role.objects.all():
-            roles_stats[role.name] = User.objects.filter(role=role).count()
+            count = User.objects.filter(role=role).count()
+            roles_stats.append({"name": role.get_name_display(), "count": count})
 
         user_stats = {
             "total_users": total_users,
             "active_users": active_users,
             "new_users_week": new_users_week,
             "new_users_month": new_users_month,
-            "by_role": roles_stats,
+            "by_roles": roles_stats,  # Изменено с by_role на by_roles для соответствия шаблону
         }
     except Exception as e:
         logger.warning(f"Ошибка получения статистики пользователей: {e}")
@@ -126,7 +128,7 @@ def dashboard_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse:
             "active_users": 0,
             "new_users_week": 0,
             "new_users_month": 0,
-            "by_role": {},
+            "by_roles": [],  # Изменено на пустой список
         }
 
     # === Статистика по контенту ===
@@ -257,16 +259,22 @@ def feedback_list_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpRespon
         ).count(),
     }
 
+    # Счетчики для кнопок фильтрации
+    pending_count = Feedback.objects.filter(is_processed=False).count()
+    processed_count = Feedback.objects.filter(is_processed=True).count()
+
     logger.info(f"Manager {request.user.email} viewed feedback list (page {page_number})")
 
     return render(
         request,
-        "managers/feedback_list.html",
+        "managers/feedback/feedback_list.html",
         {
             "page_obj": page_obj,
             "filter_form": filter_form,
             "stats": stats,
-            "total_count": feedback_qs.count(),
+            "total_count": Feedback.objects.count(),
+            "pending_count": pending_count,
+            "processed_count": processed_count,
         },
     )
 
@@ -307,9 +315,22 @@ def feedback_detail_view(request: HttpRequest, user_uuid: uuid.UUID, pk: int) ->
             feedback.admin_notes = request.POST.get("admin_notes", "")
             feedback.save()
             invalidate_feedback_cache()
+
+            # Логируем обработку
+            log_feedback_action(
+                action_type="FEEDBACK_UPDATED",
+                feedback_id=feedback.id,
+                message=f"Обращение #{feedback.id} отмечено как обработанное",
+                request=request,
+                details={
+                    "email": feedback.email,
+                    "processed_by": request.user.email,
+                },
+            )
+
             messages.success(request, "Обращение успешно обработано.")
             logger.info(f"Manager {request.user.email} processed feedback #{pk}")
-            return redirect("managers:feedback_detail", pk=pk)
+            return redirect("managers:feedback_detail", user_uuid, pk)
 
         elif action == "mark_unprocessed":
             feedback.is_processed = False
@@ -317,18 +338,31 @@ def feedback_detail_view(request: HttpRequest, user_uuid: uuid.UUID, pk: int) ->
             feedback.processed_at = None
             feedback.save()
             invalidate_feedback_cache()
+
+            # Логируем отмену обработки
+            log_feedback_action(
+                action_type="FEEDBACK_UPDATED",
+                feedback_id=feedback.id,
+                message=f"Обращение #{feedback.id} возвращено в необработанные",
+                request=request,
+                details={
+                    "email": feedback.email,
+                    "unmarked_by": request.user.email,
+                },
+            )
+
             messages.info(request, "Обращение отмечено как необработанное.")
             logger.info(f"Manager {request.user.email} unmarked feedback #{pk}")
-            return redirect("managers:feedback_detail", pk=pk)
+            return redirect("managers:feedback_detail", user_uuid, pk)
 
-        elif action == "update_notes":
+        elif action == "save_notes":
             feedback.admin_notes = request.POST.get("admin_notes", "")
             feedback.save()
             messages.success(request, "Заметки обновлены.")
             logger.info(f"Manager {request.user.email} updated notes for feedback #{pk}")
-            return redirect("managers:feedback_detail", pk=pk)
+            return redirect("managers:feedback_detail", user_uuid, pk)
 
-    return render(request, "managers/feedback_detail.html", {"feedback": feedback})
+    return render(request, "managers/feedback/feedback_detail.html", {"feedback": feedback})
 
 
 @login_required
@@ -351,9 +385,9 @@ def feedback_delete_view(request: HttpRequest, user_uuid: uuid.UUID, pk: int) ->
         invalidate_feedback_cache()
         messages.success(request, "Обращение успешно удалено.")
         logger.warning(f"Manager {request.user.email} deleted feedback #{pk}")
-        return redirect("managers:feedback_list")
+        return redirect("managers:feedback_list", user_uuid)
 
-    return render(request, "managers/feedback_confirm_delete.html", {"feedback": feedback})
+    return render(request, "managers/feedback/feedback_confirm_delete.html", {"feedback": feedback})
 
 
 @login_required
@@ -380,17 +414,16 @@ def feedback_delete(request: HttpRequest, pk: int) -> HttpResponse:
     feedback = get_object_or_404(Feedback, pk=pk)
 
     if request.method == "POST":
-        # Логируем удаление
-        SystemLog.objects.create(
-            level="WARNING",
+        # Логируем удаление с использованием новой утилиты
+        log_feedback_action(
             action_type="FEEDBACK_DELETED",
-            user=request.user,
+            feedback_id=feedback.id,
             message=f"Обращение #{feedback.id} от {feedback.email} удалено",
+            request=request,
             details={
-                "feedback_id": feedback.id,
                 "email": feedback.email,
                 "name": feedback.first_name,
-                "deleted_by": request.user.username,
+                "deleted_by": request.user.email,
             },
         )
 
@@ -420,7 +453,6 @@ def system_logs_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse
     Позволяет просматривать и фильтровать системные события:
         - По уровню (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         - По типу действия (LOGIN, LOGOUT, CREATE, UPDATE, DELETE и т.д.)
-        - По пользователю
         - По дате
         - По поисковому запросу
 
@@ -431,63 +463,49 @@ def system_logs_view(request: HttpRequest, user_uuid: uuid.UUID) -> HttpResponse
         HttpResponse: Страница со списком логов
 
     Template:
-        managers/system_logs.html
+        managers/logs/system_logs.html
     """
     logs_qs = SystemLog.objects.select_related("user").order_by("-created_at")
 
-    # Фильтрация
-    level = request.GET.get("level")
-    action_type = request.GET.get("action_type")
-    user_id = request.GET.get("user_id")
-    date_from = request.GET.get("date_from")
-    date_to = request.GET.get("date_to")
-    search = request.GET.get("search")
+    # Применяем фильтры из формы
+    filter_form = SystemLogsFilterForm(request.GET or None)
 
-    if level:
-        logs_qs = logs_qs.filter(level=level)
+    if filter_form.is_valid():
+        search = filter_form.cleaned_data.get("search")
+        level = filter_form.cleaned_data.get("level")
+        action_type = filter_form.cleaned_data.get("action_type")
+        date_from = filter_form.cleaned_data.get("date_from")
+        date_to = filter_form.cleaned_data.get("date_to")
 
-    if action_type:
-        logs_qs = logs_qs.filter(action_type=action_type)
+        if search:
+            logs_qs = logs_qs.filter(Q(message__icontains=search) | Q(ip_address__icontains=search))
 
-    if user_id:
-        logs_qs = logs_qs.filter(user_id=user_id)
+        if level:
+            logs_qs = logs_qs.filter(level=level)
 
-    if date_from:
-        logs_qs = logs_qs.filter(created_at__date__gte=date_from)
+        if action_type:
+            logs_qs = logs_qs.filter(action_type=action_type)
 
-    if date_to:
-        logs_qs = logs_qs.filter(created_at__date__lte=date_to)
+        if date_from:
+            logs_qs = logs_qs.filter(created_at__date__gte=date_from)
 
-    if search:
-        logs_qs = logs_qs.filter(Q(message__icontains=search) | Q(ip_address__icontains=search))
+        if date_to:
+            logs_qs = logs_qs.filter(created_at__date__lte=date_to)
 
     # Пагинация
-    paginator = Paginator(logs_qs, 50)  # 50 записей на страницу
+    paginator = Paginator(logs_qs, 20)  # 20 записей на страницу
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
-
-    # Choices для фильтров
-    level_choices = SystemLog.LOG_LEVELS
-    action_choices = SystemLog.ACTION_TYPES
 
     logger.info(f"Manager {request.user.email} viewed system logs (page {page_number})")
 
     return render(
         request,
-        "managers/system_logs.html",
+        "managers/logs/system_logs.html",
         {
             "page_obj": page_obj,
-            "level_choices": level_choices,
-            "action_choices": action_choices,
+            "filter_form": filter_form,
             "total_count": logs_qs.count(),
-            "filters": {
-                "level": level,
-                "action_type": action_type,
-                "user_id": user_id,
-                "date_from": date_from,
-                "date_to": date_to,
-                "search": search,
-            },
         },
     )
 

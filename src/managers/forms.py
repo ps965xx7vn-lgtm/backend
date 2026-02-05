@@ -242,3 +242,96 @@ class FeedbackFilterForm(forms.Form):
             raise forms.ValidationError("Дата начала не может быть позже даты окончания")
 
         return cleaned_data
+
+
+# ============================================================================
+# SYSTEM LOGS FILTER FORM - Форма фильтрации системных логов
+# ============================================================================
+
+
+class SystemLogsFilterForm(forms.Form):
+    """
+    Форма для фильтрации системных логов.
+
+    Позволяет менеджерам фильтровать логи по уровню, типу действия,
+    пользователю, дате и поисковому запросу.
+
+    Поля:
+        - search: Текстовый поиск по сообщению и IP адресу
+        - level: Уровень лога (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        - action_type: Тип действия (USER_LOGIN, FEEDBACK_CREATED и т.д.)
+        - date_from: Дата начала периода
+        - date_to: Дата окончания периода
+    """
+
+    search = forms.CharField(
+        required=False,
+        label="Поиск",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Поиск по сообщению или IP адресу...",
+            }
+        ),
+    )
+
+    level = forms.ChoiceField(
+        required=False,
+        label="Уровень",
+        choices=[("", "Все уровни")]
+        + [
+            ("DEBUG", "Debug"),
+            ("INFO", "Info"),
+            ("WARNING", "Warning"),
+            ("ERROR", "Error"),
+            ("CRITICAL", "Critical"),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    action_type = forms.ChoiceField(
+        required=False,
+        label="Тип действия",
+        choices=[("", "Все действия")]
+        + [
+            ("USER_LOGIN", "Вход пользователя"),
+            ("USER_LOGOUT", "Выход пользователя"),
+            ("USER_REGISTERED", "Регистрация пользователя"),
+            ("USER_UPDATED", "Обновление пользователя"),
+            ("USER_DELETED", "Удаление пользователя"),
+            ("FEEDBACK_CREATED", "Создание обращения"),
+            ("FEEDBACK_UPDATED", "Обновление обращения"),
+            ("FEEDBACK_DELETED", "Удаление обращения"),
+            ("SETTINGS_UPDATED", "Изменение настроек"),
+            ("COURSE_CREATED", "Создание курса"),
+            ("COURSE_UPDATED", "Обновление курса"),
+            ("COURSE_DELETED", "Удаление курса"),
+            ("PAYMENT_PROCESSED", "Обработка платежа"),
+            ("ERROR_OCCURRED", "Ошибка"),
+            ("SECURITY_EVENT", "Событие безопасности"),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    date_from = forms.DateField(
+        required=False,
+        label="Дата от",
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    date_to = forms.DateField(
+        required=False,
+        label="Дата до",
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    def clean(self):
+        """Валидирует корректность диапазона дат."""
+        cleaned_data = super().clean()
+        date_from = cleaned_data.get("date_from")
+        date_to = cleaned_data.get("date_to")
+
+        if date_from and date_to and date_from > date_to:
+            raise forms.ValidationError("Дата начала не может быть позже даты окончания")
+
+        return cleaned_data
