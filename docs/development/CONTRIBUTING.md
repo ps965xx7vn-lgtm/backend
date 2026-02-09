@@ -310,7 +310,7 @@ poetry run python src/manage.py runserver
 ## 👥 Команда разработки
 
 **Владелец проекта:** Дмитрий Масляев
-**Email:** limpoposiki@gmail.com
+**Email:** pylandschool@gmail.com
 
 ### Роли в команде
 

@@ -136,7 +136,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@pylandschool.com
+    email: pylandschool@gmail.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:

@@ -41,7 +41,7 @@ python -c "from django.core.management.utils import get_random_secret_key; print
 
 ### `k8s/ingress.yaml`:
 
-- [ ] Email для Let's Encrypt: `email: limpoposiki@gmail.com` (или ваш)
+- [ ] Email для Let's Encrypt: `email: pylandschool@gmail.com` (или ваш)
 - [ ] Домены в hosts: `pylandschool.com`, `www.pylandschool.com`, `api.pylandschool.com`
 
 ---
@@ -205,13 +205,13 @@ curl https://pylandschool.com/api/docs  # Swagger UI
 kubectl exec -it deployment/web -n pyland -- python manage.py createsuperuser
 
 # Ввести:
-# Email: admin@pylandschool.com
+# Email: pylandschool@gmail.com
 # Password: (надежный пароль)
 ```
 
 **Вход в админку:**
 - URL: https://pylandschool.com/admin/
-- Email: admin@pylandschool.com
+- Email: pylandschool@gmail.com
 - Password: (ваш пароль)
 
 ---

@@ -111,7 +111,7 @@ metadata:
   name: letsencrypt-prod
 spec:
   acme:
-    email: limpoposiki@gmail.com  # ⚠️ Ваш реальный email
+    email: pylandschool@gmail.com  # ⚠️ Ваш реальный email
 ```
 
 ### Шаг 4: GitHub Registry Secret

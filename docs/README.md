@@ -118,7 +118,7 @@ docs/
 
 - **Проблемы:** https://github.com/ps965xx7vn-lgtm/backend/issues
 - **Обсуждения:** https://github.com/ps965xx7vn-lgtm/backend/discussions
-- **Почта:** limpoposiki@gmail.com
+- **Почта:** pylandschool@gmail.com
 
 ---
 

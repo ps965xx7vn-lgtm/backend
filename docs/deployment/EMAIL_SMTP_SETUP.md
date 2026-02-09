@@ -47,7 +47,7 @@ stringData:
 ```
 
 **Замените:**
-- `your-email@gmail.com` → Ваш Gmail адрес (например: `limpoposiki@gmail.com`)
+- `your-email@gmail.com` → Ваш Gmail адрес (например: `pylandschool@gmail.com`)
 - `your-app-password-here` → 16-значный App Password из Шага 1
 
 ### Шаг 3: Применить изменения
@@ -191,7 +191,7 @@ EMAIL_BACKEND: "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST: "smtp.gmail.com"
 EMAIL_PORT: "587"
 EMAIL_USE_TLS: "True"
-DEFAULT_FROM_EMAIL: "noreply@pylandschool.com"
+DEFAULT_FROM_EMAIL: "pylandschool@gmail.com"
 
 # Secret - приватные credentials
 EMAIL_HOST_USER: "<ваш-gmail>"

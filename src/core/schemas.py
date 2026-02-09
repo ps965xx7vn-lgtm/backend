@@ -121,7 +121,7 @@ class ContactInfoSchema(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "email": "info@pylandschool.com",
+                "email": "pylandschool@gmail.com",
                 "phone": "+7 (999) 123-45-67",
                 "address": "Москва, ул. Примерная, д. 1",
                 "social_links": {
