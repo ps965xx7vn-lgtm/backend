@@ -52,29 +52,10 @@
 
     /**
      * Валидация соответствия метода оплаты и валюты
+     * Оба метода (BOG и TBC) теперь поддерживают все валюты
      */
     function validatePaymentMethodCurrency() {
-        if (!currencySelect) return true;
-
-        const selectedCurrency = currencySelect.value;
-        const selectedMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
-
-        // TBC Bank работает только с GEL
-        if (selectedMethod === 'tbc_georgia' && selectedCurrency !== 'GEL') {
-            showError('Для оплаты через TBC Bank доступна только валюта GEL');
-            currencySelect.value = 'GEL';
-            updateDisplayedPrice();
-            return false;
-        }
-
-        // CloudPayments не работает с GEL
-        if (selectedMethod === 'cloudpayments' && selectedCurrency === 'GEL') {
-            showError('CloudPayments не поддерживает грузинский лари (GEL)');
-            currencySelect.value = 'USD';
-            updateDisplayedPrice();
-            return false;
-        }
-
+        // Валидация больше не требуется - все методы поддерживают все валюты
         return true;
     }
 

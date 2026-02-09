@@ -30,7 +30,7 @@
 4. **Проверить ConfigMap** в `k8s/timeweb-deploy.yaml`:
    ```yaml
    DEBUG: "False"  # НЕ True!
-   SITE_URL: "https://pyland.ru"  # https, не http!
+   SITE_URL: "https://pylandschool.com"  # https, не http!
    ```
 
 ---
@@ -77,13 +77,13 @@ kubectl get pods -n pyland
 ### Проверить доступность:
 ```bash
 # HTTP
-curl -I https://pyland.ru/
+curl -I https://pylandschool.com/
 
 # API
-curl https://pyland.ru/api/health/
+curl https://pylandschool.com/api/health/
 
 # Admin
-open https://pyland.ru/admin/
+open https://pylandschool.com/admin/
 ```
 
 ### Создать суперюзера:

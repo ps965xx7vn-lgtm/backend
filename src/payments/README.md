@@ -2,7 +2,7 @@
 
 ## Обзор
 
-Приложение `payments` обеспечивает полный функционал оплаты курсов на платформе Pyland с поддержкой двух платёжных систем: **CloudPayments** (Россия) и **TBC Bank** (Грузия).
+Приложение `payments` обеспечивает полный функционал оплаты курсов на платформе Pyland с поддержкой двух платёжных систем для Грузии: **BOG** и **TBC**.
 
 ## Архитектура
 
@@ -17,7 +17,7 @@
 - `course` (FK) - Оплаченный курс (courses.Course)
 - `amount` (Decimal) - Сумма платежа (до 10 знаков, 2 после запятой)
 - `currency` (CharField) - Валюта: USD, GEL, RUB
-- `payment_method` (CharField) - Метод оплаты: cloudpayments, tbc_georgia
+- `payment_method` (CharField) - Метод оплаты: bog, tbc
 - `status` (CharField) - Статус: pending, processing, completed, failed, cancelled, refunded
 - `transaction_id` (CharField) - ID транзакции из платёжной системы (nullable)
 - `payment_url` (URLField) - URL для редиректа на оплату (nullable)
@@ -40,8 +40,8 @@
 - **refunded** - Возврат средств
 
 ### Методы оплаты
-- **cloudpayments** - CloudPayments (Россия) - поддерживает USD, RUB
-- **tbc_georgia** - TBC Bank (Грузия) - только GEL
+- **bog** - BOG - поддерживает USD, GEL, RUB
+- **tbc** - TBC - поддерживает USD, GEL, RUB
 
 ### Формы
 
@@ -55,8 +55,7 @@
 - `privacy_accepted` (BooleanField) - Согласие с политикой конфиденциальности
 
 **Валидация:**
-- TBC Bank работает только с GEL
-- CloudPayments не поддерживает GEL (только USD и RUB)
+- Оба метода оплаты поддерживают все валюты (USD, GEL, RUB)
 
 ### Views
 
@@ -119,7 +118,7 @@ path('cancel/<uuid:payment_id>/', payment_cancel_view, name='cancel')
 path('processing/<uuid:payment_id>/', payment_processing_view, name='processing')
 
 # Webhooks (TODO - будущие интеграции):
-# path('webhook/cloudpayments/', cloudpayments_webhook, name='cloudpayments_webhook')
+# path('webhook/bog/', bog_webhook, name='bog_webhook')
 # path('webhook/tbc/', tbc_webhook, name='tbc_webhook')
 ```
 
@@ -141,7 +140,7 @@ graph TD
     F --> G[GET /ru/payments/checkout/slug/]
     G --> H[Выбор метода оплаты + валюты]
     H --> I[POST с формой CheckoutForm]
-    I --> J[Валидация: TBC требует GEL]
+    I --> J[Валидация формы]
     J --> K[Конвертация цены в выбранную валюту]
     K --> L[Создание Payment status=pending]
     L --> M[Redirect /ru/payments/processing/uuid/]
@@ -158,12 +157,12 @@ graph TD
 2. Проверка авторизации → Если нет: redirect на signin
 3. Проверка зачисления → Если уже записан: показать "Продолжить"
 4. Redirect → `/ru/payments/checkout/<slug>/`
-5. Заполнение формы: метод (CloudPayments/TBC) + валюта (USD/GEL/RUB) + согласия
-6. Submit → Валидация метод-валюта соответствия
+5. Заполнение формы: метод (BOG/TBC) + валюта (USD/GEL/RUB) + согласия
+6. Submit → Валидация формы
 7. Конвертация цены курса через EXCHANGE_RATES
 8. Создание Payment (status=pending)
 9. Redirect → `/ru/payments/processing/<uuid>/` (страница загрузки)
-10. JavaScript redirect → Платёжный шлюз (CloudPayments / TBC)
+10. JavaScript redirect → Платёжный шлюз (BOG / TBC)
 11. После оплаты:
     - Success → `/ru/payments/success/<uuid>/` → `mark_as_completed()` → Зачисление через `student_enrollments.add()`
     - Cancel → `/ru/payments/cancel/<uuid>/` → `status='cancelled'`
@@ -172,14 +171,14 @@ graph TD
 
 - ✅ Все views защищены `@login_required`
 - ✅ UUID для платежей (не подбираемые ID)
-- ✅ Валидация соответствия метод-валюта в форме
+- ✅ Валидация формы оплаты
 - ✅ Проверка существования курса (404 если не найден)
 - ✅ Проверка на повторную запись: `course.student_enrollments.filter(user=request.user).exists()`
 - ✅ CSRF protection (Django формы)
 - ✅ Только чтение в админке (has_add_permission=False, has_change_permission=False)
 - ✅ Readonly fields в админке для критичных данных
 - ✅ Colored status badges в админке для визуального контроля
-- ⚠️ TODO: Webhook signature verification для CloudPayments/TBC
+- ⚠️ TODO: Webhook signature verification для BOG/TBC
 - ⚠️ TODO: Rate limiting для payment endpoints
 
 ## Admin панель
@@ -194,7 +193,7 @@ graph TD
   - ⚫ cancelled - Серый
   - 🟣 refunded - Фиолетовый
 - ✅ Форматированные суммы с символами валют ($, ₾, ₽)
-- ✅ Иконки методов оплаты (💳 CloudPayments, 🏦 TBC Bank)
+- ✅ Иконки методов оплаты (🏦 BOG, 💳 TBC)
 - ✅ Ссылки на пользователя и курс в админке
 - ✅ Фильтры: status, payment_method, currency, created_at
 - ✅ Поиск: transaction_id, user email, course name
@@ -240,7 +239,7 @@ graph TD
 
 **JavaScript:** `/static/js/payments/checkout.js`
 - Динамическое обновление цены при смене валюты
-- Валидация метод-валюта (TBC требует GEL)
+- Валидация формы оплаты
 - LocalStorage для сохранения предпочтений валюты
 - Блокировка повторной отправки формы
 - Автообновление converted price в UI

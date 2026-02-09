@@ -16,12 +16,12 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - pyland.ru
-    - www.pyland.ru
-    - api.pyland.ru
+    - pylandschool.com
+    - www.pylandschool.com
+    - api.pylandschool.com
     secretName: pyland-tls
   rules:
-  - host: pyland.ru
+  - host: pylandschool.com
     http:
       paths:
       - path: /
@@ -31,7 +31,7 @@ spec:
             name: web-service
             port:
               number: 8000
-  - host: www.pyland.ru
+  - host: www.pylandschool.com
     http:
       paths:
       - path: /
@@ -41,7 +41,7 @@ spec:
             name: web-service
             port:
               number: 8000
-  - host: api.pyland.ru
+  - host: api.pylandschool.com
     http:
       paths:
       - path: /

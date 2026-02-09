@@ -71,7 +71,7 @@ def get_cached_contact_info():
         dict: Контактная информация
     """
     return {
-        "email": "info@pyland.ru",
+        "email": "info@pylandschool.com",
         "phone": "+7 (999) 123-45-67",
         "address": "Москва, ул. Примерная, д. 1, офис 101",
         "social_links": {
@@ -268,7 +268,7 @@ def get_contact_info(request):
 
         Response 200:
         {
-            "email": "info@pyland.ru",
+            "email": "info@pylandschool.com",
             "phone": "+7 (999) 123-45-67",
             "address": "Москва, ул. Примерная, д. 1",
             "social_links": {

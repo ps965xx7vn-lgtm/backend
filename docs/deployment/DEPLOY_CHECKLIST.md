@@ -34,15 +34,15 @@ python -c "from django.core.management.utils import get_random_secret_key; print
 ### `k8s/timeweb-deploy.yaml` - ConfigMap:
 
 - [ ] `DEBUG: "False"` ✅ (не "True"!)
-- [ ] `SITE_URL: "https://pyland.ru"` ✅ (не http!)
+- [ ] `SITE_URL: "https://pylandschool.com"` ✅ (не http!)
 - [ ] `ALLOWED_HOSTS` содержит все домены
-- [ ] `CSRF_TRUSTED_ORIGINS` содержит https://pyland.ru
+- [ ] `CSRF_TRUSTED_ORIGINS` содержит https://pylandschool.com
 - [ ] `DATABASE_URL` содержит тот же пароль что и `POSTGRES_PASSWORD`
 
 ### `k8s/ingress.yaml`:
 
 - [ ] Email для Let's Encrypt: `email: limpoposiki@gmail.com` (или ваш)
-- [ ] Домены в hosts: `pyland.ru`, `www.pyland.ru`, `api.pyland.ru`
+- [ ] Домены в hosts: `pylandschool.com`, `www.pylandschool.com`, `api.pylandschool.com`
 
 ---
 
@@ -185,17 +185,17 @@ curl -I http://$LB_IP/api/ping
 curl -k -I https://$LB_IP/api/health/
 
 # С доменом (после настройки DNS)
-curl -I https://pyland.ru/
-curl -I https://pyland.ru/api/health/
-curl https://pyland.ru/api/docs  # Swagger UI
+curl -I https://pylandschool.com/
+curl -I https://pylandschool.com/api/health/
+curl https://pylandschool.com/api/docs  # Swagger UI
 ```
 
 ### Проверка в браузере:
 
-- [ ] https://pyland.ru/ - главная страница
-- [ ] https://pyland.ru/admin/ - админ-панель
-- [ ] https://pyland.ru/api/docs - API документация
-- [ ] https://pyland.ru/ru/authentication/signup/ - регистрация
+- [ ] https://pylandschool.com/ - главная страница
+- [ ] https://pylandschool.com/admin/ - админ-панель
+- [ ] https://pylandschool.com/api/docs - API документация
+- [ ] https://pylandschool.com/ru/authentication/signup/ - регистрация
 
 ---
 
@@ -205,13 +205,13 @@ curl https://pyland.ru/api/docs  # Swagger UI
 kubectl exec -it deployment/web -n pyland -- python manage.py createsuperuser
 
 # Ввести:
-# Email: admin@pyland.ru
+# Email: admin@pylandschool.com
 # Password: (надежный пароль)
 ```
 
 **Вход в админку:**
-- URL: https://pyland.ru/admin/
-- Email: admin@pyland.ru
+- URL: https://pylandschool.com/admin/
+- Email: admin@pylandschool.com
 - Password: (ваш пароль)
 
 ---
@@ -220,10 +220,10 @@ kubectl exec -it deployment/web -n pyland -- python manage.py createsuperuser
 
 ### Тест регистрации:
 
-1. Откройте https://pyland.ru/ru/authentication/signup/
+1. Откройте https://pylandschool.com/ru/authentication/signup/
 2. Зарегистрируйте тестовый аккаунт
 3. Проверьте почту - должно прийти письмо с подтверждением
-4. Ссылка должна быть вида: `https://pyland.ru/ru/authentication/verify-email-confirm/...`
+4. Ссылка должна быть вида: `https://pylandschool.com/ru/authentication/verify-email-confirm/...`
 5. Кликните на ссылку - должна открыться страница подтверждения (не 404!)
 
 ### Если письма не приходят:

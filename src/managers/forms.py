@@ -478,8 +478,8 @@ class PaymentsFilterForm(forms.Form):
         label="Метод оплаты",
         choices=[
             ("", "Все методы"),
-            ("cloudpayments", "CloudPayments"),
-            ("tbc_georgia", "TBC Bank"),
+            ("bog", "BOG"),
+            ("tbc", "TBC"),
         ],
         widget=forms.Select(attrs={"class": "form-control"}),
     )

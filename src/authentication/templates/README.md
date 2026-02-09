@@ -196,7 +196,7 @@ html_content = render_to_string('auth/email/verification.html', {
 email = EmailMessage(
     subject='Подтвердите email',
     body=html_content,
-    from_email='noreply@pyland.com',
+    from_email='noreply@pylandschool.com',
     to=[user.email],
 )
 email.content_subtype = 'html'

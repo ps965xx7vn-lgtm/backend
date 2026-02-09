@@ -30,30 +30,30 @@
         },
 
         getColor(key) {
-            return this.isDarkTheme() && CONFIG.colors[key + 'Dark'] 
-                ? CONFIG.colors[key + 'Dark'] 
+            return this.isDarkTheme() && CONFIG.colors[key + 'Dark']
+                ? CONFIG.colors[key + 'Dark']
                 : CONFIG.colors[key];
         },
 
         animateValue(element, start, end, duration, suffix = '') {
             if (!element) return;
-            
+
             const startTime = performance.now();
             const isFloat = end % 1 !== 0;
-            
+
             function update(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const easeOut = 1 - Math.pow(1 - progress, 3);
                 const current = start + (end - start) * easeOut;
-                
+
                 element.textContent = (isFloat ? current.toFixed(1) : Math.floor(current)) + suffix;
-                
+
                 if (progress < 1) {
                     requestAnimationFrame(update);
                 }
             }
-            
+
             requestAnimationFrame(update);
         },
 
@@ -75,7 +75,7 @@
         constructor(canvasId, data, options = {}) {
             this.canvas = document.getElementById(canvasId);
             if (!this.canvas) return;
-            
+
             this.ctx = this.canvas.getContext('2d');
             this.data = data;
             this.options = {
@@ -84,7 +84,7 @@
                 gridLines: CONFIG.gridLines,
                 ...options
             };
-            
+
             this.resize();
             this.draw();
             this.setupInteraction();
@@ -93,10 +93,10 @@
         resize() {
             const container = this.canvas.parentElement;
             const rect = container.getBoundingClientRect();
-            
+
             this.canvas.width = rect.width;
             this.canvas.height = this.options.height;
-            
+
             this.width = this.canvas.width;
             this.height = this.canvas.height;
             this.chartWidth = this.width - this.options.padding * 2;
@@ -122,7 +122,7 @@
             // Горизонтальные линии
             for (let i = 0; i <= this.options.gridLines; i++) {
                 const y = this.options.padding + (this.chartHeight / this.options.gridLines) * i;
-                
+
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.options.padding, y);
                 this.ctx.lineTo(this.width - this.options.padding, y);
@@ -233,7 +233,7 @@
         setupInteraction() {
             const maxValue = Math.max(...this.data.map(d => d.total)) + 2;
             const pointSpacing = this.chartWidth / (this.data.length - 1 || 1);
-            
+
             let tooltip = document.getElementById('chart-tooltip');
             if (!tooltip) {
                 tooltip = document.createElement('div');
@@ -333,18 +333,18 @@
 
     function animateStatValues() {
         const statValues = document.querySelectorAll('.stat-value, .performance-value');
-        
+
         statValues.forEach(element => {
             const finalText = element.textContent.trim();
             const matches = finalText.match(/[\d.,]+/);
-            
+
             if (!matches) return;
-            
+
             const finalNumber = parseFloat(matches[0].replace(',', '.'));
             const suffix = finalText.replace(matches[0], '').trim();
-            
+
             element.textContent = '0' + suffix;
-            
+
             setTimeout(() => {
                 Utils.animateValue(element, 0, finalNumber, CONFIG.animationDuration, suffix);
             }, 100);
@@ -355,11 +355,11 @@
         const progressBars = document.querySelectorAll(
             '.course-progress-fill, .week-bar, .progress-fill'
         );
-        
+
         progressBars.forEach(bar => {
             const finalWidth = bar.style.width || '0%';
             bar.style.width = '0%';
-            
+
             setTimeout(() => {
                 bar.style.transition = 'width 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
                 bar.style.width = finalWidth;
@@ -383,11 +383,11 @@
 
     function setupLegendInteraction() {
         const legendItems = document.querySelectorAll('.legend-item');
-        
+
         legendItems.forEach(item => {
             item.addEventListener('click', function() {
                 this.classList.toggle('inactive');
-                
+
                 // Можно добавить логику фильтрации данных графика
                 const label = this.querySelector('.legend-label').textContent;
             });
@@ -414,7 +414,7 @@
     // Tooltip функционал для month bars
     function setupMonthBarTooltips() {
         const monthBars = document.querySelectorAll('.month-bar');
-        
+
         monthBars.forEach(bar => {
             bar.addEventListener('mouseenter', function() {
                 const tooltip = this.getAttribute('data-tooltip');

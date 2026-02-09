@@ -43,7 +43,7 @@ open http://194.87.215.91:30796/admin/
 
 ## 📋 Настройка DNS
 
-Для работы через доменное имя **pyland.ru** добавьте A-записи в DNS:
+Для работы через доменное имя **pylandschool.com** добавьте A-записи в DNS:
 
 ### В панели управления доменом (например, Timeweb, Cloudflare):
 
@@ -56,9 +56,9 @@ open http://194.87.215.91:30796/admin/
 ### Проверка DNS (после настройки):
 ```bash
 # Проверка A-записей
-dig pyland.ru +short
-dig www.pyland.ru +short
-dig api.pyland.ru +short
+dig pylandschool.com +short
+dig www.pylandschool.com +short
+dig api.pylandschool.com +short
 
 # Должны вернуть: 188.225.37.90
 ```
@@ -66,10 +66,10 @@ dig api.pyland.ru +short
 ### Временное тестирование (добавить в /etc/hosts):
 ```bash
 # macOS/Linux
-sudo sh -c 'echo "188.225.37.90 pyland.ru www.pyland.ru api.pyland.ru" >> /etc/hosts'
+sudo sh -c 'echo "188.225.37.90 pylandschool.com www.pylandschool.com api.pylandschool.com" >> /etc/hosts'
 
 # Windows (в C:\Windows\System32\drivers\etc\hosts)
-188.225.37.90 pyland.ru www.pyland.ru api.pyland.ru
+188.225.37.90 pylandschool.com www.pylandschool.com api.pylandschool.com
 ```
 
 ## 🔧 Управление деплойментом
@@ -136,7 +136,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@pyland.ru
+    email: admin@pylandschool.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
@@ -154,9 +154,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - pyland.ru
-    - www.pyland.ru
-    - api.pyland.ru
+    - pylandschool.com
+    - www.pylandschool.com
+    - api.pylandschool.com
     secretName: pyland-tls-cert
 ```
 
@@ -165,10 +165,10 @@ spec:
 ### Проверка здоровья:
 ```bash
 # Health check
-curl http://pyland.ru:30796/api/health/
+curl http://pylandschool.com:30796/api/health/
 
 # Readiness check
-curl http://pyland.ru:30796/api/readiness/
+curl http://pylandschool.com:30796/api/readiness/
 
 # Проверка БД и Redis
 kubectl exec -it deployment/web -n pyland -- python manage.py check --database default

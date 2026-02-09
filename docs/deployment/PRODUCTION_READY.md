@@ -45,7 +45,7 @@
   - [x] Nginx Ingress Controller
   - [x] Let's Encrypt ClusterIssuer
   - [x] SSL Certificate (pyland-tls)
-  - [x] Домены: pyland.ru, www.pyland.ru, api.pyland.ru
+  - [x] Домены: pylandschool.com, www.pylandschool.com, api.pylandschool.com
   - [x] HTTP → HTTPS redirect
 
 ### ✅ CI/CD
@@ -84,7 +84,7 @@
 - [x] Kubernetes кластер: Timeweb "Wise Crossbill"
 - [x] LoadBalancer IP: 188.225.37.90
 - [x] SSL: Let's Encrypt (cert-manager)
-- [x] DNS: pyland.ru → 188.225.37.90
+- [x] DNS: pylandschool.com → 188.225.37.90
 - [x] Email: Gmail SMTP настроен
 - [x] Static files: WhiteNoise middleware
 
@@ -106,7 +106,7 @@ EMAIL_HOST_PASSWORD: "ваш-gmail-app-password"
 
 ```yaml
 DEBUG: "False"  # НЕ True!
-SITE_URL: "https://pyland.ru"  # https, не http!
+SITE_URL: "https://pylandschool.com"  # https, не http!
 ```
 
 ---
@@ -128,7 +128,7 @@ SITE_URL: "https://pyland.ru"  # https, не http!
 
 # Проверка
 kubectl get pods -n pyland
-curl -I https://pyland.ru/
+curl -I https://pylandschool.com/
 ```
 
 ### После деплоя:

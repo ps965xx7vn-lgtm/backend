@@ -2,18 +2,11 @@
    PyLand Dashboard - Современный дизайн
    ================================== */
 
-/* CSS переменные для адаптивной высоты хедера */
-:root {
-    --header-height: 80px; /* desktop по умолчанию */
-}
-
-@media (max-width: 768px) {
-    :root {
-        --header-height: 140px; /* mobile: header-top (60px) + header-main (80px) */
-    }
-}
-
 /* Dashboard Layout */
+/* Используем глобальные значения --header-height из core/main.css и core/themes.css:
+   - Desktop: 140px (header-top + header-main)
+   - Mobile ≤768px: 80px (только header-main, header-top скрыт)
+*/
 .dashboard-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -900,10 +893,11 @@
         transform: translateX(0);
     }
 
-    /* Пустой блок компенсирует header сайта (~160px header-top + header-main) */
+    /* Пустой блок компенсирует header сайта */
+    /* Desktop/Tablet: header-top (~60px) + header-main (~80px) = ~140px */
     .sidebar-spacer {
         display: block;
-        height: 160px;
+        height: 140px;
         flex-shrink: 0;
         background: transparent;
     }
@@ -1052,7 +1046,10 @@
     .achievements-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
+}
 
+/* Мобильные устройства (≤767px) */
+@media (max-width: 767px) {
     /* Для маленьких мобильных - меньше spacer */
     .sidebar-spacer {
         height: 80px;

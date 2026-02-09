@@ -209,7 +209,7 @@ class TestContactInfoSchema:
     def test_full_contact_info(self):
         """Тест полной контактной информации."""
         data = {
-            "email": "info@pyland.ru",
+            "email": "info@pylandschool.com",
             "phone": "+7 (999) 123-45-67",
             "address": "Москва, ул. Примерная, д. 1",
             "social_links": {
@@ -221,27 +221,27 @@ class TestContactInfoSchema:
 
         contact = ContactInfoSchema(**data)
 
-        assert contact.email == "info@pyland.ru"
+        assert contact.email == "info@pylandschool.com"
         assert contact.phone == "+7 (999) 123-45-67"
         assert "telegram" in contact.social_links
 
     def test_minimal_contact_info(self):
         """Тест минимальной контактной информации."""
         data = {
-            "email": "info@pyland.ru",
+            "email": "info@pylandschool.com",
             "phone": "+7 (999) 123-45-67",
         }
 
         contact = ContactInfoSchema(**data)
 
-        assert contact.email == "info@pyland.ru"
+        assert contact.email == "info@pylandschool.com"
         assert contact.address is None
         assert contact.social_links == {}
 
     def test_empty_social_links(self):
         """Тест с пустыми социальными сетями."""
         data = {
-            "email": "info@pyland.ru",
+            "email": "info@pylandschool.com",
             "phone": "+7 (999) 123-45-67",
             "social_links": {},
         }

@@ -6,4 +6,4 @@ metadata:
 data:
   # Override for staging
   DEBUG: "False"
-  ALLOWED_HOSTS: "staging.pyland.ru,*.staging.pyland.ru"
+  ALLOWED_HOSTS: "staging.pylandschool.com,*.staging.pylandschool.com"

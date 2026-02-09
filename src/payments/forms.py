@@ -27,7 +27,7 @@ class CheckoutForm(forms.Form):
     Форма для оформления оплаты курса.
 
     Поля:
-        payment_method: Выбор способа оплаты (CloudPayments/TBC)
+        payment_method: Выбор способа оплаты (BOG/TBC)
         currency: Валюта платежа (USD/GEL/RUB)
         terms_accepted: Согласие с условиями использования
         privacy_accepted: Согласие с политикой конфиденциальности
@@ -114,24 +114,15 @@ class CheckoutForm(forms.Form):
         """
         Комплексная валидация формы.
 
-        Проверяет соответствие валюты и метода оплаты.
+        Проверяет корректность данных платежа.
         """
         cleaned_data = super().clean()
         payment_method = cleaned_data.get("payment_method")
         currency = cleaned_data.get("currency")
 
-        # Валидация соответствия метода и валюты
-        if payment_method == "tbc_georgia" and currency != "GEL":
-            raise ValidationError(
-                {
-                    "currency": "Для оплаты через TBC Bank доступна только валюта GEL (грузинский лари)"
-                }
-            )
-
-        if payment_method == "cloudpayments" and currency == "GEL":
-            raise ValidationError(
-                {"currency": "CloudPayments не поддерживает грузинский лари (GEL)"}
-            )
+        # Валидация метода оплаты
+        if not payment_method or not currency:
+            raise ValidationError("Необходимо выбрать способ оплаты и валюту")
 
         return cleaned_data
 

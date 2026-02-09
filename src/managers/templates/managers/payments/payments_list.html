@@ -139,13 +139,13 @@
                        class="filter-btn {% if not request.GET.payment_method %}active{% endif %}">
                         <span class="filter-btn-text">{% trans "Все методы" %}</span>
                     </a>
-                    <a href="?payment_method=cloudpayments{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
-                       class="filter-btn {% if request.GET.payment_method == 'cloudpayments' %}active{% endif %}">
-                        <span class="filter-btn-text">CloudPayments (РФ)</span>
+                    <a href="?payment_method=bog{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+                       class="filter-btn {% if request.GET.payment_method == 'bog' %}active{% endif %}">
+                        <span class="filter-btn-text">BOG</span>
                     </a>
-                    <a href="?payment_method=tbc_georgia{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
-                       class="filter-btn {% if request.GET.payment_method == 'tbc_georgia' %}active{% endif %}">
-                        <span class="filter-btn-text">TBC Bank (Грузия)</span>
+                    <a href="?payment_method=tbc{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+                       class="filter-btn {% if request.GET.payment_method == 'tbc' %}active{% endif %}">
+                        <span class="filter-btn-text">TBC</span>
                     </a>
                 </div>
             </div>

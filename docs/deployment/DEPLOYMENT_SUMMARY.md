@@ -73,7 +73,7 @@ web-service        ClusterIP   10.109.97.232   8000/TCP
 ### Ingress:
 ```
 NAME             HOSTS                                               ADDRESS         PORTS
-pyland-ingress   pyland.ru,www.pyland.ru,api.pyland.ru              188.225.37.90   80,443
+pyland-ingress   pylandschool.com,www.pylandschool.com,api.pylandschool.com              188.225.37.90   80,443
 ```
 
 ### SSL Certificate:
@@ -89,23 +89,23 @@ pyland-tls   True    pyland-tls   2m
 ### API Endpoints:
 ```bash
 # Ping (работает)
-$ curl https://pyland.ru/api/ping
+$ curl https://pylandschool.com/api/ping
 {"ping": "pong"}
 
 # Health check
-$ curl https://pyland.ru/api/health/
+$ curl https://pylandschool.com/api/health/
 ✅ Доступен
 
 # API Documentation
-https://pyland.ru/api/docs
+https://pylandschool.com/api/docs
 ✅ Доступен
 ```
 
 ### HTTP → HTTPS редирект:
 ```bash
-$ curl -I http://pyland.ru/
+$ curl -I http://pylandschool.com/
 HTTP/1.1 308 Permanent Redirect
-Location: https://pyland.ru/
+Location: https://pylandschool.com/
 ✅ Работает
 ```
 
@@ -142,10 +142,10 @@ pyland-tls   True    pyland-tls   2m
 kubectl exec -it deployment/web -n pyland -- python manage.py createsuperuser
 
 # Проверить админку
-open https://pyland.ru/admin/
+open https://pylandschool.com/admin/
 
 # Проверить email (зарегистрировать тестовый аккаунт)
-open https://pyland.ru/ru/authentication/signup/
+open https://pylandschool.com/ru/authentication/signup/
 ```
 
 ### При следующем деплое:
@@ -158,10 +158,10 @@ open https://pyland.ru/ru/authentication/signup/
 ## 🔗 Полезные ссылки
 
 ### Production URLs:
-- **Главная:** https://pyland.ru/
-- **API Docs:** https://pyland.ru/api/docs
-- **Админка:** https://pyland.ru/admin/
-- **Регистрация:** https://pyland.ru/ru/authentication/signup/
+- **Главная:** https://pylandschool.com/
+- **API Docs:** https://pylandschool.com/api/docs
+- **Админка:** https://pylandschool.com/admin/
+- **Регистрация:** https://pylandschool.com/ru/authentication/signup/
 
 ### Мониторинг:
 ```bash

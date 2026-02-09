@@ -4,7 +4,7 @@
 
 Было выявлено две проблемы:
 
-1. **Доступ к сайту только через порт**: `http://pyland.ru:30796/` (порт 80 не работал)
+1. **Доступ к сайту только через порт**: `http://pylandschool.com:30796/` (порт 80 не работал)
 2. **show_notifications при регистрации**: Чекбокс для отправки email не работал
 
 ---
@@ -14,7 +14,7 @@
 ### Диагностика
 
 #### Что выяснилось:
-- **DNS настроен правильно**: `pyland.ru` → `188.225.37.90` ✅
+- **DNS настроен правильно**: `pylandschool.com` → `188.225.37.90` ✅
 - **LoadBalancer работает на порту 80 через IP**: `http://188.225.37.90/` возвращает 302 ✅
 - **Ingress настроен правильно**: Nginx работает, порты 80:30796, 443:31633 ✅
 - **Проблема**: Порт 80 заблокирован **на уровне firewall провайдера Timeweb**
@@ -22,8 +22,8 @@
 #### Проверка:
 ```bash
 # DNS резолвится правильно
-nslookup pyland.ru
-# Name:   pyland.ru
+nslookup pylandschool.com
+# Name:   pylandschool.com
 # Address: 188.225.37.90
 
 # LoadBalancer IP работает на порту 80
@@ -31,8 +31,8 @@ curl -I http://188.225.37.90/
 # HTTP/1.1 302 Found ✅
 
 # Но домен не работает на порту 80
-curl -I http://pyland.ru/
-# curl: (7) Failed to connect to pyland.ru port 80 ❌
+curl -I http://pylandschool.com/
+# curl: (7) Failed to connect to pylandschool.com port 80 ❌
 ```
 
 ### Решение
@@ -54,20 +54,20 @@ curl -I http://pyland.ru/
 в кластере Kubernetes "Wise Crossbill".
 
 Эти порты необходимы для работы Ingress Controller (Nginx), который
-маршрутизирует трафик на домен pyland.ru.
+маршрутизирует трафик на домен pylandschool.com.
 
 Текущая ситуация:
 - IP работает напрямую: http://188.225.37.90/ ✅
-- Домен не работает: http://pyland.ru/ ❌
+- Домен не работает: http://pylandschool.com/ ❌
 - Порты доступны через NodePort (30796), но не через стандартный 80 порт
 
 Спасибо!
 ```
 
 После открытия портов:
-1. Сайт будет доступен по адресу `http://pyland.ru` (без порта)
+1. Сайт будет доступен по адресу `http://pylandschool.com` (без порта)
 2. Можно будет настроить SSL через Let's Encrypt
-3. Перенаправление с `www.pyland.ru` на `pyland.ru` заработает
+3. Перенаправление с `www.pylandschool.com` на `pylandschool.com` заработает
 
 ### Вариант 2: Использовать NodePort (Временное решение)
 
@@ -75,10 +75,10 @@ curl -I http://pyland.ru/
 
 ```bash
 # Через NodePort (работает сейчас)
-http://pyland.ru:30796/
+http://pylandschool.com:30796/
 
 # HTTPS (если SSL настроен)
-https://pyland.ru:31633/
+https://pylandschool.com:31633/
 ```
 
 **Минусы**:
@@ -91,7 +91,7 @@ https://pyland.ru:31633/
 Если Timeweb не откроет порт 80, можно использовать:
 
 1. **CloudFlare** с проксированием:
-   - DNS → CloudFlare → pyland.ru:30796
+   - DNS → CloudFlare → pylandschool.com:30796
    - CloudFlare будет слушать на 80/443
    - Прокси на ваш NodePort 30796
 
@@ -99,7 +99,7 @@ https://pyland.ru:31633/
    ```nginx
    server {
        listen 80;
-       server_name pyland.ru;
+       server_name pylandschool.com;
        location / {
            proxy_pass http://188.225.37.90:30796;
            proxy_set_header Host $host;
@@ -210,7 +210,7 @@ kubectl logs deployment/web -n pyland --tail=50 | grep "верификации"
 
 #### 3. Тестирование через браузер
 
-1. Откройте `http://pyland.ru:30796/account/signup` (или `/ru/account/signup`)
+1. Откройте `http://pylandschool.com:30796/account/signup` (или `/ru/account/signup`)
 2. Заполните форму регистрации
 3. **Чекбокс включен по умолчанию** ✅
 4. Вариант A: Оставьте чекбокс → получите email
@@ -227,7 +227,7 @@ kubectl logs deployment/web -n pyland --tail=50 | grep "верификации"
 - **Celery Worker**: Обрабатывает задачи успешно
 - **Redis**: Подключение стабильное
 - **Все pods**: Running (6/6)
-- **NodePort доступ**: Сайт доступен на `http://pyland.ru:30796`
+- **NodePort доступ**: Сайт доступен на `http://pylandschool.com:30796`
 - **LoadBalancer на порту 80**: Работает через IP `http://188.225.37.90`
 
 ### ⚠️ Что нужно исправить
@@ -269,7 +269,7 @@ Services:
 
 Ingress:
   - pyland-ingress (Nginx)
-    - Hosts: pyland.ru, www.pyland.ru, api.pyland.ru
+    - Hosts: pylandschool.com, www.pylandschool.com, api.pylandschool.com
     - LoadBalancer IP: 188.225.37.90
     - Ports: 80 → 30796, 443 → 31633
 ```
@@ -280,7 +280,7 @@ Ingress:
 CELERY_BROKER_URL: "redis://redis-service:6379/0"
 CELERY_RESULT_BACKEND: "redis://redis-service:6379/0"
 EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
-SITE_URL: "http://pyland.ru"
+SITE_URL: "http://pylandschool.com"
 ```
 
 ---
@@ -365,16 +365,16 @@ kubectl rollout restart deployment -n pyland
 
 ```bash
 # Проверка главной страницы через NodePort
-curl -I http://pyland.ru:30796/
+curl -I http://pylandschool.com:30796/
 
 # Проверка через LoadBalancer IP
 curl -I http://188.225.37.90/
 
 # Проверка API health (через NodePort)
-curl http://pyland.ru:30796/api/health/
+curl http://pylandschool.com:30796/api/health/
 
 # Проверка статики (WhiteNoise)
-curl -I http://pyland.ru:30796/static/admin/css/base.css
+curl -I http://pylandschool.com:30796/static/admin/css/base.css
 ```
 
 ---

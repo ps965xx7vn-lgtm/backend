@@ -93,10 +93,10 @@ openssl rand -base64 50
 # ConfigMap (строки 14-40)
 data:
   DEBUG: "False"  # ⚠️ В проде должно быть False
-  ALLOWED_HOSTS: "pyland.ru,www.pyland.ru,api.pyland.ru,188.225.37.90"
-  CSRF_TRUSTED_ORIGINS: "https://pyland.ru,https://www.pyland.ru,https://api.pyland.ru"
+  ALLOWED_HOSTS: "pylandschool.com,www.pylandschool.com,api.pylandschool.com,188.225.37.90"
+  CSRF_TRUSTED_ORIGINS: "https://pylandschool.com,https://www.pylandschool.com,https://api.pylandschool.com"
   DATABASE_URL: "postgresql://pyland_prod_user:PASSWORD@postgres-service:5432/pyland_db"  # Используйте тот же пароль
-  SITE_URL: "https://pyland.ru"  # ⚠️ В проде должно быть https://
+  SITE_URL: "https://pylandschool.com"  # ⚠️ В проде должно быть https://
 ```
 
 ### Шаг 3: Обновление Ingress SSL
@@ -165,9 +165,9 @@ kubectl create secret docker-registry ghcr-secret \
   LoadBalancer:  188.225.37.90
 
 🌐 URL для доступа:
-  HTTP:  http://pyland.ru/
-  HTTPS: https://pyland.ru/
-  API:   https://pyland.ru/api/docs
+  HTTP:  http://pylandschool.com/
+  HTTPS: https://pylandschool.com/
+  API:   https://pylandschool.com/api/docs
 ```
 
 ---
@@ -339,7 +339,7 @@ curl -I http://$LB_IP/api/ping
 curl -k -I https://$LB_IP/api/health/
 
 # С доменом (после настройки DNS)
-curl -I https://pyland.ru/api/health/
+curl -I https://pylandschool.com/api/health/
 ```
 
 ---
@@ -444,7 +444,7 @@ kubectl exec deployment/web -n pyland -- ls -la /app/staticfiles/
 kubectl logs deployment/web -n pyland | grep -i whitenoise
 
 # Тест загрузки
-curl -I https://pyland.ru/static/admin/css/base.css
+curl -I https://pylandschool.com/static/admin/css/base.css
 ```
 
 ### Email не отправляются
@@ -531,7 +531,7 @@ kubectl delete job django-migrations -n pyland
 - [ ] Обновил `POSTGRES_PASSWORD` в `k8s/timeweb-deploy.yaml`
 - [ ] Добавил реальные Gmail credentials в Secret
 - [ ] Проверил `DEBUG=False` в ConfigMap
-- [ ] Проверил `SITE_URL=https://pyland.ru` в ConfigMap
+- [ ] Проверил `SITE_URL=https://pylandschool.com` в ConfigMap
 - [ ] Проверил email для Let's Encrypt в `k8s/ingress.yaml`
 - [ ] Закоммитил все изменения (кроме секретов!)
 
@@ -541,12 +541,12 @@ kubectl delete job django-migrations -n pyland
 - [ ] Проверил Docker Registry доступ: `docker pull ghcr.io/ps965xx7vn-lgtm/backend:production`
 - [ ] Запустил `./deploy.sh`
 - [ ] Проверил статус подов: `kubectl get pods -n pyland`
-- [ ] Проверил HTTP: `curl -I http://pyland.ru/`
-- [ ] Проверил HTTPS: `curl -I https://pyland.ru/`
-- [ ] Проверил API: `curl https://pyland.ru/api/health/`
+- [ ] Проверил HTTP: `curl -I http://pylandschool.com/`
+- [ ] Проверил HTTPS: `curl -I https://pylandschool.com/`
+- [ ] Проверил API: `curl https://pylandschool.com/api/health/`
 - [ ] Проверил SSL: `kubectl get certificate -n pyland`
 - [ ] Создал суперюзера: `kubectl exec -it deployment/web -n pyland -- python manage.py createsuperuser`
-- [ ] Зашел в админку: https://pyland.ru/admin/
+- [ ] Зашел в админку: https://pylandschool.com/admin/
 - [ ] Проверил отправку email (регистрация тестового пользователя)
 
 ### После деплоя:

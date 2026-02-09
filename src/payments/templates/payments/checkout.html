@@ -106,26 +106,26 @@
                                        {% if forloop.first %}checked{% endif %}>
                                 <label for="payment_{{ value }}" class="payment-label">
                                     <div class="payment-method-content">
-                                        {% if value == 'cloudpayments' %}
+                                        {% if value == 'bog' %}
                                         <div class="payment-logo">
                                             <svg class="payment-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                                             </svg>
                                         </div>
-                                        {% elif value == 'tbc_georgia' %}
+                                        {% elif value == 'tbc' %}
                                         <div class="payment-logo tbc-logo">
                                             <svg class="payment-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                                             </svg>
                                         </div>
                                         {% endif %}
                                         <div class="payment-info">
                                             <div class="payment-name">{{ label }}</div>
                                             <div class="payment-description">
-                                                {% if value == 'cloudpayments' %}
-                                                {% trans "Оплата картой через CloudPayments" %}
-                                                {% elif value == 'tbc_georgia' %}
-                                                {% trans "Оплата через TBC Bank (Грузия)" %}
+                                                {% if value == 'bog' %}
+                                                {% trans "Банковская карта BOG" %}
+                                                {% elif value == 'tbc' %}
+                                                {% trans "Банковская карта TBC" %}
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -149,7 +149,7 @@
                         <div class="form-check">
                             {{ form.terms_accepted }}
                             <label for="{{ form.terms_accepted.id_for_label }}" class="form-check-label">
-                                {{ form.terms_accepted.label }}
+                                {% trans "Я принимаю" %} <a href="{% url 'core:terms_of_service' %}" target="_blank" style="color: var(--primary-500); text-decoration: underline;">{% trans "условия использования" %}</a>
                             </label>
                         </div>
                         {% if form.terms_accepted.errors %}
@@ -161,7 +161,7 @@
                         <div class="form-check">
                             {{ form.privacy_accepted }}
                             <label for="{{ form.privacy_accepted.id_for_label }}" class="form-check-label">
-                                {{ form.privacy_accepted.label }}
+                                {% trans "Я принимаю" %} <a href="{% url 'core:privacy_policy' %}" target="_blank" style="color: var(--primary-500); text-decoration: underline;">{% trans "политику конфиденциальности" %}</a>
                             </label>
                         </div>
                         {% if form.privacy_accepted.errors %}

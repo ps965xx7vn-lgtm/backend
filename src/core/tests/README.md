@@ -446,7 +446,7 @@ def validate_no_digits(cls, value: str) -> str:
 ```python
 def test_full_contact_info(self):
     data = {
-        "email": "info@pyland.ru",
+        "email": "info@pylandschool.com",
         "phone": "+7 (999) 123-45-67",
         "address": "г. Москва, ул. Примерная, д. 1",
         "working_hours": "Пн-Пт: 9:00-18:00",
@@ -457,7 +457,7 @@ def test_full_contact_info(self):
     }
 
     schema = ContactInfoSchema(**data)
-    assert schema.email == "info@pyland.ru"
+    assert schema.email == "info@pylandschool.com"
     assert schema.social_links["telegram"] == "<https://t.me/pyland">
 ```text
 ---

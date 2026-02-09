@@ -12,27 +12,27 @@
     } else {
         initReviewPage();
     }
-    
+
     function initReviewPage() {
-        
+
         // Character counter for comments
         initCharacterCounter();
-        
+
         // Add improvement functionality
         initImprovements();
-        
+
         // Status radio listeners
         initStatusRadios();
-        
+
         // Form validation
         initFormValidation();
-        
+
     }
-    
+
     function initCharacterCounter() {
         const commentsTextarea = document.getElementById('comments');
         const charCountSpan = document.getElementById('charCount');
-        
+
         if (commentsTextarea && charCountSpan) {
             commentsTextarea.addEventListener('input', function() {
                 charCountSpan.textContent = this.value.length;
@@ -40,22 +40,22 @@
         } else {
         }
     }
-    
+
     function initImprovements() {
         let improvementCounter = 0;
         const maxImprovements = 10;
-        
+
         const addBtn = document.getElementById('addImprovementBtn');
         const container = document.getElementById('improvementsContainer');
 
         if (!addBtn) {
             return;
         }
-        
+
         if (!container) {
             return;
         }
-        
+
         // Add click listener
         addBtn.addEventListener('click', function(event) {
             event.preventDefault();
@@ -65,12 +65,12 @@
                 alert('Максимум 10 предложений по улучшению');
                 return;
             }
-            
+
             improvementCounter++;
-            
+
             const improvementDiv = document.createElement('div');
             improvementDiv.className = 'review-improvement-item';
-            improvementDiv.innerHTML = 
+            improvementDiv.innerHTML =
                 '<div class="review-improvement-header">' +
                     '<div class="review-improvement-label">' +
                         '<span class="review-improvement-text">Улучшение ' + improvementCounter + '</span>' +
@@ -85,18 +85,18 @@
                     'placeholder="Название шага (например: Добавить проверку на пустые значения)" required>' +
                 '<textarea name="improvement_text_' + improvementCounter + '" class="review-improvement-textarea" ' +
                     'placeholder="Опишите конкретное предложение по улучшению" required></textarea>';
-            
+
             container.appendChild(improvementDiv);
-            
+
             // Add remove listener to the new button
             const removeBtn = improvementDiv.querySelector('[data-remove-improvement]');
             removeBtn.addEventListener('click', function() {
                 removeImprovement(this);
             });
-            
+
             // Update section header with counter
             updateSectionHeader(improvementCounter, maxImprovements);
-            
+
             if (improvementCounter >= maxImprovements) {
                 addBtn.disabled = true;
                 addBtn.style.opacity = '0.5';
@@ -107,7 +107,7 @@
         function removeImprovement(button) {
             const improvementItem = button.closest('.review-improvement-item');
             if (!improvementItem) return;
-            
+
             improvementItem.remove();
             improvementCounter--;
 
@@ -119,22 +119,22 @@
                 numberSpan.textContent = index + 1;
                 textarea.name = 'improvement_' + (index + 1);
             });
-            
+
             // Re-enable button if below max
             if (improvementCounter < maxImprovements && addBtn) {
                 addBtn.disabled = false;
                 addBtn.style.opacity = '1';
             }
-            
+
             // Update section header
             updateSectionHeader(improvementCounter, maxImprovements);
         }
-        
+
         // Update section header with correct declension
         function updateSectionHeader(count, max) {
             const counterSpan = document.getElementById('improvementsCounter');
             if (!counterSpan) return;
-            
+
             let text;
             if (count === 0) {
                 text = '';
@@ -145,32 +145,32 @@
             } else {
                 text = '(' + count + ' улучшений)';
             }
-            
+
             counterSpan.textContent = text;
         }
     }
-    
+
     function initStatusRadios() {
         const statusRadios = document.querySelectorAll('input[name="status"]');
         const improvementsRequiredBadge = document.querySelector('.review-improvements-required');
         const improvementsSection = document.getElementById('improvementsSection');
         const formActions = document.querySelector('.review-form-actions');
-        
+
         if (statusRadios.length) {
             statusRadios.forEach(function(radio) {
                 radio.addEventListener('change', function() {
                     const isChangesRequested = this.value === 'changes_requested';
-                    
+
                     // Show/hide required badge
                     if (improvementsRequiredBadge) {
                         improvementsRequiredBadge.style.display = isChangesRequested ? 'inline' : 'none';
                     }
-                    
+
                     // Show/hide entire improvements section
                     if (improvementsSection) {
                         improvementsSection.style.display = isChangesRequested ? 'block' : 'none';
                     }
-                    
+
                     // Toggle class on form actions to remove border
                     if (formActions) {
                         if (isChangesRequested) {
@@ -181,44 +181,44 @@
                     }
                 });
             });
-            
+
             // Initially hide improvements section and add no-border class
             if (improvementsSection) {
                 improvementsSection.style.display = 'none';
             }
-            
+
             if (formActions) {
                 formActions.classList.add('no-border-top');
             }
-            
+
         } else {
         }
     }
-    
+
     function initFormValidation() {
         const form = document.getElementById('reviewForm');
-        
+
         if (!form) {
             return;
         }
-        
+
         form.addEventListener('submit', function(event) {
-            
+
             // Get form values
             const statusRadio = document.querySelector('input[name="status"]:checked');
             const commentsTextarea = document.getElementById('comments');
             const improvementsContainer = document.getElementById('improvementsContainer');
-            
+
             // Check if status is selected
             if (!statusRadio) {
                 event.preventDefault();
                 showNotification('Выберите статус проверки', 'error');
                 return false;
             }
-            
+
             const status = statusRadio.value;
             const comments = commentsTextarea ? commentsTextarea.value.trim() : '';
-            
+
             // Check comments length
             if (comments.length < 20) {
                 event.preventDefault();
@@ -226,17 +226,17 @@
                 commentsTextarea.focus();
                 return false;
             }
-            
+
             // If changes_requested, check improvements
             if (status === 'changes_requested') {
                 const improvements = improvementsContainer.querySelectorAll('.review-improvement-item');
-                
+
                 if (improvements.length === 0) {
                     event.preventDefault();
                     showNotification('Для доработок необходимо добавить минимум 1 улучшение', 'error');
                     return false;
                 }
-                
+
                 // Check each improvement has content
                 let hasEmptyImprovement = false;
                 improvements.forEach(function(item, index) {
@@ -248,17 +248,17 @@
                         }
                     }
                 });
-                
+
                 if (hasEmptyImprovement) {
                     event.preventDefault();
                     showNotification('Каждое улучшение должно содержать минимум 10 символов', 'error');
                     return false;
                 }
             }
-            
+
             showNotification('Отправка проверки...', 'info');
             return true;
         });
-        
+
     }
 })();

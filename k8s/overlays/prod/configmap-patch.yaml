@@ -6,4 +6,4 @@ metadata:
 data:
   # Override for production
   DEBUG: "False"
-  ALLOWED_HOSTS: "pyland.ru,www.pyland.ru,api.pyland.ru"
+  ALLOWED_HOSTS: "pylandschool.com,www.pylandschool.com,api.pylandschool.com"

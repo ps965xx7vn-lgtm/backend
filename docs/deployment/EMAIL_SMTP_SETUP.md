@@ -70,7 +70,7 @@ kubectl wait --for=condition=ready pod -l app=web -n pyland --timeout=120s
 
 ### Шаг 4: Проверить отправку email
 
-1. **Откройте сайт:** https://pyland.ru/ru/authentication/signup/
+1. **Откройте сайт:** https://pylandschool.com/ru/authentication/signup/
 
 2. **Зарегистрируйте тестовый аккаунт:**
    - Заполните форму регистрации
@@ -191,7 +191,7 @@ EMAIL_BACKEND: "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST: "smtp.gmail.com"
 EMAIL_PORT: "587"
 EMAIL_USE_TLS: "True"
-DEFAULT_FROM_EMAIL: "noreply@pyland.ru"
+DEFAULT_FROM_EMAIL: "noreply@pylandschool.com"
 
 # Secret - приватные credentials
 EMAIL_HOST_USER: "<ваш-gmail>"

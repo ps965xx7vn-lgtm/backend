@@ -16,10 +16,10 @@ function toggleLesson(lessonId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     const expandAllBtn = document.getElementById('expand-all');
     const collapseAllBtn = document.getElementById('collapse-all');
-    
+
     // Expand all lessons
     if (expandAllBtn) {
         expandAllBtn.addEventListener('click', function() {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    
+
     // Collapse all lessons
     if (collapseAllBtn) {
         collapseAllBtn.addEventListener('click', function() {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    
+
     // Add click handlers to lesson headers (alternative to inline onclick)
     document.querySelectorAll('.lesson-header').forEach(header => {
         const lessonItem = header.closest('.lesson-item');
@@ -55,5 +55,5 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
 });

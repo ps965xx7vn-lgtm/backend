@@ -182,7 +182,7 @@ core/
 
 ```json
 {
-  "email": "info@pyland.ru",
+  "email": "info@pylandschool.com",
   "phone": "+7 (999) 123-45-67",
   "address": "г. Москва, ул. Примерная, д. 1",
   "working_hours": "Пн-Пт: 9:00-18:00",

@@ -1,4 +1,4 @@
-/* Payments Checkout Styles - Адаптивный дизайн страницы оплаты */
+/* Payments Checkout Styles - Адаптивный дизайн страницы оплаты с поддержкой темной темы */
 
 /* ==================== КОНТЕЙНЕРЫ ==================== */
 
@@ -18,12 +18,13 @@
 /* ==================== КАРТОЧКА КУРСА ==================== */
 
 .checkout-course-card {
-    background: white;
+    background: var(--bg-secondary, #f9fafb);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     overflow: hidden;
     position: sticky;
     top: 2rem;
+    border: 1px solid var(--border-color);
 }
 
 .checkout-course-image {
@@ -39,12 +40,12 @@
 .checkout-course-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1a202c;
+    color: var(--text-color);
     margin-bottom: 1rem;
 }
 
 .checkout-course-description {
-    color: #4a5568;
+    color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
@@ -54,14 +55,14 @@
     gap: 1.5rem;
     margin-bottom: 1.5rem;
     padding-bottom: 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .checkout-meta-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #718096;
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 
@@ -73,7 +74,7 @@
 .checkout-prices h3 {
     font-size: 1rem;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-color);
     margin-bottom: 0.75rem;
 }
 
@@ -91,28 +92,29 @@
 
 .currency-label {
     font-weight: 600;
-    color: #4a5568;
+    color: var(--text-muted);
 }
 
 .price-value {
     font-size: 1.125rem;
     font-weight: 700;
-    color: #10b981;
+    color: var(--success-500);
 }
 
 /* ==================== ФОРМА ОПЛАТЫ ==================== */
 
 .checkout-form-card {
-    background: white;
+    background: var(--bg-secondary);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     padding: 2rem;
+    border: 1px solid var(--border-color);
 }
 
 .checkout-form-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1a202c;
+    color: var(--text-color);
     margin-bottom: 1.5rem;
 }
 
@@ -133,9 +135,15 @@
 }
 
 .alert-info {
-    background: #dbeafe;
-    border: 1px solid #93c5fd;
-    color: #1e40af;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid var(--primary-300);
+    color: var(--primary-600);
+}
+
+[data-theme="dark"] .alert-info {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--primary-700);
+    color: var(--primary-400);
 }
 
 .alert-icon {
@@ -153,32 +161,37 @@
 
 .form-label {
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-color);
     font-size: 0.875rem;
 }
 
 .form-select {
     padding: 0.75rem 1rem;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.2s;
-    background: white;
+    background: var(--bg-primary);
+    color: var(--text-color);
 }
 
 .form-select:focus {
     outline: none;
-    border-color: #10b981;
+    border-color: var(--success-500);
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] .form-select:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
 .form-text {
     font-size: 0.875rem;
-    color: #718096;
+    color: var(--text-muted);
 }
 
 .form-error {
-    color: #ef4444;
+    color: var(--error-500);
     font-size: 0.875rem;
     font-weight: 500;
 }
@@ -206,22 +219,27 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.25rem;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
-    background: white;
+    background: var(--bg-primary);
 }
 
 .payment-label:hover {
-    border-color: #cbd5e0;
-    background: #f7fafc;
+    border-color: var(--gray-400);
+    background: var(--bg-tertiary);
 }
 
 .payment-radio:checked + .payment-label {
-    border-color: #10b981;
-    background: #ecfdf5;
+    border-color: var(--success-500);
+    background: rgba(16, 185, 129, 0.1);
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] .payment-radio:checked + .payment-label {
+    background: rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
 .payment-method-content {
@@ -233,7 +251,7 @@
 .payment-logo {
     width: 48px;
     height: 48px;
-    background: #f7fafc;
+    background: var(--bg-tertiary);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -243,7 +261,7 @@
 .payment-icon {
     width: 28px;
     height: 28px;
-    color: #4a5568;
+    color: var(--text-muted);
 }
 
 .tbc-logo {
@@ -260,20 +278,20 @@
 
 .payment-name {
     font-weight: 600;
-    color: #1a202c;
+    color: var(--text-color);
     margin-bottom: 0.25rem;
 }
 
 .payment-description {
     font-size: 0.875rem;
-    color: #718096;
+    color: var(--text-muted);
 }
 
 .payment-checkmark {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -281,8 +299,8 @@
 }
 
 .payment-radio:checked + .payment-label .payment-checkmark {
-    background: #10b981;
-    border-color: #10b981;
+    background: var(--success-500);
+    border-color: var(--success-500);
 }
 
 .payment-checkmark svg {
@@ -309,20 +327,21 @@
     margin-top: 0.25rem;
     width: 18px;
     height: 18px;
-    border: 2px solid #cbd5e0;
+    border: 2px solid var(--border-color);
     border-radius: 4px;
     cursor: pointer;
     flex-shrink: 0;
+    accent-color: var(--success-500);
 }
 
 .form-check-input:checked {
-    background: #10b981;
-    border-color: #10b981;
+    background: var(--success-500);
+    border-color: var(--success-500);
 }
 
 .form-check-label {
     font-size: 0.875rem;
-    color: #4a5568;
+    color: var(--text-muted);
     line-height: 1.5;
     cursor: pointer;
 }
@@ -342,7 +361,7 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 1rem 1.5rem;
-    background: #10b981;
+    background: var(--success-500);
     color: white;
     border: none;
     border-radius: 8px;
@@ -353,9 +372,13 @@
 }
 
 .btn-checkout-primary:hover {
-    background: #059669;
+    background: var(--success-600);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .btn-checkout-primary:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
 .btn-checkout-primary:active {
@@ -366,14 +389,14 @@
     display: block;
     text-align: center;
     padding: 0.75rem 1.5rem;
-    color: #4a5568;
+    color: var(--text-muted);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 .btn-checkout-secondary:hover {
-    color: #1a202c;
+    color: var(--text-color);
 }
 
 .btn-icon {
@@ -388,21 +411,22 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1rem;
-    background: #f7fafc;
+    background: var(--bg-tertiary);
     border-radius: 8px;
     margin-top: 1rem;
+    border: 1px solid var(--border-color);
 }
 
 .security-icon {
     width: 20px;
     height: 20px;
-    color: #10b981;
+    color: var(--success-500);
     flex-shrink: 0;
 }
 
 .checkout-security span {
     font-size: 0.875rem;
-    color: #4a5568;
+    color: var(--text-muted);
 }
 
 /* ==================== СТРАНИЦЫ РЕЗУЛЬТАТОВ ==================== */
@@ -414,11 +438,12 @@
 }
 
 .payment-result-card {
-    background: white;
+    background: var(--bg-secondary);
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
     padding: 3rem 2rem;
     text-align: center;
+    border: 1px solid var(--border-color);
 }
 
 .payment-result-icon {
@@ -433,43 +458,44 @@
 }
 
 .success .payment-result-icon svg {
-    color: #10b981;
+    color: var(--success-500);
 }
 
 .cancelled .payment-result-icon svg {
-    color: #f59e0b;
+    color: var(--warning-500);
 }
 
 .processing .payment-result-icon {
-    color: #3b82f6;
+    color: var(--primary-500);
 }
 
 .payment-result-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #1a202c;
+    color: var(--text-color);
     margin-bottom: 1rem;
 }
 
 .payment-result-message {
     font-size: 1.125rem;
-    color: #4a5568;
+    color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 2rem;
 }
 
 .payment-details {
-    background: #f7fafc;
+    background: var(--bg-tertiary);
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
 }
 
 .payment-detail-row {
     display: flex;
     justify-content: space-between;
     padding: 0.75rem 0;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .payment-detail-row:last-child {
@@ -477,12 +503,12 @@
 }
 
 .payment-detail-row .label {
-    color: #718096;
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 
 .payment-detail-row .value {
-    color: #1a202c;
+    color: var(--text-color);
     font-weight: 600;
 }
 
@@ -492,8 +518,8 @@
 }
 
 .payment-info-box {
-    background: #dbeafe;
-    border: 1px solid #93c5fd;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid var(--primary-300);
     border-radius: 8px;
     padding: 1rem;
     display: flex;
@@ -501,35 +527,58 @@
     margin-bottom: 2rem;
 }
 
+[data-theme="dark"] .payment-info-box {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--primary-700);
+}
+
 .info-icon {
     width: 20px;
     height: 20px;
-    color: #1e40af;
+    color: var(--primary-600);
     flex-shrink: 0;
     margin-top: 0.125rem;
 }
 
+[data-theme="dark"] .info-icon {
+    color: var(--primary-400);
+}
+
 .payment-info-box p {
-    color: #1e40af;
+    color: var(--primary-700);
     font-size: 0.875rem;
     line-height: 1.5;
     margin: 0;
     text-align: left;
 }
 
+[data-theme="dark"] .payment-info-box p {
+    color: var(--primary-300);
+}
+
 .success-next-steps {
-    background: #ecfdf5;
+    background: rgba(16, 185, 129, 0.1);
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 2rem;
     text-align: left;
+    border: 1px solid var(--success-300);
+}
+
+[data-theme="dark"] .success-next-steps {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--success-700);
 }
 
 .success-next-steps h3 {
-    color: #065f46;
+    color: var(--success-700);
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
+}
+
+[data-theme="dark"] .success-next-steps h3 {
+    color: var(--success-400);
 }
 
 .success-next-steps ul {
@@ -539,17 +588,21 @@
 }
 
 .success-next-steps li {
-    color: #047857;
+    color: var(--success-600);
     padding: 0.5rem 0;
     padding-left: 1.5rem;
     position: relative;
+}
+
+[data-theme="dark"] .success-next-steps li {
+    color: var(--success-300);
 }
 
 .success-next-steps li::before {
     content: '✓';
     position: absolute;
     left: 0;
-    color: #10b981;
+    color: var(--success-500);
     font-weight: bold;
 }
 
@@ -573,24 +626,29 @@
 }
 
 .btn-primary {
-    background: #10b981;
+    background: var(--success-500);
     color: white;
 }
 
 .btn-primary:hover {
-    background: #059669;
+    background: var(--success-600);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
+[data-theme="dark"] .btn-primary:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
 .btn-secondary {
-    background: #f3f4f6;
-    color: #4a5568;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-    background: #e5e7eb;
-    color: #1a202c;
+    background: var(--gray-300);
+    color: var(--text-color);
 }
 
 /* Spinner для processing */
@@ -601,7 +659,7 @@
 }
 
 .spinner .path {
-    stroke: #3b82f6;
+    stroke: var(--primary-500);
     stroke-linecap: round;
     animation: dash 1.5s ease-in-out infinite;
 }
