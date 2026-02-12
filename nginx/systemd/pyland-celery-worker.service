@@ -13,12 +13,12 @@ User=pyland
 Group=www-data
 
 # Переменные окружения
-Environment="PATH=/opt/pyland/.venv/bin"
+Environment="PATH=/opt/pyland/backend/.venv/bin"
 Environment="DJANGO_SETTINGS_MODULE=pyland.settings"
 EnvironmentFile=/opt/pyland/backend/.env
 
 # Команда запуска Celery Worker
-ExecStart=/opt/pyland/.venv/bin/celery -A pyland worker \
+ExecStart=/opt/pyland/backend/.venv/bin/celery -A pyland worker \
     --loglevel=info \
     --logfile=/opt/pyland/backend/logs/celery-worker.log \
     --pidfile=/var/run/celery/worker.pid \

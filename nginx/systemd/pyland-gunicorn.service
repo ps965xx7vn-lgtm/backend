@@ -13,12 +13,12 @@ User=pyland
 Group=www-data
 
 # Переменные окружения
-Environment="PATH=/opt/pyland/.venv/bin"
+Environment="PATH=/opt/pyland/backend/.venv/bin"
 Environment="DJANGO_SETTINGS_MODULE=pyland.settings"
 EnvironmentFile=/opt/pyland/backend/.env
 
 # Команда запуска Gunicorn
-ExecStart=/opt/pyland/.venv/bin/gunicorn \
+ExecStart=/opt/pyland/backend/.venv/bin/gunicorn \
     --workers 4 \
     --worker-class sync \
     --max-requests 1000 \
