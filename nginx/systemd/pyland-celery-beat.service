@@ -1,0 +1,46 @@
+[Unit]
+Description=Pyland Celery Beat Scheduler
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+Type=simple
+# Рабочая директория
+WorkingDirectory=/opt/pyland/backend/src
+
+# Пользователь и группа
+User=pyland
+Group=www-data
+
+# Переменные окружения
+Environment="PATH=/opt/pyland/.venv/bin"
+Environment="DJANGO_SETTINGS_MODULE=pyland.settings"
+EnvironmentFile=/opt/pyland/backend/.env
+
+# Команда запуска Celery Beat
+ExecStart=/opt/pyland/.venv/bin/celery -A pyland beat \
+    --loglevel=info \
+    --logfile=/opt/pyland/backend/logs/celery-beat.log \
+    --pidfile=/var/run/celery/beat.pid \
+    --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+# PID файл
+PIDFile=/var/run/celery/beat.pid
+
+# Создание директории для PID
+RuntimeDirectory=celery
+RuntimeDirectoryMode=0755
+
+# Перезапуск при падении
+Restart=always
+RestartSec=10
+StartLimitInterval=0
+
+# Таймауты
+TimeoutStopSec=300
+
+# Graceful shutdown
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

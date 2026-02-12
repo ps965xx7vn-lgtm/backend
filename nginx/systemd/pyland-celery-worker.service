@@ -1,0 +1,49 @@
+[Unit]
+Description=Pyland Celery Worker
+After=network.target redis.service postgresql.service
+Wants=redis.service postgresql.service
+
+[Service]
+Type=forking
+# Рабочая директория
+WorkingDirectory=/opt/pyland/backend/src
+
+# Пользователь и группа
+User=pyland
+Group=www-data
+
+# Переменные окружения
+Environment="PATH=/opt/pyland/.venv/bin"
+Environment="DJANGO_SETTINGS_MODULE=pyland.settings"
+EnvironmentFile=/opt/pyland/backend/.env
+
+# Команда запуска Celery Worker
+ExecStart=/opt/pyland/.venv/bin/celery -A pyland worker \
+    --loglevel=info \
+    --logfile=/opt/pyland/backend/logs/celery-worker.log \
+    --pidfile=/var/run/celery/worker.pid \
+    --concurrency=4 \
+    --max-tasks-per-child=1000
+
+# PID файл
+PIDFile=/var/run/celery/worker.pid
+
+# Создание директории для PID
+RuntimeDirectory=celery
+RuntimeDirectoryMode=0755
+
+# Перезапуск при падении
+Restart=always
+RestartSec=10
+StartLimitInterval=0
+
+# Таймауты
+TimeoutStartSec=0
+TimeoutStopSec=600
+
+# Graceful shutdown
+KillSignal=SIGTERM
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target

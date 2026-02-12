@@ -1,0 +1,47 @@
+[Unit]
+Description=Pyland Gunicorn Application Server
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=notify
+# Рабочая директория проекта
+WorkingDirectory=/opt/pyland/backend/src
+
+# Пользователь и группа (создать отдельного пользователя для безопасности)
+User=pyland
+Group=www-data
+
+# Переменные окружения
+Environment="PATH=/opt/pyland/.venv/bin"
+Environment="DJANGO_SETTINGS_MODULE=pyland.settings"
+EnvironmentFile=/opt/pyland/backend/.env
+
+# Команда запуска Gunicorn
+ExecStart=/opt/pyland/.venv/bin/gunicorn \
+    --workers 4 \
+    --worker-class sync \
+    --max-requests 1000 \
+    --max-requests-jitter 50 \
+    --timeout 90 \
+    --bind unix:/opt/pyland/gunicorn.sock \
+    --access-logfile /opt/pyland/backend/logs/gunicorn-access.log \
+    --error-logfile /opt/pyland/backend/logs/gunicorn-error.log \
+    --log-level info \
+    pyland.wsgi:application
+
+# Перезапуск при падении
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+
+# Таймауты
+TimeoutStartSec=0
+TimeoutStopSec=30
+
+# Безопасность
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
