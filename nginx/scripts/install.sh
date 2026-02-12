@@ -107,6 +107,10 @@ if [ ! -d "$BACKEND_DIR" ]; then
     log_info "Репозиторий клонирован из ветки $GIT_BRANCH"
 else
     log_warning "Директория $BACKEND_DIR уже существует"
+    # Исправляем владельца директории
+    chown -R $USER:$USER $BACKEND_DIR
+    # Добавляем в safe.directory для git
+    sudo -u $USER git config --global --add safe.directory $BACKEND_DIR
     cd $BACKEND_DIR
     sudo -u $USER git fetch origin
     sudo -u $USER git checkout $GIT_BRANCH
