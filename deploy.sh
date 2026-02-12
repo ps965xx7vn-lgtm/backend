@@ -14,6 +14,16 @@
 
 set -e  # Exit on error
 
+# Загрузка переменных из .env
+if [ -f .env ]; then
+    log_info "Загрузка конфигурации из .env..."
+    set -a  # Автоматически экспортировать переменные
+    source .env
+    set +a
+else
+    echo "⚠️  Файл .env не найден! Используются значения по умолчанию."
+fi
+
 # Цвета для вывода
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -38,20 +48,43 @@ log_error() {
     echo -e "${RED}❌ $1${NC}"
 }
 
+# Конфигурация из .env или значения по умолчанию
+KUBECONFIG="${KUBECONFIG:-~/.kube/timeweb-config}"
+K8S_API_SERVER="${K8S_API_SERVER:-}"
+DOCKER_IMAGE="${DOCKER_IMAGE:-ghcr.io/ps965xx7vn-lgtm/backend}"
+DOCKER_TAG="${DOCKER_TAG:-production}"
+NAMESPACE="${NAMESPACE:-pyland}"
+
 # Проверка KUBECONFIG
 if [ -z "$KUBECONFIG" ]; then
     export KUBECONFIG=~/.kube/timeweb-config
     log_warning "KUBECONFIG не установлен, используем ~/.kube/timeweb-config"
+else
+    # Раскрываем ~ в пути
+    KUBECONFIG="${KUBECONFIG/#\~/$HOME}"
+    export KUBECONFIG
 fi
 
-# Конфигурация
-DOCKER_IMAGE="ghcr.io/ps965xx7vn-lgtm/backend"
-DOCKER_TAG="production"
-NAMESPACE="pyland"
+# Обновление kubeconfig если указан K8S_API_SERVER
+if [ -n "$K8S_API_SERVER" ]; then
+    log_info "Обновление kubeconfig с новым API сервером: $K8S_API_SERVER"
+    if [ -f "$KUBECONFIG" ]; then
+        # Обновляем IP в существующем kubeconfig
+        sed -i.bak "s|server: https://[0-9.]*:6443|server: https://$K8S_API_SERVER:6443|g" "$KUBECONFIG"
+        log_success "Kubeconfig обновлен"
+    else
+        log_warning "Файл $KUBECONFIG не найден"
+    fi
+fi
 
 echo ""
 echo "======================================================================"
 echo "🚀 Pyland Kubernetes Deployment"
+echo "======================================================================"
+echo "  K8s API:      ${K8S_API_SERVER:-'из kubeconfig'}"
+echo "  Namespace:    $NAMESPACE"
+echo "  Docker Image: $DOCKER_IMAGE:$DOCKER_TAG"
+echo "  Kubeconfig:   $KUBECONFIG"
 echo "======================================================================"
 echo ""
 
