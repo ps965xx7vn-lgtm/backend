@@ -14,16 +14,6 @@
 
 set -e  # Exit on error
 
-# Загрузка переменных из .env
-if [ -f .env ]; then
-    log_info "Загрузка конфигурации из .env..."
-    set -a  # Автоматически экспортировать переменные
-    source .env
-    set +a
-else
-    echo "⚠️  Файл .env не найден! Используются значения по умолчанию."
-fi
-
 # Цвета для вывода
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -47,6 +37,16 @@ log_warning() {
 log_error() {
     echo -e "${RED}❌ $1${NC}"
 }
+
+# Загрузка переменных из .env
+if [ -f .env ]; then
+    log_info "Загрузка конфигурации из .env..."
+    set -a  # Автоматически экспортировать переменные
+    source .env
+    set +a
+else
+    log_warning "Файл .env не найден! Используются значения по умолчанию."
+fi
 
 # Конфигурация из .env или значения по умолчанию
 KUBECONFIG="${KUBECONFIG:-~/.kube/timeweb-config}"
