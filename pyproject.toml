@@ -7,7 +7,7 @@ authors = [
 ]
 license = {text = "Proprietary"}
 readme = "README.md"
-requires-python = ">=3.13,<4.0"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "Django==5.2.3",
     "environs==14.2.0",
@@ -134,7 +134,7 @@ ensure_newline_before_comments = true
 skip_glob = ["**/migrations/*.py", "venv/*", "env/*", ".venv/*"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
