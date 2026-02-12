@@ -45,11 +45,28 @@ fi
 log_info "Обновление системы..."
 apt update && apt upgrade -y
 
-# 2. Установка необходимых пакетов
+# 2. Определение доступной версии Python
+log_info "Определение доступной версии Python..."
+if command -v python3.13 &> /dev/null; then
+    PYTHON_VERSION="python3.13"
+    PYTHON_VENV="python3.13-venv"
+elif command -v python3.12 &> /dev/null; then
+    PYTHON_VERSION="python3.12"
+    PYTHON_VENV="python3.12-venv"
+elif command -v python3.11 &> /dev/null; then
+    PYTHON_VERSION="python3.11"
+    PYTHON_VENV="python3.11-venv"
+else
+    PYTHON_VERSION="python3"
+    PYTHON_VENV="python3-venv"
+fi
+log_info "Используется: $PYTHON_VERSION"
+
+# 3. Установка необходимых пакетов
 log_info "Установка системных пакетов..."
 apt install -y \
-    python3.13 \
-    python3.13-venv \
+    $PYTHON_VERSION \
+    $PYTHON_VENV \
     python3-pip \
     postgresql \
     postgresql-contrib \
@@ -62,12 +79,12 @@ apt install -y \
     python3-dev \
     gettext
 
-# 3. Установка Poetry
+# 4. Установка Poetry
 log_info "Установка Poetry..."
-curl -sSL https://install.python-poetry.org | python3 -
+curl -sSL https://install.python-poetry.org | $PYTHON_VERSION -
 export PATH="/root/.local/bin:$PATH"
 
-# 4. Создание пользователя
+# 5. Создание пользователя
 log_info "Создание пользователя $USER..."
 if id "$USER" &>/dev/null; then
     log_warning "Пользователь $USER уже существует"
@@ -114,7 +131,7 @@ systemctl start redis-server
 # 9. Установка Python зависимостей
 log_info "Установка Python зависимостей..."
 cd $BACKEND_DIR
-sudo -u $USER python3.13 -m venv $PROJECT_DIR/.venv
+sudo -u $USER $PYTHON_VERSION -m venv $PROJECT_DIR/.venv
 sudo -u $USER $PROJECT_DIR/.venv/bin/pip install --upgrade pip
 sudo -u $USER $PROJECT_DIR/.venv/bin/pip install poetry
 sudo -u $USER $PROJECT_DIR/.venv/bin/poetry config virtualenvs.create false
