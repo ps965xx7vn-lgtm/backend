@@ -79,12 +79,7 @@ apt install -y \
     python3-dev \
     gettext
 
-# 4. Установка Poetry
-log_info "Установка Poetry..."
-curl -sSL https://install.python-poetry.org | $PYTHON_VERSION -
-export PATH="/root/.local/bin:$PATH"
-
-# 5. Создание пользователя
+# 4. Создание пользователя
 log_info "Создание пользователя $USER..."
 if id "$USER" &>/dev/null; then
     log_warning "Пользователь $USER уже существует"
@@ -93,14 +88,23 @@ else
     usermod -aG www-data $USER
 fi
 
-# 5. Создание директорий проекта
+# 5. Установка Poetry для пользователя pyland
+log_info "Установка Poetry..."
+sudo -u $USER bash -c "curl -sSL https://install.python-poetry.org | $PYTHON_VERSION -"
+# Добавляем Poetry в PATH для пользователя
+POETRY_BIN="/home/$USER/.local/bin/poetry"
+
+# 6. Создание директорий проекта
 log_info "Создание директорий..."
 mkdir -p $PROJECT_DIR
 mkdir -p $BACKEND_DIR/logs
 mkdir -p $BACKEND_DIR/src/media
 mkdir -p $BACKEND_DIR/src/staticfiles
 
-# 6. Клонирование репозитория
+# Устанавливаем правильного владельца для всей директории проекта
+chown -R $USER:$USER $PROJECT_DIR
+
+# 7. Клонирование репозитория
 log_info "Клонирование репозитория из GitHub (ветка: $GIT_BRANCH)..."
 if [ ! -d "$BACKEND_DIR" ]; then
     git clone -b $GIT_BRANCH $GIT_REPO $BACKEND_DIR
@@ -117,7 +121,7 @@ else
     sudo -u $USER git pull origin $GIT_BRANCH || log_warning "Не удалось обновить репозиторий"
 fi
 
-# 7. Настройка PostgreSQL
+# 8. Настройка PostgreSQL
 log_info "Настройка PostgreSQL..."
 sudo -u postgres psql -c "CREATE DATABASE pyland_db;" || log_warning "База данных уже существует"
 sudo -u postgres psql -c "CREATE USER pyland_user WITH PASSWORD 'your_password';" || log_warning "Пользователь уже существует"
@@ -127,21 +131,20 @@ sudo -u postgres psql -c "ALTER ROLE pyland_user SET timezone TO 'UTC';"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE pyland_db TO pyland_user;"
 sudo -u postgres psql -c "ALTER DATABASE pyland_db OWNER TO pyland_user;"
 
-# 8. Настройка Redis
+# 9. Настройка Redis
 log_info "Настройка Redis..."
 systemctl enable redis-server
 systemctl start redis-server
 
-# 9. Установка Python зависимостей
-log_info "Установка Python зависимостей..."
+# 10. Установка Python зависимостей через Poetry
+log_info "Установка Python зависимостей через Poetry..."
 cd $BACKEND_DIR
-sudo -u $USER $PYTHON_VERSION -m venv $PROJECT_DIR/.venv
-sudo -u $USER $PROJECT_DIR/.venv/bin/pip install --upgrade pip
-sudo -u $USER $PROJECT_DIR/.venv/bin/pip install poetry
-sudo -u $USER $PROJECT_DIR/.venv/bin/poetry config virtualenvs.create false
-sudo -u $USER $PROJECT_DIR/.venv/bin/poetry install --no-dev
+# Настраиваем Poetry для создания virtualenv в проекте
+sudo -u $USER $POETRY_BIN config virtualenvs.in-project true
+# Устанавливаем production зависимости
+sudo -u $USER $POETRY_BIN install --only main
 
-# 10. Настройка .env файла
+# 11. Настройка .env файла
 log_info "Создание .env файла..."
 if [ ! -f "$BACKEND_DIR/.env" ]; then
     cat > $BACKEND_DIR/.env << EOF
@@ -187,25 +190,25 @@ else
     log_warning ".env файл уже существует"
 fi
 
-# 11. Применение миграций и сбор статики
+# 12. Применение миграций и сбор статики
 log_info "Применение миграций..."
 cd $BACKEND_DIR/src
-sudo -u $USER $PROJECT_DIR/.venv/bin/python manage.py migrate
+sudo -u $USER $BACKEND_DIR/.venv/bin/python manage.py migrate
 
 log_info "Создание ролей пользователей..."
-sudo -u $USER $PROJECT_DIR/.venv/bin/python manage.py create_roles
+sudo -u $USER $BACKEND_DIR/.venv/bin/python manage.py create_roles
 
 log_info "Сбор статических файлов..."
-sudo -u $USER $PROJECT_DIR/.venv/bin/python manage.py collectstatic --noinput
+sudo -u $USER $BACKEND_DIR/.venv/bin/python manage.py collectstatic --noinput
 
 log_info "Компиляция переводов..."
-sudo -u $USER $PROJECT_DIR/.venv/bin/python manage.py compilemessages
+sudo -u $USER $BACKEND_DIR/.venv/bin/python manage.py compilemessages
 
-# 12. Создание суперпользователя
+# 13. Создание суперпользователя
 log_info "Создание суперпользователя..."
-log_warning "Выполните вручную: sudo -u $USER $PROJECT_DIR/.venv/bin/python $BACKEND_DIR/src/manage.py createsuperuser"
+log_warning "Выполните вручную: sudo -u $USER $BACKEND_DIR/.venv/bin/python $BACKEND_DIR/src/manage.py createsuperuser"
 
-# 13. Установка systemd сервисов
+# 14. Установка systemd сервисов
 log_info "Установка systemd сервисов..."
 cp $BACKEND_DIR/nginx/systemd/*.service /etc/systemd/system/
 systemctl daemon-reload
@@ -216,7 +219,7 @@ systemctl start pyland-gunicorn
 systemctl start pyland-celery-worker
 systemctl start pyland-celery-beat
 
-# 14. Настройка Nginx
+# 15. Настройка Nginx
 log_info "Настройка Nginx..."
 cp $BACKEND_DIR/nginx/pyland.conf /etc/nginx/sites-available/pyland
 sed -i "s/your-domain.com/$DOMAIN/g" /etc/nginx/sites-available/pyland
@@ -225,7 +228,7 @@ rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl restart nginx
 
-# 15. Настройка прав доступа
+# 16. Настройка прав доступа
 log_info "Настройка прав доступа..."
 chown -R $USER:www-data $PROJECT_DIR
 chmod -R 755 $PROJECT_DIR
@@ -233,7 +236,7 @@ chmod -R 775 $BACKEND_DIR/logs
 chmod -R 775 $BACKEND_DIR/src/media
 chmod 660 $BACKEND_DIR/.env
 
-# 16. Настройка firewall
+# 17. Настройка firewall
 log_info "Настройка firewall..."
 ufw allow 'Nginx Full'
 ufw allow OpenSSH
@@ -243,7 +246,7 @@ log_info "✅ Установка завершена!"
 log_info ""
 log_info "📝 ВАЖНО! Следующие шаги:"
 log_info "1. Отредактируйте .env файл: nano $BACKEND_DIR/.env"
-log_info "2. Создайте суперпользователя: sudo -u $USER $PROJECT_DIR/.venv/bin/python $BACKEND_DIR/src/manage.py createsuperuser"
+log_info "2. Создайте суперпользователя: sudo -u $USER $BACKEND_DIR/.venv/bin/python $BACKEND_DIR/src/manage.py createsuperuser"
 log_info "3. 🔐 ОБЯЗАТЕЛЬНО установите SSL сертификат:"
 log_info "   certbot --nginx -d $DOMAIN -d www.$DOMAIN"
 log_info "4. После получения SSL перезапустите Nginx:"
