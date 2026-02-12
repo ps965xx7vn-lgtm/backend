@@ -188,3 +188,4 @@ local_settings.py
 
 # Kubernetes configs
 k8s_example/
+k8s/generated/

@@ -98,13 +98,25 @@ fi
 # Шаг 4: Kubernetes Deploy
 log_info "Деплой в Kubernetes..."
 
+# Генерация ConfigMap и Secret из .env
+log_info "Генерация ConfigMap и Secret из .env..."
+if [ -f "./k8s/scripts/generate-k8s-secrets.sh" ]; then
+    ./k8s/scripts/generate-k8s-secrets.sh
+else
+    log_error "Скрипт generate-k8s-secrets.sh не найден!"
+    exit 1
+fi
+
 # Применяем все манифесты
 log_info "Применение ConfigMap и Secret..."
-kubectl apply -f k8s/timeweb-deploy.yaml --dry-run=client -o yaml | grep -q "kind: ConfigMap"
-kubectl apply -f k8s/timeweb-deploy.yaml
+kubectl apply -f k8s/generated/configmap.yaml --validate=false
+kubectl apply -f k8s/generated/secret.yaml --validate=false
+
+log_info "Применение основных манифестов..."
+kubectl apply -f k8s/timeweb-deploy.yaml --validate=false
 
 log_info "Применение Ingress с SSL..."
-kubectl apply -f k8s/ingress.yaml
+kubectl apply -f k8s/ingress.yaml --validate=false
 
 # Перезапускаем deployments для загрузки нового образа
 log_info "Перезапуск deployments..."
