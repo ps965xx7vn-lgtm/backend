@@ -14,6 +14,28 @@ Django 5.2 онлайн школа программирования с мног�
 
 ## 🚀 Быстрый старт
 
+### Production Deployment (Kubernetes)
+
+```bash
+# Полный автоматический деплой на Kubernetes
+./manage.sh deploy
+
+# Или с пропуском Docker build (для тестирования)
+SKIP_DOCKER_BUILD=1 SKIP_GIT_CHECK=1 ./manage.sh deploy
+
+# Очистка всех ресурсов
+./manage.sh cleanup
+
+# Интерактивное меню
+./manage.sh
+```
+
+> 🚢 **Production:** Приложение развернуто на Timeweb Kubernetes Cloud:
+> - 🌐 **URL:** https://pylandschool.com
+> - 🔒 **SSL:** Let's Encrypt (автообновление)
+> - 📦 **Docker:** ghcr.io/ps965xx7vn-lgtm/backend:production
+> - ☸️ **K8s:** Ingress + Cert-Manager + hostNetwork
+
 ### Вариант 1: GHCR (GitHub Container Registry)
 
 ```bash
@@ -29,8 +51,8 @@ docker-compose exec web python manage.py createsuperuser
 # Открыть: http://localhost:8000
 ```
 
-> 📦 См. [DOCKER_HUB_SETUP.md](DOCKER_HUB_SETUP.md) для подробной
-> документации по Docker Hub
+> 📦 См. [docs/deployment/](docs/deployment/) для подробной
+> документации по деплою
 
 ### Вариант 2: Docker (локальная сборка)
 
@@ -632,7 +654,77 @@ SENTRY_DSN=<https://...>
 **Готово!** При следующем push в `main` образ автоматически соберется и
 опубликуется.
 
-📦 **Подробная документация:** [DOCKER_HUB_SETUP.md](DOCKER_HUB_SETUP.md)
+📦 **Подробная документация:** [docs/deployment/](docs/deployment/)
+
+---
+
+## ☸️ Kubernetes Deployment
+
+### Автоматический деплой (Production)
+
+Единый скрипт `manage.sh` для управления Kubernetes deployment:
+
+```bash
+# Интерактивное меню выбора
+./manage.sh
+
+# Или напрямую команда
+./manage.sh deploy    # Полный деплой
+./manage.sh cleanup   # Очистка ресурсов
+```
+
+**Что делает автоматически:**
+1. ✅ Обновляет kubeconfig с актуальным API сервером
+2. ✅ Собирает и публикует Docker образ в GHCR
+3. ✅ Устанавливает Nginx Ingress Controller (если нужно)
+4. ✅ Устанавливает Cert-Manager для SSL (если нужно)
+5. ✅ Генерирует ConfigMap и Secret из .env
+6. ✅ Применяет все Kubernetes манифесты
+7. ✅ Получает SSL сертификаты от Let's Encrypt
+8. ✅ Проверяет health и статус всех сервисов
+
+### Быстрый тест (без Docker build)
+
+```bash
+SKIP_DOCKER_BUILD=1 SKIP_GIT_CHECK=1 ./manage.sh deploy
+```
+
+### Production конфигурация
+
+**Infrastructure:**
+- ☸️ **Kubernetes:** Timeweb Cloud (1 node, 2GB RAM, 1 CPU)
+- 🌐 **Domain:** pylandschool.com (A → 72.56.105.54)
+- 🔒 **SSL:** Let's Encrypt (автообновление)
+- 📦 **Registry:** GitHub Container Registry (GHCR)
+
+**Services:**
+- 🌐 Web (Django + Gunicorn)
+- 🐘 PostgreSQL 15
+- 📦 Redis 7
+- 🔄 Celery Worker + Beat
+
+**Network:**
+- Ingress: nginx with hostNetwork (ports 80/443)
+- SSL: Cert-Manager + Let's Encrypt ClusterIssuer
+- HTTP → HTTPS auto-redirect
+
+### Helpful Commands
+
+```bash
+# Проверка статуса
+kubectl get pods -n pyland --insecure-skip-tls-verify
+kubectl get ingress -n pyland --insecure-skip-tls-verify
+kubectl get certificate -n pyland --insecure-skip-tls-verify
+
+# Логи
+kubectl logs -f deployment/web -n pyland --insecure-skip-tls-verify
+kubectl logs -f deployment/celery-worker -n pyland --insecure-skip-tls-verify
+
+# Health check
+curl https://pylandschool.com/api/health/
+```
+
+**Документация:** См. [docs/deployment/K8S_DEPLOY_GUIDE.md](docs/deployment/K8S_DEPLOY_GUIDE.md)
 
 ---
 

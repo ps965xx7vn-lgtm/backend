@@ -55,6 +55,12 @@ CONFIGMAP_VARS=(
     "DEBUG"
     "ALLOWED_HOSTS"
     "CSRF_TRUSTED_ORIGINS"
+    "CSRF_COOKIE_SECURE"
+    "CSRF_COOKIE_HTTPONLY"
+    "CSRF_COOKIE_SAMESITE"
+    "SESSION_COOKIE_SECURE"
+    "SESSION_COOKIE_HTTPONLY"
+    "SESSION_COOKIE_SAMESITE"
     "EMAIL_BACKEND"
     "EMAIL_HOST"
     "EMAIL_PORT"
@@ -72,6 +78,7 @@ SECRET_VARS=(
     "POSTGRES_USER"
     "POSTGRES_PASSWORD"
     "DB_URL"
+    "DATABASE_URL"
     "EMAIL_HOST_USER"
     "EMAIL_HOST_PASSWORD"
     "SOCIAL_AUTH_GITHUB_KEY"
@@ -111,9 +118,20 @@ for var in "${CONFIGMAP_VARS[@]}"; do
 done
 
 # Добавляем специфичные для k8s переменные
-cat >> "$CONFIGMAP_FILE" << 'EOF'
+# DATABASE_URL берем из .env или создаем из компонентов
+DATABASE_URL_VALUE=$(get_env_value "DATABASE_URL")
+if [ -z "$DATABASE_URL_VALUE" ]; then
+    # Если DATABASE_URL нет, создаем из компонентов
+    POSTGRES_USER_VALUE=$(get_env_value "POSTGRES_USER")
+    POSTGRES_PASSWORD_VALUE=$(get_env_value "POSTGRES_PASSWORD")
+    POSTGRES_DB_VALUE=$(get_env_value "POSTGRES_DB")
+    DATABASE_URL_VALUE="postgresql://${POSTGRES_USER_VALUE}:${POSTGRES_PASSWORD_VALUE}@postgres-service:5432/${POSTGRES_DB_VALUE}"
+fi
+
+cat >> "$CONFIGMAP_FILE" << EOF
   # Kubernetes-specific overrides
-  DATABASE_URL: "postgresql://pyland_user:pyland_password@postgres-service:5432/pyland_db"
+  ALLOWED_HOSTS: "*"
+  DATABASE_URL: "$DATABASE_URL_VALUE"
   REDIS_URL: "redis://redis-service:6379/0"
   SITE_URL: "https://pylandschool.com"
 EOF

@@ -29,7 +29,10 @@ spec:
         image: postgres:15-alpine
         env:
         - name: POSTGRES_DB
-          value: pyland_db
+          valueFrom:
+            secretKeyRef:
+              name: django-secret
+              key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
@@ -147,8 +150,6 @@ spec:
       labels:
         app: web
     spec:
-      imagePullSecrets:
-      - name: ghcr-secret
       containers:
       - name: web
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
@@ -302,12 +303,13 @@ metadata:
   name: web-service
   namespace: pyland
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: web
   ports:
   - port: 8000
     targetPort: 8000
+    nodePort: 30080
 
 ---
 # Celery Worker Deployment
@@ -326,8 +328,6 @@ spec:
       labels:
         app: celery-worker
     spec:
-      imagePullSecrets:
-      - name: ghcr-secret
       containers:
       - name: celery-worker
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
@@ -427,8 +427,6 @@ spec:
       labels:
         app: celery-beat
     spec:
-      imagePullSecrets:
-      - name: ghcr-secret
       containers:
       - name: celery-beat
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
@@ -484,8 +482,6 @@ metadata:
 spec:
   template:
     spec:
-      imagePullSecrets:
-      - name: ghcr-secret
       containers:
       - name: migrations
         image: ghcr.io/ps965xx7vn-lgtm/backend:production
