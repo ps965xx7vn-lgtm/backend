@@ -78,7 +78,7 @@
     position: relative;
     padding: 80px 20px;
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .error-500 {
@@ -96,6 +96,7 @@
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    overflow-x: hidden;
 }
 
 /* ============================================
@@ -190,24 +191,36 @@
 
 /* Mobile responsive - vertical stacking on small screens */
 @media (max-width: 768px) {
+    .error-page {
+        padding: 20px 12px;
+    }
+
+    .error-container {
+        padding: 0 8px;
+    }
+
     .error-content-wrapper {
         flex-direction: column;
         align-items: center;
-        max-width: 900px;
-        margin: 0 auto;
-        gap: 40px;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 32px 16px;
+        gap: 24px;
     }
 
     .error-left-column {
         border-right: none;
         border-bottom: 2px solid var(--error-border);
         padding-right: 0;
-        padding-bottom: 30px;
+        padding-bottom: 24px;
         width: 100%;
+        max-width: 100%;
     }
 
     .error-right-column {
         width: 100%;
+        max-width: 100%;
     }
 }
 
@@ -678,37 +691,69 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-    .error-page {
-        padding: 40px 16px;
-    }
-
-    .error-content-wrapper {
-        padding: 40px 24px;
-        min-height: auto;
-    }
-
     .error-code-animated {
         gap: 12px;
     }
 
     .error-icon-wrapper {
-        width: 80px;
-        height: 80px;
+        width: 70px;
+        height: 70px;
+    }
+
+    .error-digit {
+        font-size: 72px;
+    }
+
+    .error-title {
+        font-size: 20px;
+    }
+
+    .error-subtitle {
+        font-size: 14px;
     }
 
     .error-buttons {
         flex-direction: column;
         width: 100%;
+        gap: 12px;
     }
 
     .btn-large {
         width: 100%;
         justify-content: center;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    .error-search {
+        width: 100%;
+    }
+
+    .search-input {
+        font-size: 14px;
+        padding: 12px 44px 12px 16px;
     }
 
     .error-links-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
+    }
+
+    .error-link-card {
+        padding: 16px;
+    }
+
+    .error-link-card h4 {
+        font-size: 14px;
+    }
+
+    .error-link-card p {
+        font-size: 12px;
+    }
+
+    .link-icon {
+        width: 36px;
+        height: 36px;
     }
 
     .support-steps {
@@ -718,8 +763,17 @@
 
 /* Small Mobile */
 @media (max-width: 480px) {
+    .error-page {
+        padding: 16px 8px;
+    }
+
+    .error-container {
+        padding: 0 4px;
+    }
+
     .error-content-wrapper {
-        padding: 32px 20px;
+        padding: 24px 12px;
+        gap: 20px;
     }
 
     .particle {
@@ -728,15 +782,38 @@
 
     .error-links-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .error-digit {
-        font-size: 80px;
+        font-size: 64px;
     }
 
     .error-icon-wrapper {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .error-title {
+        font-size: 18px;
+    }
+
+    .error-subtitle {
+        font-size: 13px;
+    }
+
+    .btn-large {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .error-link-card {
+        padding: 14px;
+    }
+
+    .link-icon {
+        width: 32px;
+        height: 32px;
     }
 }
 
