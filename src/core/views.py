@@ -528,3 +528,62 @@ def platform_rules(request: HttpRequest) -> HttpResponse:
         HttpResponse с отрендеренным шаблоном core/legal/platform-rules.html
     """
     return render(request, "core/legal/platform-rules.html")
+
+
+# ============================================
+# Error Handlers - Обработчики ошибок
+# ============================================
+
+
+def handler404(request: HttpRequest, exception=None) -> HttpResponse:
+    """
+    Обработчик ошибки 404 - Страница не найдена.
+
+    Отображает красивую страницу с сообщением о том, что запрошенная
+    страница не существует или была перемещена.
+
+    Args:
+        request: HttpRequest объект Django
+        exception: Исключение (опционально)
+
+    Returns:
+        HttpResponse с отрендеренным шаблоном core/errors/404.html и статусом 404
+    """
+    logger.warning(f"404 error: {request.path} not found")
+    return render(request, "core/errors/404.html", status=404)
+
+
+def handler403(request: HttpRequest, exception=None) -> HttpResponse:
+    """
+    Обработчик ошибки 403 - Доступ запрещен.
+
+    Отображает страницу с сообщением о том, что у пользователя нет
+    прав доступа к запрошенному ресурсу.
+
+    Args:
+        request: HttpRequest объект Django
+        exception: Исключение (опционально)
+
+    Returns:
+        HttpResponse с отрендеренным шаблоном core/errors/403.html и статусом 403
+    """
+    logger.warning(f"403 error: Access forbidden to {request.path}")
+    return render(request, "core/errors/403.html", status=403)
+
+
+def handler500(request: HttpRequest) -> HttpResponse:
+    """
+    Обработчик ошибки 500 - Внутренняя ошибка сервера.
+
+    Отображает страницу с сообщением о том, что произошла внутренняя
+    ошибка на сервере. Эта функция не получает exception, так как вызывается
+    Django автоматически при необработанных исключениях.
+
+    Args:
+        request: HttpRequest объект Django
+
+    Returns:
+        HttpResponse с отрендеренным шаблоном core/errors/500.html и статусом 500
+    """
+    logger.error(f"500 error: Internal server error at {request.path}")
+    return render(request, "core/errors/500.html", status=500)

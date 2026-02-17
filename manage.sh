@@ -241,14 +241,35 @@ deploy() {
     # Шаг 2 и 3: Docker build & push
     if [ -z "$SKIP_DOCKER_BUILD" ]; then
         log_info "Сборка Docker образа (cross-platform amd64)..."
-        echo "Команда: docker build --platform linux/amd64 -t $DOCKER_IMAGE:$DOCKER_TAG ."
         echo ""
 
-        if docker build --platform linux/amd64 -t $DOCKER_IMAGE:$DOCKER_TAG -f Dockerfile .; then
+        # Отключаем IPv6 для BuildKit чтобы избежать ошибки "host-gateway-ip"
+        export DOCKER_BUILDKIT=1
+
+        log_info "Метод 1: BuildKit с отключенным IPv6 и network-mode=default..."
+        if docker buildx build \
+            --platform linux/amd64 \
+            --load \
+            --network=default \
+            --build-arg BUILDKIT_STEP_LOG_MAX_SIZE=-1 \
+            -t $DOCKER_IMAGE:$DOCKER_TAG \
+            -f Dockerfile .; then
             log_success "Docker образ собран"
         else
-            log_error "Ошибка сборки Docker образа"
-            exit 1
+            log_warning "Метод 1 не удался, пробуем альтернативный..."
+
+            log_info "Метод 2: Старый docker builder без BuildKit..."
+            export DOCKER_BUILDKIT=0
+            if docker build --platform linux/amd64 -t $DOCKER_IMAGE:$DOCKER_TAG -f Dockerfile .; then
+                log_success "Docker образ собран (legacy builder)"
+            else
+                log_error "Все методы сборки не удались"
+                log_error "Попробуйте:"
+                log_error "  1. Проверить Docker daemon: docker info"
+                log_error "  2. Отключить IPv6: docker network inspect bridge"
+                log_error "  3. Или собрать вручную: DOCKER_BUILDKIT=0 docker build -t $DOCKER_IMAGE:$DOCKER_TAG ."
+                exit 1
+            fi
         fi
 
         IMAGE_SHA=$(docker images --no-trunc --quiet $DOCKER_IMAGE:$DOCKER_TAG | cut -c8-19)

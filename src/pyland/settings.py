@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import timedelta
 from pathlib import Path
 
@@ -120,6 +121,14 @@ INSTALLED_APPS = [
 ]
 
 # === LOGGING ===
+# Игнорируем 404 ошибки для определенных путей
+IGNORABLE_404_URLS = [
+    re.compile(r"^/\.well-known/"),
+    re.compile(r"^/favicon\.ico$"),
+    re.compile(r"^/robots\.txt$"),
+    re.compile(r"^/apple-touch-icon"),
+]
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "500 - Ошибка сервера" %} | PyLand{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core/errors.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="error-page error-500">
+    <div class="error-container">
+        <!-- Animated Background Particles -->
+        <div class="error-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
+        <!-- Main Error Content -->
+        <div class="error-content-wrapper">
+            <!-- Error Code Section -->
+            <div class="error-code-section">
+                <div class="error-code-animated">
+                    <span class="error-digit">5</span>
+                    <div class="error-icon-wrapper">
+                        <svg viewBox="0 0 200 200" class="error-icon rotating">
+                            <defs>
+                                <linearGradient id="gradient500" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="100" cy="100" r="80" fill="none" stroke="url(#gradient500)" stroke-width="4"/>
+                            <path d="M70 90 L130 90 M100 70 L100 130" stroke="url(#gradient500)" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="75" cy="120" r="6" fill="url(#gradient500)"/>
+                            <circle cx="125" cy="120" r="6" fill="url(#gradient500)"/>
+                        </svg>
+                    </div>
+                    <span class="error-digit">0</span>
+                </div>
+                <h1 class="error-title">{% trans "Внутренняя ошибка сервера" %}</h1>
+                <p class="error-subtitle">
+                    {% trans "Что-то пошло не так на нашей стороне. Мы уже работаем над устранением проблемы." %}
+                </p>
+            </div>
+
+                <!-- Actions -->
+                <div class="error-actions-section">
+                    <div class="error-info-box">
+                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p>{% trans "Если проблема повторяется, пожалуйста, свяжитесь с нами:" %} <a href="mailto:pylandschool@gmail.com" class="error-email">pylandschool@gmail.com</a></p>
+                    </div>
+
+                    <div class="error-buttons">
+                        <a href="{% url 'core:home' %}" class="btn btn-primary btn-large">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            {% trans "На главную" %}
+                        </a>
+                        <button onclick="location.reload()" class="btn btn-secondary btn-large">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            {% trans "Обновить страницу" %}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Support Info -->
+                <div class="error-support-section">
+                    <h3 class="support-title">{% trans "Что делать?" %}</h3>
+                    <div class="support-steps">
+                        <div class="support-step">
+                            <div class="step-number">1</div>
+                            <p>{% trans "Попробуйте обновить страницу" %}</p>
+                        </div>
+                        <div class="support-step">
+                            <div class="step-number">2</div>
+                            <p>{% trans "Проверьте подключение к интернету" %}</p>
+                        </div>
+                        <div class="support-step">
+                            <div class="step-number">3</div>
+                            <p>{% trans "Попробуйте зайти позже" %}</p>
+                        </div>
+                        <div class="support-step">
+                            <div class="step-number">4</div>
+                            <p>{% trans "Напишите в поддержку, если ошибка повторяется" %}</p>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const particles = document.querySelectorAll('.particle');
+        particles.forEach((particle, index) => {
+            particle.style.animationDelay = `${index * 0.5}s`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+        });
+    });
+</script>
+{% endblock %}
