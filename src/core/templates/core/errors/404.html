@@ -25,30 +25,34 @@
 
         <!-- Main Error Content -->
         <div class="error-content-wrapper">
-            <!-- Error Code Section -->
-            <div class="error-code-section">
-                <div class="error-code-animated">
-                    <span class="error-digit">4</span>
-                    <div class="error-icon-wrapper">
-                        <svg viewBox="0 0 200 200" class="error-icon rotating">
-                            <defs>
-                                <linearGradient id="gradient404" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                                </linearGradient>
-                            </defs>
-                            <circle cx="100" cy="100" r="80" fill="none" stroke="url(#gradient404)" stroke-width="4"/>
-                            <path d="M70 70 L130 130 M130 70 L70 130" stroke="url(#gradient404)" stroke-width="6" stroke-linecap="round"/>
-                        </svg>
+            <!-- LEFT COLUMN: Error Code -->
+            <div class="error-left-column">
+                <div class="error-code-section">
+                    <div class="error-code-animated">
+                        <span class="error-digit">4</span>
+                        <div class="error-icon-wrapper">
+                            <svg viewBox="0 0 200 200" class="error-icon rotating">
+                                <defs>
+                                    <linearGradient id="gradient404" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="100" cy="100" r="80" fill="none" stroke="url(#gradient404)" stroke-width="4"/>
+                                <path d="M70 70 L130 130 M130 70 L70 130" stroke="url(#gradient404)" stroke-width="6" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span class="error-digit">4</span>
                     </div>
-                    <span class="error-digit">4</span>
+                    <h1 class="error-title">{% trans "Страница не найдена" %}</h1>
+                    <p class="error-subtitle">
+                        {% trans "К сожалению, страница, которую вы ищете, не существует или была перемещена." %}
+                    </p>
                 </div>
-                <h1 class="error-title">{% trans "Страница не найдена" %}</h1>
-                <p class="error-subtitle">
-                    {% trans "К сожалению, страница, которую вы ищете, не существует или была перемещена." %}
-                </p>
             </div>
 
+            <!-- RIGHT COLUMN: Actions and Links -->
+            <div class="error-right-column">
                 <!-- Search and Actions -->
                 <div class="error-actions-section">
                     <div class="error-search">
@@ -129,6 +133,7 @@
                         </a>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>

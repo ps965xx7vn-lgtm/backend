@@ -90,7 +90,9 @@
 }
 
 .error-container {
-    max-width: 1200px;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 20px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
@@ -148,7 +150,7 @@
 }
 
 /* ============================================
-   Main Content Wrapper - FULL WIDTH VERTICAL
+   Main Content Wrapper - HORIZONTAL FULL WIDTH
    ============================================ */
 
 .error-content-wrapper {
@@ -158,22 +160,55 @@
     box-shadow: var(--error-shadow-xl), 0 0 0 1px var(--error-border);
     position: relative;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-    max-width: 900px;
-    margin: 0 auto;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 60px;
     width: 100%;
+    max-width: 100%;
+    margin: 0;
 }
 
-/* Remove column classes - not used anymore */
-.error-left-column,
-.error-right-column {
-    width: 100%;
+/* Two column layout - left 40%, right 60% */
+.error-left-column {
+    flex: 0 0 40%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 30px;
+    padding-right: 30px;
+    border-right: 2px solid var(--error-border);
+}
+
+.error-right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+}
+
+/* Mobile responsive - vertical stacking on small screens */
+@media (max-width: 768px) {
+    .error-content-wrapper {
+        flex-direction: column;
+        align-items: center;
+        max-width: 900px;
+        margin: 0 auto;
+        gap: 40px;
+    }
+
+    .error-left-column {
+        border-right: none;
+        border-bottom: 2px solid var(--error-border);
+        padding-right: 0;
+        padding-bottom: 30px;
+        width: 100%;
+    }
+
+    .error-right-column {
+        width: 100%;
+    }
 }
 
 /* ============================================
