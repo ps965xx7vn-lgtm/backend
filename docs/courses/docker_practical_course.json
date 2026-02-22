@@ -4,7 +4,7 @@
     "short_description": "История Макса: как Docker решил проблему 'У меня работает!' и спас стартап",
     "description": "## 🔥 История из реальной жизни\n\n**Макс, junior разработчик:** *\"- У меня на локалке всё работает!\n- А на сервере падает...\n- Ну у меня же работает!\"*\n\n**Знакомо?** 87% junior разработчиков сталкиваются с этой проблемой в первый месяц работы.\n\n## 💰 Почему Docker?\n\n**Реальная статистика:**\n- 🚀 **73% компаний** используют Docker в production\n- 💼 **Зарплата +30%** для джунов знающих Docker\n- ⚡ **В 5 раз быстрее** деплой с Docker vs без него\n- 🎯 **92% вакансий** для DevOps требуют знания Docker\n\n## � Что ты получишь?\n\n**Практический опыт:**\n- 🐳 Полностью контейнеризированное приложение\n- 📦 Docker-образы готовые к production\n- 🔗 Docker Compose для multi-сервисной архитектуры\n- 🚀 CI/CD пайплайн с автоматическим деплоем\n- 💼 Реальный проект для резюме\n\n## 🎬 Кейс Макса\n\n**Было:**\n- ⏱️ Деплой: 4 часа руками\n- 🐛 Проблемы с зависимостями каждую неделю\n- 🔥 Пятничный деплой = катастрофа\n\n**Стало (после Docker):**\n- ⚡ Деплой: 5 минут автоматически\n- ✅ Работает одинаково везде\n- 🎉 Пятничный деплой = легко!\n\n**Результат:** Макса повысили до middle за 3 месяца! 💰\n\n## 📚 Программа\n\n5 практических уроков от простого к сложному:\n\n1️⃣ **Основы Docker** - Установка, первый контейнер, базовые команды\n2️⃣ **Создаём образы** - Dockerfile, слои, оптимизация, Docker Hub\n3️⃣ **Реальное приложение** - Контейнеризация приложения, Docker Compose\n4️⃣ **Production** - Деплой в облако, Nginx, SSL, мониторинг\n5️⃣ **Pro уровень** - Multi-stage builds, безопасность, оркестрация\n\n## 🎯 Для кого?\n\n✅ Junior разработчики без опыта с Docker\n✅ Backend/Frontend разработчики\n✅ DevOps новички\n✅ Студенты готовящиеся к первой работе\n\n**Никаких скучных лекций** - только практика! Каждый шаг = реальная команда в терминале.\n\n👉 **Начни прямо сейчас** и через неделю у тебя будет что показать работодателю!",
     "category": "other",
-    "price": 0,
+    "price": 10000,
     "status": "active",
     "lessons": [
       {
@@ -422,7 +422,7 @@
     "short_description": "Max's story: how Docker solved 'It works on my machine!' problem and saved the startup",
     "description": "## 🔥 Real-life story\n\n**Max, junior developer:** *\"- It works on my local machine!\n- But crashes on the server...\n- Well, it works for ME!\"*\n\n**Sound familiar?** 87% of junior developers face this problem in their first month.\n\n## 💰 Why Docker?\n\n**Real statistics:**\n- 🚀 **73% of companies** use Docker in production\n- 💼 **Salary +30%** for juniors who know Docker\n- ⚡ **5x faster** deployment with Docker vs without\n- 🎯 **92% of DevOps jobs** require Docker knowledge\n\n## 📖 What will you learn?\n\nFollow Max's journey from problem to solution:\n\n**Part 1: The Problem** - 'It works on my machine!'\n- 🐛 Why does code crash on servers?\n- 🤯 Dependencies, versions, environment\n- 💡 How Docker solves this forever\n\n**Part 2: First Container**\n- 🐳 Create your first Docker image\n- 📦 Run isolated environment\n- ✅ 'Works everywhere' becomes reality\n\n**Part 3: Real Application**\n- 🌐 Containerize web application\n- 🗄️ Connect database\n- 🔗 Docker Compose for multiple services\n\n**Part 4: Production**\n- 🚀 Deploy to cloud\n- 📊 Monitoring and logs\n- ⚡ Image optimization\n\n**Part 5: Pro Level**\n- 🎯 Multi-stage builds\n- 🔐 Container security\n- 🏗️ Docker Swarm and orchestration\n\n[Content continues in same structure as Russian version...]",
     "category": "other",
-    "price": 0,
+    "price": 10000,
     "status": "active",
     "lessons": [
       {
@@ -756,7 +756,7 @@
     "short_description": "მაქსის ისტორია: როგორ გადაჭრა Docker-მა 'ჩემთან მუშაობს!' პრობლემა და გადაარჩინა სტარტაპი",
     "description": "## 🔥 რეალური ცხოვრებიდან\n\n**მაქსი, junior დეველოპერი:** *\"- ჩემს ლოკალურ მანქანაზე ყველაფერი მუშაობს!\n- მაგრამ სერვერზე ვარდება...\n- მაგრამ ᲩᲔᲛᲗᲐᲜ კი მუშაობს!\"*\n\n**ნაცნობია?** Junior დეველოპერების 87% პირველ თვეში წააწყდება ამ პრობლემას.\n\n## 💰 რატომ Docker?\n\n**რეალური სტატისტიკა:**\n- 🚀 **კომპანიების 73%** იყენებს Docker-ს production-ში\n- 💼 **ხელფასი +30%** junior-ებისთვის ვინც იცის Docker\n- ⚡ **5-ჯერ უფრო სწრაფი** დეპლოიმენტი Docker-ით  \n- 🎯 **DevOps ვაკანსიების 92%** მოითხოვს Docker ცოდნას\n\n[Content continues in same structure as Russian version...]",
     "category": "other",
-    "price": 0,
+    "price": 10000,
     "status": "active",
     "lessons": [
       {

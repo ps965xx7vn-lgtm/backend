@@ -4,7 +4,7 @@
     "short_description": "От нуля до первого проекта на GitHub - практический путь джуна",
     "description": "## 🚀 Зачем этот курс?\n\nТы приходишь на собеседование. Рекрутер спрашивает: *\"Покажите ваш GitHub\"*. А у тебя... пусто. Знакомо?\n\n**93% работодателей** смотрят GitHub перед приглашением на интервью. Без активного профиля твои шансы получить оффер падают в 3 раза.\n\n## 💡 Что ты получишь?\n\n**Реальное портфолио** которое работает:\n- 🌐 Живой сайт в интернете (GitHub Pages)\n- 🔥 История коммитов показывающая что ты умеешь работать с Git\n- ✅ Автоматические тесты и CI/CD\n- 🎯 Pull Request'ы и Code Review в портфолио\n- 📊 GitHub профиль который впечатляет\n\n## 🎬 История успеха\n\n**Алекс, 23 года** - прошёл курс за выходные. Через 2 недели получил первое собеседование. Показал свой GitHub - работодатель увидел что Алекс:\n- Умеет работать с Git (50+ коммитов)\n- Создаёт осмысленные Pull Request'ы\n- Пишет README и документацию\n- Настраивает CI/CD\n\n**Результат:** Оффер junior frontend за $1200/мес через месяц! 🎉\n\n## 📚 Программа\n\n5 практических уроков от простого к сложному:\n\n1️⃣ **Основы Git** - Первый репозиторий, коммиты, деплой\n2️⃣ **Ветки и merge** - Работа с feature-ветками, конфликты\n3️⃣ **Командная работа** - Fork, Pull Requests, Code Review\n4️⃣ **Автоматизация** - GitHub Actions, CI/CD, автотесты\n5️⃣ **Pro-уровень** - Rebase, cherry-pick, hooks, bisect\n\n## 🎯 Для кого?\n\n✅ Начинающие разработчики без опыта с Git\n✅ Студенты готовящиеся к первой работе\n✅ Самоучки которым нужно портфолио\n✅ Те кто хочет понимать Git на практике\n\n**Никаких скучных лекций** - только практика! Каждый шаг = реальное действие в твоём проекте.\n\n👉 **Начни прямо сейчас** и через пару дней у тебя будет что показать работодателю!",
     "category": "other",
-    "price": 0,
+    "price": 10000,
     "status": "active",
     "lessons": [
       {
@@ -657,7 +657,7 @@
     "short_description": "Build a real project from your first commit to auto-deploy",
     "description": "## 🚀 Why this course?\n\nYou walk into an interview. The recruiter asks: *\"Show me your GitHub\"*. And you have... nothing.\n\n**93% of employers** check GitHub before inviting candidates for interviews. Without an active profile your chances of getting an offer drop 3x.\n\n## 💡 What you'll get\n\nA **real portfolio** that works:\n- 🌐 Live website on GitHub Pages\n- 🔥 Commit history showing you can work with Git\n- ✅ Automated tests and CI/CD\n- 🎯 Pull Requests and Code Reviews in your portfolio\n- 📊 A GitHub profile that impresses\n\n## 📚 Curriculum\n\n5 hands-on lessons from simple to advanced:\n\n1️⃣ **Git Basics** — First repo, commits, deploy\n2️⃣ **Branches & merge** — Feature branches, conflicts\n3️⃣ **Team collaboration** — Fork, Pull Requests, Code Review\n4️⃣ **Automation** — GitHub Actions, CI/CD, auto-tests\n5️⃣ **Pro level** — Rebase, cherry-pick, hooks, bisect\n\n**No boring lectures** — only practice!",
     "category": "other",
-    "price": 0,
+    "price": 10000,
     "status": "active",
     "lessons": [
       {
@@ -1178,7 +1178,7 @@
     "short_description": "შექმენი რეალური პროექტი პირველი commit-დან ავტომატურ deploy-მდე",
     "description": "## 🚀 რატომ ეს კურსი?\n\nმიდიხარ გასაუბრებაზე. რეკრუტერი ეკითხება: *\"აჩვენე შენი GitHub\"*. და შენ გაქვს... სიცარიელე.\n\n**დამსაქმებლების 93%** GitHub-ს ამოწმებს გასაუბრებამდე. აქტიური პროფილის გარეშე შანსები offer-ის მისაღებად 3-ჯერ ეცემა.\n\n## 💡 რას მიიღებ\n\n**რეალური პორტფოლიო** რომელიც მუშაობს:\n- 🌐 Live საიტი GitHub Pages-ზე\n- 🔥 Commit-ების ისტორია\n- ✅ ავტომატური ტესტები და CI/CD\n- 🎯 Pull Request-ები და Code Review\n\n## 📚 პროგრამა\n\n5 პრაქტიკული გაკვეთილი:\n\n1️⃣ **Git-ის საფუძვლები** — პირველი repo, commits, deploy\n2️⃣ **ვეტები და merge** — feature ვეტები, კონფლიქტები\n3️⃣ **გუნდური მუშაობა** — Fork, PR, Code Review\n4️⃣ **ავტომატიზაცია** — GitHub Actions, CI/CD\n5️⃣ **Pro დონე** — Rebase, cherry-pick, hooks\n\n**მხოლოდ პრაქტიკა!** ყოველი ნაბიჯი = რეალური მოქმედება.",
     "category": "other",
-    "price": 0,
+    "price": 10000,
     "status": "active",
     "lessons": [
       {
