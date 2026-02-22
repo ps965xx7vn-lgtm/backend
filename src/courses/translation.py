@@ -75,6 +75,7 @@ class StepTranslationOptions(TranslationOptions):
         "description",  # Описание шага
         "actions",  # Действия для выполнения
         "self_check",  # Проверка себя
+        "self_check_items",  # Чекбоксы самопроверки (JSONField - массив строк)
         "troubleshooting_help",  # Помощь при трудностях (для студентов)
         "repair_description",  # Примечания администратора (не для студентов)
     )

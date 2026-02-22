@@ -71,8 +71,8 @@
                         <span class="stat-label-revolutionary">{% trans "Рейтинг" %}</span>
                     </div>
                     <div class="stat-card-revolutionary">
-                        <span class="stat-number-revolutionary">{{ lessons.count }}</span>
-                        <span class="stat-label-revolutionary">{% if lessons.count == 1 %}{% trans "Урок" %}{% elif lessons.count < 5 %}{% trans "Урока" %}{% else %}{% trans "Уроков" %}{% endif %}</span>
+                        <span class="stat-number-revolutionary">{{ lessons_count }}</span>
+                        <span class="stat-label-revolutionary">{% if lessons_count == 1 %}{% trans "Урок" %}{% elif lessons_count < 5 %}{% trans "Урока" %}{% else %}{% trans "Уроков" %}{% endif %}</span>
                     </div>
                     <div class="stat-card-revolutionary">
                         <span class="stat-number-revolutionary">{{ total_steps|default:"0" }}</span>
@@ -119,19 +119,21 @@
                         <div class="article-text-revolutionary course-description-content">
                             {{ course.description|markdownify|default:"Этот курс предназначен для изучения современных технологий программирования. Вы получите практические навыки и знания, необходимые для успешной карьеры в IT." }}
                         </div>
+                    </div>
+                </div>
 
                 <!-- Curriculum Tab -->
                 <div class="tab-content" id="curriculum-content">
-                    {% for lesson in lessons %}
+                    {% for item in lessons_with_time %}
                     <div class="feature-card-revolutionary animate-fade-in delay-{{ forloop.counter }}">
                         <div class="feature-icon-revolutionary">📝</div>
-                        <h3 class="feature-title-revolutionary">{{ lesson.name }}</h3>
+                        <h3 class="feature-title-revolutionary">{{ item.lesson.name }}</h3>
                         <p class="feature-description-revolutionary">
-                            {{ lesson.description|default:"Подробное изучение темы с практическими примерами и заданиями."|truncatewords:15 }}
+                            {{ item.lesson.short_description|default:"Подробное изучение темы с практическими примерами и заданиями."|truncatewords:15 }}
                         </p>
                         <div class="lesson-meta">
-                            <span>⏱️ {% trans "45 мин" %}</span>
-                            <span>📚 {{ lesson.steps.count|default:"5" }} {% trans "заданий" %}</span>
+                            <span>⏱️ {{ item.estimated_time }}</span>
+                            <span>📚 {{ item.steps_count }} {% trans "заданий" %}</span>
                         </div>
                     </div>
                     {% endfor %}

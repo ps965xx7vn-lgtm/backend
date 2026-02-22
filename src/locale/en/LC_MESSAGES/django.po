@@ -10169,20 +10169,16 @@ msgid "Проверь себя"
 msgstr "Test yourself"
 
 #: students/templates/students/dashboard/lesson-detail.html:317
-#, fuzzy
-#| msgid "Выполнено"
 msgid "выполнено"
-msgstr "Completed"
+msgstr "completed"
 
 #: students/templates/students/dashboard/lesson-detail.html:324
-#, fuzzy
-#| msgid "Следующий урок"
 msgid "Следующий шаг"
-msgstr "Next lesson"
+msgstr "Next step"
 
 #: students/templates/students/dashboard/lesson-detail.html:351
 msgid "❓ Если возникли трудности - нажми сюда"
-msgstr ""
+msgstr "❓ If you have difficulties - click here"
 
 #: students/templates/students/dashboard/lesson-detail.html:380
 msgid "Материалы для этого шага будут добавлены позже."

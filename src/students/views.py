@@ -42,6 +42,7 @@ from django.views.decorators.http import require_http_methods
 
 from authentication.models import Student
 from blog.models import Bookmark
+from courses.constants import MINUTES_PER_STEP
 from courses.models import Course, Lesson, Step
 from reviewers.models import LessonSubmission, StepProgress
 
@@ -1000,7 +1001,8 @@ def course_detail_view(
         else:
             previous_lesson_approved = False
 
-    estimated_time = 0
+    total_steps_all = sum(ls["total_steps_count"] for ls in lesson_stats)
+    estimated_time = round(total_steps_all * MINUTES_PER_STEP / 60, 1)
     average_score = 0
 
     return render(
@@ -1132,7 +1134,8 @@ def lesson_detail_view(
             "lesson_progress": lesson_progress,
             "last_incomplete_step": last_incomplete_step,
             "total_lessons": total_lessons,
-            "estimated_time": lesson_progress.get("total_steps", 0) * 5,  # 5 мин на шаг
+            "estimated_time": lesson_progress.get("total_steps", 0)
+            * MINUTES_PER_STEP,  # 20 мин на шаг для начинающего
             "prev_lesson": prev_lesson,
             "next_lesson": next_lesson,
             "next_lesson_available": next_lesson_available,

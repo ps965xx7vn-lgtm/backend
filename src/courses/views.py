@@ -20,6 +20,7 @@ Courses Views Module - Django views для публичного каталога
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from .constants import MINUTES_PER_STEP, format_duration
 from .models import Course
 
 
@@ -67,10 +68,10 @@ def course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
         has_access: bool - имеет ли текущий пользователь доступ к курсу
         courses: QuerySet[Course] - другие активные курсы для рекомендаций (до 3)
         total_steps: int - общее количество шагов в курсе
-        estimated_hours: float - примерное время прохождения (1 шаг = 0.5 часа)
+        estimated_hours: float - примерное время прохождения (1 шаг = 20 мин для начинающего)
     """
     course = get_object_or_404(Course, slug=course_slug)
-    lessons = course.lessons.all().prefetch_related("steps")
+    lessons = list(course.lessons.all().prefetch_related("steps"))
     has_access = False
 
     if request.user.is_authenticated:
@@ -81,9 +82,18 @@ def course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
 
     other_courses = Course.objects.filter(status="active").exclude(id=course.id)[:3]
 
-    total_steps = sum(lesson.steps.count() for lesson in lessons)
+    # Предварительно считаем время с учётом количества шагов в каждом уроке
+    lessons_with_time = [
+        {
+            "lesson": lesson,
+            "steps_count": lesson.steps.count(),
+            "estimated_time": format_duration(lesson.steps.count() * MINUTES_PER_STEP),
+        }
+        for lesson in lessons
+    ]
 
-    estimated_hours = total_steps * 0.5
+    total_steps = sum(item["steps_count"] for item in lessons_with_time)
+    estimated_hours = round(total_steps * MINUTES_PER_STEP / 60, 1)
 
     return render(
         request,
@@ -91,6 +101,8 @@ def course_detail_view(request: HttpRequest, course_slug: str) -> HttpResponse:
         {
             "course": course,
             "lessons": lessons,
+            "lessons_with_time": lessons_with_time,
+            "lessons_count": len(lessons),
             "has_access": has_access,
             "courses": other_courses,
             "total_steps": total_steps,

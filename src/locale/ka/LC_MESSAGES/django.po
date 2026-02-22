@@ -10194,20 +10194,16 @@ msgid "Проверь себя"
 msgstr "შეამოწმე თავი"
 
 #: students/templates/students/dashboard/lesson-detail.html:317
-#, fuzzy
-#| msgid "Выполнено"
 msgid "выполнено"
-msgstr "შესრულებული"
+msgstr "შესრულებულია"
 
 #: students/templates/students/dashboard/lesson-detail.html:324
-#, fuzzy
-#| msgid "Следующий урок"
 msgid "Следующий шаг"
-msgstr "შემდეგი გაკვეთილი"
+msgstr "შემდეგი ნაბიჯი"
 
 #: students/templates/students/dashboard/lesson-detail.html:351
 msgid "❓ Если возникли трудности - нажми сюда"
-msgstr ""
+msgstr "❓ თუ სირთულეები გაქვთ - დააჭირეთ აქ"
 
 #: students/templates/students/dashboard/lesson-detail.html:380
 msgid "Материалы для этого шага будут добавлены позже."

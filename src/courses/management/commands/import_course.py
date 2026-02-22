@@ -2,7 +2,7 @@
 Management-команда для импорта курса из JSON файла с переводами.
 
 Использование:
-    poetry run python manage.py import_course docs/examples/git_github_course.json
+    poetry run python manage.py import_course docs/courses/git_github_course_practical.json
 """
 
 import json
@@ -11,7 +11,6 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from django.template.defaultfilters import slugify
 
 from courses.models import Course, ExtraSource, Lesson, Step, Tip
 
@@ -81,29 +80,21 @@ class Command(BaseCommand):
             )
 
         except json.JSONDecodeError as e:
-            raise CommandError(f"❌ Invalid JSON format: {e}")
+            raise CommandError(f"❌ Invalid JSON format: {e}") from e
         except Exception as e:
             logger.exception("Course import failed")
-            raise CommandError(f"❌ Import failed: {e}")
+            raise CommandError(f"❌ Import failed: {e}") from e
 
-    def _import_course(self, data: dict, update_mode: bool) -> Course:
-        """Импортирует курс и все связанные данные."""
+    def _apply_course_fields(self, course: Course, data: dict) -> None:
+        """Применяет поля и переводы к объекту курса (без сохранения)."""
         ru_data = data["ru"]
+        course.name_ru = ru_data["name"]
+        course.description_ru = ru_data.get("description", "")
+        course.short_description_ru = ru_data.get("short_description", "")
+        course.category = ru_data["category"]
+        course.price = ru_data.get("price", 0)
+        course.status = ru_data["status"]
 
-        # Создание курса с переводами сразу
-        if update_mode:
-            raise CommandError("Update mode not implemented yet")
-
-        course = Course(
-            name_ru=ru_data["name"],
-            description_ru=ru_data.get("description", ""),
-            short_description_ru=ru_data.get("short_description", ""),
-            category=ru_data["category"],
-            price=ru_data.get("price", 0),
-            status=ru_data["status"],
-        )
-
-        # Добавляем переводы до сохранения
         if "en" in data:
             en_data = data["en"]
             course.name_en = en_data.get("name")
@@ -116,8 +107,30 @@ class Command(BaseCommand):
             course.description_ka = ka_data.get("description", "")
             course.short_description_ka = ka_data.get("short_description", "")
 
-        course.save()
-        self.stdout.write(f"  📖 Created course: {course.name}")
+    def _import_course(self, data: dict, update_mode: bool) -> Course:
+        """Импортирует курс и все связанные данные."""
+        ru_data = data["ru"]
+
+        if update_mode:
+            # Ищем курс по name_ru (надёжнее чем генерировать slug из кириллицы)
+            try:
+                course = Course.objects.get(name_ru=ru_data["name"])
+            except Course.DoesNotExist:
+                raise CommandError(
+                    f"❌ Course '{ru_data['name']}' not found. Run without --update to create it."
+                ) from None
+            self._apply_course_fields(course, data)
+            course.save()
+            # Удаляем старые уроки (каскадно удалятся шаги)
+            deleted_lessons, _ = course.lessons.all().delete()
+            self.stdout.write(
+                f"  🔄 Updated course: {course.name} (removed {deleted_lessons} old lessons)"
+            )
+        else:
+            course = Course()
+            self._apply_course_fields(course, data)
+            course.save()
+            self.stdout.write(f"  📖 Created course: {course.name}")
 
         # Импорт уроков
         ru_lessons = ru_data.get("lessons", [])
@@ -143,9 +156,8 @@ class Command(BaseCommand):
 
             # Manually set lesson_number to avoid auto-generation conflicts
             lesson.lesson_number = idx + 1
-            # Generate unique slug with lesson number to avoid conflicts
-            base_slug = slugify(ru_lesson_data["name"])
-            lesson.slug = f"{base_slug}-{lesson.lesson_number}"
+            # Используем slug курса + номер урока (кириллица в slugify не поддерживается)
+            lesson.slug = f"{course.slug}-lesson-{lesson.lesson_number}"
             super(Lesson, lesson).save()  # Bypass custom save() method
             self.stdout.write(f"    📝 Created lesson {lesson.lesson_number}: {lesson.name}")
 
@@ -162,9 +174,9 @@ class Command(BaseCommand):
                     description_ru=ru_step_data.get("description", ""),
                     actions_ru=ru_step_data.get("actions", ""),
                     self_check_ru=ru_step_data.get("self_check", ""),
-                    self_check_items=ru_step_data.get(
+                    self_check_items_ru=ru_step_data.get(
                         "self_check_items"
-                    ),  # Чекбоксы (не переводится)
+                    ),  # Чекбоксы (переводится с версии 0007)
                     troubleshooting_help_ru=ru_step_data.get(
                         "troubleshooting_help", ""
                     ),  # Помощь студентам
@@ -172,26 +184,28 @@ class Command(BaseCommand):
                     step_number=step_idx + 1,  # Устанавливаем вручную
                 )
 
-                # Добавляем переводы
+                # Добавляем переводы.
+                # Используем None как дефолт чтобы modeltranslation мог откатиться на RU
+                # (пустая строка "" считается значением и fallback не работает)
                 if step_idx < len(en_steps):
-                    step.name_en = en_steps[step_idx].get("name")
-                    step.description_en = en_steps[step_idx].get("description", "")
-                    step.actions_en = en_steps[step_idx].get("actions", "")
-                    step.self_check_en = en_steps[step_idx].get("self_check", "")
-                    step.troubleshooting_help_en = en_steps[step_idx].get(
-                        "troubleshooting_help", ""
-                    )
-                    step.repair_description_en = en_steps[step_idx].get("repair_description", "")
+                    en_s = en_steps[step_idx]
+                    step.name_en = en_s.get("name") or None
+                    step.description_en = en_s.get("description") or None
+                    step.actions_en = en_s.get("actions") or None
+                    step.self_check_en = en_s.get("self_check") or None
+                    step.self_check_items_en = en_s.get("self_check_items") or None
+                    step.troubleshooting_help_en = en_s.get("troubleshooting_help") or None
+                    step.repair_description_en = en_s.get("repair_description") or None
 
                 if step_idx < len(ka_steps):
-                    step.name_ka = ka_steps[step_idx].get("name")
-                    step.description_ka = ka_steps[step_idx].get("description", "")
-                    step.actions_ka = ka_steps[step_idx].get("actions", "")
-                    step.self_check_ka = ka_steps[step_idx].get("self_check", "")
-                    step.troubleshooting_help_ka = ka_steps[step_idx].get(
-                        "troubleshooting_help", ""
-                    )
-                    step.repair_description_ka = ka_steps[step_idx].get("repair_description", "")
+                    ka_s = ka_steps[step_idx]
+                    step.name_ka = ka_s.get("name") or None
+                    step.description_ka = ka_s.get("description") or None
+                    step.actions_ka = ka_s.get("actions") or None
+                    step.self_check_ka = ka_s.get("self_check") or None
+                    step.self_check_items_ka = ka_s.get("self_check_items") or None
+                    step.troubleshooting_help_ka = ka_s.get("troubleshooting_help") or None
+                    step.repair_description_ka = ka_s.get("repair_description") or None
 
                 # Принудительно сохраняем без вызова кастомной логики save()
                 super(Step, step).save()
@@ -220,7 +234,7 @@ class Command(BaseCommand):
             return "No translation"
 
         lessons = course.lessons.all()
-        translated_lessons = sum(1 for l in lessons if getattr(l, name_field))
+        translated_lessons = sum(1 for lesson in lessons if getattr(lesson, name_field))
 
         steps = Step.objects.filter(lesson__course=course)
         translated_steps = sum(1 for s in steps if getattr(s, name_field))
