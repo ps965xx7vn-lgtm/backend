@@ -68,11 +68,16 @@ kubectl logs -n pyland-dev -l app=web
 # 5. Запустить миграции
 kubectl apply -f k8s/base/job-migrations.yaml
 
-# 6. Пробросить порт
+# 6. Создать суперпользователя
+kubectl exec -it $(kubectl get pod -n pyland-dev -l app=web -o jsonpath='{.items[0].metadata.name}') \
+  -n pyland-dev -- python manage.py createsuperuser
+
+# 7. Пробросить порт
 kubectl port-forward -n pyland-dev service/web-service 8000:8000
 
-# 7. Открыть в браузере
+# 8. Открыть в браузере
 http://localhost:8000/api/health/
+http://localhost:8000/admin/
 ```
 
 ### Staging
@@ -239,6 +244,76 @@ kubectl get jobs -n pyland
 
 # Check job logs
 kubectl logs job/manual-migration-1 -n pyland
+```
+
+### Создание суперпользователя
+
+После первого деплоя необходимо создать суперпользователя для доступа к Django Admin.
+
+#### Интерактивный способ (через промпт)
+
+```bash
+# Получить имя web-пода
+kubectl get pods -n pyland -l app=web
+
+# Открыть shell в pod и запустить createsuperuser
+kubectl exec -it <web-pod-name> -n pyland -- python manage.py createsuperuser
+```
+
+Команда запросит:
+- **Email** — адрес электронной почты (является логином)
+- **Password** — пароль (минимум 8 символов)
+- **Password (again)** — подтверждение пароля
+
+#### Неинтерактивный способ (через переменные окружения)
+
+```bash
+# Создать суперпользователя без промптов
+kubectl exec -it <web-pod-name> -n pyland -- \
+  bash -c "DJANGO_SUPERUSER_EMAIL=admin@example.com \
+           DJANGO_SUPERUSER_PASSWORD=strongpassword123 \
+           python manage.py createsuperuser --noinput"
+```
+
+#### Через одноразовый Job (рекомендуется для CI/CD)
+
+```bash
+# Создать Job для инициализации суперпользователя
+kubectl run create-superuser \
+  --image=ghcr.io/ps965xx7vn-lgtm/backend:latest \
+  --restart=Never \
+  --env="DJANGO_SUPERUSER_EMAIL=admin@example.com" \
+  --env="DJANGO_SUPERUSER_PASSWORD=strongpassword123" \
+  -n pyland \
+  -- python manage.py createsuperuser --noinput
+
+# Проверить результат
+kubectl logs create-superuser -n pyland
+
+# Удалить Pod после выполнения
+kubectl delete pod create-superuser -n pyland
+```
+
+> **⚠️ Важно:** Не используйте простые пароли в production. Сгенерируйте надёжный пароль:
+> ```bash
+> openssl rand -base64 16
+> ```
+
+#### Проверка и доступ к Admin
+
+```bash
+# Пробросить порт до web-service
+kubectl port-forward -n pyland service/web-service 8000:8000
+
+# Открыть Django Admin
+http://localhost:8000/admin/
+```
+
+#### Сброс пароля суперпользователя
+
+```bash
+kubectl exec -it <web-pod-name> -n pyland -- \
+  python manage.py changepassword admin@example.com
 ```
 
 ### Database access
