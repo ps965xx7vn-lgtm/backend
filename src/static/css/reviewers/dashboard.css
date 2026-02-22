@@ -174,11 +174,7 @@
     flex-shrink: 0;
 }
 
-/* Mobile Toggle и Overlay - по умолчанию скрыты */
-.mobile-sidebar-toggle {
-    display: none;
-}
-
+/* Sidebar Overlay - по умолчанию скрыт */
 .sidebar-overlay {
     display: none;
 }
@@ -250,43 +246,6 @@
         margin: 0;
     }
 
-    /* Показываем Mobile sidebar toggle button */
-    .mobile-sidebar-toggle {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        /* Автоматически под хедером на всех устройствах */
-        top: calc(var(--header-height, 80px) + 0.5rem);
-        left: 1rem;
-        width: 44px;
-        height: 44px;
-        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 0;
-        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
-        z-index: 1000;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .mobile-sidebar-toggle:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
-    }
-
-    .mobile-sidebar-toggle:active {
-        transform: translateY(0);
-    }
-
-    .mobile-sidebar-toggle .icon-menu {
-        width: 22px;
-        height: 22px;
-        stroke-width: 2.5;
-    }
-
     /* Показываем Sidebar overlay */
     .sidebar-overlay {
         display: block !important;
@@ -328,18 +287,6 @@
         height: 80px;
     }
 
-    /* Размер кнопки - НЕ позиция (позицией управляет JavaScript) */
-    .mobile-sidebar-toggle {
-        width: 40px;
-        height: 40px;
-        left: 0.75rem;
-    }
-
-    .mobile-sidebar-toggle .icon-menu {
-        width: 20px;
-        height: 20px;
-    }
-
     .dashboard-user-info {
         margin: 0.75rem;
         padding: 0.75rem;
@@ -371,19 +318,6 @@
     /* Увеличенный spacer для iPad - header больше */
     .sidebar-spacer {
         height: 140px;
-    }
-
-    /* Размер кнопки для iPad - НЕ позиция (позицией управляет JavaScript) */
-    .mobile-sidebar-toggle {
-        width: 48px;
-        height: 48px;
-        left: 1rem;
-        z-index: 1000;
-    }
-
-    .mobile-sidebar-toggle .icon-menu {
-        width: 24px;
-        height: 24px;
     }
 }
 

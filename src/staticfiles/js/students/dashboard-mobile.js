@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
     }
 
-    const toggleBtn = document.querySelector('.dashboard-menu-btn') || document.querySelector('.mobile-sidebar-toggle');
+    const toggleBtn = document.querySelector('.dashboard-menu-btn');
     const sidebar = document.querySelector('.dashboard-sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
 

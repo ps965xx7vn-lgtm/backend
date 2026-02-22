@@ -1022,46 +1022,6 @@ function initHeader() {
     counters.forEach(counter => counterObserver.observe(counter));
   }
 
-  // Анимация счётчиков в секции современной статистики (.stat-modern-number)
-  const modernCounters = PyLand.selectAll('.stat-modern-number[data-count]');
-  if (modernCounters.length > 0) {
-    const modernCounterObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
-          entry.target.classList.add('counted');
-          const target = parseInt(entry.target.dataset.count);
-          const suffix = entry.target.dataset.suffix || '';
-          const decimal = entry.target.dataset.decimal ? parseInt(entry.target.dataset.decimal) : 0;
-          const divisor = Math.pow(10, decimal);
-          let count = 0;
-          const duration = 1600;
-          const frames = 60;
-          const increment = target / frames;
-
-          const updateCounter = () => {
-            if (count < target) {
-              count = Math.min(count + increment, target);
-              const value = decimal > 0
-                ? (count / divisor).toFixed(decimal)
-                : Math.floor(count);
-              entry.target.textContent = value + suffix;
-              requestAnimationFrame(updateCounter);
-            } else {
-              const finalValue = decimal > 0
-                ? (target / divisor).toFixed(decimal)
-                : target;
-              entry.target.textContent = finalValue + suffix;
-            }
-          };
-
-          updateCounter();
-        }
-      });
-    }, { threshold: 0.4 });
-
-    modernCounters.forEach(counter => modernCounterObserver.observe(counter));
-  }
-
   // === СОВРЕМЕННЫЙ HERO БЛОК ===
 
   // Эффект печатания текста

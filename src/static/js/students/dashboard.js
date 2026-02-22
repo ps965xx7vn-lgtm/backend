@@ -20,12 +20,8 @@ class DashboardManager {
 
     // Инициализация боковой панели
     initSidebar() {
-        // Находим кнопку дашборда (может быть в header или создана динамически)
+        // Находим кнопку дашборда в header
         let mobileToggle = document.querySelector('.dashboard-menu-btn');
-        if (!mobileToggle) {
-            // Fallback: ищем старый класс для совместимости
-            mobileToggle = document.querySelector('.mobile-sidebar-toggle');
-        }
 
         if (!mobileToggle) {
             return;

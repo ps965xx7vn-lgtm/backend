@@ -28,7 +28,6 @@ body {
     overflow: hidden;
     display: flex;
     align-items: center;
-    padding: 100px 0 80px;
 }
 
 .revolutionary-hero-home::before {
@@ -188,7 +187,6 @@ body {
     gap: 32px;
     max-width: 800px;
     margin: 0 auto;
-    padding-bottom: 20px;
 }
 
 .stat-card-revolutionary {
@@ -655,123 +653,91 @@ body {
     transform: translateY(-1px) scale(0.98);
 }
 
-/* === СОВРЕМЕННАЯ СТАТИСТИКА === */
-.stats-modern-section {
-    padding: 100px 0 100px;
-    background: linear-gradient(160deg, #0f0c29 0%, #1a1a3e 40%, #24243e 100%);
+/* === СТАТИСТИКА 3D === */
+.stats-3d-revolutionary {
+    padding: 120px 0;
+    background: #1a202c;
     position: relative;
     overflow: hidden;
-    margin-top: 0;
 }
 
-.stats-modern-section::before {
+.stats-3d-revolutionary::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(102, 126, 234, 0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 80% 50%, rgba(240, 147, 251, 0.1) 0%, transparent 70%);
-    pointer-events: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
 }
 
-.stats-modern-grid {
+.stats-grid-3d {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
     position: relative;
     z-index: 2;
 }
 
-.stat-modern-card {
+.stat-cube-3d {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    perspective: 1000px;
+}
+
+.cube {
+    width: 100%;
+    height: 100%;
     position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    padding: 36px 24px 32px;
-    text-align: center;
-    overflow: hidden;
-    cursor: default;
-    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
-    animation: statCardFloat 6s ease-in-out infinite;
+    transform-style: preserve-3d;
+    animation: rotateCube 20s linear infinite;
 }
 
-.stat-modern-card:nth-child(1) { animation-delay: 0s; }
-.stat-modern-card:nth-child(2) { animation-delay: 0.8s; }
-.stat-modern-card:nth-child(3) { animation-delay: 1.6s; }
-.stat-modern-card:nth-child(4) { animation-delay: 2.4s; }
-.stat-modern-card:nth-child(5) { animation-delay: 0.4s; }
-.stat-modern-card:nth-child(6) { animation-delay: 1.2s; }
-.stat-modern-card:nth-child(7) { animation-delay: 2.0s; }
-.stat-modern-card:nth-child(8) { animation-delay: 2.8s; }
-
-@keyframes statCardFloat {
-    0%, 100% { transform: translateY(0px); }
-    50%       { transform: translateY(-10px); }
-}
-
-.stat-modern-card:hover {
-    animation-play-state: paused;
-    transform: translateY(-14px) scale(1.03);
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.5),
-        0 0 50px -15px var(--accent);
-}
-
-.stat-modern-glow {
+.cube-face {
     position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px;
-    height: 140px;
-    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-    opacity: 0.18;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    backdrop-filter: blur(20px);
+    font-weight: 800;
 }
 
-.stat-modern-card:hover .stat-modern-glow {
-    opacity: 0.4;
+.cube-front {
+    background: rgba(102, 126, 234, 0.3);
+    transform: rotateY(0deg) translateZ(100px);
+}
+.cube-back {
+    background: rgba(139, 92, 246, 0.3);
+    transform: rotateY(180deg) translateZ(100px);
+}
+.cube-right {
+    background: rgba(236, 72, 153, 0.3);
+    transform: rotateY(90deg) translateZ(100px);
+}
+.cube-left {
+    background: rgba(59, 130, 246, 0.3);
+    transform: rotateY(-90deg) translateZ(100px);
 }
 
-.stat-modern-icon {
-    font-size: 2.4rem;
-    margin-bottom: 16px;
-    display: block;
-    filter: drop-shadow(0 0 8px var(--accent));
-    transition: transform 0.3s ease;
-}
-
-.stat-modern-card:hover .stat-modern-icon {
-    transform: scale(1.15) rotate(-5deg);
-}
-
-.stat-modern-number {
-    font-size: 2.8rem;
+.cube-number {
+    font-size: 2.5rem;
     font-weight: 900;
-    display: block;
-    margin-bottom: 10px;
-    background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 
-.stat-modern-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.55);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    line-height: 1.4;
-    transition: color 0.3s ease;
-}
-
-.stat-modern-card:hover .stat-modern-label {
-    color: rgba(255, 255, 255, 0.9);
+.cube-label {
+    font-size: 14px;
+    opacity: 0.9;
 }
 
 /* === CTA РЕВОЛЮЦИОННЫЙ === */
@@ -878,6 +844,10 @@ body {
     background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
+[data-theme="dark"] .stats-3d-revolutionary {
+    background: #0f1419;
+}
+
 [data-theme="dark"] .cta-revolutionary {
     background: linear-gradient(135deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
 }
@@ -936,6 +906,14 @@ body {
     }
 }
 
+@keyframes rotateCube {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    25% { transform: rotateX(0deg) rotateY(90deg); }
+    50% { transform: rotateX(0deg) rotateY(180deg); }
+    75% { transform: rotateX(0deg) rotateY(270deg); }
+    100% { transform: rotateX(0deg) rotateY(360deg); }
+}
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -959,13 +937,6 @@ body {
 .delay-6 { animation-delay: 0.6s; }
 
 /* === АДАПТИВНОСТЬ === */
-@media (max-width: 1100px) {
-    .stats-modern-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-}
-
 @media (max-width: 768px) {
     .hero-title-revolutionary {
         font-size: 2.5rem;
@@ -995,14 +966,22 @@ body {
         gap: 32px;
     }
 
-    .stats-modern-grid {
+    .stats-grid-3d {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        gap: 32px;
     }
 
-    .stat-modern-number {
-        font-size: 2.2rem;
+    .stat-cube-3d,
+    .cube,
+    .cube-face {
+        width: 150px;
+        height: 150px;
     }
+
+    .cube-front { transform: rotateY(0deg) translateZ(75px); }
+    .cube-back { transform: rotateY(180deg) translateZ(75px); }
+    .cube-right { transform: rotateY(90deg) translateZ(75px); }
+    .cube-left { transform: rotateY(-90deg) translateZ(75px); }
 
     .section-title-revolutionary {
         font-size: 2.5rem;
@@ -1019,7 +998,7 @@ body {
 }
 
 @media (max-width: 480px) {
-    .stats-modern-grid {
+    .stats-grid-3d {
         grid-template-columns: 1fr;
     }
 }

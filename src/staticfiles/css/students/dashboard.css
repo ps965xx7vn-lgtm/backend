@@ -1055,18 +1055,6 @@
         height: 80px;
     }
 
-    /* Размер кнопки - НЕ позиция (позицией управляет JavaScript) */
-    .mobile-sidebar-toggle {
-        width: 40px;
-        height: 40px;
-        left: 0.75rem;
-    }
-
-    .mobile-sidebar-toggle .icon-menu {
-        width: 20px;
-        height: 20px;
-    }
-
     .dashboard-user-info {
         margin: 0.75rem;
         padding: 0.75rem;
@@ -1098,19 +1086,6 @@
     /* Увеличенный spacer для iPad - header больше */
     .sidebar-spacer {
         height: 140px;
-    }
-
-    /* Размер кнопки для iPad - НЕ позиция (позицией управляет JavaScript) */
-    .mobile-sidebar-toggle {
-        width: 48px;
-        height: 48px;
-        left: 1rem;
-        z-index: 1000;
-    }
-
-    .mobile-sidebar-toggle .icon-menu {
-        width: 24px;
-        height: 24px;
     }
 }
 
