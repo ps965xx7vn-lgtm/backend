@@ -141,6 +141,279 @@
             ]
           }
         ]
+      },
+      {
+        "name": "День 2: Создаём свои Docker образы",
+        "short_description": "🐳 Макс учится создавать свои образы. Dockerfile, слои, оптимизация и публикация на Docker Hub",
+        "steps": [
+          {
+            "name": "Что такое Dockerfile",
+            "description": "📝 Сегодня понедельник. Сергей показывает Максу как создавать свои образы.\n\n**Сергей объясняет:**\n*\"Dockerfile - это рецепт для создания Docker образа. Как кулинарный рецепт: шаг за шагом описываешь что нужно сделать.\"*\n\n## Dockerfile = рецепт образа\n\n**Простыми словами:**\nDdockerfile - текстовый файл с инструкциями как собрать образ.\n\n**Базовые инструкции:**\n- `FROM` - базовый образ (основа)\n- `WORKDIR` - рабочая директория \n- `COPY` - копировать файлы\n- `RUN` - выполнить команду\n- `CMD` - команда по умолчанию при запуске\n\n**Пример простого Dockerfile:**\n```dockerfile\nFROM python:3.11\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"app.py\"]\n```\n\n## 🎯 Цель урока\n\nНаучиться создавать свои Docker образы для приложений.\n\n## ⏱️ Время: 40-50 минут",
+            "self_check": "Ты понял что такое Dockerfile и зачем он нужен",
+            "troubleshooting_help": "**❓ Частые вопросы:**\n\n- **В чём разница FROM и RUN?**\n  - FROM: Выбирает базовый образ (основу)\n  - RUN: Выполняет команду при СБОРКЕ образа\n  - CMD: Команда которая выполнится при ЗАПУСКЕ контейнера\n\n- **Можно ли без Dockerfile?**\n  - Технически да, но неудобно\n  - Dockerfile = автоматизация и повторяемость\n  - Код вместо ручных действий\n\n- **Обязательно ли имя 'Dockerfile'?**\n  - По умолчанию да\n  - Можно другое: `docker build -f myfile.dockerfile .`",
+            "self_check_items": [
+              "Я понял что Dockerfile - это рецепт для образа",
+              "Я знаю основные инструкции (FROM, COPY, RUN, CMD)",
+              "Я готов написать свой Dockerfile"
+            ]
+          },
+          {
+            "name": "Первый Dockerfile для Python приложения",
+            "description": "🐍 Создадим образ для простого Python приложения!\n\n**Макс делает:**\nПростое Flask приложение которое отвечает 'Hello Docker!'",
+            "actions": "**Шаг 1: Создай проект**\n\n```bash\nmkdir ~/docker-flask-app\ncd ~/docker-flask-app\n```\n\n**Шаг 2: Создай app.py**\n\n```python\n# app.py\nfrom flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    return 'Hello from Docker! 🐳'\n\nif __name__ == '__main__':\n    app.run(host='0.0.0.0', port=5000)\n```\n\n**Шаг 3: Создай requirements.txt**\n\n```\nFlask==3.0.0\n```\n\n**Шаг 4: Создай Dockerfile**\n\n```dockerfile\n# Dockerfile\nFROM python:3.11-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY app.py .\n\nEXPOSE 5000\n\nCMD [\"python\", \"app.py\"]\n```\n\n**Шаг 5: Собери образ**\n\n```bash\n# -t = tag (имя образа)\n# . = контекст сборки (текущая папка)\ndocker build -t my-flask-app .\n```\n\n**Шаг 6: Запусти контейнер**\n\n```bash\ndocker run -d -p 5000:5000 --name flask-app my-flask-app\n```\n\n**Шаг 7: Проверь**\n\nОткрой http://localhost:5000\n\nДолжен увидеть: `Hello from Docker! 🐳`\n\n✅ Работает! Ты создал свой первый Docker образ!",
+            "self_check_items": [
+              "Создал Flask приложение",
+              "Написал Dockerfile",
+              "Собрал образ командой `docker build`",
+              "Запустил контейнер и увидел результат в браузере"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\"No module named 'flask'\"**\n  - Не установлена Flask в образе\n  - Проверь что есть RUN pip install в Dockerfile\n  - Пересобери: `docker build -t my-flask-app .`\n\n- **\"Address already in use\"**\n  - Порт 5000 занят\n  - Используй другой: `-p 5001:5000`\n  - Или останови старый контейнер\n\n- **Сборка очень долгая**\n  - Первый раз долго - скачивается Python образ (~100 MB)\n  - Следующие разы быстро благодаря кэшу\n\n- **\"COPY failed: file not found\"**\n  - Проверь что файлы app.py и requirements.txt в той же папке\n  - Проверь имена файлов (регистр важен)\n  - Выполняй docker build из нужной папки"
+          },
+          {
+            "name": "Слои и кэширование в Docker",
+            "description": "🏗️ Разберёмся как Docker хранит образы и почему сборка быстрая.\n\n**Сергей объясняет:**\n*\"Docker образ - это слоёный пирог. Каждая инструкция в Dockerfile создаёт новый слой. Docker кэширует слои и переиспользует их!\"*\n\n## Как работают слои\n\n**При первой сборке:**\n```\nFROM python:3.11-slim  ← Слой 1 (скачан)\nCOPY requirements.txt  ← Слой 2 (создан)\nRUN pip install        ← Слой 3 (создан) \nCOPY app.py            ← Слой 4 (создан)\n```\n\n**При второй сборке (если ничего не менял):**\n```\nFROM python:3.11-slim  ← Кэш ✅\nCOPY requirements.txt  ← Кэш ✅\nRUN pip install        ← Кэш ✅\nCOPY app.py            ← Кэш ✅\n```\n\n**Сборка мгновенная!**\n\n**Если изменил app.py:**\n```\nFROM python:3.11-slim  ← Кэш ✅\nCOPY requirements.txt  ← Кэш ✅\nRUN pip install        ← Кэш ✅\nCOPY app.py            ← Пересоздан ❌ (файл изменился)\n```\n\n## 💡 Правило оптимизации\n\n**Плохо (медленно):**\n```dockerfile\nCOPY . .\nRUN pip install -r requirements.txt\n```\nПри любом изменении кода → переустановка всех зависимостей!\n\n**Хорошо (быстро):**\n```dockerfile\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\n```\nЗависимости переустанавливаются только если изменился requirements.txt!",
+            "actions": "**Эксперимент с кэшем:**\n\n```bash\ncd ~/docker-flask-app\n\n# Первая сборка (засекай время)\ntime docker build -t my-flask-app .\n\n# Вторая сборка БЕЗ изменений\ntime docker build -t my-flask-app .\n# Мгновенно! Всё из кэша\n\n# Измени app.py\necho '# comment' >> app.py\n\n# Третья сборка\ntime docker build -t my-flask-app .\n# Быстро! Переделался только последний слой\n\n# Посмотри размер образа\ndocker images my-flask-app\n\n# Посмотри слои образа\ndocker history my-flask-app\n```\n\n**Оптимизирую порядок:**\n\n```dockerfile\n# Оптимизированный Dockerfile\nFROM python:3.11-slim\n\nWORKDIR /app\n\n# Сначала зависимости (меняются редко)\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\n# Потом код (меняется часто)\nCOPY . .\n\nEXPOSE 5000\nCMD [\"python\", \"app.py\"]\n```",
+            "self_check_items": [
+              "Понял что каждая инструкция = новый слой",
+              "Понял как работает кэш слоёв",
+              "Понял правило: медленно-меняющееся наверх, быстро-меняющееся вниз",
+              "Увидел разницу в скорости сборки"
+            ],
+            "troubleshooting_help": "**❓ Частые вопросы:**\n\n- **Как сбросить кэш?**\n  - `docker build --no-cache -t my-app .`\n  - Пересоберёт всё с нуля\n\n- **Почему образ такой большой?**\n  - Используй slim/alpine версии базового образа\n  - python:3.11-slim вместо python:3.11\n  - Удаляй временные файлы в том же RUN\n\n- **Как посмотреть что в слоях?**\n  - `docker history имя-образа`\n  - Покажет все слои и их размер"
+          },
+          {
+            "name": ".dockerignore - игнорируем лишнее",
+            "description": "🚫 Не копируем в образ то что не нужно!\n\n**Макс спрашивает:**\n*\"Сергей, мой образ весит 500 MB! Я же скопировал туда node_modules и .git!\"*\n\n**Сергей:**\n*\"Используй .dockerignore - это как .gitignore но для Docker!\"*\n\n## Зачем .dockerignore\n\n**Без .dockerignore:**\n- Копируются ВСЕ файлы из папки\n- node_modules (100+ MB)\n- .git история (большая)\n- Кэш, логи, временные файлы\n- Образ огромный и медленно копируется\n\n**С .dockerignore:**\n- Копируется только нужное\n- Образ меньше\n- Сборка быстрее\n- Безопаснее (не копируются секреты)",
+            "actions": "**Создай .dockerignore:**\n\n```bash\ncd ~/docker-flask-app\ntouch .dockerignore\n```\n\n**Добавь в .dockerignore:**\n\n```\n# Python\n__pycache__\n*.pyc\n*.pyo\n*.pyd\n.Python\nvenv\nenv\n\n# Git\n.git\n.gitignore\n\n# IDE\n.vscode\n.idea\n*.swp\n*.swo\n\n# OS\n.DS_Store\nThumbs.db\n\n# Docker\nDockerfile\ndocker-compose.yml\n.dockerignore\n\n# Tests & Docs\ntests\ndocs\n*.md\n\n# Logs\n*.log\nlogs/\n```\n\n**Проверь разницу:**\n\n```bash\n# Создай папки для теста\nmkdir tests logs __pycache__\necho 'test' > tests/test.py\necho 'log' > logs/app.log\n\n# Собери образ\ndocker build -t my-flask-app .\n\n# Зайди в контейнер и проверь\ndocker run -it my-flask-app ls -la\n# Файлов из .dockerignore не будет!\n```\n\n**Сравни размеры:**\n\n```bash\n# Без .dockerignore\nCOPY . .  # Копирует ВСЁ\n\n# С .dockerignore  \nCOPY . .  # Копирует только нужное\n\ndocker images my-flask-app\n# Размер меньше!\n```",
+            "self_check_items": [
+              "Создал .dockerignore файл",
+              "Добавил паттерны для игнорирования",
+              "Понял что .dockerignore работает как .gitignore",
+              "Увидел что размер образа уменьшился"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\".dockerignore не работает\"**\n  - Файл должен называться ТОЧНО `.dockerignore`\n  - Должен быть в той же папке что и Dockerfile\n  - Проверь что не добавил расширение (.txt)\n\n- **\"Нужный файл не скопировался\"**\n  - Проверь .dockerignore - может там слишком широкий паттерн\n  - `*.py` игнорирует ВСЕ .py файлы - будь осторожен\n\n- **Какие файлы точно игнорировать?**\n  - Зависимости (node_modules, venv)\n  - .git папка\n  - IDE файлы (.vscode, .idea)\n  - Тесты и документация (если не нужны в контейнере)\n  - Локальные конфиги и секреты"
+          },
+          {
+            "name": "Публикация образа на Docker Hub",
+            "description": "🌐 Опубликуем образ чтобы использовать его везде!\n\n**Сергей:**\n*\"Теперь загрузим твой образ на Docker Hub. Потом сможешь запустить его с любого компьютера одной командой!\"*\n\n## Зачем публиковать?\n\n- 📦 Образ доступен с любого компьютера\n- 🚀 Удобно для деплоя на сервера\n- 👥 Можно поделиться с командой\n- 💼 Портфолио для работодателя",
+            "actions": "**Шаг 1: Создай аккаунт на Docker Hub**\n\n1. Открой https://hub.docker.com\n2. Sign Up (если ещё нет аккаунта)\n3. Запомни username\n\n**Шаг 2: Залогинься из терминала**\n\n```bash\ndocker login\n# Введи username и password\n```\n\n✅ Login Succeeded\n\n**Шаг 3: Переименуй образ**\n\n```bash\n# Формат: username/название:тег\ndocker tag my-flask-app твой-username/my-flask-app:v1\n\n# Пример\ndocker tag my-flask-app maxdev/my-flask-app:v1\n```\n\n**Шаг 4: Запуш образ**\n\n```bash\ndocker push твой-username/my-flask-app:v1\n\n# Подожди пока загрузится\n# Покажет прогресс для каждого слоя\n```\n\n**Шаг 5: Проверь на Docker Hub**\n\n1. Открой https://hub.docker.com/u/твой-username  \n2. Увидишь свой образ!\n3. Можешь добавить описание\n\n**Шаг 6: Скачай образ на другом компьютере**\n\n```bash\n# Теперь ЛЮБОЙ может запустить:\ndocker run -p 5000:5000 твой-username/my-flask-app:v1\n\n# Образ скачается автоматически!\n```\n\n**💡 Best practices для тегов:**\n\n```bash\n# Версионирование\nmaxdev/my-app:1.0.0\nmaxdev/my-app:1.0.1\n\n# Latest (последняя версия)\nmaxdev/my-app:latest\n\n# Environment\nmaxdev/my-app:dev\nmaxdev/my-app:prod\n```",
+            "self_check_items": [
+              "Создал аккаунт на Docker Hub",
+              "Залогинился через `docker login`",
+              "Запушил образ на Docker Hub",
+              "Образ виден на hub.docker.com",
+              "Могу скачать образ командой `docker pull`"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\"denied: requested access to resource is denied\"**\n  - Не залогинен: `docker login`\n  - Неправильный username в имени образа\n  - Формат: `твой-username/название:тег`\n\n- **\"name invalid\"**\n  - Имя образа должно быть lowercase\n  - my-Flask-App ❌ → my-flask-app ✅\n\n- **Очень долго загружается**\n  - Первый раз загружаются все слои\n  - При обновлении - только изменённые слои\n  - Проверь интернет\n\n- **Как удалить образ с Hub?**\n  - Зайди на hub.docker.com\n  - Repositories → твой образ → Settings → Delete\n\n- **Можно ли сделать приватный?**\n  - Да! На Hub при создании выбери Private\n  - Бесплатно: 1 приватный репо\n  - Платно: больше приватных репо"
+          },
+          {
+            "name": "Итоги Дня 2",
+            "description": "🎉 Отличная работа! Ты научился создавать свои Docker образы!\n\n## Что ты изучил:\n\n✅ **Dockerfile:**\n- Что это и зачем нужен\n- Основные инструкции (FROM, COPY, RUN, CMD)\n- Создал Dockerfile для Flask приложения\n\n✅ **Сборка образов:**\n- `docker build -t название .`\n- Собрал свой первый образ\n- Запустил контейнер из своего образа\n\n✅ **Слои и кэш:**\n- Понял концепцию слоёв\n- Узнал как работает кэширование\n- Оптимизировал порядок инструкций\n\n✅ **.dockerignore:**\n- Создал .dockerignore\n- Уменьшил размер образа\n- Исключил ненужные файлы\n\n✅ **Docker Hub:**\n- Зарегистрировался\n- Опубликовал свой образ\n- Теперь образ доступен всем\n\n## 📊 Статистика Макса после Дня 2:\n\n**Было:**\n- ❌ Не знал как создавать образы\n- ❌ Каждый раз вручную настраивал окружение\n- ❌ Образы огромные и медленные\n\n**Стало:**\n- ✅ Создаёт образы через Dockerfile\n- ✅ Образ автоматически содержит всё нужное\n- ✅ Оптимизированные образы с кэшем\n- ✅ Образы на Docker Hub доступны команде\n\n## 💡 Ключевые инсайты:\n\n**1. Dockerfile = Infrastructure as Code:**\n- Описываешь инфраструктуру кодом\n- Версионируешь в Git\n- Все видят что внутри образа\n\n**2. Порядок важен:**\n- Редко меняющееся → наверх\n- Часто меняющееся → вниз\n- Правильный порядок = быстрая сборка\n\n**3. Docker Hub = NPM/PyPI для контейнеров:**\n- Публикуешь один раз\n- Используешь везде\n- Делишься с командой\n\n## 🎯 Что дальше?\n\n**День 3:** Реальное приложение с Docker Compose\n- Многоконтейнерное приложение\n- База данных в Docker\n- Связь между контейнерами\n- Volumes для данных\n\n## 🔥 История Макса продолжается:\n\n*\"Понедельник закончился отлично! Я создал образ нашего приложения и загрузил на Docker Hub. Сергей сказал что завтра мы подключим базу данных и Redis. Интересно как это работает с несколькими контейнерами!\"*\n\n*\"Я чувствую что начинаю понимать Docker. Это не так страшно как казалось. Главное - практика!\"*\n\n## 📝 Домашнее задание:\n\n1. **Создай образ для другого языка:**\n   - Node.js, Go, или PHP\n   - Найди базовый образ на Docker Hub\n   - Напиши Dockerfile\n\n2. **Оптимизируй размер:**\n   - Используй alpine версию базового образа\n   - Сравни размеры: python:3.11 vs python:3.11-alpine\n\n3. **Опубликуй ещё один образ:**\n   - Создай полезную утилиту\n   - Загрузи на Docker Hub\n   - Добавь описание и README\n\n👉 **Увидимся в Дне 3!**",
+            "self_check": "Ты создал свой Docker образ и опубликовал его",
+            "troubleshooting_help": "**💭 Если что-то непонятно:**\n\n- **Dockerfile кажется сложным?**\n  - При вернись к примерам\n  - Смотри Dockerfile популярных проектов на GitHub\n  - Начинай с простых: FROM + COPY + CMD\n\n- **Образ получается большим?**\n  - Используй alpine базовые образы\n  - Удаляй временные файлы\n  - Multi-stage builds (изучим в Дне 5)\n\n- **Хочу узнать больше?**\n  - Dockerfile Best Practices: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/\n  - Docker Hub: https://hub.docker.com/search\n  - Примеры Dockerfile: https://github.com/docker-library",
+            "self_check_items": [
+              "Я могу написать Dockerfile",
+              "Я понимаю как работают слои",
+              "Я оптимизирую порядок инструкций",
+              "Я могу опубликовать образ на Docker Hub",
+              "Я готов к Дню 3"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "День 3: Docker Compose и реальное приложение",
+        "short_description": "📦 Макс создаёт multi-контейнерное приложение. Flask + PostgreSQL + Redis через Docker Compose",
+        "steps": [
+          {
+            "name": "Что такое Docker Compose",
+            "description": "🎼 Управляем несколькими контейнерами легко!\n\n**Сергей говорит:**\n*\"Вчера ты запускал один контейнер. А если нужно приложение + база данных + Redis + Nginx? Docker Compose для этого!\"*\n\n## Проблема без Compose\n\n```bash\n# Запуск 4 контейнеров вручную\ndocker run -d postgres\ndocker run -d redis  \ndocker run -d nginx\ndocker run -d my-app\n```\n\nНужно помнить все команды, порты, сети... 😰\n\n## Решение: Docker Compose\n\n**docker-compose.yml** - один файл для всех контейнеров!\n\n```yaml\nversion: '3.8'\nservices:\n  app:\n    build: .\n    ports:\n      - \"5000:5000\"\n  db:\n    image: postgres:15\n  redis:\n    image: redis:7\n```\n\nОдна команда: `docker-compose up` 🚀\n\n## Преимущества\n\n- 📝 Infrastructure as Code\n- ⚡ Одна команда для всех сервисов\n- 🔗 Автоматические сети между контейнерами\n- 💾 Volumes для данных\n- 🔄 Легко пересоздать окружение",
+            "self_check": "Ты понял зачем нужен Docker Compose",
+            "troubleshooting_help": "**❓ Вопросы:**\n\n- **Compose vs Dockerfile?**\n  - Dockerfile: как собрать ОДИН образ\n  - Compose: как запустить НЕСКОЛЬКО контейнеров вместе\n\n- **Обязательно ли Compose?**\n  - Нет, можно вручную\n  - Но Compose удобнее для multi-контейнерных приложений",
+            "self_check_items": [
+              "Понял проблему запуска нескольких контейнеров вручную",
+              "Понял что Docker Compose решает эту проблему",
+              "Готов написать docker-compose.yml"
+            ]
+          },
+          {
+            "name": "Создаём Flask приложение с PostgreSQL",
+            "description": "🐘 Подключим настоящую базу данных!\n\n**Макс делает:** Flask API с PostgreSQL",
+            "actions": "**Создай структуру проекта:**\n\n```bash\nmkdir ~/docker-compose-app\ncd ~/docker-compose-app\n```\n\n**app.py:**\n\n```python\nfrom flask import Flask, jsonify\nimport psycopg2\nimport os\n\napp = Flask(__name__)\n\n@app.route('/')\ndef index():\n    return 'Flask + PostgreSQL in Docker! 🐳'\n\n@app.route('/db-test')\ndef db_test():\n    try:\n        conn = psycopg2.connect(\n            host=os.getenv('DB_HOST', 'db'),\n            database=os.getenv('DB_NAME', 'appdb'),\n            user=os.getenv('DB_USER', 'user'),\n            password=os.getenv('DB_PASSWORD', 'password')\n        )\n        conn.close()\n        return jsonify({'status': 'DB Connected!'})\n    except Exception as e:\n        return jsonify({'error': str(e)}), 500\n\nif __name__ == '__main__':\n    app.run(host='0.0.0.0', port=5000)\n```\n\n**requirements.txt:**\n\n```\nFlask==3.0.0\npsycopg2-binary==2.9.9\n```\n\n**Dockerfile:**\n\n```dockerfile\nFROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"app.py\"]\n```\n\n**docker-compose.yml:**\n\n```yaml\nversion: '3.8'\n\nservices:\n  app:\n    build: .\n    ports:\n      - \"5000:5000\"\n    environment:\n      - DB_HOST=db\n      - DB_NAME=appdb\n      - DB_USER=user\n      - DB_PASSWORD=password\n    depends_on:\n      - db\n\n  db:\n    image: postgres:15-alpine\n    environment:\n      - POSTGRES_DB=appdb\n      - POSTGRES_USER=user\n      - POSTGRES_PASSWORD=password\n    ports:\n      - \"5432:5432\"\n```\n\n**Запуск:**\n\n```bash\n# Собрать и запустить\ndocker-compose up --build\n\n# Проверить\ncurl http://localhost:5000/db-test\n# {\"status\":\"DB Connected!\"}\n```\n\n✅ Работает! Flask подключился к PostgreSQL!",
+            "self_check_items": [
+              "Создал Flask приложение",
+              "Написал docker-compose.yml",
+              "Запустил `docker-compose up`",
+              "Приложение подключилось к PostgreSQL"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\"Can't connect to database\"**\n  - Подожди 10 сек после запуска (PostgreSQL стартует)\n  - Проверь что host='db' (имя сервиса)\n  - Проверь environment переменные\n\n- **\"Port already allocated\"**\n  - Порт занят\n  - Измени порты в docker-compose.yml"
+          },
+          {
+            "name": "Volumes - сохраняем данные",
+            "description": "💾 Данные не должны пропадать при перезапуске!\n\n**Макс спрашивает:**\n*\"Сергей, я удалил контейнер и все данные из БД пропали!\"*\n\n**Сергей:**\n*\"Используй volumes - Docker сохранит данные отдельно от контейнера.\"*\n\n## Проблема\n\n```bash\ndocker-compose down\n# Все данные PostgreSQL удалены! 😱\n```\n\n## Решение: Volumes\n\n**docker-compose.yml:**\n\n```yaml\nservices:\n  db:\n    image: postgres:15-alpine\n    volumes:\n      - postgres_data:/var/lib/postgresql/data  # Persistence!\n\nvolumes:\n  postgres_data:  # Named volume\n```\n\nТеперь данные сохраняются между перезапусками!",
+            "actions": "**Обнови docker-compose.yml:**\n\n```yaml\nversion: '3.8'\n\nservices:\n  app:\n    build: .\n    ports:\n      - \"5000:5000\"\n    environment:\n      - DB_HOST=db\n    depends_on:\n      - db\n    volumes:\n      - ./app.py:/app/app.py  # Hot reload для разработки\n\n  db:\n    image: postgres:15-alpine\n    environment:\n      - POSTGRES_DB=appdb\n      - POSTGRES_USER=user\n      - POSTGRES_PASSWORD=password\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n\nvolumes:\n  postgres_data:  # Объявляем volume\n```\n\n**Тест persistence:**\n\n```bash\n# Запусти\ndocker-compose up -d\n\n# Создай данные в БД\ndocker-compose exec db psql -U user -d appdb\n# CREATE TABLE test (id int);\n# INSERT INTO test VALUES (1);\n# \\q\n\n# Останови и удали контейнеры\ndocker-compose down\n\n# Запусти снова\ndocker-compose up -d\n\n# Проверь - данные на месте!\ndocker-compose exec db psql -U user -d appdb\n# SELECT * FROM test;\n# Видишь строку!\n```\n\n✅ Данные сохранились!",
+            "self_check_items": [
+              "Добавил volumes в docker-compose.yml",
+              "Понял разницу между контейнером и volume",
+              "Проверил что данные сохраняются после `down`"
+            ],
+            "troubleshooting_help": "**❓ Вопросы:**\n\n- **Где хранятся volumes?**\n  - Mac/Linux: `/var/lib/docker/volumes/`\n  - Windows: Docker Desktop управляет\n  - Посмотреть: `docker volume ls`\n\n- **Как удалить volumes?**\n  - `docker-compose down -v` (удалит volumes!)\n  - Будь осторожен - данные удалятся"
+          },
+          {
+            "name": "Docker Compose команды",
+            "description": "⚡ Управляем приложением через Docker Compose",
+            "actions": "**Основные команды:**\n\n```bash\n# Запуск\ndocker-compose up          # В foreground (видны логи)\ndocker-compose up -d       # В background (detached)\ndocker-compose up --build  # Пересобрать образы\n\n# Остановка\ndocker-compose stop        # Остановить контейнеры\ndocker-compose down        # Остановить и удалить\ndocker-compose down -v     # + удалить volumes\n\n# Просмотр\ndocker-compose ps          # Список контейнеров\ndocker-compose logs        # Логи всех сервисов\ndocker-compose logs app    # Логи конкретного сервиса\ndocker-compose logs -f     # Follow логи\n\n# Выполнение команд\ndocker-compose exec app sh         # Зайти в контейнер\ndocker-compose exec db psql -U user # Команда в контейнере\n\n# Масштабирование\ndocker-compose up -d --scale app=3  # 3 экземпляра app\n\n# Перезапуск\ndocker-compose restart app  # Перезапустить сервис\n```\n\n**Полезные алиасы:**\n\n```bash\nalias dcu='docker-compose up'\nalias dcd='docker-compose down'\nalias dcl='docker-compose logs -f'\nalias dcp='docker-compose ps'\n```",
+            "self_check_items": [
+              "Запустил `docker-compose up -d`",
+              "Посмотрел логи `docker-compose logs`",
+              "Зашёл в контейнер `exec`",
+              "Остановил через `docker-compose down`"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\"command not found: docker-compose\"**\n  - Новая версия: `docker compose` (без дефиса)\n  - Или установи: `pip install docker-compose`\n\n- **\"service 'app' not found\"**\n  - Проверь имя сервиса в docker-compose.yml\n  - Регистр важен: app ≠ App"
+          },
+          {
+            "name": "Итоги Дня 3",
+            "description": "🎉 Отличная работа! Ты создал multi-контейнерное приложение!\n\n## Что изучил:\n\n✅ **Docker Compose:**\n- Описал несколько сервисов в одном файле\n- Запустил всё одной командой\n- Контейнеры автоматически связаны\n\n✅ **Flask + PostgreSQL:**\n- Создал приложение с БД\n- Подключил контейнеры через сети\n- Передал environment переменные\n\n✅ **Volumes:**\n- Сохранил данные БД\n- Данные переживают перезапуск контейнеров\n\n✅ **Команды Compose:**\n- up, down, logs, exec, ps\n- Научился управлять стеком сервисов\n\n## Статистика Макса:\n\n**Было:**\n- ❌ Поднимал БД вручную\n- ❌ Запоминал десятки команд и портов\n- ❌ Данные терялись\n\n**Стало:**\n- ✅ docker-compose up - всё работает\n- ✅ Один файл описывает всю инфраструктуру\n- ✅ Volumes сохраняют данные\n\n## 🎯 Что дальше?\n\n**День 4:** Production деплой\n- Nginx reverse proxy\n- SSL сертификаты\n- Деплой на сервер\n- Логи и мониторинг\n\n👉 **Увидимся завтра!**",
+            "self_check": "Ты создал приложение с базой данных через Docker Compose",
+            "troubleshooting_help": "**💭 Если непонятно:**\n\n- Docker Compose docs: https://docs.docker.com/compose/\n- Примеры: https://github.com/docker/awesome-compose",
+            "self_check_items": [
+              "Я могу написать docker-compose.yml",
+              "Я понимаю как работают volumes",
+              "Я умею запускать multi-контейнерные приложения",
+              "Я готов к production деплою"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "День 4: Production deploy",
+        "short_description": "☁️ Макс деплоит приложение на сервер. Nginx, SSL, мониторинг - всё как у взрослых",
+        "steps": [
+          {
+            "name": "Подготовка к production",
+            "description": "🏭 Checklist перед деплоем\n\n**Сергей:** *\"Production - это не просто `docker-compose up`. Нужно думать о безопасности, производительности, отказоустойчивости.\"*\n\n## Development vs Production\n\n| Аспект | Development | Production |\n|--------|-------------|------------|\n| **Порты** | Exposed к localhost | За reverse proxy |\n| **Секреты** | Хардкод в docker-compose | Environment variables |\n| **Volumes** | Hot reload | Read-only где возможно |\n| **Restart policy** | no | always/unless-stopped |\n| **Logs** | В консоль | Centralized logging |\n| **Resources** | Unlimited | CPU/memory limits |\n\n## Production docker-compose.yml\n\n```yaml\nversion: '3.8'\n\nservices:\n  app:\n    image: yourusername/flask-app:latest  # Не build!\n    restart: unless-stopped\n    environment:\n      - DB_HOST=db\n      - SECRET_KEY=${SECRET_KEY}  # Из .env файла\n    deploy:\n      resources:\n        limits:\n          cpus: '0.5'\n          memory: 512M\n    networks:\n      - backend\n\n  db:\n    image: postgres:15-alpine\n    restart: unless-stopped\n    environment:\n      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password\n    secrets:\n      - db_password\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n    networks:\n      - backend\n\n  nginx:\n    image: nginx:alpine\n    restart: unless-stopped\n    ports:\n      - \"80:80\"\n      - \"443:443\"\n    volumes:\n      - ./nginx.conf:/etc/nginx/nginx.conf:ro\n      - ./ssl:/etc/nginx/ssl:ro\n    networks:\n      - backend\n\nnetworks:\n  backend:\n    driver: bridge\n\nvolumes:\n  postgres_data:\n\nsecrets:\n  db_password:\n    file: ./secrets/db_password.txt\n```\n\n## Checklist\n\n✅ Секреты вынесены в environment/secrets  \n✅ restart: unless-stopped для автозапуска  \n✅ Лимиты на CPU/memory  \n✅  Nginx reverse proxy  \n✅ Volumes для persistence  \n✅ Networks для изоляции",
+            "self_check": "Понял разницу между dev и production конфигациями",
+            "troubleshooting_help": "**❓ Вопросы:**\n\n- **Зачем restart: unless-stopped?**\n  - Контейнер перезапустится после перезагрузки сервера\n  - unless-stopped: не стартуют только вручную остановленные\n\n- **Зачем ресурсные лимиты?**\n  - Чтобы один контейнер не съел всю память сервера",
+            "self_check_items": [
+              "Понял что production ≠ development",
+              "Знаю про restart policies",
+              "Понял зачем ресурсные лимиты"
+            ]
+          },
+          {
+            "name": "Nginx reverse proxy",
+            "description": "🔀 Nginx перед приложением - best practice!\n\n**Зачем Nginx?**\n\n- 📦 Отдаёт статику (CSS, JS, images) быстрее чем Flask\n- 🔒 SSL termination\n- ⚖️ Load balancing между несколькими app контейнерами\n- 🛡️ Rate limiting, IP filtering\n- 🗜️ Gzip compression",
+            "actions": "**nginx.conf:**\n\n```nginx\nevents {\n    worker_connections 1024;\n}\n\nhttp {\n    upstream app {\n        server app:5000;  # Имя сервиса из docker-compose\n    }\n\n    server {\n        listen 80;\n        server_name example.com;\n\n        # Redirect to HTTPS\n        return 301 https://$server_name$request_uri;\n    }\n\n    server {\n        listen 443 ssl;\n        server_name example.com;\n\n        ssl_certificate /etc/nginx/ssl/cert.pem;\n        ssl_certificate_key /etc/nginx/ssl/key.pem;\n\n        # Security headers\n        add_header X-Frame-Options \"SAMEORIGIN\";\n        add_header X-Content-Type-Options \"nosniff\";\n\n        location / {\n            proxy_pass http://app;\n            proxy_set_header Host $host;\n            proxy_set_header X-Real-IP $remote_addr;\n            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n            proxy_set_header X-Forwarded-Proto $scheme;\n        }\n\n        # Статика отдаётся напрямую\n        location /static/ {\n            alias /app/static/;\n            expires 30d;\n        }\n    }\n}\n```\n\n**Добавь nginx в docker-compose.yml:**\n\n```yaml\nnginx:\n  image: nginx:alpine\n  ports:\n    - \"80:80\"\n    - \"443:443\"\n  volumes:\n    - ./nginx.conf:/etc/nginx/nginx.conf:ro\n  depends_on:\n    - app\n```\n\n**Проверка:**\n\n```bash\n# Проверь конфиг nginx\ndocker-compose exec nginx nginx -t\n\n# Перезагрузи nginx\ndocker-compose exec nginx nginx -s reload\n```",
+            "self_check_items": [
+              "Создал nginx.conf",
+              "Добавил nginx в docker-compose.yml",
+              "Понял что nginx проксирует запросы к app"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\"502 Bad Gateway\"**\n  - App контейнер не запущен\n  - Неправильный upstream (должен быть app:5000)\n  - Проверь: `docker-compose ps`\n\n- **\"Connection refused\"**\n  - App не слушает 0.0.0.0 (должен, а не 127.0.0.1)\n  - В Flask: `app.run(host='0.0.0.0')`"
+          },
+          {
+            "name": "SSL сертификаты с Let's Encrypt",
+            "description": "🔒 HTTPS обязателен в production!\n\n**Макс:** *\"Как получить SSL сертификат бесплатно?\"*\n\n**Сергей:** *\"Let's Encrypt + Certbot!\"*",
+            "actions": "**Получение сертификата:**\n\n```bash\n# На сервере (Ubuntu/Debian)\nsudo apt update\nsudo apt install certbot python3-certbot-nginx\n\n# Получи сертификат\nsudo certbot --nginx -d example.com -d www.example.com\n\n# Проверь что работает\ncurl https://example.com\n```\n\n**Автообновление (cron):**\n\n```bash\n# Certbot автоматически добавляет cron job\nsudo certbot renew --dry-run  # Тест\n\n# Cron обновляет сертификат каждые 60 дней\n```\n\n**Альтернатива: certbot в Docker**\n\n```yaml\n# docker-compose.yml\ncertbot:\n  image: certbot/certbot\n  volumes:\n    - ./certbot/conf:/etc/letsencrypt\n    - ./certbot/www:/var/www/certbot\n  entrypoint: \"/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'\"\n```\n\n✅ Теперь у тебя HTTPS!",
+            "self_check_items": [
+              "Понял что такое Let's Encrypt",
+              "Знаю как получить SSL сертификат",
+              "Понял что сертификаты автообновляются"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\"certbot: command not found\"**\n  - Установи: `sudo apt install certbot`\n\n- **\"Failed to verify domain\"**\n  - DNS должен указывать на твой сервер\n  - Порт 80 должен быть открыт\n  - Проверь: `dig example.com`"
+          },
+          {
+            "name": "Деплой на DigitalOcean/AWS",
+            "description": "☁️ Поднимаем  приложение на реальном сервере!\n\n**Этапы:**\n1. Создать сервер (Droplet/EC2)\n2. Установить Docker\n3. Загрузить код\n4. Запустить `docker-compose up`",
+            "actions": "**1. Создай сервер (пример DigitalOcean):**\n\n- Выбери Ubuntu 22.04\n- Минимум: 1 CPU, 1GB RAM (для теста)\n- Добавь SSH ключ\n\n**2. Подключись к серверу:**\n\n```bash\nssh root@your-server-ip\n```\n\n**3. Установи Docker:**\n\n```bash\n# Update\napt update && apt upgrade -y\n\n# Install Docker\ncurl -fsSL get.docker.com -o get-docker.sh\nsh get-docker.sh\n\n# Install Docker Compose\napt install docker-compose-plugin -y\n\n# Проверка\ndocker --version\ndocker compose version\n```\n\n**4. Загрузи код:**\n\n```bash\n# Вариант 1: Git clone\ngit clone https://github.com/yourusername/your-repo.git\ncd your-repo\n\n# Вариант 2: scp\n# На локалке:\nscp -r ./myapp root@your-server-ip:/opt/myapp\n```\n\n**5. Создай .env файл:**\n\n```bash\n# .env\nSECRET_KEY=your-secret-key-here\nDB_PASSWORD=secure-password\nDATABASE_URL=postgresql://user:pass@db:5432/appdb\n```\n\n**6. Запусти:**\n\n```bash\ndocker compose up -d --build\n\n# Проверь логи\ndocker compose logs -f\n\n# Проверь статус\ndocker compose ps\n```\n\n**7. Открой порты (firewall):**\n\n```bash\n# Ubuntu UFW\nufw allow 80/tcp\nufw allow 443/tcp\nufw allow 22/tcp  # SSH\nufw enable\n```\n\n✅ Приложение работает!",
+            "self_check_items": [
+              "Создал сервер на DigitalOcean/AWS",
+              "Установил Docker на сервере",
+              "Запустил приложение через docker-compose",
+              "Приложение доступно по IP/домену"
+            ],
+            "troubleshooting_help": "**❌ Проблемы:**\n\n- **\"Cannot connect to Docker daemon\"**\n  - Запусти: `systemctl start docker`\n  - Добавь юзера в группу: `usermod -aG docker $USER`\n\n- **\"Port 80 already in use\"**\n  - Останови Apache: `systemctl stop apache2`\n  - Или измени порт в docker-compose.yml"
+          },
+          {
+            "name": "Мониторинг и логи",
+            "description": "📊 Следим за здоровьем приложения\n\n**Логи:**\n\n```bash\n# Просмотр логов\ndocker compose logs -f app\n\n# Последние 100 строк\ndocker compose logs --tail=100 app\n\n# Логи всех сервисов\ndocker compose logs -f\n```\n\n**Health checks в docker-compose.yml:**\n\n```yaml\nservices:\n  app:\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:5000/health\"]\n      interval: 30s\n      timeout: 10s\n      retries: 3\n      start_period: 40s\n\n  db:\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U user\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n```\n\n**Простой мониторинг:**\n\n```bash\n# CPU, память\ndocker stats\n\n# Disk space\ndocker system df\n\n# Очистка\ndocker system prune -a\n```\n\n**Production мониторинг:**\n- **Prometheus + Grafana** для метрик\n- **ELK Stack** (Elasticsearch, Logstash, Kibana) для логов\n- **Sentry** для ошибок приложения\n\n## Итоги Дня 4\n\n✅ **Production ready приложение:**\n- Nginx reverse proxy\n- SSL сертификаты\n- Деплой на сервер\n- Health checks\n- Мониторинг логов\n\n**Макс:** *\"Приложение на production! Работает 24/7!\"*\n\n**Сергей:** *\"Молодец! Завтра - продвинутые техники.\"*",
+            "self_check": "Приложение задеплоено и мониторится",
+            "troubleshooting_help": "**❓ Вопросы:**\n\n- **Где хранить логи long-term?**\n  - Используй external logging service\n  - Например: Papertrail, Loggly, CloudWatch\n  - Docker logs занимают место!",
+            "self_check_items": [
+              "Настроил health checks",
+              "Умею смотреть логи через docker compose",
+              "Знаю как мониторить ресурсы",
+              "Приложение работает в production"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "День 5: Pro level Docker",
+        "short_description": "🚀 Макс изучает advanced техники. Multi-stage builds, безопасность, оркестрация",
+        "steps": [
+          {
+            "name": "Multi-stage builds",
+            "description": "🎯 Оптимизируй размер образа в 10 раз!\n\n**Проблема:** Большие образы занимают много места и долго качаются\n\n**Было:**\n\n```dockerfile\nFROM python:3.11\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"app.py\"]\n```\n\nРазмер: **1.2 GB** 😱\n\n**Стало (multi-stage):**\n\n```dockerfile\n# Stage 1: Builder\nFROM python:3.11 AS builder\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --user --no-cache-dir -r requirements.txt\n\n# Stage 2: Runtime\nFROM python:3.11-slim  # Slim образ!\nWORKDIR /app\n\n# Копируем только нужное из builder\nCOPY --from=builder /root/.local /root/.local\nCOPY . .\n\n# PATH для pip packages\nENV PATH=/root/.local/bin:$PATH\n\nCMD [\"python\", \"app.py\"]\n```\n\nРазмер: **180 MB** ✅ (в 6 раз меньше!)\n\n## Преимущества\n\n- 📦 Меньший размер образа\n- ⚡ Быстрее скачивается/деплоится\n- 🔒 Меньше уязвимостей (меньше пакетов)\n- 💰 Меньше трафика",
+            "actions": "**Пример для Node.js приложения:**\n\n```dockerfile\n# Stage 1: Build\nFROM node:18 AS builder\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci --only=production\nCOPY . .\nRUN npm run build\n\n# Stage 2: Production\nFROM node:18-alpine\nWORKDIR /app\nCOPY --from=builder /app/dist ./dist\nCOPY --from=builder /app/node_modules ./node_modules\nCOPY package*.json ./\n\nEXPOSE 3000\nCMD [\"node\", \"dist/index.js\"]\n```\n\n**Сравнение размеров:**\n\n```bash\n# Собери оба образа\ndocker build -t myapp:single -f Dockerfile.single .\ndocker build -t myapp:multi -f Dockerfile.multi .\n\n# Сравни размеры\ndocker images | grep myapp\n# myapp:single  1.2GB\n# myapp:multi   180MB\n```",
+            "self_check_items": [
+              "Понял что такое multi-stage build",
+              "Написал Dockerfile с несколькими стейджами",
+              "Сравнил размеры образов",
+              "Образ стал значительно меньше"
+            ],
+            "troubleshooting_help": "**❓ Вопросы:**\n\n- **Можно несколько стейджей?**\n  - Да! Сколько угодно: builder, tester, production\n\n- **Как копировать из предыдущего стейджа?**\n  - `COPY --from=builder /app/dist ./dist`\n  - builder - имя стейджа (AS builder)"
+          },
+          {
+            "name": "Docker security best practices",
+            "description": "🔒 Безопасность превыше всего!\n\n**10 правил безопасности:**\n\n1. **Не запускай как root**\n\n```dockerfile\n# Создай non-root user\nRUN addgroup -S appgroup && adduser -S appuser -G appgroup\nUSER appuser\n```\n\n2. **Используй официальные образы**\n\n```dockerfile\nFROM python:3.11-slim  # ✅ Official\n# FROM random-guy/python  # ❌ Опасно\n```\n\n3. **Проверяй на уязвимости**\n\n```bash\n# Scan образа\ndocker scan myapp:latest\n\n# Или используй Trivy\ntrivy image myapp:latest\n```\n\n4. **Не храни секреты в образе**\n\n```dockerfile\n# ❌ ПЛОХО\nENV DB_PASSWORD=secret123\n\n# ✅ ХОРОШО\n# Передавай через environment при запуске\n```\n\n5. **Read-only filesystem где возможно**\n\n```yaml\nservices:\n  app:\n    read_only: true\n    tmpfs:\n      - /tmp\n```\n\n6. **Лимиты ресурсов**\n\n```yaml\ndeploy:\n  resources:\n    limits:\n      cpus: '0.5'\n      memory: 512M\n```\n\n7. **Обновляй образы регулярно**\n\n```bash\n# Проверь обновления\ndocker pull python:3.11-slim\ndocker-compose build --pull\n```",
+            "self_check": "Понял основные принципы безопасности Docker",
+            "troubleshooting_help": "**🔐 Секреты:**\n\n- **Docker Secrets** (Swarm mode)\n- **Environment variables** (.env файл)\n- **Vault** от HashiCorp для sensitive data\n- **AWS Secrets Manager** / **GCP Secret Manager**\n\n**Никогда:**\n- Не коммить секреты в git\n- Не хардкодить в Dockerfile\n- Не логировать секреты",
+            "self_check_items": [
+              "Понял почему не нужно запускать контейнеры от root",
+              "Знаю как проверить образ на уязвимости",
+              "Понял как безопасно хранить секреты",
+              "Применяю best practices в своих Dockerfile"
+            ],
+            "actions": "**Безопасный Dockerfile:**\n\n```dockerfile\nFROM python:3.11-slim AS builder\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --user --no-cache-dir -r requirements.txt\n\nFROM python:3.11-slim\nWORKDIR /app\n\n# Создаём non-root user\nRUN addgroup --system app && adduser --system --group app\n\n# Копируем как app user\nCOPY --from=builder --chown=app:app /root/.local /home/app/.local\nCOPY --chown=app:app . .\n\n# Переключаемся на app user\nUSER app\n\nENV PATH=/home/app/.local/bin:$PATH\n\nCMD [\"python\", \"app.py\"]\n```\n\n**Проверка:**\n\n```bash\n# Собери\ndocker build -t myapp:secure .\n\n# Проверь что НЕ root\ndocker run myapp:secure whoami\n# Ответ: app (не root)\n\n# Scan на уязвимости\ndocker scan myapp:secure\n```"
+          },
+          {
+            "name": "Docker volumes patterns",
+            "description": "💾 Продвинутая работа с данными\n\n**Типы volumes:**\n\n1. **Named volumes** (рекомендуется)\n```yaml\nvolumes:\n  postgres_data:  # Docker управляет\n    driver: local\n```\n\n2. **Bind mounts** (dev)\n```yaml\nvolumes:\n  - ./code:/app  # Прямое монтирование\n```\n\n3. **tmpfs** (для временных данных)\n```yaml\ntmpfs:\n  - /tmp\n```\n\n## Backup volumes\n\n```bash\n# Backup\ndocker run --rm \\\n  -v postgres_data:/data \\\n  -v $(pwd):/backup \\\n  alpine tar czf /backup/backup.tar.gz /data\n\n# Restore\ndocker run --rm \\\n  -v postgres_data:/data \\\n  -v $(pwd):/backup \\\n  alpine tar xzf /backup/backup.tar.gz -C /\n```\n\n## NFS volumes (для кластера)\n\n```yaml\nvolumes:\n  shared_data:\n    driver: local\n    driver_opts:\n      type: nfs\n      o: addr=nfs-server.example.com,rw\n      device: \":/path/to/data\"\n```",
+            "self_check": "Понял разные типы volumes и когда их использовать",
+            "troubleshooting_help": "**Когда что использовать:**\n\n- **Named volumes**: Production данные (БД, uploads)\n- **Bind mounts**: Development (hot reload)\n- **tmpfs**: Временные файлы, кеш\n- **NFS**: Shared storage между серверами",
+            "self_check_items": [
+              "Понял разницу между named volumes и bind mounts",
+              "Знаю как сделать backup volume",
+              "Понял когда использовать tmpfs"
+            ]
+          },
+          {
+            "name": "Docker Swarm vs Kubernetes intro",
+            "description": "🐝 Оркестрация контейнеров - следующий уровень!\n\n**Когда нужна оркестрация?**\n\n- Несколько серверов\n- Auto-scaling\n- High availability\n- Load balancing  \n- Rolling updates\n- Self-healing\n\n## Docker Swarm\n\n**Плюсы:**\n- ✅ Встроен в Docker\n- ✅ Простая настройка\n- ✅ docker-compose.yml совместимость\n\n**Минусы:**\n- ❌ Меньше возможностей чем K8s\n- ❌ Меньше community\n\n**Быстрый старт:**\n\n```bash\n# Инициализируй Swarm\ndocker swarm init\n\n# Deploy stack\ndocker stack deploy -c docker-compose.yml myapp\n\n# Масштабируй\ndocker service scale myapp_app=5\n\n# Посмотри\ndocker service ls\ndocker service ps myapp_app\n```\n\n## Kubernetes (K8s)\n\n**Плюсы:**\n- ✅ Industry standard\n- ✅ Огромная экосистема\n- ✅ Максимум возможностей\n- ✅ Cloud native (AWS EKS, GCP GKE, Azure AKS)\n\n**Минусы:**\n- ❌ Сложнее в освоении\n- ❌ Оверкилл для маленьких проектов\n\n**Когда использовать:**\n- **Docker Compose:** 1 сервер, dev, small projects\n- **Docker Swarm:** Несколько серверов, простая оркестрация\n- **Kubernetes:** Enterprise, cloud-native, complex infrastructure\n\n**Макс:** *\"Мне нужен Kubernetes?\"*\n\n**Сергей:** *\"Если у тебя < 10 серверов - начни с Swarm или managed K8s (EKS/GKE). Не усложняй без необходимости.\"*",
+            "self_check": "Понял разницу между Swarm и Kubernetes",
+            "troubleshooting_help": "**Путь изучения:**\n\n1. ✅ **Docker basics** (ты здесь)\n2. ✅ **Docker Compose**\n3. **Docker Swarm** (если нужна оркестрация)\n4. **Kubernetes** (enterprise / cloud)\n\n**Ресурсы:**\n- Docker Swarm: https://docs.docker.com/engine/swarm/\n- Kubernetes: https://kubernetes.io/docs/tutorials/",
+            "self_check_items": [
+              "Понял зачем нужна оркестрация",
+              "Знаю разницу между Swarm и K8s",
+              "Понял когда использовать каждый инструмент"
+            ]
+          },
+          {
+            "name": "Финальный проект и итоги курса",
+            "description": "🎓 Поздравляю! Ты прошёл путь от новичка до Docker pro!\n\n## Путь Макса:\n\n**День 1:** *\"Что такое контейнеры?\"* 🤔\n- Установил Docker\n- Запустил первый контейнер\n- Изучил базовые команды\n\n**День 2:** *\"Создаю свои образы\"* 🐳\n- Написал Dockerfile\n- Понял слои и кэширование\n- Опубликовал на Docker Hub\n\n**День 3:** *\"Multi-контейнерное приложение\"* 📦\n- Docker Compose\n- Flask + PostgreSQL\n- Volumes для данных\n\n**День 4:** *\"Production deploy!\"* ☁️\n- Nginx reverse proxy\n- SSL сертификаты\n- Деплой на сервер\n- Мониторинг\n\n**День 5:** *\"Pro level техники\"* 🚀\n- Multi-stage builds\n- Security best practices\n- Продвинутые volumes\n- Оркестрация (Swarm/K8s)\n\n## Финальный проект\n\n**Задание:** Создай и задеплой полноценное приложение\n\n**Требования:**\n\n1. **Backend:** Flask/Django/Node.js\n2. **Database:** PostgreSQL\n3. **Cache:** Redis\n4. **Web server:** Nginx\n5. **Multi-stage Dockerfile** для оптимизации\n6. **docker-compose.yml** для оркестрации\n7. **Health checks** для всех сервисов\n8. **SSL сертификат** (Let's Encrypt)\n9. **Деплой на сервер** (DigitalOcean/AWS/VPS)\n10. **CI/CD pipeline** (bonus)\n\n## Что ты теперь умеешь:\n\n✅ Containerization основы  \n✅ Создание Docker образов  \n✅ Multi-контейнерные приложения  \n✅ Production deployment  \n✅ Security best practices  \n✅ Performance optimization  \n✅ Мониторинг и логи  \n✅ Понимание оркестрации  \n\n## Статистика:\n\n📊 **Было:**\n- ❌ \"У меня работает!\" проблема\n- ❌ Сложности с окружением\n- ❌ Долгий онбординг новых девелоперов\n\n📊 **Стало:**\n- ✅ `docker-compose up` - всё работает\n- ✅ Одинаковое окружение везде\n- ✅ 5 минут на запуск проекта\n- ✅ Production ready деплой\n\n## Что дальше?\n\n**Продолжай развиваться:**\n\n1. **Kubernetes** - следующий уровень оркестрации\n2. **CI/CD** - GitHub Actions + Docker\n3. **Microservices** - архитектура с контейнерами\n4. **Service Mesh** - Istio, Linkerd для продвинутой оркестрации\n5. **Monitoring** - Prometheus + Grafana\n\n**Ресурсы:**\n- 📚 Docker Docs: https://docs.docker.com\n- 🎓 Docker Best Practices: https://docs.docker.com/develop/dev-best-practices/\n- 🚀 Awesome Docker: https://github.com/veggiemonk/awesome-docker\n\n## 🎉 Поздравляю!\n\n**Макс стал Docker экспертом!**\n\nТеперь ты можешь:\n- Контейнеризировать любое приложение\n- Деплоить на production\n- Оптимизировать и масштабировать\n- Обучать других\n\n**Сергей:** *\"Отличная работа, Макс! Теперь ты часть Docker community. Продолжай практиковаться!\"*\n\n👋 **Удачи в твоих проектах!**",
+            "self_check": "Я освоил Docker и готов использовать в реальных проектах",
+            "troubleshooting_help": "**💭 Застрял? Вот куда обратиться:**\n\n- **Docker Community:** https://forums.docker.com\n- **Stack Overflow:** [docker] tag\n- **Discord/Slack:** Docker community channels\n- **GitHub:** Открой issue в проектах\n\n**Практика:**\n- Контейнеризируй свои pet projects\n- Contribute в open-source Docker проекты\n- Делись знаниями в блогах/YouTube\n\n**🚀 Keep learning, keep building!**",
+            "self_check_items": [
+              "Я могу создать Dockerfile для любого приложения",
+              "Я умею работать с Docker Compose",
+              "Я могу задеплоить приложение в production",
+              "Я понимаю Docker best practices",
+              "Я готов изучать Kubernetes",
+              "Я горжусь своим прогрессом! 🎉"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -151,7 +424,332 @@
     "category": "other",
     "price": 0,
     "status": "active",
-    "lessons": []
+    "lessons": [
+      {
+        "name": "Day 1: 'It works on my machine!' problem and first container",
+        "short_description": "🔥 Max deploys code and everything crashes. Boss is unhappy. Time to learn Docker!",
+        "steps": [
+          {
+            "name": "Meet Max",
+            "description": "Story introduction - Max faces deployment issues",
+            "self_check": "Understanding Docker basics",
+            "troubleshooting_help": "Common questions about Docker vs VMs",
+            "self_check_items": [
+              "I understand 'It works on my machine' problem",
+              "I know how Docker solves it"
+            ]
+          },
+          {
+            "name": "Installing Docker on macOS",
+            "description": "Install Docker Desktop on Mac",
+            "actions": "Download and install Docker Desktop for Mac",
+            "self_check_items": [
+              "docker --version works",
+              "docker ps works"
+            ],
+            "troubleshooting_help": "Common macOS installation issues"
+          },
+          {
+            "name": "Installing Docker on Windows",
+            "description": "Install Docker Desktop on Windows with WSL2",
+            "actions": "Enable WSL2 and install Docker Desktop",
+            "self_check_items": [
+              "WSL2 installed",
+              "Docker Desktop running"
+            ],
+            "troubleshooting_help": "Windows-specific issues"
+          },
+          {
+            "name": "Installing Docker on Linux",
+            "description": "Install Docker on Ubuntu/Debian",
+            "actions": "Install Docker Engine on Linux",
+            "self_check_items": [
+              "Docker installed",
+              "sudo docker ps works"
+            ],
+            "troubleshooting_help": "Linux installation problems"
+          },
+          {
+            "name": "First container: Hello World",
+            "description": "Run your first Docker container",
+            "actions": "docker run hello-world",
+            "self_check_items": [
+              "Hello World container ran successfully"
+            ],
+            "troubleshooting_help": "Common first-run issues"
+          },
+          {
+            "name": "Interactive Ubuntu container",
+            "description": "Running containers interactively",
+            "actions": "docker run -it ubuntu bash",
+            "self_check_items": [
+              "Ran Ubuntu container",
+              "Executed commands inside"
+            ],
+            "troubleshooting_help": "Interactive mode issues"
+          },
+          {
+            "name": "Basic Docker commands",
+            "description": "Essential Docker CLI commands",
+            "actions": "Learn docker ps, images, rm, rmi",
+            "self_check_items": [
+              "Know basic commands"
+            ],
+            "troubleshooting_help": "Command references"
+          },
+          {
+            "name": "Docker Hub - image registry",
+            "description": "Exploring Docker Hub",
+            "actions": "Search and pull images from Docker Hub",
+            "self_check_items": [
+              "Found images on Hub"
+            ],
+            "troubleshooting_help": "Docker Hub tips"
+          },
+          {
+            "name": "Try a real application",
+            "description": "Run nginx web server",
+            "actions": "docker run -d -p 8080:80 nginx",
+            "self_check_items": [
+              "Nginx running",
+              "Accessible on localhost"
+            ],
+            "troubleshooting_help": "Port mapping issues"
+          },
+          {
+            "name": "Day 1 Summary",
+            "description": "What you learned today",
+            "self_check": "Ready to create own images",
+            "troubleshooting_help": "Resources for learning",
+            "self_check_items": [
+              "Installed Docker",
+              "Ran containers",
+              "Know basic commands"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Day 2: Creating your own Docker images",
+        "short_description": "🐳 Max learns to create custom images. Dockerfile, layers, optimization, Docker Hub",
+        "steps": [
+          {
+            "name": "What is Dockerfile",
+            "description": "Learn Dockerfile basics",
+            "self_check": "Understanding Dockerfile",
+            "troubleshooting_help": "Dockerfile syntax",
+            "self_check_items": [
+              "Know what Dockerfile does"
+            ]
+          },
+          {
+            "name": "First Dockerfile for Python app",
+            "description": "Create Flask app Dockerfile",
+            "actions": "Write Dockerfile, build image",
+            "self_check_items": [
+              "Created Dockerfile",
+              "Built image"
+            ],
+            "troubleshooting_help": "Build errors"
+          },
+          {
+            "name": "Layers and caching in Docker",
+            "description": "How Docker caching works",
+            "actions": "Optimize build with layer caching",
+            "self_check_items": [
+              "Understand layers"
+            ],
+            "troubleshooting_help": "Cache issues"
+          },
+          {
+            "name": ".dockerignore - ignore unnecessary files",
+            "description": "Using .dockerignore",
+            "actions": "Create .dockerignore file",
+            "self_check_items": [
+              "Created .dockerignore"
+            ],
+            "troubleshooting_help": ".dockerignore patterns"
+          },
+          {
+            "name": "Publishing image to Docker Hub",
+            "description": "Push your image to Docker Hub",
+            "actions": "docker push username/imagename",
+            "self_check_items": [
+              "Image on Docker Hub"
+            ],
+            "troubleshooting_help": "Push issues"
+          },
+          {
+            "name": "Day 2 Summary",
+            "description": "What you learned",
+            "self_check": "Can create and publish images",
+            "troubleshooting_help": "Next steps",
+            "self_check_items": [
+              "Created Dockerfile",
+              "Published to Hub"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Day 3: Docker Compose and real application",
+        "short_description": "📦 Max creates multi-container application. Flask + PostgreSQL + Redis with Docker Compose",
+        "steps": [
+          {
+            "name": "What is Docker Compose",
+            "description": "Managing multiple containers easily",
+            "self_check": "Understanding Docker Compose",
+            "troubleshooting_help": "Compose vs Dockerfile",
+            "self_check_items": [
+              "Know why Compose is needed"
+            ]
+          },
+          {
+            "name": "Creating Flask app with PostgreSQL",
+            "description": "Multi-container app",
+            "actions": "Create docker-compose.yml",
+            "self_check_items": [
+              "App connects to PostgreSQL"
+            ],
+            "troubleshooting_help": "Connection issues"
+          },
+          {
+            "name": "Volumes - persistent data",
+            "description": "Saving data between restarts",
+            "actions": "Add volumes to docker-compose.yml",
+            "self_check_items": [
+              "Data persists after restart"
+            ],
+            "troubleshooting_help": "Volume questions"
+          },
+          {
+            "name": "Docker Compose commands",
+            "description": "Managing compose stack",
+            "actions": "Learn up, down, logs, exec",
+            "self_check_items": [
+              "Know Compose commands"
+            ],
+            "troubleshooting_help": "Command issues"
+          },
+          {
+            "name": "Day 3 Summary",
+            "description": "Multi-container mastery",
+            "self_check": "Created app with database",
+            "troubleshooting_help": "Compose resources",
+            "self_check_items": [
+              "Can write docker-compose.yml",
+              "Understand volumes"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Day 4: Production deployment",
+        "short_description": "☁️ Max deploys to production. Nginx, SSL, monitoring - enterprise grade",
+        "steps": [
+          {
+            "name": "Production preparation",
+            "description": "Dev vs Production differences",
+            "self_check": "Production checklist",
+            "troubleshooting_help": "Restart policies",
+            "self_check_items": [
+              "Know production requirements"
+            ]
+          },
+          {
+            "name": "Nginx reverse proxy",
+            "description": "Setting up Nginx",
+            "actions": "Configure nginx.conf",
+            "self_check_items": [
+              "Nginx proxying to app"
+            ],
+            "troubleshooting_help": "502 Bad Gateway fixes"
+          },
+          {
+            "name": "SSL certificates with Let's Encrypt",
+            "description": "Free HTTPS certificates",
+            "actions": "Install certbot, get certificate",
+            "self_check_items": [
+              "HTTPS working"
+            ],
+            "troubleshooting_help": "Certificate issues"
+          },
+          {
+            "name": "Deploying to DigitalOcean/AWS",
+            "description": "Cloud deployment",
+            "actions": "Create server, install Docker, deploy",
+            "self_check_items": [
+              "App running on server"
+            ],
+            "troubleshooting_help": "Deployment problems"
+          },
+          {
+            "name": "Monitoring and logs",
+            "description": "Health checks and logging",
+            "actions": "Setup health checks",
+            "self_check_items": [
+              "Can view logs",
+              "Health checks work"
+            ],
+            "troubleshooting_help": "Monitoring tools"
+          }
+        ]
+      },
+      {
+        "name": "Day 5: Pro level Docker",
+        "short_description": "🚀 Max learns advanced techniques. Multi-stage builds, security, orchestration",
+        "steps": [
+          {
+            "name": "Multi-stage builds",
+            "description": "Optimize image size 10x",
+            "actions": "Create multi-stage Dockerfile",
+            "self_check_items": [
+              "Image much smaller"
+            ],
+            "troubleshooting_help": "Multi-stage questions"
+          },
+          {
+            "name": "Docker security best practices",
+            "description": "10 security rules",
+            "actions": "Apply security best practices",
+            "self_check_items": [
+              "Using non-root user",
+              "No secrets in image"
+            ],
+            "troubleshooting_help": "Security resources"
+          },
+          {
+            "name": "Docker volumes patterns",
+            "description": "Advanced volume usage",
+            "actions": "Backup and restore volumes",
+            "self_check_items": [
+              "Know volume types"
+            ],
+            "troubleshooting_help": "Volume best practices"
+          },
+          {
+            "name": "Docker Swarm vs Kubernetes intro",
+            "description": "Container orchestration",
+            "self_check": "Understanding orchestration",
+            "troubleshooting_help": "When to use what",
+            "self_check_items": [
+              "Know when to use Swarm/K8s"
+            ]
+          },
+          {
+            "name": "Final project and course summary",
+            "description": "Congratulations! You're Docker pro",
+            "self_check": "Ready for real projects",
+            "troubleshooting_help": "Continue learning",
+            "self_check_items": [
+              "Can Dockerize any app",
+              "Ready for production",
+              "Proud of progress! 🎉"
+            ]
+          }
+        ]
+      }
+    ]
   },
   "ka": {
     "name": "Docker: ქაოსიდან კონტეინერებამდე",
@@ -160,6 +758,321 @@
     "category": "other",
     "price": 0,
     "status": "active",
-    "lessons": []
+    "lessons": [
+      {
+        "name": "დღე 1: 'ჩემთან მუშაობს!' პრობლემა და პირველი კონტეინერი",
+        "short_description": "🔥 მაქსი აანზებს კოდს და ყველაფერი ეცვევა. უფროსი უკმაყოფილოა. Docker-ის სწავლის დროა!",
+        "steps": [
+          {
+            "name": "მაქსთან გაცნობა",
+            "description": "შესავალი - მაქსი პრობლემების წინაშე",
+            "self_check": "Docker-ის საფუძვლების გაგება",
+            "troubleshooting_help": "ხშირი შეკითხვები",
+            "self_check_items": [
+              "მივიღე 'ჩემთან მუშაობს' პრობლემა",
+              "ვიცი როგორ წყვეტს Docker-ი"
+            ]
+          },
+          {
+            "name": "Docker-ის დაყენება macOS-ზე",
+            "description": "Docker Desktop დაყენება Mac-ზე",
+            "actions": "Docker Desktop ჩამოტვირთვა და დაყენება",
+            "self_check_items": [
+              "docker --version მუშაობს"
+            ],
+            "troubleshooting_help": "macOS პრობლემები"
+          },
+          {
+            "name": "Docker-ის დაყენება Windows-ზე",
+            "description": "Docker Desktop დაყენება WSL2-ით",
+            "actions": "WSL2 ჩართვა და დაყენება",
+            "self_check_items": [
+              "WSL2 დაყენებული",
+              "Docker Desktop მუშაობს"
+            ],
+            "troubleshooting_help": "Windows პრობლემები"
+          },
+          {
+            "name": "Docker-ის დაყენება Linux-ზე",
+            "description": "Docker დაყენება Ubuntu/Debian-ზე",
+            "actions": "Docker Engine დაყენება",
+            "self_check_items": [
+              "Docker დადგმული"
+            ],
+            "troubleshooting_help": "Linux პრობლემები"
+          },
+          {
+            "name": "პირველი კონტეინერი: Hello World",
+            "description": "პირველი Docker კონტეინერის გაშვება",
+            "actions": "docker run hello-world",
+            "self_check_items": [
+              "Hello World გაეშვა"
+            ],
+            "troubleshooting_help": "გაშვების პრობლემები"
+          },
+          {
+            "name": "ინტერაქტიული Ubuntu კონტეინერი",
+            "description": "კონტეინერების ინტერაქტიულად გაშვება",
+            "actions": "docker run -it ubuntu bash",
+            "self_check_items": [
+              "Ubuntu კონტეინერი გაეშვა"
+            ],
+            "troubleshooting_help": "ინტერაქტიული რეჟიმი"
+          },
+          {
+            "name": "Docker-ის ძირითადი ბრძანებები",
+            "description": "აუცილებელი Docker CLI ბრძანებები",
+            "actions": "docker ps, images, rm, rmi სწავლა",
+            "self_check_items": [
+              "ვიცი ძირითადი ბრძანებები"
+            ],
+            "troubleshooting_help": "ბრძანებების მითითებები"
+          },
+          {
+            "name": "Docker Hub - იმიჯების რეესტრი",
+            "description": "Docker Hub-ის შესწავლა",
+            "actions": "იმიჯების ძებნა და ჩამოტვირთვა",
+            "self_check_items": [
+              "ვიპოვე იმიჯები Hub-ზე"
+            ],
+            "troubleshooting_help": "Docker Hub რჩევები"
+          },
+          {
+            "name": "რეალური აპლიკაციის გამოცდა",
+            "description": "nginx ვებ სერვერის გაშვება",
+            "actions": "docker run -d -p 8080:80 nginx",
+            "self_check_items": [
+              "nginx მუშაობს"
+            ],
+            "troubleshooting_help": "პორტის პრობლემები"
+          },
+          {
+            "name": "დღის 1 შეჯამება",
+            "description": "რა ისწავლე დღეს",
+            "self_check": "მზად ხარ საკუთარი იმიჯების შესაქმნელად",
+            "troubleshooting_help": "სასწავლო რესურსები",
+            "self_check_items": [
+              "დავაყენე Docker",
+              "გავუშვი კონტეინერები"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "დღე 2: საკუთარი Docker იმიჯების შექმნა",
+        "short_description": "🐳 მაქსი სწავლობს კასტომ იმიჯების შექმნას. Dockerfile, layers, ოპტიმიზაცია",
+        "steps": [
+          {
+            "name": "რა არის Dockerfile",
+            "description": "Dockerfile-ის საფუძვლები",
+            "self_check": "Dockerfile-ის გაგება",
+            "troubleshooting_help": "სინტაქსი",
+            "self_check_items": [
+              "ვიცი რას აკეთებს Dockerfile"
+            ]
+          },
+          {
+            "name": "პირველი Dockerfile Python აპლიკაციისთვის",
+            "description": "Flask Dockerfile-ის შექმნა",
+            "actions": "Dockerfile დაწერა, იმიჯის აგება",
+            "self_check_items": [
+              "შევქმენი Dockerfile"
+            ],
+            "troubleshooting_help": "Build შეცდომები"
+          },
+          {
+            "name": "ფენები და კეშირება Docker-ში",
+            "description": "Docker კეშირების მუშაობა",
+            "actions": "ოპტიმიზაცია layer caching-ით",
+            "self_check_items": [
+              "მივიღე ფენები"
+            ],
+            "troubleshooting_help": "Cache პრობლემები"
+          },
+          {
+            "name": ".dockerignore - ზედმეტი ფაილების იგნორირება",
+            "description": ".dockerignore გამოყენება",
+            "actions": ".dockerignore ფაილის შექმნა",
+            "self_check_items": [
+              "შევქმენი .dockerignore"
+            ],
+            "troubleshooting_help": "ნიმუშები"
+          },
+          {
+            "name": "იმიჯის გამოქვეყნება Docker Hub-ზე",
+            "description": "იმიჯის push",
+            "actions": "docker push username/imagename",
+            "self_check_items": [
+              "იმიჯი Hub-ზეა"
+            ],
+            "troubleshooting_help": "Push პრობლემები"
+          },
+          {
+            "name": "დღის 2 შეჯამება",
+            "description": "რა ისწავლე",
+            "self_check": "შემიძლია იმიჯების შექმნა და გამოქვეყნება",
+            "troubleshooting_help": "შემდეგი ნაბიჯები",
+            "self_check_items": [
+              "შევქმენი Dockerfile",
+              "გამოვაქვეყნე Hub-ზე"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "დღე 3: Docker Compose და რეალური აპლიკაცია",
+        "short_description": "📦 მაქსი ქმნის multi-კონტეინერულ აპლიკაციას. Flask + PostgreSQL",
+        "steps": [
+          {
+            "name": "რა არის Docker Compose",
+            "description": "რამდენიმე კონტეინერის მართვა",
+            "self_check": "Compose-ის გაგება",
+            "troubleshooting_help": "Compose vs Dockerfile",
+            "self_check_items": [
+              "ვიცი რატომ სჭირდება"
+            ]
+          },
+          {
+            "name": "Flask აპლიკაციის შექმნა PostgreSQL-ით",
+            "description": "Multi-კონტეინერული აპი",
+            "actions": "docker-compose.yml შექმნა",
+            "self_check_items": [
+              "აპი უკავშირდება PostgreSQL-ს"
+            ],
+            "troubleshooting_help": "კავშირის პრობლემები"
+          },
+          {
+            "name": "Volumes - მუდმივი მონაცემები",
+            "description": "მონაცემების შენახვა",
+            "actions": "volumes-ების დამატება",
+            "self_check_items": [
+              "მონაცემები რჩება"
+            ],
+            "troubleshooting_help": "Volume კითხვები"
+          },
+          {
+            "name": "Docker Compose ბრძანებები",
+            "description": "Compose სტეკის მართვა",
+            "actions": "up, down, logs, exec",
+            "self_check_items": [
+              "ვიცი Compose ბრძანებები"
+            ],
+            "troubleshooting_help": "ბრძანებების პრობლემები"
+          },
+          {
+            "name": "დღის 3 შეჯამება",
+            "description": "Multi-კონტეინერული ოსტატობა",
+            "self_check": "შევქმენი აპი ბაზით",
+            "troubleshooting_help": "Compose რესურსები",
+            "self_check_items": [
+              "შემიძლია docker-compose.yml დაწერა"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "დღე 4: Production დეპლოიმენტი",
+        "short_description": "☁️ მაქსი აანზებს production-ზე. Nginx, SSL, მონიტორინგი",
+        "steps": [
+          {
+            "name": "Production-ზე მომზადება",
+            "description": "Dev vs Production განსხვავებები",
+            "self_check": "Production checklist",
+            "troubleshooting_help": "Restart policies",
+            "self_check_items": [
+              "ვიცი production მოთხოვნები"
+            ]
+          },
+          {
+            "name": "Nginx reverse proxy",
+            "description": "Nginx-ის კონფიგურაცია",
+            "actions": "nginx.conf კონფიგურაცია",
+            "self_check_items": [
+              "Nginx პროქსირებს აპს"
+            ],
+            "troubleshooting_help": "502 შეცდომის გამოსწორება"
+          },
+          {
+            "name": "SSL სერტიფიკატები Let's Encrypt-ით",
+            "description": "უფასო HTTPS",
+            "actions": "certbot დაყენება",
+            "self_check_items": [
+              "HTTPS მუშაობს"
+            ],
+            "troubleshooting_help": "სერტიფიკატის პრობლემები"
+          },
+          {
+            "name": "დეპლოიმენტი DigitalOcean/AWS-ზე",
+            "description": "Cloud დეპლოიმენტი",
+            "actions": "სერვერის შექმნა, Docker დაყენება",
+            "self_check_items": [
+              "აპი მუშაობს სერვერზე"
+            ],
+            "troubleshooting_help": "დეპლოიმენტის პრობლემები"
+          },
+          {
+            "name": "მონიტორინგი და ლოგები",
+            "description": "Health checks და logging",
+            "actions": "Health checks-ის დაყენება",
+            "self_check_items": [
+              "ვხედავ ლოგებს"
+            ],
+            "troubleshooting_help": "მონიტორინგის ხელსაწყოები"
+          }
+        ]
+      },
+      {
+        "name": "დღე 5: Pro დონის Docker",
+        "short_description": "🚀 მაქსი სწავლობს advanced ტექნიკებს. Multi-stage builds, უსაფრთხოება",
+        "steps": [
+          {
+            "name": "Multi-stage builds",
+            "description": "იმიჯის ზომის ოპტიმიზაცია 10-ჯერ",
+            "actions": "Multi-stage Dockerfile შექმნა",
+            "self_check_items": [
+              "იმიჯი გაცილებით პატარაა"
+            ],
+            "troubleshooting_help": "Multi-stage კითხვები"
+          },
+          {
+            "name": "Docker უსაფრთხოების best practices",
+            "description": "10 უსაფრთხოების წესი",
+            "actions": "უსაფრთხოების წესების გამოყენება",
+            "self_check_items": [
+              "არა-root მომხმარებელს ვიყენებ"
+            ],
+            "troubleshooting_help": "უსაფრთხოების რესურსები"
+          },
+          {
+            "name": "Docker volumes პატერნები",
+            "description": "Advanced volume გამოყენება",
+            "actions": "Backup და restore",
+            "self_check_items": [
+              "ვიცი volume ტიპები"
+            ],
+            "troubleshooting_help": "Volume best practices"
+          },
+          {
+            "name": "Docker Swarm vs Kubernetes intro",
+            "description": "კონტეინერების ორკესტრაცია",
+            "self_check": "ორკესტრაციის გაგება",
+            "troubleshooting_help": "როდის რა გამოვიყენო",
+            "self_check_items": [
+              "ვიცი როდის გამოვიყენო Swarm/K8s"
+            ]
+          },
+          {
+            "name": "ფინალური პროექტი და კურსის შეჯამება",
+            "description": "გილოცავთ! Docker pro ხარ",
+            "self_check": "მზად ხარ რეალურ პროექტებისთვის",
+            "troubleshooting_help": "სწავლის გაგრძელება",
+            "self_check_items": [
+              "შემიძლია ნებისმიერი აპის Dockerize",
+              "ამაყი ვარ პროგრესით! 🎉"
+            ]
+          }
+        ]
+      }
+    ]
   }
 }
