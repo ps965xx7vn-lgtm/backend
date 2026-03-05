@@ -7,7 +7,7 @@ metadata:
     app: web
     component: django
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: web
@@ -32,18 +32,18 @@ spec:
             path: /api/health/
             port: 8000
           initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+          periodSeconds: 20
+          timeoutSeconds: 15
+          failureThreshold: 5
 
         readinessProbe:
           httpGet:
             path: /api/health/
             port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 12
+          failureThreshold: 5
 
         # Environment variables from ConfigMap
         envFrom:
@@ -55,18 +55,18 @@ spec:
         # Resources
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "250m"
+            memory: "128Mi"
+            cpu: "100m"
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "384Mi"
+            cpu: "300m"
 
         # Command override for K8s
         command: ["gunicorn"]
         args:
           - "pyland.wsgi:application"
           - "--bind=0.0.0.0:8000"
-          - "--workers=4"
+          - "--workers=2"
           - "--timeout=60"
           - "--access-logfile=-"
           - "--error-logfile=-"

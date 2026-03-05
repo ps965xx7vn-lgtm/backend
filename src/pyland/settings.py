@@ -238,6 +238,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # === SESSION SETTINGS ===
+# Используем Redis для хранения сессий (для социальной авторизации)
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
 # Сессия истекает при закрытии браузера, если не выбран "Запомнить меня"
 SESSION_COOKIE_AGE = 1209600  # 2 недели (в секундах)
 SESSION_SAVE_EVERY_REQUEST = (
@@ -329,7 +333,7 @@ SOCIAL_AUTH_PIPELINE = (
 # Redirect URLs after login/logout
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/"
 SOCIAL_AUTH_LOGOUT_REDIRECT_URL = "/"
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = "/students/profile/"
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = "/"
 
 # URL namespaces
 SOCIAL_AUTH_URL_NAMESPACE = "social"
