@@ -707,15 +707,16 @@ class DashboardManager {
             const currentPath = window.location.pathname;
             const langMatch = currentPath.match(/^\/(ru|en|ka)\//);
             const langPrefix = langMatch ? `/${langMatch[1]}` : '/ru';
-            const pathMatch = currentPath.match(/courses\/([^\/]+)\/lessons\/([^\/]+)/);
+            // Парсим UUID пользователя из URL (courses/<uuid>/<course_slug>/lessons/<lesson_slug>/)
+            const pathMatch = currentPath.match(/courses\/([0-9a-f-]{36})\/([^\/]+)\/lessons\/([^\/]+)/);
 
             if (!pathMatch) {
-
+                errorsDiv.innerHTML = '<div class="error-message">Ошибка формирования URL. Обновите страницу.</div>';
                 return;
             }
 
-            const [, courseSlug, lessonSlug] = pathMatch;
-            const url = `${langPrefix}/students/courses/${courseSlug}/lessons/${lessonSlug}/submit/`;
+            const [, userUuid, courseSlug, lessonSlug] = pathMatch;
+            const url = `${langPrefix}/students/courses/${userUuid}/${courseSlug}/lessons/${lessonSlug}/submit/`;
 
             // Блокируем кнопку
             submitBtn.disabled = true;
