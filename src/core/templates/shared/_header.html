@@ -48,9 +48,8 @@
                                    {% if language.code == CURRENT_LANGUAGE %}data-current="true"{% endif %}>
                                     <span class="flag">
                                         {% if language.code == 'ru' %}🇷🇺
-                                        {% elif language.code == 'en' %}🇬🇧
                                         {% elif language.code == 'ka' %}🇬🇪
-                                        {% else %}��{% endif %}
+                                        {% else %}🇬🇧{% endif %}
                                     </span>
                                     <span class="language-name">{{ language.name_local }}</span>
                                 </a>
@@ -460,13 +459,13 @@
                         <div class="mobile-language-btns">
                             {% get_current_language as CURRENT_LANGUAGE %}
                             <button class="mobile-lang-btn {% if CURRENT_LANGUAGE == 'ru' %}active{% endif %}" data-lang="ru" aria-label="Русский">
-                                🇷🇺
+                                🇷🇺 RU
                             </button>
                             <button class="mobile-lang-btn {% if CURRENT_LANGUAGE == 'ka' %}active{% endif %}" data-lang="ka" aria-label="ქართული">
-                                🇬🇪
+                                🇬🇪 GE
                             </button>
                             <button class="mobile-lang-btn {% if CURRENT_LANGUAGE == 'en' %}active{% endif %}" data-lang="en" aria-label="English">
-                                🇬🇧
+                                🇬🇧 EN
                             </button>
                         </div>
                     </div>

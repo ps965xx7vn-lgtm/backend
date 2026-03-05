@@ -1,125 +1,67 @@
-# 📚 Документация Pyland Backend
+# PyLand Documentation
 
-Вся документация проекта организована по категориям для удобного поиска.
+Полная документация онлайн школы программирования PyLand.
 
----
+## 📚 Содержание
 
-## 🚀 Начало работы
+### 🚀 Быстрый старт
+- [Quick Start Guide](getting-started/QUICK_START.md) - Запуск проекта за 5 минут
+- [Project Structure](STRUCTURE.md) - Архитектура и структура проекта
 
-**Новичкам начните здесь:**
+### 🔐 Авторизация и Безопасность
+- [OAuth Setup](authentication/OAUTH_SETUP.md) - Настройка GitHub и Google OAuth
+- [Security Audit](SECURITY_AUDIT_2026-02-26.md) - Аудит безопасности
 
-1. **[Быстрый старт](../README.md)** - Обзор проекта и быстрая установка
-2. **[Локальная разработка](getting-started/QUICK_START.md)** - Настройка dev окружения
-3. **[Архитектура проекта](development/ARCHITECTURE.md)** - Структура и технологии
+### 🌍 Локализация
+- [Localization Guide](LOCALIZATION_GUIDE.md) - Полное руководство по локализации
+- [Localization Quickstart](LOCALIZATION_QUICKSTART.md) - Быстрый старт
+- [Course Localization](COURSE_LOCALIZATION_GUIDE.md) - Локализация курсов
 
----
+### 🎓 Курсы и Контент
+- [Course Examples](courses/) - Примеры курсов (Docker, Git, GitHub)
+- [Checkbox Implementation](courses/CHECKBOX_IMPLEMENTATION_SUMMARY.md) - Чекбоксы в уроках
+- [Self-Check Items Guide](courses/SELF_CHECK_ITEMS_GUIDE.md) - Элементы самопроверки
 
-## 🚢 Деплой
+### 🏆 Функциональность
+- [Certificate System](features/CERTIFICATE_SYSTEM_IMPLEMENTATION.md) - Система сертификатов
+- [Multilingual Certificates](features/MULTILINGUAL_CERTIFICATES.md) - Многоязычные сертификаты
+- [Email Certificate Setup](features/EMAIL_CERTIFICATE_SETUP.md) - Email уведомления о сертификатах
+- [Notifications System](features/NOTIFICATIONS_PURPOSE.md) - Система уведомлений
+- [Subscription Management](features/SUBSCRIPTION_MANAGEMENT.md) - Управление подписками
 
-**Для деплоя на production:**
+### 🚢 Деплой
+- [Deployment Guide](deployment/DEPLOYMENT.md) - Полное руководство
+- [Deployment Summary](deployment/DEPLOYMENT_SUMMARY.md) - Краткая сводка
+- [Deploy Checklist](deployment/DEPLOY_CHECKLIST.md) - Чеклист
+- [Start Here](deployment/START_HERE.md) - С чего начать
+- [Production Ready](deployment/PRODUCTION_READY.md) - Готовность к продакшену
+- [K8S Deploy Guide](deployment/K8S_DEPLOY_GUIDE.md) - Kubernetes
+- [Email SMTP Setup](deployment/EMAIL_SMTP_SETUP.md) - Настройка SMTP
+- [TBC Bank Application](TBC_BANK_APPLICATION_FORM.md) - TBC Bank
+- [Troubleshooting](deployment/TROUBLESHOOTING.md) - Решение проблем
 
-### Быстрый путь (за 5 минут):
-- **[START HERE](deployment/START_HERE.md)** ⭐ - Быстрый деплой (одна команда!)
+### 🛠️ Разработка
+- [Architecture](development/ARCHITECTURE.md) - Архитектура приложения
+- [Contributing](development/CONTRIBUTING.md) - Как контрибьютить
+- [Git Workflow](development/GIT_WORKFLOW.md) - Git flow
 
-### Подробные руководства:
-- **[Чеклист деплоя](deployment/DEPLOY_CHECKLIST.md)** - Пошаговая инструкция
-- **[Руководство по Kubernetes](deployment/K8S_DEPLOY_GUIDE.md)** - Полное руководство по K8s
-- **[Готовность к продакшену](deployment/PRODUCTION_READY.md)** - Статус готовности к продакшену
+### 🐛 Решение проблем
+- [Static Files Fix](troubleshooting/STATIC_FIX.md) - Проблемы со статикой
+- [Browser Cache Fix](troubleshooting/FIX_BROWSER_CACHE.md) - Кеш браузера
+- [Quick Fix Guide](troubleshooting/FIX_QUICK_GUIDE.md) - Быстрые исправления
+- [iPhone Fix](troubleshooting/IPHONE_FIX_QUICK.md) - Исправления для iPhone
 
-### Настройка и устранение проблем:
-- **[Настройка Email SMTP](deployment/EMAIL_SMTP_SETUP.md)** - Настройка Gmail SMTP
-- **[Устранение проблем](deployment/TROUBLESHOOTING.md)** - Решение типичных проблем
-- **[Информация о деплое](deployment/DEPLOYMENT.md)** - Информация о production окружении
-- **[История деплоев](deployment/DEPLOYMENT_SUMMARY.md)** - История деплоев
-
----
-
-## 💻 Разработка
-
-**Для разработчиков:**
-
-### Архитектура и код:
-- **[Архитектура](development/ARCHITECTURE.md)** - Структура приложения, модели, API
-- **[Руководство для контрибьюторов](development/CONTRIBUTING.md)** - Как участвовать в разработке
-- **[Git Workflow](development/GIT_WORKFLOW.md)** - Работа с Git, ветки, правила коммитов
-
-### Руководства по приложениям:
-- **[Authentication](../src/authentication/README.md)** - Система аутентификации
-- **[Blog App](../src/blog/README.md)** - Блог с комментариями и реакциями
-- **[Students App](../src/students/README.md)** - Модуль обучения студентов
-- **[Reviewers App](../src/reviewers/README.md)** - Система проверки работ
-- **[Managers App](../src/managers/README.md)** - Административная панель
-- **[Core App](../src/core/README.md)** - Базовый функционал платформы
-
----
-
-## 📂 Структура документации
-
-```
-docs/
-├── README.md                    # Этот файл (индекс)
-│
-├── getting-started/             # Начало работы
-│   └── QUICK_START.md          # Локальная разработка
-│
-├── deployment/                  # Деплой и production
-│   ├── START_HERE.md           # ⭐ Быстрый деплой
-│   ├── DEPLOY_CHECKLIST.md     # Пошаговый чеклист
-│   ├── K8S_DEPLOY_GUIDE.md     # Kubernetes руководство
-│   ├── PRODUCTION_READY.md     # Статус готовности
-│   ├── EMAIL_SMTP_SETUP.md     # Настройка email
-│   ├── TROUBLESHOOTING.md      # Решение проблем
-│   ├── DEPLOYMENT.md           # Информация о продакшене
-│   └── DEPLOYMENT_SUMMARY.md   # История деплоев
-│
-└── development/                 # Для разработчиков
-    ├── ARCHITECTURE.md         # Архитектура проекта
-    ├── CONTRIBUTING.md         # Руководство для контрибьюторов
-    └── GIT_WORKFLOW.md         # Git workflow
-```
+### 📝 История изменений
+- [CHANGELOG.md](CHANGELOG.md) - История изменений проекта
 
 ---
 
-## 🔍 Быстрая навигация по задачам
+## � Поддержка
 
-### Я хочу...
-
-**...запустить проект локально:**
-→ [README.md](../README.md) → [QUICK_START.md](getting-started/QUICK_START.md)
-
-**...задеплоить на production:**
-→ [START_HERE.md](deployment/START_HERE.md)
-
-**...настроить отправку email:**
-→ [EMAIL_SMTP_SETUP.md](deployment/EMAIL_SMTP_SETUP.md)
-
-**...решить проблему с деплоем:**
-→ [TROUBLESHOOTING.md](deployment/TROUBLESHOOTING.md)
-
-**...понять архитектуру проекта:**
-→ [ARCHITECTURE.md](development/ARCHITECTURE.md)
-
-**...внести вклад в проект:**
-→ [CONTRIBUTING.md](development/CONTRIBUTING.md)
-
-**...работать с Git правильно:**
-→ [GIT_WORKFLOW.md](development/GIT_WORKFLOW.md)
+- **Email**: support@pylandschool.com
+- **Issues**: [GitHub Issues](https://github.com/your-org/pyschool/issues)
 
 ---
 
-## 📖 Дополнительная документация
-
-- **[Примеры Kubernetes](../k8s/README.md)** - Примеры K8s манифестов
-- **[Скрипт деплоя](../deploy.sh)** - Автоматический скрипт деплоя
-
----
-
-## 🤝 Нужна помощь?
-
-- **Проблемы:** https://github.com/ps965xx7vn-lgtm/backend/issues
-- **Обсуждения:** https://github.com/ps965xx7vn-lgtm/backend/discussions
-- **Почта:** pylandschool@gmail.com
-
----
-
-**Последнее обновление:** 22 января 2026
+**Обновлено**: 5 марта 2026
+**Версия**: 2.0.0

@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="{% static 'css/students/markdown.css' %}">
 <link rel="stylesheet" href="{% static 'css/students/code-blocks.css' %}">
 <link rel="stylesheet" href="{% static 'css/students/self-check-items.css' %}?v=20250129">
+<link rel="stylesheet" href="{% static 'css/students/lesson-submission.css' %}?v=20260305-3">
 {% endblock %}
 
 {% block header %}
@@ -620,7 +621,7 @@
 
                 <!-- Resubmit Form -->
                 <form id="lesson-resubmit-form" class="submission-resubmit-form"
-                      data-submit-url="{% url 'students:account_lesson_submit' course_slug=lesson.course.slug lesson_slug=lesson.slug %}"
+                      data-submit-url="{% url 'students:lesson_submit' user_uuid=user_uuid course_slug=lesson.course.slug lesson_slug=lesson.slug %}"
                       data-improvement-steps="{{ incomplete_improvements_count }}">
                     {% csrf_token %}
                     <div class="form-group">
@@ -649,13 +650,16 @@
                 <p class="submission-time">{% trans "Отправлено:" %} {{ existing_submission.submitted_at|date:"d.m.Y H:i" }}</p>
 
                 <!-- Edit button -->
-                <button type="button" class="btn btn-secondary btn-edit-submission" data-form-id="edit-form-pending">
+                <button type="button"
+                        class="btn btn-secondary btn-edit-submission"
+                        data-form-id="edit-form-pending"
+                        onclick="console.log('🚀 ONCLICK fired!'); var form = document.getElementById('edit-form-pending'); console.log('Form:', form); if(form) { var isHidden = form.style.display === 'none' || window.getComputedStyle(form).display === 'none'; console.log('isHidden:', isHidden); form.style.display = isHidden ? 'block' : 'none'; console.log('New display:', form.style.display); } else { console.error('Form not found!'); }">
                     ✏️ {% trans "Изменить ссылку" %}
                 </button>
 
                 <!-- Hidden edit form -->
                 <form id="edit-form-pending" class="submission-resubmit-form" style="display: none;"
-                      data-submit-url="{% url 'students:account_lesson_submit' course_slug=lesson.course.slug lesson_slug=lesson.slug %}">
+                      data-submit-url="{% url 'students:lesson_submit' user_uuid=user_uuid course_slug=lesson.course.slug lesson_slug=lesson.slug %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_edit_url_pending">{% trans "Новая ссылка" %}</label>
@@ -770,9 +774,11 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/students/dashboard.js' %}"></script>
-<script src="{% static 'js/students/dashboard-mobile.js' %}"></script>
-<script src="{% static 'js/students/lesson.js' %}"></script>
-<script src="{% static 'js/students/code-copy.js' %}"></script>
-<script src="{% static 'js/students/lesson-detail.js' %}"></script>
+<!-- Подключаем статические файлы JavaScript -->
+<script src="{% static 'js/students/dashboard.js' %}?v=20260305-3"></script>
+<script src="{% static 'js/students/dashboard-mobile.js' %}?v=20260305-3"></script>
+<script src="{% static 'js/students/lesson.js' %}?v=20260305-3"></script>
+<script src="{% static 'js/students/code-copy.js' %}?v=20260305-3"></script>
+<script src="{% static 'js/students/lesson-detail.js' %}?v=20260305-3"></script>
+<script src="{% static 'js/students/lesson-submission.js' %}?v=20260305-3"></script>
 {% endblock %}

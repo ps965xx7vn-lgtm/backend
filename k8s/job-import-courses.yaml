@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: import-courses-with-prices
+  namespace: pyland
+  labels:
+    app: import-courses
+    component: init
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400  # Delete after 24 hours
+  template:
+    metadata:
+      labels:
+        app: import-courses
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: import-git-course
+        image: ghcr.io/ps965xx7vn-lgtm/backend:latest
+        imagePullPolicy: Always
+
+        # Resource limits
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+
+        # Environment variables
+        envFrom:
+        - configMapRef:
+            name: django-config
+        - secretRef:
+            name: django-secret
+
+        # Volume mount for courses
+        volumeMounts:
+        - name: course-files
+          mountPath: /app/docs/courses
+
+        # Import Git course only (Docker already imported)
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - |
+            echo "==== Importing Git/GitHub course ===="
+            python manage.py import_course /app/docs/courses/git_github_course_practical.json --update
+
+            echo "==== Git/GitHub course imported successfully! ===="
+            echo "Git/GitHub course: 10000 RUB"
+
+      volumes:
+      - name: course-files
+        emptyDir: {}

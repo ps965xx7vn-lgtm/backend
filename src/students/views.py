@@ -1128,6 +1128,7 @@ def lesson_detail_view(
         {
             "course": course,
             "lesson": lesson,
+            "user_uuid": user_uuid,  # Добавлено для формирования URL
             "steps": steps_list,
             "submission_form": form if not existing_submission else None,
             "existing_submission": existing_submission,
@@ -1173,6 +1174,7 @@ def lesson_submit_view(request, user_uuid: uuid.UUID, course_slug, lesson_slug):
         )
 
     form = LessonSubmissionForm(request.POST)
+
     if form.is_valid():
         existing_submission = LessonSubmission.objects.filter(
             student=profile, lesson=lesson
@@ -1305,23 +1307,24 @@ def lesson_submit_view(request, user_uuid: uuid.UUID, course_slug, lesson_slug):
             submission.save()
             message = "Работа успешно отправлена на проверку!"
 
-        return JsonResponse(
-            {
-                "success": True,
-                "message": message,
-                "submission": {
-                    "id": str(submission.id),
-                    "url": submission.lesson_url,
-                    "submitted_at": submission.submitted_at.isoformat(),
-                    "revision_count": submission.revision_count,
-                },
-            }
-        )
+        response_data = {
+            "success": True,
+            "message": message,
+            "submission": {
+                "id": str(submission.id),
+                "url": submission.lesson_url,
+                "submitted_at": submission.submitted_at.isoformat(),
+                "revision_count": submission.revision_count,
+            },
+        }
+        return JsonResponse(response_data)
     else:
-        return JsonResponse(
-            {"success": False, "error": "Некорректная ссылка на GitHub", "errors": form.errors},
-            status=400,
-        )
+        response_data = {
+            "success": False,
+            "error": "Некорректная ссылка на GitHub",
+            "errors": form.errors,
+        }
+        return JsonResponse(response_data, status=400)
 
 
 @login_required
@@ -1332,12 +1335,7 @@ def toggle_improvement_view(request, improvement_id):
     """
     from reviewers.models import StudentImprovement
 
-    logger.info(
-        f"toggle_improvement_view called: method={request.method}, improvement_id={improvement_id}, user={request.user}"
-    )
-
     if request.method != "POST":
-        logger.warning(f"Wrong method: {request.method}")
         return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
 
     try:

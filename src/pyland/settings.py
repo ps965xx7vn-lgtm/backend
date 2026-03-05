@@ -108,6 +108,7 @@ INSTALLED_APPS = [
     "notifications",  # email/Telegram/SMS уведомления
     "blog",  # статьи, новости, контент для SEO
     # Third-party
+    "social_django",  # OAuth authentication (GitHub, Google)
     "ninja",
     "ninja_jwt",
     "ninja_extra",
@@ -265,27 +266,73 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # Используем более простой бэкенд для лучшей совместимости
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 WHITENOISE_MANIFEST_STRICT = False  # Don't fail on missing files
 WHITENOISE_AUTOREFRESH = DEBUG  # Auto-refresh in development
+WHITENOISE_USE_FINDERS = DEBUG  # Use Django finders in development
+WHITENOISE_MAX_AGE = 0 if DEBUG else 31536000  # No cache in dev, 1 year in prod
+
+# Настройки для правильной отдачи статики
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# === SOCIAL ===
+# === SOCIAL AUTH ===
 SOCIAL_AUTH_JSONFIELD_ENABLED = env.bool("SOCIAL_AUTH_JSONFIELD_ENABLED", True)
+
+# GitHub OAuth
 SOCIAL_AUTH_GITHUB_KEY = env.str("SOCIAL_AUTH_GITHUB_KEY", "")
 SOCIAL_AUTH_GITHUB_SECRET = env.str("SOCIAL_AUTH_GITHUB_SECRET", "")
+SOCIAL_AUTH_GITHUB_SCOPE = ["user:email"]
+
+# Google OAuth2
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", "")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "")
-SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = env.str(
-    "SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI",
-    "http://127.0.0.1:8080/google-auth/complete/google-oauth2/",
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+]
+
+# Redirect URIs configuration
+# Production: https://pylandschool.com
+# Development: http://127.0.0.1:8000
+SOCIAL_AUTH_REDIRECT_BASE = env.str("SITE_URL", "http://127.0.0.1:8000")
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    "social_core.backends.github.GithubOAuth2",
+    "social_core.backends.google.GoogleOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+# Social auth pipeline
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
 )
+
+# Redirect URLs after login/logout
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/"
+SOCIAL_AUTH_LOGOUT_REDIRECT_URL = "/"
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = "/students/profile/"
+
+# URL namespaces
+SOCIAL_AUTH_URL_NAMESPACE = "social"
 
 # === SITE URL ===
 SITE_URL = env.str("SITE_URL", "http://127.0.0.1:8000")
