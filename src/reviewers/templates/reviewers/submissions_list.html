@@ -8,13 +8,11 @@
 <link rel="stylesheet" href="{% static 'css/reviewers/dashboard.css' %}">
 {% endblock %}
 
-{% block content %}
-<button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
-    <svg class="icon-menu" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-    </svg>
-</button>
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
 
+{% block content %}
 <div class="sidebar-overlay"></div>
 
 <div class="dashboard-layout">

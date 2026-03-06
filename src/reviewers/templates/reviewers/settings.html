@@ -9,6 +9,10 @@
 <link rel="stylesheet" href="{% static 'css/reviewers/settings.css' %}">
 {% endblock %}
 
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
 {% block content %}
 <div class="dashboard-layout">
     <!-- Sidebar -->
