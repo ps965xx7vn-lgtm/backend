@@ -73,6 +73,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
+                "django.template.context_processors.i18n",  # Для доступа к LANGUAGE_CODE
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.footer_data",
@@ -238,8 +239,11 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # === SESSION SETTINGS ===
-# Используем Redis для хранения сессий (для социальной авторизации)
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# Используем Redis для хранения сессий в продакшене (для социальной авторизации)
+# В development используем database, чтобы не зависеть от Redis
+SESSION_ENGINE = (
+    "django.contrib.sessions.backends.db" if DEBUG else "django.contrib.sessions.backends.cache"
+)
 SESSION_CACHE_ALIAS = "default"
 
 # Сессия истекает при закрытии браузера, если не выбран "Запомнить меня"
