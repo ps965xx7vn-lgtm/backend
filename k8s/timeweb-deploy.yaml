@@ -273,6 +273,12 @@ spec:
               name: django-secret
               key: EMAIL_HOST_PASSWORD
               optional: true
+        # Import all ConfigMap and Secret variables
+        envFrom:
+        - configMapRef:
+            name: django-config
+        - secretRef:
+            name: django-secret
         livenessProbe:
           httpGet:
             path: /api/ping
@@ -402,6 +408,12 @@ spec:
               name: django-secret
               key: EMAIL_HOST_PASSWORD
               optional: true
+        # Import all ConfigMap and Secret variables
+        envFrom:
+        - configMapRef:
+            name: django-config
+        - secretRef:
+            name: django-secret
         resources:
           requests:
             memory: "256Mi"
@@ -464,6 +476,12 @@ spec:
             configMapKeyRef:
               name: django-config
               key: CELERY_RESULT_BACKEND
+        # Import all ConfigMap and Secret variables
+        envFrom:
+        - configMapRef:
+            name: django-config
+        - secretRef:
+            name: django-secret
         resources:
           requests:
             memory: "64Mi"

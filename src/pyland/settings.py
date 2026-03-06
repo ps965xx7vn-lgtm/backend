@@ -73,6 +73,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
+                "django.template.context_processors.i18n",  # Для доступа к LANGUAGE_CODE
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.footer_data",
@@ -238,6 +239,13 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # === SESSION SETTINGS ===
+# Используем Redis для хранения сессий в продакшене (для социальной авторизации)
+# В development используем database, чтобы не зависеть от Redis
+SESSION_ENGINE = (
+    "django.contrib.sessions.backends.db" if DEBUG else "django.contrib.sessions.backends.cache"
+)
+SESSION_CACHE_ALIAS = "default"
+
 # Сессия истекает при закрытии браузера, если не выбран "Запомнить меня"
 SESSION_COOKIE_AGE = 1209600  # 2 недели (в секундах)
 SESSION_SAVE_EVERY_REQUEST = (
@@ -266,14 +274,15 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # Используем более простой бэкенд для лучшей совместимости
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        # CompressedManifestStaticFilesStorage добавляет хеши к именам файлов для бустинга кеша
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 WHITENOISE_MANIFEST_STRICT = False  # Don't fail on missing files
 WHITENOISE_AUTOREFRESH = DEBUG  # Auto-refresh in development
 WHITENOISE_USE_FINDERS = DEBUG  # Use Django finders in development
-WHITENOISE_MAX_AGE = 0 if DEBUG else 31536000  # No cache in dev, 1 year in prod
+WHITENOISE_MAX_AGE = 0 if DEBUG else 86400  # No cache in dev, 1 day in prod (было 1 год)
+WHITENOISE_KEEP_ONLY_HASHED_FILES = not DEBUG  # Только файлы с хешами в проде
 
 # Настройки для правильной отдачи статики
 STATICFILES_FINDERS = [
@@ -288,6 +297,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # === SOCIAL AUTH ===
 SOCIAL_AUTH_JSONFIELD_ENABLED = env.bool("SOCIAL_AUTH_JSONFIELD_ENABLED", True)
+
+# Защита и настройки связывания аккаунтов
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ["email"]  # Не перезаписывать email при связывании
+SOCIAL_AUTH_USER_MODEL = "authentication.User"  # Наша кастомная модель User
+SOCIAL_AUTH_LOGIN_ERROR_URL = "/authentication/signin/"  # Редирект при ошибке
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False  # Не показывать исключения пользователям
 
 # GitHub OAuth
 SOCIAL_AUTH_GITHUB_KEY = env.str("SOCIAL_AUTH_GITHUB_KEY", "")
@@ -319,6 +334,7 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
     "social_core.pipeline.social_auth.social_uid",
     "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.social_auth.associate_by_email",  # Связывать с существующим пользователем по email
     "social_core.pipeline.user.get_username",
     "social_core.pipeline.user.create_user",
     "social_core.pipeline.social_auth.associate_user",
@@ -329,7 +345,7 @@ SOCIAL_AUTH_PIPELINE = (
 # Redirect URLs after login/logout
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/"
 SOCIAL_AUTH_LOGOUT_REDIRECT_URL = "/"
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = "/students/profile/"
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = "/"
 
 # URL namespaces
 SOCIAL_AUTH_URL_NAMESPACE = "social"

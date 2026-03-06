@@ -9,7 +9,14 @@
 <link rel="stylesheet" href="{% static 'css/reviewers/settings.css' %}">
 {% endblock %}
 
+{% block header %}
+{% include 'shared/_header.html' with show_dashboard_button=True %}
+{% endblock %}
+
 {% block content %}
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay"></div>
+
 <div class="dashboard-layout">
     <!-- Sidebar -->
     <aside class="dashboard-sidebar">

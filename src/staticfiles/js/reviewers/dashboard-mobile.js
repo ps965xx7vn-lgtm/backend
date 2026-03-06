@@ -15,16 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
     }
 
-    const toggleBtn = document.querySelector('.mobile-sidebar-toggle');
+    const toggleBtn = document.querySelector('.dashboard-menu-btn');
     const sidebar = document.querySelector('.dashboard-sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
 
     // Устанавливаем позицию кнопки сразу после определения высоты хедера
     if (toggleBtn) {
-        // Позиция: прямо под хедером + небольшой отступ
-        const buttonTop = headerHeight + 8; // 8px отступ вместо 16px
-        toggleBtn.style.top = buttonTop + 'px';
-
+        // Кнопка теперь в header, не нужно устанавливать top
+        // toggleBtn уже позиционируется через flex в header-content
     }
 
     if (!toggleBtn || !sidebar || !overlay) {

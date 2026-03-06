@@ -112,6 +112,10 @@
         // Set active language on load
         // Извлекаем первые 2 символа языка (например, 'ru' из 'ru-RU' или 'en' из 'en-US')
         const currentLang = (document.documentElement.lang || 'ru').split('-')[0];
+        
+        // Убираем active со всех кнопок перед установкой правильного
+        langBtns.forEach(b => b.classList.remove('active'));
+        
         const activeLangBtn = document.querySelector(`.mobile-lang-btn[data-lang="${currentLang}"]`);
         if (activeLangBtn) {
             activeLangBtn.classList.add('active');

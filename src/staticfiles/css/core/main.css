@@ -89,6 +89,7 @@
   --bg-secondary: #f9fafb;
   --bg-tertiary: #f3f4f6;
   --bg-color: #ffffff;
+  --card-bg: #ffffff;
 
   /* Текстовые цвета для светлой темы */
   --text-color: #111827;
@@ -523,6 +524,7 @@ pre code {
   --bg-secondary: #2a2a2a;
   --bg-tertiary: #3a3a3a;
   --bg-color: #1a1a1a;
+  --card-bg-dark: #1a1f2e;
 
   /* Текстовые цвета для темной темы */
   --text-color: #ffffff;
