@@ -19,12 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.querySelector('.dashboard-sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
 
-    // Устанавливаем позицию кнопки сразу после определения высоты хедера
-    if (toggleBtn) {
-        // Кнопка теперь в header, не нужно устанавливать top
-        // toggleBtn уже позиционируется через flex в header-content
-    }
-
     if (!toggleBtn || !sidebar || !overlay) {
 
         return; // Элементы не найдены
