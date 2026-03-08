@@ -59,9 +59,6 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=not DEBUG)
 CSRF_COOKIE_HTTPONLY = env.bool("CSRF_COOKIE_HTTPONLY", default=True)
 CSRF_COOKIE_SAMESITE = env.str("CSRF_COOKIE_SAMESITE", default="Lax")
-SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=not DEBUG)
-SESSION_COOKIE_HTTPONLY = env.bool("SESSION_COOKIE_HTTPONLY", default=True)
-SESSION_COOKIE_SAMESITE = env.str("SESSION_COOKIE_SAMESITE", default="Lax")
 
 # === TEMPLATES ===
 TEMPLATES = [
@@ -86,9 +83,7 @@ TEMPLATES = [
 ]
 # === APPS ===
 INSTALLED_APPS = [
-    # Modeltranslation (MUST be before admin)
     "modeltranslation",
-    # Django core
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -96,20 +91,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    # Core apps
-    "authentication",  # Аутентификация и управление пользователями
-    "core",  # общее
-    "students",  # Функционал для студентов
-    "courses",  # курсы / уроки
-    "certificates",  # сертификаты
-    "payments",  # платежи
-    "reviewers",  # отзывы
-    "mentors",  # менторы
-    "managers",  # менеджер
-    "notifications",  # email/Telegram/SMS уведомления
-    "blog",  # статьи, новости, контент для SEO
-    # Third-party
-    "social_django",  # OAuth authentication (GitHub, Google)
+    "authentication",
+    "core",
+    "students",
+    "courses",
+    "certificates",
+    "payments",
+    "reviewers",
+    "mentors",
+    "managers",
+    "notifications",
+    "blog",
+    "social_django",
     "ninja",
     "ninja_jwt",
     "ninja_extra",
@@ -119,17 +112,19 @@ INSTALLED_APPS = [
     "markdownify",
     "corsheaders",
     "taggit",
-    "django_celery_beat",  # Celery Beat scheduler
+    "django_celery_beat",
 ]
 
 # === LOGGING ===
-# Игнорируем 404 ошибки для определенных путей
 IGNORABLE_404_URLS = [
     re.compile(r"^/\.well-known/"),
     re.compile(r"^/favicon\.ico$"),
     re.compile(r"^/robots\.txt$"),
     re.compile(r"^/apple-touch-icon"),
 ]
+
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
 
 LOGGING = {
     "version": 1,
@@ -146,17 +141,32 @@ LOGGING = {
             "callback": lambda record: ("Not Found" not in record.getMessage()) or DEBUG,
         },
     },
+    "formatters": {
+        "verbose": {"format": "{levelname} {asctime} {module} {message}", "style": "{"},
+        "simple": {"format": "{levelname} {message}", "style": "{"},
+    },
     "handlers": {
         "loguru_console": {
             "()": LoguruInterceptHandler,
             "level": 1,
             "filters": ["page_not_found_filter", "disallowed_host_filter"],
         },
+        "file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR / "logs/django.log",
+            "formatter": "verbose",
+        },
     },
     "loggers": {
         "": {
             "handlers": ["loguru_console"],
             "level": "INFO",
+            "propagate": True,
+        },
+        "django": {
+            "handlers": ["file", "loguru_console"],
+            "level": "WARNING",
             "propagate": True,
         },
         "django.server": {
@@ -182,7 +192,7 @@ LOGGING = {
 # === MIDDLEWARE ===
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Static files serving
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -192,20 +202,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    # Core middleware
     "core.middleware.CoreRateLimitMiddleware",
     "core.middleware.CoreSecurityHeadersMiddleware",
-    # Blog middleware
     "blog.middleware.RateLimitMiddleware",
     "blog.middleware.BlogSecurityHeadersMiddleware",
-    # Managers middleware
     "managers.middleware.ManagerRateLimitMiddleware",
     "managers.middleware.ManagerSecurityHeadersMiddleware",
-    # Students middleware
     "students.middleware.StudentsRateLimitMiddleware",
     "students.middleware.StudentsSecurityHeadersMiddleware",
     "students.middleware.ProgressCacheMiddleware",
-    # "students.middleware.CacheHitCounterMiddleware",  # Отключен - заменяет глобальные методы cache
 ]
 
 # === URL / WSGI ===
@@ -228,32 +233,24 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Время действия ссылки для сброса пароля (в секундах)
-# 86400 секунд = 24 часа (соответствует тексту в email-шаблоне)
 PASSWORD_RESET_TIMEOUT = 86400
 
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
+AUTHENTICATION_BACKENDS = [
     "social_core.backends.github.GithubOAuth2",
     "social_core.backends.google.GoogleOAuth2",
-)
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # === SESSION SETTINGS ===
-# Используем Redis для хранения сессий в продакшене (для социальной авторизации)
-# В development используем database, чтобы не зависеть от Redis
 SESSION_ENGINE = (
     "django.contrib.sessions.backends.db" if DEBUG else "django.contrib.sessions.backends.cache"
 )
 SESSION_CACHE_ALIAS = "default"
-
-# Сессия истекает при закрытии браузера, если не выбран "Запомнить меня"
-SESSION_COOKIE_AGE = 1209600  # 2 недели (в секундах)
-SESSION_SAVE_EVERY_REQUEST = (
-    True  # Сохраняем сессию при каждом запросе для синхронизации между вкладками
-)
-SESSION_COOKIE_SECURE = not DEBUG  # HTTPS only в продакшене
-SESSION_COOKIE_HTTPONLY = True  # Защита от XSS
-SESSION_COOKIE_SAMESITE = "Lax"  # CSRF защита
+SESSION_COOKIE_AGE = 1209600
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
 # === JWT AUTH ===
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -267,28 +264,25 @@ SIMPLE_JWT = {
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 
-# WhiteNoise configuration for production static files
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # CompressedManifestStaticFilesStorage добавляет хеши к именам файлов для бустинга кеша
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-WHITENOISE_MANIFEST_STRICT = False  # Don't fail on missing files
-WHITENOISE_AUTOREFRESH = DEBUG  # Auto-refresh in development
-WHITENOISE_USE_FINDERS = DEBUG  # Use Django finders in development
-WHITENOISE_MAX_AGE = 0 if DEBUG else 86400  # No cache in dev, 1 day in prod (было 1 год)
-WHITENOISE_KEEP_ONLY_HASHED_FILES = not DEBUG  # Только файлы с хешами в проде
 
-# Настройки для правильной отдачи статики
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_AUTOREFRESH = DEBUG
+WHITENOISE_USE_FINDERS = DEBUG
+WHITENOISE_MAX_AGE = 0 if DEBUG else 86400
+WHITENOISE_KEEP_ONLY_HASHED_FILES = not DEBUG
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -297,19 +291,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # === SOCIAL AUTH ===
 SOCIAL_AUTH_JSONFIELD_ENABLED = env.bool("SOCIAL_AUTH_JSONFIELD_ENABLED", True)
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ["email"]
+SOCIAL_AUTH_USER_MODEL = "authentication.User"
+SOCIAL_AUTH_LOGIN_ERROR_URL = "/authentication/signin/"
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
-# Защита и настройки связывания аккаунтов
-SOCIAL_AUTH_PROTECTED_USER_FIELDS = ["email"]  # Не перезаписывать email при связывании
-SOCIAL_AUTH_USER_MODEL = "authentication.User"  # Наша кастомная модель User
-SOCIAL_AUTH_LOGIN_ERROR_URL = "/authentication/signin/"  # Редирект при ошибке
-SOCIAL_AUTH_RAISE_EXCEPTIONS = False  # Не показывать исключения пользователям
-
-# GitHub OAuth
 SOCIAL_AUTH_GITHUB_KEY = env.str("SOCIAL_AUTH_GITHUB_KEY", "")
 SOCIAL_AUTH_GITHUB_SECRET = env.str("SOCIAL_AUTH_GITHUB_SECRET", "")
 SOCIAL_AUTH_GITHUB_SCOPE = ["user:email"]
 
-# Google OAuth2
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", "")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
@@ -317,24 +307,13 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     "https://www.googleapis.com/auth/userinfo.profile",
 ]
 
-# Redirect URIs configuration
-# Production: https://pylandschool.com
-# Development: http://127.0.0.1:8000
 SOCIAL_AUTH_REDIRECT_BASE = env.str("SITE_URL", "http://127.0.0.1:8000")
 
-# Authentication backends
-AUTHENTICATION_BACKENDS = [
-    "social_core.backends.github.GithubOAuth2",
-    "social_core.backends.google.GoogleOAuth2",
-    "django.contrib.auth.backends.ModelBackend",
-]
-
-# Social auth pipeline
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
     "social_core.pipeline.social_auth.social_uid",
     "social_core.pipeline.social_auth.social_user",
-    "social_core.pipeline.social_auth.associate_by_email",  # Связывать с существующим пользователем по email
+    "social_core.pipeline.social_auth.associate_by_email",
     "social_core.pipeline.user.get_username",
     "social_core.pipeline.user.create_user",
     "social_core.pipeline.social_auth.associate_user",
@@ -342,12 +321,9 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.user.user_details",
 )
 
-# Redirect URLs after login/logout
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/"
 SOCIAL_AUTH_LOGOUT_REDIRECT_URL = "/"
 SOCIAL_AUTH_NEW_USER_REDIRECT_URL = "/"
-
-# URL namespaces
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 
 # === SITE URL ===
@@ -381,93 +357,47 @@ CELERY_TASK_SOFT_TIME_LIMIT = 300  # 5 minutes
 CELERY_TASK_TIME_LIMIT = 420  # 7 minutes
 
 # === REDIS CACHING ===
-# Поддержка кэширования Redis с автоматическим fallback на dummy cache
-# Установите DISABLE_CACHE=true для принудительного отключения кэша
 REDIS_URL = env.str("REDIS_URL", "redis://localhost:6379/1")
 DISABLE_CACHE = env.bool("DISABLE_CACHE", False)
-
-# Флаг для предотвращения повторных сообщений при перезагрузке autoreloader
 _is_main_process = os.environ.get("RUN_MAIN") != "true"
 
 if DISABLE_CACHE:
-    # Кэш принудительно отключен
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-        }
-    }
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     if _is_main_process:
         print("ℹ️  Cache disabled via DISABLE_CACHE setting")
 else:
-    # Проверяем доступность Redis и используем fallback на dummy cache
     import redis
 
     try:
-        # Попытка подключения к Redis с таймаутом
         redis_client = redis.from_url(REDIS_URL, socket_connect_timeout=1)
         redis_client.ping()
         redis_client.close()
-
-        # Redis доступен - используем его
         CACHES = {
             "default": {
                 "BACKEND": "django.core.cache.backends.redis.RedisCache",
                 "LOCATION": REDIS_URL,
                 "KEY_PREFIX": "pyland",
-                "TIMEOUT": 300,  # 5 минут по умолчанию
-                "OPTIONS": {
-                    "socket_connect_timeout": 2,
-                    "socket_timeout": 2,
-                },
+                "TIMEOUT": 300,
+                "OPTIONS": {"socket_connect_timeout": 2, "socket_timeout": 2},
             }
         }
         if _is_main_process:
             print("✅ Redis cache enabled at", REDIS_URL)
     except (redis.ConnectionError, redis.TimeoutError, Exception):
-        # Redis недоступен - используем dummy cache
-        CACHES = {
-            "default": {
-                "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-            }
-        }
+        CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
         if _is_main_process:
             print("⚠️  Redis unavailable, using dummy cache. Start Redis with: redis-server")
 
-# Cache timeouts для разных типов данных
 CACHE_TTL = {
-    "article_list": 60 * 5,  # 5 минут
-    "article_detail": 60 * 15,  # 15 минут
-    "category_list": 60 * 30,  # 30 минут
-    "tag_list": 60 * 30,  # 30 минут
-    "stats": 60 * 10,  # 10 минут
-    "featured": 60 * 5,  # 5 минут
+    "article_list": 300,
+    "article_detail": 900,
+    "category_list": 1800,
+    "tag_list": 1800,
+    "stats": 600,
+    "featured": 300,
 }
 
-# === LOGGING ===
-LOG_DIR = BASE_DIR / "logs"
-LOG_DIR.mkdir(exist_ok=True)
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {"format": "{levelname} {asctime} {module} {message}", "style": "{"},
-        "simple": {"format": "{levelname} {message}", "style": "{"},
-    },
-    "handlers": {
-        "file": {
-            "level": "WARNING",
-            "class": "logging.FileHandler",
-            "filename": BASE_DIR / "logs/django.log",
-            "formatter": "verbose",
-        },
-        "console": {"class": "logging.StreamHandler", "formatter": "simple"},
-    },
-    "loggers": {
-        "django": {"handlers": ["file", "console"], "level": "WARNING", "propagate": True},
-    },
-}
-
-# Markdownify settings
+# === MARKDOWNIFY ===
 MARKDOWNIFY = {
     "default": {
         "WHITELIST_TAGS": [
