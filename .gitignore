@@ -1,12 +1,14 @@
-# Byte-compiled / optimized / DLL files
+# ============================================================================
+# Python
+# ============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
 
-# Distribution / packaging
+# ============================================================================
+# Distribution / Packaging
+# ============================================================================
 .Python
 build/
 develop-eggs/
@@ -27,15 +29,21 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# ============================================================================
 # PyInstaller
+# ============================================================================
 *.manifest
 *.spec
 
+# ============================================================================
 # Installer logs
+# ============================================================================
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# ============================================================================
+# Testing / Coverage
+# ============================================================================
 htmlcov/
 .tox/
 .nox/
@@ -49,53 +57,50 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# ============================================================================
 # Translations
+# ============================================================================
 *.mo
 *.pot
 
-# Django stuff:
+# ============================================================================
+# Django
+# ============================================================================
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# Flask stuff:
+# ============================================================================
+# Flask / Scrapy
+# ============================================================================
 instance/
 .webassets-cache
-
-# Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
+# ============================================================================
+# Documentation
+# ============================================================================
 docs/_build/
+/site
 
-# PyBuilder
-target/
-
-# Jupyter Notebook
+# ============================================================================
+# Jupyter / IPython
+# ============================================================================
 .ipynb_checkpoints
-
-# IPython
 profile_default/
 ipython_config.py
 
-# pyenv
+# ============================================================================
+# Python Environment Managers
+# ============================================================================
 .python-version
-
-# pipenv
 Pipfile.lock
-
-# PEP 582
 __pypackages__/
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
+# ============================================================================
+# Virtual Environments
+# ============================================================================
 .env
 .venv
 env/
@@ -104,80 +109,65 @@ ENV/
 env.bak/
 venv.bak/
 
-# Spyder project settings
+# ============================================================================
+# Task Queue / Celery
+# ============================================================================
+celerybeat-schedule
+celerybeat.pid
+
+# ============================================================================
+# SageMath / PyBuilder
+# ============================================================================
+*.sage.py
+target/
+
+# ============================================================================
+# IDE / Editor
+# ============================================================================
+.idea/
+.vscode/
 .spyderproject
 .spyproject
-
-# Rope project settings
 .ropeproject
+*.swp
+*.swo
+*~
 
-# mkdocs documentation
-/site
-
-# mypy
+# ============================================================================
+# Type Checkers / Linters
+# ============================================================================
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Pyre type checker
 .pyre/
 
-# macOS
+# ============================================================================
+# Operating Systems
+# ============================================================================
 .DS_Store
 .AppleDouble
 .LSOverride
+Thumbs.db
 
-# Redis dump
+# ============================================================================
+# Redis
+# ============================================================================
 dump.rdb
+*.rdb
 
-# PyCharm
-.idea/
-
-# VS Code
-.vscode/
-
-# Coverage reports
-htmlcov/
-.coverage
-
-# Logs
+# ============================================================================
+# Project Specific (Pyland)
+# ============================================================================
 logs/
-*.log
-
-# Media files (uploads)
 media/
-
-# Static files (collected)
 staticfiles/
 
-# Local scripts (temporary utilities)
+# Local utility scripts
 *_migration.py
 *_import.py
 fix_*.py
 add_*.py
 check_*.py
-
-# Database
-db.sqlite3
-db.sqlite3-journal
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Project specific
-/media/
-/staticfiles/
-/logs/
-*.rdb
-dump.rdb
 
 # Local development
 local_settings.py
