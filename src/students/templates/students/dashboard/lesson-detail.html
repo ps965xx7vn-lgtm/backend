@@ -216,9 +216,6 @@
                         </div>
                         <div class="step-info">
                             <h4 class="step-title">{{ forloop.counter }}. {{ step_data.step.name }}</h4>
-                            {% if step_data.step.description %}
-                            <p class="step-description">{{ step_data.step.description|truncatewords:20 }}</p>
-                            {% endif %}
                         </div>
                         <div class="step-actions">
                             {% if step_data.is_completed %}
