@@ -161,102 +161,59 @@ poetry export -f requirements.txt --output requirements.txt
 ### Popular Management Commands
 
 ```bash
-
-# OPTION 1: With Poetry shell (recommended for development)
-
-poetry shell
-cd src
+# Все команды используют poetry run с полным путем к manage.py
 
 # Setup roles and initial data
 
 # Create user roles (student, mentor, reviewer, manager, admin, support)
-
-python manage.py create_roles
+poetry run python src/manage.py create_roles
 
 # Populate database with test data
-
-python manage.py populate_courses_data     # Create 10 test courses with data
+poetry run python src/manage.py populate_courses_data     # Create 10 test courses with data
 
 # Blog management
-
-python manage.py generate_sitemap          # Generate sitemap.xml for SEO
-python manage.py populate_blog_data        # Create test articles and blog data
+poetry run python src/manage.py generate_sitemap          # Generate sitemap.xml for SEO
+poetry run python src/manage.py populate_blog_data        # Create test articles and blog data
 
 # Migrations and data
-
-python manage.py makemigrations [app_name] # Create migrations
-python manage.py migrate [app_name]        # Apply migrations
+poetry run python src/manage.py makemigrations [app_name] # Create migrations
+poetry run python src/manage.py migrate [app_name]        # Apply migrations
 
 # Admin
-
-python manage.py createsuperuser           # Create admin user
-
-# OPTION 2: Direct poetry run (without shell activation)
-
-poetry run python src/manage.py create_roles
-poetry run python src/manage.py populate_courses_data
-poetry run python src/manage.py migrate
+poetry run python src/manage.py createsuperuser           # Create admin user
 ```text
 ### Running the Application
 
 ```bash
-
-# OPTION 1: Activate Poetry virtualenv (recommended for development)
-
-poetry shell
-cd src
-python manage.py runserver  # <http://localhost:8000>
-
-# OPTION 2: Run directly with poetry (without shell)
-
-poetry run python src/manage.py runserver
+# Run directly with poetry
+poetry run python src/manage.py runserver  # <http://localhost:8000>
 
 # With Redis (optional but recommended, in separate terminal)
-
 redis-server
 ```text
 ### Running Tests
 
 ```bash
-
-# OPTION 1: With Poetry shell (recommended)
-
-poetry shell
-cd src
-
 # All tests
-
-pytest
+poetry run pytest
 
 # Specific app
-
-pytest blog/tests/
+poetry run pytest blog/tests/
 
 # With coverage report
-
-pytest --cov=blog --cov-report=html
+poetry run pytest --cov=blog --cov-report=html
 
 # Fail on first error, stop after 10 failures
-
-pytest --maxfail=10 --failed-first
+poetry run pytest --maxfail=10 --failed-first
 
 # Verbose output with markers
-
-pytest -v --tb=short
+poetry run pytest -v --tb=short
 
 # Parallel execution (faster)
-
-pytest -n auto
+poetry run pytest -n auto
 
 # Run specific test file
-
-pytest blog/tests/test_models.py -v
-
-# OPTION 2: Direct poetry run (without shell)
-
-poetry run pytest
-poetry run pytest blog/tests/
-poetry run pytest --cov=blog --cov-report=html
+poetry run pytest blog/tests/test_models.py -v
 ```text
 **Test Configuration:** `pytest.ini` defines:
 
@@ -267,37 +224,19 @@ poetry run pytest --cov=blog --cov-report=html
 ### Database Management
 
 ```bash
-
-# OPTION 1: With Poetry shell (recommended)
-
-poetry shell
-cd src
-
 # Create new migration
-
-python manage.py makemigrations
+poetry run python src/manage.py makemigrations
 
 # Apply migrations
-
-python manage.py migrate
+poetry run python src/manage.py migrate
 
 # Apply specific app migrations
-
-python manage.py migrate authentication
+poetry run python src/manage.py migrate authentication
 
 # Shell for direct queries
-
-python manage.py shell
+poetry run python src/manage.py shell
 
 # Create superuser
-
-python manage.py createsuperuser
-
-# OPTION 2: Direct poetry run (without shell)
-
-poetry run python src/manage.py makemigrations
-poetry run python src/manage.py migrate
-poetry run python src/manage.py migrate authentication
 poetry run python src/manage.py createsuperuser
 ```text
 ### Celery Tasks
@@ -305,28 +244,13 @@ poetry run python src/manage.py createsuperuser
 Tasks are in `tasks.py` per app (e.g., `blog/tasks.py`, `authentication/tasks.py`).
 
 ```bash
-
-# OPTION 1: With Poetry shell (recommended)
-
-poetry shell
-cd src
-
 # Start Celery worker
-
-celery -A pyland worker -l info
+poetry run celery -A pyland worker -l info
 
 # Start Celery beat scheduler (for periodic tasks, in separate terminal)
-
-celery -A pyland beat -l info
+poetry run celery -A pyland beat -l info
 
 # Combined (worker + beat in one process - dev only)
-
-celery -A pyland worker -B -l info
-
-# OPTION 2: Direct poetry run (without shell)
-
-poetry run celery -A pyland worker -l info
-poetry run celery -A pyland beat -l info
 poetry run celery -A pyland worker -B -l info
 ```text
 **Task definition pattern:**
@@ -822,80 +746,32 @@ def process_user_data(user_id: int) -> dict:
 ## Quick Reference Commands
 
 ```bash
-
 # Setup & Environment
-
 poetry install                      # Install dependencies
-poetry shell                        # Activate virtualenv
-cd src                             # Navigate to Django project
 
-# Development server (from src/ directory)
+# Development server
+poetry run python src/manage.py runserver  # http://localhost:8000
 
-python manage.py runserver         # <http://localhost:8000>
+# Database
+poetry run python src/manage.py makemigrations    # Create migrations
+poetry run python src/manage.py migrate           # Apply migrations
+poetry run python src/manage.py createsuperuser   # Create admin user
 
-# Alternative without poetry shell
+# Testing
+poetry run pytest                              # Run all tests
+poetry run pytest blog/tests/                  # Specific app
+poetry run pytest --cov=blog --cov-report=html # Coverage report
 
-# poetry run python src/manage.py runserver
-
-# Database (from src/ directory with poetry shell)
-
-python manage.py makemigrations    # Create migrations
-python manage.py migrate           # Apply migrations
-python manage.py createsuperuser   # Create admin user
-
-# Alternatives with poetry run
-
-# poetry run python src/manage.py makemigrations
-
-# poetry run python src/manage.py migrate
-
-# poetry run python src/manage.py createsuperuser
-
-# Testing (from src/ directory with poetry shell)
-
-pytest                             # Run all tests
-pytest -v --tb=short              # Verbose with short traceback
-pytest --cov=blog --cov-report=html  # Coverage report
-pytest blog/tests/test_models.py   # Specific file
-
-# Alternatives with poetry run
-
-# poetry run pytest
-
-# poetry run pytest blog/tests/
-
-# poetry run pytest --cov=blog --cov-report=html
-
-# Celery (in separate terminals, from src/ directory with poetry shell)
-
-celery -A pyland worker -l info    # Worker
-celery -A pyland beat -l info      # Beat scheduler
-celery -A pyland worker -B -l info # Combined (dev only)
-
-# Alternatives with poetry run
-
-# poetry run celery -A pyland worker -l info
-
-# poetry run celery -A pyland beat -l info
-
-# poetry run celery -A pyland worker -B -l info
+# Celery (in separate terminals)
+poetry run celery -A pyland worker -l info     # Worker
+poetry run celery -A pyland beat -l info       # Beat scheduler
+poetry run celery -A pyland worker -B -l info  # Combined (dev only)
 
 # Redis (in separate terminal)
-
 redis-server                       # Start Redis
 
-# Management commands (from src/ directory with poetry shell)
-
-python manage.py populate_courses_data    # Create test courses
-python manage.py create_roles             # Create user roles
-python manage.py generate_sitemap         # Generate sitemap.xml
-
-# Alternatives with poetry run
-
-# poetry run python src/manage.py populate_courses_data
-
-# poetry run python src/manage.py create_roles
-
-# poetry run python src/manage.py generate_sitemap
-
+# Management commands
+poetry run python src/manage.py populate_courses_data    # Create test courses
+poetry run python src/manage.py create_roles             # Create user roles
+poetry run python src/manage.py generate_sitemap         # Generate sitemap.xml
 ```text

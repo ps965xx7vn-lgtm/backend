@@ -1,12 +1,13 @@
 """
 Payments URL Configuration
 
-Маршруты для приложения платежей:
+Маршруты для приложения платежей через Paddle Billing:
 - Оформление заказа (checkout) для покупки курсов
+- Paddle checkout handler для Retain feature
 - Страницы успеха и отмены платежа
-- Webhook endpoints для BOG и TBC платежных систем
 
-Требуется авторизация для всех views кроме webhooks.
+Требуется авторизация для всех views.
+Webhooks от Paddle обрабатываются в API модуле.
 """
 
 from django.urls import path
@@ -16,12 +17,8 @@ from . import views
 app_name = "payments"
 
 urlpatterns = [
-    # Страница оформления заказа
     path("checkout/<slug:course_slug>/", views.checkout_view, name="checkout"),
-    # Страницы результатов оплаты
+    path("paddle-checkout/", views.paddle_checkout_handler, name="paddle_checkout"),
     path("success/<uuid:payment_id>/", views.payment_success_view, name="payment_success"),
     path("cancel/<uuid:payment_id>/", views.payment_cancel_view, name="payment_cancel"),
-    # TODO: Webhooks для платежных систем (будут добавлены в API)
-    # path("webhook/bog/", views.bog_webhook, name="bog_webhook"),
-    # path("webhook/tbc/", views.tbc_webhook, name="tbc_webhook"),
 ]

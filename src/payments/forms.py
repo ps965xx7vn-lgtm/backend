@@ -1,5 +1,5 @@
 """
-Payments Forms - Формы для обработки платежей.
+Payments Forms - Формы для обработки платежей через Paddle Billing.
 
 Формы основаны на лучших практиках из students/forms.py и reviewers/forms.py:
 - Полная валидация данных
@@ -8,7 +8,7 @@ Payments Forms - Формы для обработки платежей.
 - Type hints
 
 Автор: Pyland Team
-Дата: 2025
+Дата: 2026
 """
 
 from __future__ import annotations
@@ -24,30 +24,25 @@ from .models import Payment
 
 class CheckoutForm(forms.Form):
     """
-    Форма для оформления оплаты курса.
+    Форма для оформления оплаты курса через Paddle Billing.
 
     Поля:
-        payment_method: Выбор способа оплаты (BOG/TBC)
-        currency: Валюта платежа (USD/GEL/RUB)
+        payment_method: Способ оплаты (всегда Paddle)
+        currency: Валюта платежа (USD/EUR/RUB/GEL)
         terms_accepted: Согласие с условиями использования
         privacy_accepted: Согласие с политикой конфиденциальности
 
     Валидация:
         - Обязательно принятие всех согласий
-        - Валидация соответствия валюты и метода оплаты
-        - Проверка доступности метода оплаты
+        - Валидация валюты
     """
 
     payment_method = forms.ChoiceField(
         choices=Payment.PAYMENT_METHOD_CHOICES,
         required=True,
-        widget=forms.RadioSelect(
-            attrs={
-                "class": "payment-method-radio",
-            }
-        ),
+        initial="paddle",
+        widget=forms.HiddenInput(),
         label=_("Способ оплаты"),
-        help_text=_("Выберите удобный способ оплаты"),
     )
 
     currency = forms.ChoiceField(
@@ -64,29 +59,17 @@ class CheckoutForm(forms.Form):
         help_text=_("Выберите валюту платежа"),
     )
 
-    terms_accepted = forms.BooleanField(
+    accept_all = forms.BooleanField(
         required=True,
         widget=forms.CheckboxInput(
             attrs={
                 "class": "form-check-input",
-                "id": "id_terms",
+                "id": "id_accept_all",
             }
         ),
-        label=_("Я принимаю условия использования"),
-        error_messages={"required": "Необходимо принять условия использования для продолжения"},
-    )
-
-    privacy_accepted = forms.BooleanField(
-        required=True,
-        widget=forms.CheckboxInput(
-            attrs={
-                "class": "form-check-input",
-                "id": "id_privacy",
-            }
-        ),
-        label=_("Я принимаю политику конфиденциальности"),
+        label=_("Я принимаю условия использования и политику конфиденциальности"),
         error_messages={
-            "required": "Необходимо принять политику конфиденциальности для продолжения"
+            "required": "Необходимо принять условия использования и политику конфиденциальности для продолжения"
         },
     )
 
@@ -98,7 +81,7 @@ class CheckoutForm(forms.Form):
         if payment_method not in valid_methods:
             raise ValidationError("Выбран недопустимый способ оплаты")
 
-        return payment_method
+        return str(payment_method)
 
     def clean_currency(self) -> str:
         """Валидация валюты."""
@@ -108,7 +91,7 @@ class CheckoutForm(forms.Form):
         if currency not in valid_currencies:
             raise ValidationError("Выбрана недопустимая валюта")
 
-        return currency
+        return str(currency)
 
     def clean(self) -> dict[str, Any]:
         """
@@ -120,11 +103,10 @@ class CheckoutForm(forms.Form):
         payment_method = cleaned_data.get("payment_method")
         currency = cleaned_data.get("currency")
 
-        # Валидация метода оплаты
         if not payment_method or not currency:
             raise ValidationError("Необходимо выбрать способ оплаты и валюту")
 
-        return cleaned_data
+        return dict(cleaned_data)  # Явное преобразование к dict
 
 
 class PaymentConfirmationForm(forms.Form):

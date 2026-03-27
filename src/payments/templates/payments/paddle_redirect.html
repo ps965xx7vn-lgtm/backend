@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата через Paddle</title>
+
+    <!-- Paddle Billing v2 SDK -->
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+
+    <!-- Стили Paddle Checkout -->
+    <link rel="stylesheet" href="{% static 'css/payments/paddle_checkout.css' %}">
+</head>
+<body>
+    <div class="container"
+         id="paddle-checkout-container"
+         data-transaction-id="{{ transaction_id }}"
+         data-client-token="{{ client_token }}"
+         data-paddle-env="{{ paddle_env }}"
+         data-success-url="{{ success_url }}"
+         data-cancel-url="{{ cancel_url }}"
+         data-customer-email="{{ payment.user.email }}"
+         data-has-token="{% if client_token %}true{% else %}false{% endif %}">
+        <h1>Оплата курса</h1>
+
+        <div class="course-info">
+            <strong>{{ course.name }}</strong>
+        </div>
+
+        <div id="status">
+            <div class="spinner"></div>
+            <p>Загрузка платежной формы Paddle...</p>
+        </div>
+
+        <div class="note">
+            <strong>⚠️ Тестовый режим Sandbox</strong><br>
+            Для тестирования используйте:<br>
+            Карта: <code>4242 4242 4242 4242</code><br>
+            CVV: любой, Дата: любая будущая
+        </div>
+
+        <div class="back-link">
+            <a href="{{ cancel_url }}">← Вернуться к выбору</a>
+        </div>
+
+        <div class="info">
+            Transaction ID: {{ transaction_id }}<br>
+            Environment: {{ paddle_env }}<br>
+            {% if client_token %}
+            Client Token: {{ client_token|slice:":20" }}...
+            {% else %}
+            <span style="color: #e53e3e;">❌ Client Token отсутствует</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Скрипт инициализации Paddle -->
+    <script src="{% static 'js/payments/paddle_checkout.js' %}" defer></script>
+</body>
+</html>

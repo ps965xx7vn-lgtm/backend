@@ -160,22 +160,114 @@ class CacheInvalidationSignals:
         ProgressCacheManager.invalidate_user_cache(student_id, course_id, lesson_id)
 
     @staticmethod
-    def on_course_enrollment(sender, instance, **kwargs):
-        """Обработчик записи на курс"""
-        # При добавлении курса к профилю
-        if kwargs.get("action") == "post_add":
-            student_id = instance.id
-            ProgressCacheManager.invalidate_user_cache(student_id)
+    def on_course_enrollment(sender: type, instance: Any, **kwargs: Any) -> None:
+        """
+        Обработчик записи на курс.
+
+        Поддерживает два сценария:
+        1. student.courses.add(course) - instance=Student, pk_set=course_ids
+        2. course.student_enrollments.add(student) - instance=Course, pk_set=student_ids
+
+        Args:
+            sender: Класс промежуточной таблицы M2M.
+            instance: Student или Course экземпляр.
+            **kwargs: Дополнительные аргументы сигнала (action, pk_set).
+        """
+        # Только при добавлении курса к профилю
+        if kwargs.get("action") != "post_add":
+            return
+
+        pk_set = kwargs.get("pk_set", set())
+        if not pk_set:
+            return
+
+        # Определяем сценарий и обрабатываем
+        from authentication.models import Student
+        from courses.models import Course
+
+        if isinstance(instance, Student):
+            CacheInvalidationSignals._handle_student_enrollment(student=instance, course_ids=pk_set)
+        elif isinstance(instance, Course):
+            CacheInvalidationSignals._handle_course_enrollment(course=instance, student_ids=pk_set)
+        else:
+            logger.warning(
+                "Unexpected instance type in course enrollment signal",
+                extra={"instance_type": type(instance).__name__},
+            )
+
+    @staticmethod
+    def _handle_student_enrollment(student: Any, course_ids: set[int]) -> None:
+        """
+        Обработка сценария student.courses.add(course).
+
+        Args:
+            student: Student instance.
+            course_ids: Set of course IDs being added.
+        """
+        from courses.models import Course
+
+        try:
+            # Инвалидируем кэш студента
+            ProgressCacheManager.invalidate_user_cache(student.id)
 
             # Разогреваем кэш для новых курсов
-            new_courses = kwargs.get("pk_set", [])
-            if new_courses:
-                from courses.models import Course
-
-                courses = Course.objects.filter(id__in=new_courses).prefetch_related(
+            if course_ids:
+                courses = Course.objects.filter(id__in=course_ids).prefetch_related(
                     "lessons__steps"
                 )
-                ProgressCacheManager.warm_up_cache(instance, courses)
+                ProgressCacheManager.warm_up_cache(student, courses)
+
+                logger.info(
+                    "Student enrolled in courses",
+                    extra={
+                        "student_id": str(student.id),
+                        "course_count": len(course_ids),
+                    },
+                )
+        except Exception as e:
+            logger.error(
+                "Failed to handle student enrollment",
+                extra={"student_id": str(student.id), "error": str(e)},
+                exc_info=True,
+            )
+
+    @staticmethod
+    def _handle_course_enrollment(course: Any, student_ids: set[int]) -> None:
+        """
+        Обработка сценария course.student_enrollments.add(student).
+
+        Args:
+            course: Course instance.
+            student_ids: Set of student IDs being added.
+        """
+        from authentication.models import Student
+        from courses.models import Course
+
+        try:
+            # Инвалидируем кэш для всех добавленных студентов
+            for student_id in student_ids:
+                ProgressCacheManager.invalidate_user_cache(student_id)
+
+            # Разогреваем кэш для каждого студента
+            students = Student.objects.filter(id__in=student_ids)
+            courses = Course.objects.filter(id=course.id).prefetch_related("lessons__steps")
+
+            for student in students:
+                ProgressCacheManager.warm_up_cache(student, courses)
+
+            logger.info(
+                "Students enrolled in course",
+                extra={
+                    "course_id": course.id,
+                    "student_count": len(student_ids),
+                },
+            )
+        except Exception as e:
+            logger.error(
+                "Failed to handle course enrollment",
+                extra={"course_id": course.id, "error": str(e)},
+                exc_info=True,
+            )
 
 
 def setup_cache_signals():

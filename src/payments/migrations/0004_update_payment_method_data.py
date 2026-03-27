@@ -15,12 +15,10 @@ def update_payment_methods(apps, schema_editor):
     """
     Payment = apps.get_model("payments", "Payment")
 
-    # Обновляем cloudpayments на bog
     cloudpayments_count = Payment.objects.filter(payment_method="cloudpayments").update(
         payment_method="bog"
     )
 
-    # Обновляем tbc_georgia на tbc
     tbc_georgia_count = Payment.objects.filter(payment_method="tbc_georgia").update(
         payment_method="tbc"
     )
@@ -36,10 +34,8 @@ def reverse_payment_methods(apps, schema_editor):
     """
     Payment = apps.get_model("payments", "Payment")
 
-    # Откатываем bog на cloudpayments
     Payment.objects.filter(payment_method="bog").update(payment_method="cloudpayments")
 
-    # Откатываем tbc на tbc_georgia
     Payment.objects.filter(payment_method="tbc").update(payment_method="tbc_georgia")
 
 

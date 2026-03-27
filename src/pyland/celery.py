@@ -35,4 +35,12 @@ app.conf.beat_schedule = {
         "task": "blog.generate_sitemap",
         "schedule": 86400.0,  # 24 часа
     },
+    "update-currency-rates-hourly": {
+        "task": "payments.update_currency_rates",
+        "schedule": 3600.0,  # 1 час - гарантия актуальных курсов для платежей
+    },
+    "check-pending-payments-every-30-minutes": {
+        "task": "payments.check_pending_payments",
+        "schedule": 1800.0,  # 30 минут - автоматическая проверка "зависших" платежей
+    },
 }

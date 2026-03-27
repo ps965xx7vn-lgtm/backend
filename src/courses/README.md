@@ -148,7 +148,7 @@ pytest courses/tests/ -v
 
 Применение миграций:
 ```bash
-python manage.py migrate courses
+poetry run python src/manage.py migrate courses
 ```
 
 ## Авторы

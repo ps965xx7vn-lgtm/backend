@@ -478,3 +478,15 @@ if SENTRY_DSN:
         send_default_pii=False,
         before_send=lambda event, hint: event if not DEBUG else None,
     )
+
+# === PADDLE BILLING ===
+PADDLE_API_KEY = env.str("PADDLE_API_KEY", "")
+PADDLE_SANDBOX_API_KEY = env.str("PADDLE_SANDBOX_API_KEY", "")
+PADDLE_ENVIRONMENT = env.str("PADDLE_ENVIRONMENT", "sandbox")  # 'sandbox' or 'production'
+PADDLE_WEBHOOK_SECRET = env.str("PADDLE_WEBHOOK_SECRET", "")
+PADDLE_NAME = env.str("PADDLE_NAME", "pyland-main")
+
+# === CURRENCY EXCHANGE RATES ===
+# API ключ для получения актуальных курсов валют (exchangerate-api.com)
+# Без ключа используются статичные fallback курсы
+EXCHANGE_RATE_API_KEY = env.str("EXCHANGE_RATE_API_KEY", "")

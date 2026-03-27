@@ -25,8 +25,7 @@
     const form = document.getElementById('checkoutForm');
     const currencySelect = document.getElementById('id_currency');
     const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
-    const termsCheckbox = document.getElementById('id_terms');
-    const privacyCheckbox = document.getElementById('id_privacy');
+    const acceptAllCheckbox = document.getElementById('id_accept_all');
     const submitButton = form?.querySelector('button[type="submit"]');
 
     /**
@@ -94,18 +93,11 @@
      * Валидация формы перед отправкой
      */
     function validateForm(event) {
-        // Проверка согласий
-        if (!termsCheckbox?.checked) {
+        // Проверка согласия с условиями
+        if (!acceptAllCheckbox?.checked) {
             event.preventDefault();
-            showError('Необходимо принять условия использования');
-            termsCheckbox.focus();
-            return false;
-        }
-
-        if (!privacyCheckbox?.checked) {
-            event.preventDefault();
-            showError('Необходимо принять политику конфиденциальности');
-            privacyCheckbox.focus();
+            showError('Необходимо принять условия использования и политику конфиденциальности');
+            acceptAllCheckbox.focus();
             return false;
         }
 

@@ -38,7 +38,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
     Features:
         - Красивое отображение статусов с цветовой индикацией
-        - Иконки для методов оплаты (BOG, TBC)
+        - Иконка для метода оплаты (Paddle)
         - Форматирование сумм с символами валют
         - Фильтры по статусу, методу оплаты, валюте, дате
         - Поиск по транзакциям, email пользователя, названию курса
@@ -150,12 +150,12 @@ class PaymentAdmin(admin.ModelAdmin):
             HTML с цветным бейджем статуса
         """
         colors = {
-            "pending": "#f59e0b",  # Жёлтый
-            "processing": "#3b82f6",  # Синий
-            "completed": "#10b981",  # Зелёный
-            "failed": "#ef4444",  # Красный
-            "cancelled": "#6b7280",  # Серый
-            "refunded": "#8b5cf6",  # Фиолетовый
+            "pending": "#f59e0b",
+            "processing": "#3b82f6",
+            "completed": "#10b981",
+            "failed": "#ef4444",
+            "cancelled": "#6b7280",
+            "refunded": "#8b5cf6",
         }
 
         status_labels = {
@@ -170,12 +170,14 @@ class PaymentAdmin(admin.ModelAdmin):
         color = colors.get(obj.status, "#6b7280")
         label = status_labels.get(obj.status, obj.get_status_display())
 
-        return format_html(
-            '<span style="background-color: {}; color: white; padding: 4px 12px; '
-            "border-radius: 12px; font-weight: 600; font-size: 12px; "
-            'display: inline-block; white-space: nowrap;">{}</span>',
-            color,
-            label,
+        return str(
+            format_html(
+                '<span style="background-color: {}; color: white; padding: 4px 12px; '
+                "border-radius: 12px; font-weight: 600; font-size: 12px; "
+                'display: inline-block; white-space: nowrap;">{}</span>',
+                color,
+                label,
+            )
         )
 
     @admin.display(
@@ -194,11 +196,13 @@ class PaymentAdmin(admin.ModelAdmin):
         """
         if obj.user:
             url = reverse("admin:authentication_user_change", args=[obj.user.pk])
-            return format_html(
-                '<a href="{}" target="_blank">👤 {} ({})</a>',
-                url,
-                obj.user.get_full_name() or obj.user.email,
-                obj.user.email,
+            return str(
+                format_html(
+                    '<a href="{}" target="_blank">👤 {} ({})</a>',
+                    url,
+                    obj.user.get_full_name() or obj.user.email,
+                    obj.user.email,
+                )
             )
         return "-"
 
@@ -218,7 +222,7 @@ class PaymentAdmin(admin.ModelAdmin):
         """
         if obj.course:
             url = reverse("admin:courses_course_change", args=[obj.course.pk])
-            return format_html('<a href="{}" target="_blank">📚 {}</a>', url, obj.course.name)
+            return str(format_html('<a href="{}" target="_blank">📚 {}</a>', url, obj.course.name))
         return "-"
 
     @admin.display(
@@ -237,17 +241,20 @@ class PaymentAdmin(admin.ModelAdmin):
         """
         currency_symbols = {
             "USD": "$",
-            "GEL": "₾",
+            "EUR": "€",
             "RUB": "₽",
+            "GEL": "₾",
         }
 
         symbol = currency_symbols.get(obj.currency, obj.currency)
         amount_formatted = f"{obj.amount:.2f}"
 
-        return format_html(
-            '<span style="font-weight: 700; color: #059669; font-size: 14px;">{}{}</span>',
-            symbol,
-            amount_formatted,
+        return str(
+            format_html(
+                '<span style="font-weight: 700; color: #059669; font-size: 14px;">{}{}</span>',
+                symbol,
+                amount_formatted,
+            )
         )
 
     @admin.display(
@@ -265,16 +272,17 @@ class PaymentAdmin(admin.ModelAdmin):
             HTML с иконкой и названием метода
         """
         methods = {
-            "bog": ("🏦", "BOG", "#dc2626"),
-            "tbc": ("💳", "TBC", "#4f46e5"),
+            "paddle": ("🌊", "Paddle Billing", "#4f46e5"),
         }
 
         icon, name, color = methods.get(
             obj.payment_method, ("💰", obj.get_payment_method_display(), "#6b7280")
         )
 
-        return format_html(
-            '<span style="color: {}; font-weight: 600;">{} {}</span>', color, icon, name
+        return str(
+            format_html(
+                '<span style="color: {}; font-weight: 600;">{} {}</span>', color, icon, name
+            )
         )
 
     @admin.action(description=_("Вернуть средства (refund)"))

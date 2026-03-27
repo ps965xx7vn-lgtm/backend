@@ -21,6 +21,7 @@ static/
 │   ├── blog/           # Стили для блога
 │   ├── core/           # Общие/базовые стили
 │   ├── courses/        # Стили для курсов
+│   ├── payments/       # Стили для платежной системы
 │   └── managers/        # Стили для админ-панели
 │
 └── js/
@@ -28,6 +29,7 @@ static/
     ├── blog/           # Скрипты для блога
     ├── core/           # Общие/базовые скрипты
     ├── courses/        # Скрипты для курсов
+    ├── payments/       # Скрипты для платежной системы
     └── managers/        # Скрипты для админ-панели
 ```text
 ---
@@ -120,6 +122,22 @@ static/
 
 ---
 
+### 🔷 css/payments/ (2 файла)
+
+Стили для платежной системы Paddle Billing:
+
+- `checkout.css` - форма checkout с выбором валюты
+- `paddle_checkout.css` - Paddle.js overlay интеграция
+
+**Используется в шаблонах:**
+
+- `payments/checkout.html` - форма оформления заказа
+- `payments/paddle_redirect.html` - Paddle overlay checkout
+- `payments/payment_success.html` - страница успеха
+- `payments/payment_cancel.html` - страница отмены
+
+---
+
 ### 🔷 css/managers/ (1 файл)
 
 Стили для админ-панели менеджера:
@@ -164,7 +182,16 @@ static/
 
 - `code-copy.js` - базовое копирование кода (общая версия)
 - `desktop-nav.js` - десктопная навигация
-- `legal-pages.js` - функционал юридических страниц
+- `legal-ppayments/ (2 файла)
+
+Скрипты для платежной системы:
+
+- `checkout.js` - функционал формы checkout
+- `paddle_checkout.js` - Paddle.js SDK интеграция и обработка событий
+
+---
+
+### 🔷 js/ages.js` - функционал юридических страниц
 - `main.js` - основная логика
 - `mobile-menu.js` - мобильное меню
 - `phone-input.js` - базовое поле телефона (общая версия)
