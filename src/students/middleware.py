@@ -26,6 +26,14 @@ from django.conf import settings
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 
+# Import Paddle CSP constants
+try:
+    from payments.constants import get_full_paddle_csp
+
+    PADDLE_CSP_AVAILABLE = True
+except ImportError:
+    PADDLE_CSP_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -239,16 +247,31 @@ class StudentsSecurityHeadersMiddleware:
             # Basic CSP for students (stricter than blog)
             # In production configure more restrictive policy
             if not response.get("Content-Security-Policy"):
-                csp = getattr(
-                    settings,
-                    "STUDENTS_CSP_POLICY",
-                    "default-src 'self'; "
-                    "img-src 'self' data: https:; "
-                    "style-src 'self' 'unsafe-inline'; "
-                    "script-src 'self' 'unsafe-inline'; "
-                    "font-src 'self' data:; "
-                    "frame-ancestors 'none';",
-                )
+                # Use centralized Paddle CSP if available
+                if PADDLE_CSP_AVAILABLE:
+                    csp = getattr(
+                        settings,
+                        "STUDENTS_CSP_POLICY",
+                        get_full_paddle_csp(
+                            img_src="'self' data: https:",
+                            font_src="'self' data:",
+                            frame_ancestors="'none'",
+                        ),
+                    )
+                else:
+                    # Fallback CSP without Paddle (for backward compatibility)
+                    csp = getattr(
+                        settings,
+                        "STUDENTS_CSP_POLICY",
+                        "default-src 'self'; "
+                        "img-src 'self' data: https:; "
+                        "style-src 'self' 'unsafe-inline' https://cdn.paddle.com https://sandbox-cdn.paddle.com; "
+                        "script-src 'self' 'unsafe-inline' https://cdn.paddle.com https://sandbox-cdn.paddle.com; "
+                        "font-src 'self' data:; "
+                        "connect-src 'self' https://api.paddle.com https://sandbox-api.paddle.com https://cdn.paddle.com https://sandbox-cdn.paddle.com https://checkout.paddle.com https://sandbox-checkout.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com; "
+                        "frame-src https://checkout.paddle.com https://sandbox-checkout.paddle.com https://cdn.paddle.com https://sandbox-cdn.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com; "
+                        "frame-ancestors 'none';",
+                    )
                 response["Content-Security-Policy"] = csp
 
             return response

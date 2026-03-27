@@ -72,22 +72,15 @@ docker-compose exec web python manage.py createsuperuser
 # 1. Установка зависимостей
 poetry install
 
-# 2. Активация virtualenv
-poetry shell
-cd src
+# 2. Применение миграций
+poetry run python src/manage.py migrate
+poetry run python src/manage.py create_roles
 
-# 3. Применение миграций
+# 3. Создание суперпользователя
+poetry run python src/manage.py createsuperuser
 
-python manage.py migrate
-python manage.py create_roles
-
-# 4. Создание суперпользователя
-
-python manage.py createsuperuser
-
-# 5. Запуск сервера
-
-python manage.py runserver
+# 4. Запуск сервера
+poetry run python src/manage.py runserver
 ```text
 **Важно для локальной разработки:**
 
@@ -204,8 +197,7 @@ git checkout -b feature/add-user-profile
 
 # 3. Разработка (локально или Docker)
 
-poetry shell && cd src
-python manage.py runserver
+poetry run python src/manage.py runserver
 
 # 4. Коммиты по ходу работы
 
@@ -413,10 +405,8 @@ docker-compose down                     # Остановка
 **Запуск:**
 
 ```bash
-poetry shell                            # Активация virtualenv
-cd src
-python manage.py runserver              # Django dev server
-pytest -v                               # Тесты
+poetry run python src/manage.py runserver  # Django dev server
+poetry run pytest -v                       # Тесты
 ```text
 ### Health Checks (для k8s readiness)
 
@@ -465,29 +455,23 @@ poetry run pytest -n auto
 ### Django Management
 
 ```bash
-
 # Миграции
-
-python manage.py makemigrations
-python manage.py migrate
+poetry run python src/manage.py makemigrations
+poetry run python src/manage.py migrate
 
 # Создание данных
-
-python manage.py create_roles              # Роли пользователей
-python manage.py populate_courses_data     # Тестовые курсы
-python manage.py populate_blog_data        # Тестовые статьи
+poetry run python src/manage.py create_roles              # Роли пользователей
+poetry run python src/manage.py populate_courses_data     # Тестовые курсы
+poetry run python src/manage.py populate_blog_data        # Тестовые статьи
 
 # Суперпользователь
-
-python manage.py createsuperuser
+poetry run python src/manage.py createsuperuser
 
 # Shell
-
-python manage.py shell
+poetry run python src/manage.py shell
 
 # Статика
-
-python manage.py collectstatic --noinput
+poetry run python src/manage.py collectstatic --noinput
 ```text
 ### Docker Compose
 

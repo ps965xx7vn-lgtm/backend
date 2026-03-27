@@ -233,7 +233,7 @@ CACHES = {
 ### 5. Запустить миграции
 
 ```bash
-python manage.py migrate students
+poetry run python src/manage.py migrate students
 ```text
 ---
 

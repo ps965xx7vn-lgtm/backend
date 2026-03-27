@@ -204,6 +204,66 @@
     gap: 1rem;
 }
 
+/* ==================== ИНФОРМАЦИОННЫЙ БЛОК PADDLE ==================== */
+
+.payment-info-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--primary-300);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s;
+}
+
+[data-theme="dark"] .payment-info-block {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--primary-700);
+}
+
+.payment-info-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: var(--primary-100);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+[data-theme="dark"] .payment-info-icon {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.payment-info-icon svg {
+    color: var(--primary-600);
+}
+
+[data-theme="dark"] .payment-info-icon svg {
+    color: var(--primary-400);
+}
+
+.payment-info-content {
+    flex: 1;
+}
+
+.payment-info-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+}
+
+.payment-info-content p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
 .payment-method-option {
     position: relative;
 }

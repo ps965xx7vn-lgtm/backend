@@ -971,14 +971,11 @@ fetch('/api/blog/articles/python-decorators/react/', {
 ### Management команды
 
 ```bash
-
 # Генерация sitemap.xml
-
-python manage.py generate_sitemap
+poetry run python src/manage.py generate_sitemap
 
 # С указанием пути
-
-python manage.py generate_sitemap --output=/path/to/sitemap.xml
+poetry run python src/manage.py generate_sitemap --output=/path/to/sitemap.xml
 ```text
 ## 📚 Дополнительная документация
 

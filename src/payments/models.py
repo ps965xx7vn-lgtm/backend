@@ -1,36 +1,35 @@
 """
 Payments Models Module - Модели данных для обработки платежей.
 
-Этот модуль содержит модели для обработки платежей через интеграцию
-с платежными системами BOG и TBC.
+Этот модуль содержит модели для обработки платежей через Paddle Billing.
 
 Модели:
     Payment - Основная модель платежа
         - Статусы: pending, processing, completed, failed, cancelled, refunded
-        - Методы оплаты: bog, tbc
-        - Валюты: USD, GEL, RUB
+        - Метод оплаты: paddle (Paddle Billing)
+        - Валюты: USD, EUR, RUB, GEL
         - Связь с пользователем и курсом
 
 Поля:
     - user: Пользователь, совершивший платеж
     - course: Курс, за который произведена оплата
     - amount: Сумма платежа
-    - currency: Валюта (USD, GEL, RUB)
+    - currency: Валюта (USD, EUR, RUB, GEL)
     - status: Текущий статус платежа
-    - payment_method: Способ оплаты (bog/tbc)
-    - transaction_id: Уникальный ID транзакции от платежной системы
+    - payment_method: Способ оплаты (paddle)
+    - transaction_id: Уникальный ID транзакции от Paddle
     - payment_url: URL для перенаправления на страницу оплаты
-    - extra_data: Дополнительные данные от платежного шлюза (JSON)
+    - extra_data: Дополнительные данные от Paddle (JSON)
 
 Особенности:
     - UUID для первичных ключей
     - Трекинг времени создания и обновления
-    - Хранение ответов платежных шлюзов в JSON
+    - Хранение ответов от Paddle в JSON
     - Автоматическое логирование всех транзакций
-    - Методы для работы с платежными системами
+    - Автоматическое зачисление на курс после оплаты
 
 Автор: Pyland Team
-Дата: 2025
+Дата: 2026
 """
 
 from __future__ import annotations
@@ -51,7 +50,7 @@ class Payment(models.Model):
     """
     Модель платежа за курс.
 
-    Поддерживает оплату через BOG и TBC платежные системы.
+    Поддерживает оплату через Paddle Billing.
     Хранит информацию о транзакции и статусе оплаты.
     """
 
@@ -65,14 +64,14 @@ class Payment(models.Model):
     ]
 
     PAYMENT_METHOD_CHOICES = [
-        ("bog", "BOG"),
-        ("tbc", "TBC"),
+        ("paddle", "Paddle"),
     ]
 
     CURRENCY_CHOICES = [
         ("USD", "Доллар США"),
-        ("GEL", "Грузинский лари"),
+        ("EUR", "Евро"),
         ("RUB", "Российский рубль"),
+        ("GEL", "Грузинский лари"),
     ]
 
     id = models.UUIDField(
@@ -181,10 +180,8 @@ class Payment(models.Model):
         self.payment_date = timezone.now()
         self.save(update_fields=["status", "payment_date", "updated_at"])
 
-        # Зачисляем студента на курс
         try:
             student = self.user.student
-            # Используем правильный related_name из модели Student
             if not self.course.student_enrollments.filter(id=student.id).exists():
                 self.course.student_enrollments.add(student)
                 logger.info(
@@ -210,17 +207,32 @@ class Payment(models.Model):
         logger.warning(f"Платеж {self.id} отмечен как неудавшийся: {error_message}")
 
     def is_successful(self) -> bool:
-        """Проверка, успешно ли завершён платеж."""
-        return self.status == "completed"
+        """
+        Проверка, успешно ли завершён платеж.
+
+        Returns:
+            bool: True если статус "completed"
+        """
+        return bool(self.status == "completed")
 
     def can_be_refunded(self) -> bool:
-        """Проверка, может ли платеж быть возвращён."""
-        return self.status == "completed" and not self.status == "refunded"
+        """
+        Проверка, может ли платеж быть возвращён.
+
+        Условия для возврата:
+        - Статус должен быть "completed"
+        - Платеж не должен быть уже возвращен
+
+        Returns:
+            bool: True если можно вернуть средства
+        """
+        return bool(self.status == "completed")
 
     def get_payment_method_display_name(self) -> str:
-        """Получить читаемое название платежной системы."""
-        method_names = {
-            "bog": "BOG",
-            "tbc": "TBC",
-        }
-        return method_names.get(self.payment_method, self.payment_method)
+        """
+        Получить читаемое название платежной системы.
+
+        Returns:
+            str: "Paddle Billing"
+        """
+        return "Paddle Billing"

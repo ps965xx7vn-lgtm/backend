@@ -39,7 +39,9 @@ dependencies = [
     "django-modeltranslation (>=0.19.19,<0.20.0)",
     "reportlab (>=4.4.9,<5.0.0)",
     "pypdf2 (>=3.0.1,<4.0.0)",
-    "qrcode (>=8.2,<9.0)"
+    "qrcode (>=8.2,<9.0)",
+    "requests (>=2.31.0,<3.0.0)",
+    "paddle-python-sdk (>=1.13.0,<2.0.0)",
 ]
 
 [build-system]
@@ -63,7 +65,8 @@ dev = [
     "radon (>=6.0.0,<7.0.0)",
     "pre-commit (>=4.0.0,<5.0.0)",
     "django-upgrade (>=1.22.0,<2.0.0)",
-    "polib (>=1.2.0,<2.0.0)"
+    "polib (>=1.2.0,<2.0.0)",
+    "types-requests (>=2.32.4.20260324,<3.0.0.0)"
 ]
 [tool.ruff]
 line-length = 100
@@ -138,7 +141,7 @@ python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
-plugins = ["mypy_django_plugin.main"]
+# plugins = ["mypy_django_plugin.main"]  # Disabled: requires django-stubs
 exclude = [
     "migrations/",
     "venv/",
@@ -146,8 +149,8 @@ exclude = [
     ".venv/",
 ]
 
-[tool.django-stubs]
-django_settings_module = "pyland.settings"
+# [tool.django-stubs]
+# django_settings_module = "pyland.settings"
 
 [tool.bandit]
 exclude_dirs = ["/tests/", "/migrations/", "/venv/", "/env/", "/.venv/"]

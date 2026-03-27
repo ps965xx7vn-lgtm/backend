@@ -13,6 +13,14 @@ from django.conf import settings
 from django.core.cache import cache
 from django.http import JsonResponse
 
+# Import Paddle CSP constants
+try:
+    from payments.constants import build_paddle_csp_directive
+
+    PADDLE_CSP_AVAILABLE = True
+except ImportError:
+    PADDLE_CSP_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -169,15 +177,41 @@ class BlogSecurityHeadersMiddleware:
             # Базовая CSP для блога (разрешаем встраивание изображений, стилей)
             # В production настройте более строгую политику
             if not response.get("Content-Security-Policy"):
-                csp = getattr(
-                    settings,
-                    "BLOG_CSP_POLICY",
-                    "default-src 'self'; "
-                    "img-src 'self' data: https:; "
-                    "style-src 'self' 'unsafe-inline'; "
-                    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-                    "font-src 'self' data:;",
-                )
+                # Build CSP with centralized Paddle domains if available
+                if PADDLE_CSP_AVAILABLE:
+                    script_directive = build_paddle_csp_directive(
+                        "script-src", "'self' 'unsafe-inline' 'unsafe-eval'"
+                    )
+                    style_directive = build_paddle_csp_directive(
+                        "style-src", "'self' 'unsafe-inline'"
+                    )
+                    connect_directive = build_paddle_csp_directive("connect-src", "'self'")
+                    frame_directive = build_paddle_csp_directive("frame-src", "''")
+
+                    csp = getattr(
+                        settings,
+                        "BLOG_CSP_POLICY",
+                        f"default-src 'self'; "
+                        f"img-src 'self' data: https:; "
+                        f"{style_directive}; "
+                        f"{script_directive}; "
+                        f"font-src 'self' data:; "
+                        f"{connect_directive}; "
+                        f"{frame_directive};",
+                    )
+                else:
+                    # Fallback CSP without Paddle constants
+                    csp = getattr(
+                        settings,
+                        "BLOG_CSP_POLICY",
+                        "default-src 'self'; "
+                        "img-src 'self' data: https:; "
+                        "style-src 'self' 'unsafe-inline' https://cdn.paddle.com https://sandbox-cdn.paddle.com; "
+                        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.paddle.com https://sandbox-cdn.paddle.com; "
+                        "font-src 'self' data:; "
+                        "connect-src 'self' https://api.paddle.com https://sandbox-api.paddle.com https://cdn.paddle.com https://sandbox-cdn.paddle.com https://checkout.paddle.com https://sandbox-checkout.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com; "
+                        "frame-src https://checkout.paddle.com https://sandbox-checkout.paddle.com https://cdn.paddle.com https://sandbox-cdn.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com;",
+                    )
                 response["Content-Security-Policy"] = csp
 
             return response
