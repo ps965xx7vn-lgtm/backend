@@ -1,6 +1,6 @@
 import re
 
-with open("django.po", "r", encoding="utf-8") as f:
+with open("django.po", encoding="utf-8") as f:
     content = f.read()
 
 # Находим все блоки msgid/msgstr

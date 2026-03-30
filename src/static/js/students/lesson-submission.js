@@ -135,16 +135,19 @@ async function handleSubmission(urlInput, submitBtn, errorsDiv, buttonId) {
     const lessonUrl = urlInput.value.trim();
     console.log('- lessonUrl:', lessonUrl);
 
-    // Валидация GitHub URL
-    if (!lessonUrl.match(/^https:\/\/github\.com\/.+/)) {
-        console.warn('⚠️ Невалидная ссылка GitHub');
-        errorsDiv.innerHTML = '<div class="error-message">Пожалуйста, укажите корректную ссылку на GitHub репозиторий</div>';
+    // Валидация URL (GitHub или CodeHS)
+    const isGitHub = lessonUrl.match(/^https:\/\/github\.com\/.+/);
+    const isCodeHS = lessonUrl.match(/^https:\/\/codehs\.com\/(sandbox|share)\/.+/);
+
+    if (!isGitHub && !isCodeHS) {
+        console.warn('⚠️ Невалидная ссылка');
+        errorsDiv.innerHTML = '<div class="error-message">Пожалуйста, укажите корректную ссылку на CodeHS или GitHub</div>';
         urlInput.classList.add('error');
 
         if (window.showNotification) {
-            window.showNotification('Пожалуйста, укажите корректную ссылку на GitHub репозиторий', 'error');
+            window.showNotification('Пожалуйста, укажите корректную ссылку на CodeHS или GitHub', 'error');
         } else {
-            alert('Пожалуйста, укажите корректную ссылку на GitHub репозиторий');
+            alert('Пожалуйста, укажите корректную ссылку на CodeHS или GitHub');
         }
         return;
     }
@@ -200,8 +203,20 @@ async function handleSubmission(urlInput, submitBtn, errorsDiv, buttonId) {
         console.log('📥 Status:', response.status);
         console.log('📥 Status Text:', response.statusText);
 
-        const data = await response.json();
-        console.log('📥 Data:', data);
+        // Проверяем Content-Type перед парсингом
+        const contentType = response.headers.get('content-type');
+        console.log('📥 Content-Type:', contentType);
+
+        let data;
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+            console.log('📥 Data:', data);
+        } else {
+            // Если пришел не JSON (например, HTML с ошибкой), читаем как текст
+            const text = await response.text();
+            console.error('❌ Получен не JSON ответ:', text.substring(0, 200));
+            throw new Error('Сервер вернул некорректный ответ. Попробуйте обновить страницу и попробовать снова.');
+        }
 
         if (response.ok && data.success) {
             console.log('✅ SUCCESS! Response OK and data.success=true');
