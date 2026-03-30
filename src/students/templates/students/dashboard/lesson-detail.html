@@ -625,7 +625,8 @@
                         <label for="id_resubmit_url">{% trans "Новая ссылка на исправленную работу" %}</label>
                         <input type="url" name="lesson_url" id="id_resubmit_url" class="form-control"
                                value="{{ existing_submission.lesson_url }}"
-                               placeholder="https://github.com/username/repository" required>
+                               placeholder="https://github.com/user/repo или https://codehs.com/share/..."
+                               pattern="https://(github\.com/.*|codehs\.com/(sandbox|share)/.*)" required>
                         <div id="resubmission-errors" class="form-errors"></div>
                     </div>
                     <button type="submit" class="btn btn-danger" id="resubmit-work-btn" {% if incomplete_improvements_count > 0 %}disabled{% endif %}>
@@ -661,7 +662,9 @@
                     <div class="form-group">
                         <label for="id_edit_url_pending">{% trans "Новая ссылка" %}</label>
                         <input type="url" name="lesson_url" id="id_edit_url_pending" class="form-control"
-                               value="{{ existing_submission.lesson_url }}" placeholder="https://github.com/username/repository" required>
+                               value="{{ existing_submission.lesson_url }}"
+                               placeholder="https://github.com/user/repo или https://codehs.com/share/..."
+                               pattern="https://(github\.com/.*|codehs\.com/(sandbox|share)/.*)" required>
                         <div id="edit-errors-pending" class="form-errors"></div>
                     </div>
                     <button type="submit" class="btn btn-primary">
@@ -691,15 +694,15 @@
                            name="lesson_url"
                            id="id_lesson_url"
                            class="form-control"
-                           placeholder="https://github.com/username/repository"
-                           pattern="https://github\.com/.*"
-                           title="Введите ссылку на GitHub репозиторий"
+                           placeholder="https://github.com/user/repo или https://codehs.com/share/..."
+                           pattern="https://(github\.com/.*|codehs\.com/(sandbox|share)/.*)"
+                           title="Введите ссылку на репозиторий (GitHub или CodeHS)"
                            required>
                     <small class="form-help">
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Укажите ссылку на ваш GitHub репозиторий с выполненным заданием
+                        Укажите ссылку на выполнение задания. Поддерживаются GitHub и CodeHS. Убедитесь, что репозиторий публичный и содержит все необходимые файлы.
                     </small>
                     <div id="submission-errors" class="form-errors"></div>
                 </div>

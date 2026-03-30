@@ -423,6 +423,13 @@ class Step(models.Model):
         help_text="Изображение шага",
         verbose_name="Изображение",
     )
+    articles = models.ManyToManyField(
+        "blog.Article",
+        related_name="course_steps",
+        blank=True,
+        help_text="Статьи блога, связанные с этим шагом",
+        verbose_name="Статьи",
+    )
 
     class Meta:
         verbose_name = "Шаг урока"

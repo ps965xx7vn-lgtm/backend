@@ -112,18 +112,18 @@ class Command(BaseCommand):
             "https://github.com/student/homework-1",
             "https://github.com/student/homework-2",
             "https://github.com/student/project-python",
-            "https://replit.com/@student/lesson-task",
+            "https://codehs.com/sandbox/student/lesson-task",
             "https://codesandbox.io/s/student-work",
         ]
 
         for i in range(count):
-            lesson = random.choice(lessons)
-            status = random.choice(statuses)
-            url = random.choice(test_urls)
+            lesson = random.choice(lessons)  # nosec B311
+            status = random.choice(statuses)  # nosec B311
+            url = random.choice(test_urls)  # nosec B311
 
             # Создаем дату в пределах последних 7 дней
-            days_ago = random.randint(0, 7)
-            hours_ago = random.randint(0, 23)
+            days_ago = random.randint(0, 7)  # nosec B311
+            hours_ago = random.randint(0, 23)  # nosec B311
             submitted_at = timezone.now() - timedelta(days=days_ago, hours=hours_ago)
 
             # Используем get_or_create чтобы избежать дублей

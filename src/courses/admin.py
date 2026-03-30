@@ -438,6 +438,7 @@ class StepAdmin(admin.ModelAdmin):
                     "self_check",
                     "self_check_items",
                     "image",
+                    "articles",
                 )
             },
         ),

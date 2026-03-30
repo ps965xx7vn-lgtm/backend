@@ -2,7 +2,7 @@
 Students Forms - Django формы для работы студентов.
 
 Этот модуль содержит формы для работы студентов с курсами:
-    - LessonSubmissionForm: Отправка ссылки на GitHub репозиторий с выполненной работой
+    - LessonSubmissionForm: Отправка ссылки на репозиторий (GitHub или CodeHS) с выполненной работой
 
 Автор: Pyland Team
 Дата: 2025
@@ -16,19 +16,20 @@ from reviewers.models import LessonSubmission
 
 
 class LessonSubmissionForm(forms.ModelForm):
-    """
-    Форма отправки ссылки на GitHub репозиторий с выполненной работой по уроку.
+    """Форма отправки выполненной работы по уроку через ссылку на репозиторий.
 
-    Валидирует что ссылка ведет на GitHub репозиторий с корректной структурой URL
-    (https://github.com/username/repository).
+    Валидирует URL с поддерживаемых платформ (GitHub, CodeHS) с проверкой
+    корректной структуры репозитория и доступности.
 
-    Fields:
-        lesson_url: URL GitHub репозитория с выполненным заданием
+    Поддерживаемые платформы:
+        - GitHub: https://github.com/username/repository
+        - CodeHS (песочница): https://codehs.com/sandbox/username/project
 
-    Validation:
-        - URL должен начинаться с https://github.com/
-        - URL должен содержать username и repository name
-        - Формат: https://github.com/username/repository
+    Правила валидации:
+        - URL должен использовать HTTPS протокол
+        - Должен быть с поддерживаемой платформы (GitHub или CodeHS)
+        - Должен содержать username/owner и имя repository/project
+        - Должен следовать специфичной для платформы структуре URL
 
     Example:
         >>> form = LessonSubmissionForm({
@@ -47,57 +48,89 @@ class LessonSubmissionForm(forms.ModelForm):
             "lesson_url": forms.URLInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "https://github.com/username/repository",
-                    "pattern": "https://github\\.com/.*",
-                    "title": "Введите ссылку на GitHub репозиторий",
+                    "placeholder": "https://codehs.com/share/...",
+                    "title": "Введите ссылку на проект с выполненным заданием",
                 }
             ),
         }
-        labels = {"lesson_url": "Ссылка на GitHub репозиторий"}
+        labels = {"lesson_url": "Ссылка на репозиторий/песочницу"}
         help_texts = {
-            "lesson_url": "Укажите ссылку на ваш GitHub репозиторий с выполненным заданием"
+            "lesson_url": (
+                "Укажите ссылку на ваш репозиторий с выполненным заданием. "
+                "Поддерживаются: CodeHS (https://codehs.com/share/...) "
+                "и GitHub (https://github.com/user/repo)"
+            )
         }
 
     def clean_lesson_url(self) -> str:
-        """
-        Валидирует что URL является корректной ссылкой на GitHub репозиторий.
+        """Валидирует URL репозитория с поддерживаемых платформ.
+
+        Проверяет URL с GitHub и CodeHS, обеспечивая корректную структуру
+        с идентификаторами username/owner и repository/project.
 
         Returns:
-            Валидированный URL GitHub репозитория
+            Валидированный URL репозитория
 
         Raises:
-            ValidationError: Если URL не соответствует формату GitHub репозитория:
-                - URL пустой
-                - URL не начинается с https://github.com/
-                - URL не содержит username и repository name
+            ValidationError: Когда URL невалиден:
+                - Пустой URL
+                - Не HTTPS протокол
+                - Не с поддерживаемой платформы
+                - Отсутствует username или имя репозитория
+                - Некорректная структура URL
 
-        Example:
-            Валидные:
+        Валидные примеры:
             - https://github.com/user/repo
             - https://github.com/user/repo/tree/main
+            - https://codehs.com/sandbox/username/project
+            - https://codehs.com/sandbox/username/project?collaborate=xxx
 
-            Невалидные:
-            - https://github.com/user (нет repository)
-            - https://gitlab.com/user/repo (не GitHub)
-            - github.com/user/repo (нет https://)
+        Невалидные примеры:
+            - https://github.com/user (отсутствует репозиторий)
+            - http://github.com/user/repo (не HTTPS)
+            - https://gitlab.com/user/repo (неподдерживаемая платформа)
         """
-        url = self.cleaned_data.get("lesson_url")
+        url = self.cleaned_data.get("lesson_url", "").strip()
 
         if not url:
-            raise forms.ValidationError("Необходимо указать ссылку на GitHub репозиторий")
+            raise forms.ValidationError("Необходимо указать ссылку на репозиторий")
 
-        if not url.startswith("https://github.com/"):
-            raise forms.ValidationError("Ссылка должна начинаться с https://github.com/")
+        if not url.startswith("https://"):
+            raise forms.ValidationError("Ссылка должна использовать HTTPS протокол")
 
-        # Extract path after github.com/
-        path = url.replace("https://github.com/", "")
+        is_github = url.startswith("https://github.com/")
+        is_codehs = url.startswith("https://codehs.com/sandbox/") or url.startswith(
+            "https://codehs.com/share/"
+        )
 
-        # Check that there's at least username and repository
-        parts = [p for p in path.split("/") if p]
-        if len(parts) < 2:
+        if not (is_github or is_codehs):
             raise forms.ValidationError(
-                "Ссылка должна содержать имя пользователя и название репозитория. "
-                "Пример: https://github.com/username/repository"
+                "Поддерживаются ссылки на GitHub и CodeHS. "
+                "Примеры: https://github.com/username/repository или "
+                "https://codehs.com/share/project"
             )
+
+        if is_github:
+            path = url.replace("https://github.com/", "").split("#")[0].split("?")[0]
+            parts = [p for p in path.split("/") if p]
+            if len(parts) < 2:
+                raise forms.ValidationError(
+                    "GitHub ссылка должна содержать имя пользователя и репозиторий. "
+                    "Пример: https://github.com/username/repository"
+                )
+
+        if is_codehs:
+            path = (
+                url.replace("https://codehs.com/sandbox/", "")
+                .replace("https://codehs.com/share/", "")
+                .split("?")[0]
+                .split("#")[0]
+            )
+            parts = [p for p in path.split("/") if p]
+            if not parts:
+                raise forms.ValidationError(
+                    "CodeHS ссылка должна указывать на проект. "
+                    "Пример: https://codehs.com/share/project-name"
+                )
 
         return url

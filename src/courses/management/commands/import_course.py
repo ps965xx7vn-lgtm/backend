@@ -211,6 +211,17 @@ class Command(BaseCommand):
                 super(Step, step).save()
                 self.stdout.write(f"      🔹 Created step {step.step_number}: {step.name}")
 
+                # Обрабатываем связи ManyToMany с Articles (после сохранения Step)
+                article_slugs = ru_step_data.get("articles", [])
+                if article_slugs:
+                    from blog.models import Article
+
+                    articles = Article.objects.filter(slug__in=article_slugs)
+                    step.articles.set(articles)
+                    self.stdout.write(
+                        f"         📰 Linked {articles.count()} articles: {', '.join(article_slugs)}"
+                    )
+
         return course
 
     def _get_stats(self, course: Course) -> dict:

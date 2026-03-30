@@ -398,60 +398,127 @@ CACHE_TTL = {
 }
 
 # === MARKDOWNIFY ===
+# Конфигурация для безопасного рендеринга Markdown в HTML
+# Используется в шаблонах через фильтр |markdownify
 MARKDOWNIFY = {
     "default": {
+        # HTML теги разрешенные в Markdown контенте
         "WHITELIST_TAGS": [
-            "a",
-            "abbr",
-            "acronym",
+            # Текстовое форматирование
+            "p",
+            "br",
+            "hr",
+            "strong",
             "b",
-            "blockquote",
             "em",
             "i",
-            "li",
-            "ol",
-            "p",
-            "strong",
-            "ul",
+            "u",
+            "s",
+            "mark",
+            "abbr",
+            "acronym",
+            "cite",
+            "q",
+            # Заголовки
             "h1",
             "h2",
             "h3",
             "h4",
             "h5",
             "h6",
+            # Ссылки и медиа
+            "a",
+            "img",
+            "figure",
+            "figcaption",
+            # Списки
+            "ul",
+            "ol",
+            "li",
+            "dl",
+            "dt",
+            "dd",
+            # Цитаты и код
+            "blockquote",
             "pre",
             "code",
-            "br",
-            "hr",
+            # Таблицы
             "table",
             "thead",
             "tbody",
+            "tfoot",
             "tr",
             "th",
             "td",
-            "span",
+            "caption",
+            # Структурные контейнеры
             "div",
+            "span",
+            "section",
+            "article",
         ],
-        "WHITELIST_ATTRS": ["href", "src", "alt", "title", "class", "id"],
+        # HTML атрибуты разрешенные в Markdown контенте
+        "WHITELIST_ATTRS": [
+            # Базовые атрибуты
+            "id",
+            "class",
+            "title",
+            # Ссылки
+            "href",
+            "target",
+            "rel",
+            # Изображения
+            "src",
+            "alt",
+            "width",
+            "height",
+            # Таблицы
+            "colspan",
+            "rowspan",
+            "align",
+            # Кастомные data-* атрибуты
+            "data-*",
+        ],
+        # Протоколы разрешенные в атрибутах src и href
+        "WHITELIST_PROTOCOLS": [
+            "http",
+            "https",
+            "mailto",
+            "tel",
+        ],
+        # Расширения Markdown для расширенного синтаксиса
         "MARKDOWN_EXTENSIONS": [
-            "markdown.extensions.codehilite",
-            "markdown.extensions.fenced_code",
-            "markdown.extensions.tables",
-            "markdown.extensions.toc",
-            "markdown.extensions.nl2br",
-            "markdown.extensions.attr_list",
+            "markdown.extensions.extra",  # Meta-расширение (abbr, attr_list, def_list, fenced_code, footnotes, tables, md_in_html)
+            "markdown.extensions.codehilite",  # Подсветка синтаксиса кода
+            "markdown.extensions.toc",  # Оглавление с якорными ссылками
+            "markdown.extensions.nl2br",  # Авто-перенос строк <br>
+            "markdown.extensions.sane_lists",  # Улучшенная обработка списков
+            "markdown.extensions.smarty",  # Типографика (умные кавычки, тире)
         ],
+        # Детальная конфигурация расширений
         "MARKDOWN_EXTENSION_CONFIGS": {
             "markdown.extensions.codehilite": {
-                "css_class": "highlight",
-                "use_pygments": True,
-                "guess_lang": True,
-                "linenums": False,
+                "css_class": "highlight",  # CSS класс для блоков кода
+                "use_pygments": True,  # Использовать Pygments для подсветки
+                "guess_lang": True,  # Авто-определение языка
+                "linenums": False,  # Отключить нумерацию строк по умолчанию
+                "noclasses": False,  # Использовать CSS классы вместо inline стилей
             },
             "markdown.extensions.toc": {
-                "anchorlink": True,
+                "anchorlink": True,  # Добавлять якорные ссылки к заголовкам
+                "permalink": False,  # Не добавлять постоянные ссылки
+                "baselevel": 1,  # Базовый уровень заголовков
+                "toc_depth": 6,  # Максимальная глубина оглавления
+            },
+            "markdown.extensions.extra": {
+                "footnotes": {
+                    "UNIQUE_IDS": True,  # Уникальные ID для сносок
+                },
             },
         },
+        # Настройки безопасности
+        "STRIP": True,  # Удалять запрещенные теги вместо escape
+        "BLEACH": True,  # Использовать bleach для очистки HTML
     }
 }
 
