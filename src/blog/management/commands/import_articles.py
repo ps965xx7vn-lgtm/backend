@@ -205,7 +205,7 @@ class Command(BaseCommand):
 
             # Обновляем теги
             if tags:
-                existing_article.tags.set(*tags)
+                existing_article.tags.set(tags)
 
             return "updated"
         else:
