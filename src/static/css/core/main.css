@@ -96,6 +96,10 @@
   --text-muted: #6b7280;
   --text-secondary: #4b5563;
 
+  /* Алиасы для совместимости */
+  --text-primary: var(--text-color);
+  --input-bg: var(--bg-secondary);
+
   /* Границы для светлой темы */
   --border-color: #e5e7eb;
 
@@ -524,12 +528,17 @@ pre code {
   --bg-secondary: #2a2a2a;
   --bg-tertiary: #3a3a3a;
   --bg-color: #1a1a1a;
+  --card-bg: #2a2a2a;
   --card-bg-dark: #1a1f2e;
 
   /* Текстовые цвета для темной темы */
   --text-color: #ffffff;
   --text-muted: #a0a0a0;
   --text-secondary: #c0c0c0;
+
+  /* Алиасы для совместимости */
+  --text-primary: var(--text-color);
+  --input-bg: var(--bg-secondary);
 
   /* Границы для темной темы */
   --border-color: #4a4a4a;
